@@ -1,0 +1,122 @@
+@import "tailwindcss";
+@import "../../vendor/livewire/flux/dist/flux.css";
+
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
+@source '../../vendor/livewire/flux/stubs/**/*.blade.php';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans:
+        "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+
+    --color-accent: var(--color-teal-600);
+    --color-accent-content: var(--color-teal-600);
+    --color-accent-foreground: var(--color-white);
+}
+
+@layer theme {
+    .dark {
+        --color-accent: var(--color-teal-600);
+        --color-accent-content: var(--color-teal-400);
+        --color-accent-foreground: var(--color-white);
+    }
+}
+
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+}
+
+[data-flux-field]:not(ui-radio, ui-checkbox) {
+    @apply grid gap-2;
+}
+
+[data-flux-label] {
+    @apply !mb-0 !leading-tight;
+}
+
+input:focus[data-flux-control],
+textarea:focus[data-flux-control],
+select:focus[data-flux-control] {
+    @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+}
+
+/* \[:where(&)\]:size-4 {
+    @apply size-4;
+} */
+@layer components {
+    /* Surface (panel wrapper) */
+    .ui-surface {
+        @apply overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900;
+    }
+
+    /* Headings / helper text */
+    .ui-title {
+        @apply text-xl font-semibold text-zinc-900 dark:text-zinc-100;
+    }
+    .ui-subtitle {
+        @apply mt-1 text-sm text-zinc-600 dark:text-zinc-400;
+    }
+
+    /* Labels */
+    .ui-label {
+        @apply text-xs font-medium text-zinc-600 dark:text-zinc-400;
+    }
+
+    /* Inputs & selects (accent-driven focus) */
+    .ui-control {
+        @apply mt-1 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900
+      dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100;
+        @apply focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-white
+      dark:focus:ring-offset-zinc-900;
+    }
+
+    /* Table */
+    .ui-thead {
+        @apply bg-zinc-50 text-xs uppercase text-zinc-600 dark:bg-zinc-800/60 dark:text-zinc-300;
+    }
+    .ui-trow {
+        @apply hover:bg-zinc-50/70 dark:hover:bg-zinc-800/40;
+    }
+    .ui-tbody {
+        @apply divide-y divide-zinc-100 dark:divide-zinc-800;
+    }
+
+    /* Badges */
+    .ui-badge {
+        @apply inline-flex items-center rounded-full px-2 py-1 text-xs font-medium;
+    }
+    .ui-badge-active {
+        @apply bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-300;
+    }
+    .ui-badge-inactive {
+        @apply bg-zinc-100 text-zinc-700 dark:bg-zinc-700/40 dark:text-zinc-300;
+    }
+
+    /* Small outline action button (accent focus) */
+    .ui-btn-outline-sm {
+        @apply rounded-lg border px-3 py-1.5 text-xs font-medium
+      border-zinc-200 bg-white text-zinc-900 hover:bg-zinc-50
+      dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800/40;
+        @apply focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-white
+      dark:focus:ring-offset-zinc-900;
+    }
+
+    /* Primary action link/button using accent token */
+    .ui-btn-accent-sm {
+        @apply inline-flex items-center justify-center rounded-lg px-3 py-1.5 text-xs font-medium
+      bg-accent text-accent-foreground hover:opacity-90;
+        @apply focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-white
+      dark:focus:ring-offset-zinc-900;
+    }
+}
