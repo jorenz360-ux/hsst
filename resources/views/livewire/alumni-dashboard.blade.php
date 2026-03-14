@@ -112,8 +112,6 @@
     </div>
 
     </div>
-    </div>
-
     {{-- Row 3: Announcements preview --}}
     <div class="rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
          <div class="flex items-center justify-between border-b border-zinc-200 px-5 py-4 dark:border-zinc-700">
@@ -154,4 +152,3 @@
             @endforelse
         </div>
     </div>
-</div>
