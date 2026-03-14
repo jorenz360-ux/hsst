@@ -41,7 +41,7 @@
                              <p class="text-[12px] font-medium text-zinc-100">
                                  {{ $event->dress_code }}
                             </p>
-                            <p class="text-[12.5px] font-light leading-[1.65] text-zinc-600">
+                            <p class="text-[12.5px] font-light leading-[1.65] text-zinc-100">
                                 {{ \Illuminate\Support\Str::limit($event->description, 600) }}
                             </p>
 

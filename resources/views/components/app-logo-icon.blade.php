@@ -1,8 +1,7 @@
-<a href="{{ route('home') }}" class="flex items-center gap-3">
+<a href="{{ route('home') }}" class="flex justify-center">
     <img
         src="{{ asset('images/hsstlogo.jpg') }}"
         alt="HSST Logo"
-        class="h-10 w-auto"
+        class="h-25 w-auto"
     >
-    <span class="font-semibold text-white">Holy Spirit School of Tagbilaran</span>
 </a>

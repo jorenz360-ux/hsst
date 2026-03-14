@@ -13,11 +13,10 @@ class EditEvent extends Component
     public Event $event;
 
     public string $title = '';
-
-    public string $dress_code;
+    public string $dress_code = '';
     public string $venue = '';
-    public string $event_date = '';      // datetime-local
-    public int $registration_fee = 0;    // pesos in UI
+    public string $event_date = '';
+    public int $registration_fee = 0;
     public ?string $description = null;
     public bool $is_active = true;
 
@@ -29,12 +28,9 @@ class EditEvent extends Component
 
         $this->title = $event->title;
         $this->venue = $event->venue;
-
-        $this->dress_code = $event->dress_code;
-
+        $this->dress_code = $event->dress_code ?? '';
         $this->event_date = $event->event_date->format('Y-m-d\TH:i');
         $this->registration_fee = (int) ($event->registration_fee / 100);
-
         $this->description = $event->description;
         $this->is_active = (bool) $event->is_active;
 
@@ -59,7 +55,7 @@ class EditEvent extends Component
     {
         $validated = $this->validate([
             'title' => ['required', 'string', 'max:255'],
-            'dress_code' => ['required','string', 'max:150'],
+            'dress_code' => ['required', 'string', 'max:150'],
             'venue' => ['required', 'string', 'max:255'],
             'event_date' => ['required', 'date'],
             'registration_fee' => ['required', 'integer', 'min:0'],
@@ -69,7 +65,7 @@ class EditEvent extends Component
 
         $this->event->update([
             'title' => $validated['title'],
-            'dress_code' => ['required','string', 'max:150'],
+            'dress_code' => $validated['dress_code'],
             'venue' => $validated['venue'],
             'event_date' => Carbon::parse($validated['event_date']),
             'registration_fee' => ((int) $validated['registration_fee']) * 100,
