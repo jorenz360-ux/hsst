@@ -1,4 +1,4 @@
-<div>
+
    <div class="space-y-8">
   
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -154,6 +154,4 @@
             @endforelse
         </div>
     </div>
-</div>
-
 </div>
