@@ -148,7 +148,7 @@
                         Not registered
                     </span> --}}
 
-                    @guest
+                    {{-- @guest
                         <a href="{{ route('login') }}"
                         class="inline-flex justify-center rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700">
                             Login to Register
@@ -161,51 +161,51 @@
                                 Complete Profile
                             </a>
                         @else
-                       @php($reg = $myEventRegs[$event->id] ?? null)
+                       @php($reg = $myEventRegs[$event->id] ?? null) --}}
 
-@if(!$reg)
-    {{-- Not registered --}}
-    <button
-        type="button"
-        wire:click="registerOrPay({{ $event->id }})"
-        class="inline-flex justify-center rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
-        wire:loading.attr="disabled"
-    >
-        <span wire:loading.remove>Register / Pay</span>
-        <span wire:loading>Processing...</span>
-    </button>
-@else
-    @if($reg['paid_at'] || $reg['status'] === 'paid')
-        {{-- Registered + Paid --}}
-        <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium
-                     bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-300">
-            Paid
-        </span>
+                    @if(!$reg)
+                        {{-- Not registered --}}
+                        <button
+                            type="button"
+                            wire:click="registerOrPay({{ $event->id }})"
+                            class="inline-flex justify-center rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
+                            wire:loading.attr="disabled"
+                        >
+                            <span wire:loading.remove>Register / Pay</span>
+                            <span wire:loading>Processing...</span>
+                        </button>
+                    @else
+                        @if($reg['paid_at'] || $reg['status'] === 'paid')
+                            {{-- Registered + Paid --}}
+                            <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium
+                                        bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-300">
+                                Paid
+                            </span>
 
-        <button
-            type="button"
-            disabled
-            class="inline-flex cursor-not-allowed justify-center rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium
-                   text-zinc-500 dark:border-zinc-700 dark:text-zinc-400"
-        >
-            Registered
-        </button>
-    @else
-        {{-- Registered but not paid --}}
-        <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium
-                     bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-300">
-            Pending
-        </span>
+                            <button
+                                type="button"
+                                disabled
+                                class="inline-flex cursor-not-allowed justify-center rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium
+                                    text-zinc-500 dark:border-zinc-700 dark:text-zinc-400"
+                            >
+                                Registered
+                            </button>
+                        @else
+                            {{-- Registered but not paid --}}
+                            <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium
+                                        bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-300">
+                                Pending
+                            </span>
 
-        <a
-            href="{{ route('event-registrations.pay', $reg['id']) }}"
-            class="inline-flex justify-center rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
-            wire:navigate
-        >
-            Pay Now
-        </a>
-    @endif
-@endif
+                            <a
+                                href="{{ route('event-registrations.pay', $reg['id']) }}"
+                                class="inline-flex justify-center rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
+                                wire:navigate
+                            >
+                                Pay Now
+                            </a>
+                        @endif
+                    @endif
                         @endif
                     @endguest
                 </div>
