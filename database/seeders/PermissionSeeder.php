@@ -12,47 +12,125 @@ class PermissionSeeder extends Seeder
     {
         $guard = 'web';
 
-        $permissions = [
-            'users.view','users.create','users.edit','users.delete',
-            'alumni.view','alumni.edit','alumni.edit.self',
-            'generate.report',
-            'event.view','create.event', 'edit.event','delete.event',
-            'announcement.create','announcement.manage', 'view.upcoming.events',
-             'view.alumni.dashboard', 'view.admin.dashboard', 'payments.view',
+        $permissionGroups = [
+            'users' => [
+                'users.view',
+                'users.create',
+                'users.edit',
+                'users.delete',
+            ],
+
+            'alumni' => [
+                'alumni.view',
+                'alumni.edit',
+                'alumni.edit.self',
+            ],
+
+            'reports' => [
+                'generate.report',
+            ],
+
+            'events' => [
+                'event.view',
+                'create.event',
+                'edit.event',
+                'delete.event',
+                'view.upcoming.events',
+            ],
+
+            'announcements' => [
+                'announcement.create',
+                'announcement.manage',
+            ],
+
+            'payments' => [
+                'payments.view',
+                'payments.create',
+                'payments.verify',
+                'payments.export',
+            ],
+
+            'donations' => [
+                'donations.view',
+                'donations.create',
+                'donations.verify',
+                'donation.manage',
+            ],
+
+            'batches' => [
+                'batches.view',
+            ],
+
+            'dashboards' => [
+                'view.alumni.dashboard',
+                'view.admin.dashboard',
+            ],
         ];
 
-        foreach ($permissions as $p) {
-            Permission::firstOrCreate(['name' => $p, 'guard_name' => $guard]);
+        $permissions = collect($permissionGroups)
+            ->flatten()
+            ->unique()
+            ->values()
+            ->toArray();
+
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => $guard,
+            ]);
         }
 
-        // Roles (must exist)
-        $coordinator = Role::firstOrCreate(['name' => 'reunion-coordinator', 'guard_name' => $guard]);
-        $ssps        = Role::firstOrCreate(['name' => 'ssps', 'guard_name' => $guard]);
-        $batchRep    = Role::firstOrCreate(['name' => 'batch-representative', 'guard_name' => $guard]);
-        $alumni      = Role::firstOrCreate(['name' => 'alumni', 'guard_name' => $guard]);
+        $coordinator = Role::firstOrCreate([
+            'name' => 'reunion-coordinator',
+            'guard_name' => $guard,
+        ]);
 
-        // reunion-coordinator gets all
-        // $coordinator->syncPermissions($permissions);
-         $coordinator->syncPermissions([
-                'users.view','users.create','users.edit',
-                'alumni.view',
-                'generate.report',
-                'event.view','create.event', 'edit.event','delete.event',
-                'announcement.create','announcement.manage',
-                'view.admin.dashboard', "payments.view"
-         ]);
+        $ssps = Role::firstOrCreate([
+            'name' => 'ssps',
+            'guard_name' => $guard,
+        ]);
 
-        // ssps (staff)
-        $ssps->syncPermissions([
-            'users.view','users.create','users.edit',
+        $batchRep = Role::firstOrCreate([
+            'name' => 'batch-representative',
+            'guard_name' => $guard,
+        ]);
+
+        $alumni = Role::firstOrCreate([
+            'name' => 'alumni',
+            'guard_name' => $guard,
+        ]);
+
+        $coordinator->syncPermissions([
+            'users.view',
+            'users.create',
+            'users.edit',
             'alumni.view',
-            'payments.view','payments.verify','payments.export',
-            'donations.view','donations.verify',
-            'batches.view', 'generate.report',
+            'generate.report',
+            'event.view',
+            'create.event',
+            'edit.event',
+            'delete.event',
+            'announcement.create',
+            'announcement.manage',
+            'view.admin.dashboard',
+            'payments.view',
+        ]);
+
+        $ssps->syncPermissions([
+            'users.view',
+            'users.create',
+            'users.edit',
+            'alumni.view',
+            'payments.view',
+            'payments.verify',
+            'payments.export',
+            'donations.view',
+            'donations.verify',
+            'batches.view',
+            'generate.report',
             'announcement.create',
         ]);
 
-        // batch representative
         $batchRep->syncPermissions([
             'batches.view',
             'alumni.view',
@@ -61,7 +139,6 @@ class PermissionSeeder extends Seeder
             'payments.view',
         ]);
 
-        // alumni
         $alumni->syncPermissions([
             'alumni.edit.self',
             'donations.create',
