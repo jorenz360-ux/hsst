@@ -52,8 +52,12 @@
 <div class="flex items-center justify-between py-4">
 
 <div class="flex items-center gap-4">
-<div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-500 to-amber-400 text-sm font-bold text-white shadow-soft">
-HSAA
+<div class="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl bg-white p-1 shadow-soft">
+    <img
+        src="{{ asset('images/hsstlogo.jpg') }}"
+        alt="HSSA Logo"
+        class="h-full w-full object-contain"
+    >
 </div>
 
 <div class="leading-tight">
@@ -214,7 +218,7 @@ News & Events
     <!-- Footer -->
     <footer class="border-t border-white/10 bg-zinc-950">
       <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-sm text-zinc-400 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-        <p>© 2026 Grand Alumni Reunion. All rights reserved.</p>
+        <p>© 2026 Holy Spirit School of Tagbilaran. All rights reserved.</p>
         <p>Built for connection, celebration, and community.</p>
       </div>
     </footer>
