@@ -1,6 +1,6 @@
 <div>
    <div class="space-y-8">
-    {{-- Row 1: Status + My Donation --}}
+  
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
         {{-- Verification/Profile status + CTA --}}
         <div class="lg:col-span-2 rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-700 dark:bg-zinc-900">
