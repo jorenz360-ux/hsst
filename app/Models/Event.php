@@ -18,6 +18,7 @@ class Event extends Model
         'registration_fee',
         'description',
         'is_active',
+        'dress_code',
         'created_by',
     ];
 

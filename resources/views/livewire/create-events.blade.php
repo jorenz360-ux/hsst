@@ -36,7 +36,14 @@
         />
         @error('title') <p class="text-sm text-red-500">{{ $message }}</p> @enderror
     </div>
-
+ <div class="space-y-1">
+        <flux:input
+            label="Dress Code"
+            placeholder="Formal or Semi-Fornal"
+            wire:model.defer="title"
+        />
+        @error('title') <p class="text-sm text-red-500">{{ $message }}</p> @enderror
+    </div>
     <div class="space-y-1">
         <flux:input
             label="Venue"

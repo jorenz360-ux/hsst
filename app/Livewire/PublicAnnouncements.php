@@ -42,7 +42,7 @@ public function render()
                 ->orderBy('sort_order')
                 ->orderBy('schedule_time'),
         ])
-        ->select('id', 'title', 'venue', 'event_date', 'description')
+        ->select('id', 'title', 'venue', 'event_date', 'description','dress_code')
         ->whereNotNull('event_date')
         ->where('event_date', '>=', now())
         ->orderBy('event_date', 'asc')

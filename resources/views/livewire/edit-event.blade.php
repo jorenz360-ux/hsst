@@ -20,7 +20,12 @@
                                class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100" />
                         @error('title') <p class="text-sm text-red-500">{{ $message }}</p> @enderror
                     </div>
-
+                        <div class="space-y-1">
+                        <label class="text-xs font-medium text-zinc-600 dark:text-zinc-400">Dress Code</label>
+                        <input wire:model.defer="dress_code"
+                               class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100" />
+                        @error('dress_code') <p class="text-sm text-red-500">{{ $message }}</p> @enderror
+                         </div>
                     <div class="space-y-1">
                         <label class="text-xs font-medium text-zinc-600 dark:text-zinc-400">Venue</label>
                         <input wire:model.defer="venue"

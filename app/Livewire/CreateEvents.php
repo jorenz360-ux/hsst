@@ -11,6 +11,8 @@ class CreateEvents extends Component
 {
     public string $title = '';
     public string $venue = '';
+    public string $dress_code = '';
+
     public string $event_date = '';          // from datetime-local input
     public ?int $registration_fee = 0;       // pesos in UI
     public ?string $description = null;
@@ -22,9 +24,10 @@ class CreateEvents extends Component
         $validated = $this->validate([
             'title' => ['required', 'string', 'max:255'],
             'venue' => ['required', 'string', 'max:255'],
-            'event_date' => ['required', 'date'], // "YYYY-MM-DDTHH:MM" is acceptable
+            'dress_code' => ['required', 'string'],
+            'event_date' => ['required', 'date'],
             'registration_fee' => ['nullable', 'integer', 'min:0'],
-            'description' => ['nullable', 'string', 'max:5000'],
+            'description' => ['required', 'string', 'max:5000'],
             'is_active' => ['boolean'],
         ]);
 
@@ -56,7 +59,7 @@ class CreateEvents extends Component
 
     public function resetForm(): void
     {
-        $this->reset(['title', 'venue', 'event_date', 'registration_fee', 'description', 'is_active']);
+        $this->reset(['title', 'dress_code', 'venue', 'event_date', 'registration_fee', 'description', 'is_active']);
         $this->is_active = true;
         $this->resetErrorBag();
         $this->resetValidation();
