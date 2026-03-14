@@ -1,0 +1,20 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+
+class AdminSeeder extends Seeder
+{
+    public function run(): void
+    {
+        User::create([
+            'username'      => 'Admin',
+            'email'     => 'admin@example.com',
+            'password'  => Hash::make('admin@hsst'),
+            // add any other required fields here
+        ]);
+    }
+}

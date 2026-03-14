@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Reunion2026'),
+    'name' => env('APP_NAME', 'Holy Spirit School of Tagbilaran'),
 
     /*
     |--------------------------------------------------------------------------
