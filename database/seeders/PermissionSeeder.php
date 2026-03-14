@@ -39,7 +39,7 @@ class PermissionSeeder extends Seeder
                 'generate.report',
                 'event.view','create.event', 'edit.event','delete.event',
                 'announcement.create','announcement.manage',
-                'view.admin.dashboard',
+                'view.admin.dashboard', "payments.view"
          ]);
 
         // ssps (staff)
@@ -57,8 +57,8 @@ class PermissionSeeder extends Seeder
             'batches.view',
             'alumni.view',
             'donation.manage',
-            'generate.report'
-            // 'alumni.edit', // enable only if you will restrict to their batch in code
+            'generate.report',
+            'payments.view',
         ]);
 
         // alumni
