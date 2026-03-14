@@ -9,7 +9,6 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('username')->unique()->after('id');
             $table->string('role')->default('alumni')->after('password');
             $table->foreignId('alumni_id')->nullable()->constrained('alumni')->cascadeOnDelete();
         });
