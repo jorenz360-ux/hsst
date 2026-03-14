@@ -147,8 +147,8 @@
                                 bg-zinc-100 text-zinc-700 dark:bg-zinc-700/40 dark:text-zinc-300">
                         Not registered
                     </span> --}}
-
-                    {{-- @guest
+{{-- 
+                    @guest
                         <a href="{{ route('login') }}"
                         class="inline-flex justify-center rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700">
                             Login to Register
@@ -161,7 +161,7 @@
                                 Complete Profile
                             </a>
                         @else
-                       @php($reg = $myEventRegs[$event->id] ?? null) --}}
+                       @php($reg = $myEventRegs[$event->id] ?? null)
 
                     @if(!$reg)
                         {{-- Not registered --}}
@@ -207,7 +207,7 @@
                         @endif
                     @endif
                         @endif
-                    @endguest
+                    @endguest --}}
                 </div>
             </div>
         @empty
