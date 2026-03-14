@@ -7,29 +7,29 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
-class AdminSeeder extends Seeder
+class alumniSeeder extends Seeder
 {
     public function run(): void
     {
         $guard = 'web';
 
-        $adminRole = Role::firstOrCreate([
-            'name' => 'reunion-coordinator',
+        $alumniRole = Role::firstOrCreate([
+            'name' => 'alumni',
             'guard_name' => $guard,
         ]);
 
-        $admin = User::updateOrCreate(
-            ['username' => 'admin'],
+        $alumni = User::updateOrCreate(
+            ['username' => 'alumni123'],
             [
-                'email' => 'admin@hsst.com',
-                'password' => Hash::make('Admin123!'),
+                'email' => 'alumni@hsst.com',
+                'password' => Hash::make('alumni123!'),
                 'must_change_password' => true,
                 'alumni_id' => null,
             ]
         );
 
-        if (! $admin->hasRole($adminRole->name)) {
-            $admin->assignRole($adminRole);
+        if (! $alumni->hasRole($alumniRole->name)) {
+            $alumni->assignRole($alumniRole);
         }
     }
 }

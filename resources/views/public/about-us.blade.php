@@ -229,14 +229,14 @@ News & Events
                 </div>
 
                 <div class="flex justify-center lg:justify-end">
-                    <div class="w-full max-w-lg rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl p-4">
-                        <img 
-                            src="{{ asset('images/colorxplained.jpg') }}" 
-                            alt="Holy Spirit School of Tagbilaran"
-                            class="w-full h-[320px] md:h-[400px] object-cover rounded-2xl"
-                            loading="lazy"
-                        >
-                    </div>
+                    <div class="rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl p-4 transition hover:scale-105 hover:shadow-3xl">
+                            <img 
+                                src="{{ asset('images/colorxplained.jpg') }}" 
+                                alt="Holy Spirit School of Tagbilaran"
+                                class="w-full h-[320px] md:h-[400px] object-cover rounded-2xl"
+                                loading="lazy"
+                            >
+                        </div>
                 </div>
 
             </div>
