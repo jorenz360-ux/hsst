@@ -18,7 +18,7 @@ class PermissionSeeder extends Seeder
             'generate.report',
             'event.view','create.event', 'edit.event','delete.event',
             'announcement.create','announcement.manage', 'view.upcoming.events',
-             'view.alumni.dashboard', 'view.admin.dashboard',
+             'view.alumni.dashboard', 'view.admin.dashboard', 'payments.view',
         ];
 
         foreach ($permissions as $p) {
