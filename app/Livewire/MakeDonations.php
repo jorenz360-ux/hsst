@@ -6,7 +6,12 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Donation;
 use App\Services\PayMongoService;
+use Livewire\Attributes\Title;
+
+#[Title('Make Donation')]
 class MakeDonations extends Component
+
+
 {
     public int|string $amount = '';
     public ?string $remarks = null;

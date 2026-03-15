@@ -64,6 +64,8 @@ class PermissionSeeder extends Seeder
             'dashboards' => [
                 'view.alumni.dashboard',
                 'view.admin.dashboard',
+                'view.batchRep.dashboard',
+                'view.ssps.dashboard',
             ],
         ];
 
@@ -129,6 +131,7 @@ class PermissionSeeder extends Seeder
             'batches.view',
             'generate.report',
             'announcement.create',
+            'view.ssps.dashboard',
         ]);
 
         $batchRep->syncPermissions([
@@ -137,6 +140,7 @@ class PermissionSeeder extends Seeder
             'donation.manage',
             'generate.report',
             'payments.view',
+            'view.batchRep.dashboard',
         ]);
 
         $alumni->syncPermissions([
