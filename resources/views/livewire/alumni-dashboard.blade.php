@@ -128,39 +128,120 @@
                 </div>
 
                 <div class="grid gap-4 md:grid-cols-2">
-                    @forelse (($upcomingEvents ?? collect()) as $event)
-                        <div class="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 dark:border-white/10 dark:bg-zinc-900/70">
-                            <div class="flex items-start justify-between gap-3">
-                                <div>
-                                    <h3 class="font-medium text-zinc-900 dark:text-white">{{ $event->title }}</h3>
-                                    <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{{ $event->venue ?: 'No venue set' }}</p>
-                                </div>
-                                <span class="rounded-full bg-cyan-500/10 px-2.5 py-1 text-xs font-medium text-cyan-300">
-                                    {{ optional($event->event_date)->format('M d, Y') }}
-                                </span>
-                            </div>
+                  @forelse (($upcomingEvents ?? collect()) as $event)
+    @php
+        $registration = $myEventRegs[$event->id] ?? null;
+        $status = $registration['status'] ?? null;
+    @endphp
 
-                            <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
-                                <div class="rounded-xl border border-zinc-200 bg-white p-3 dark:border-white/10 dark:bg-zinc-950/60">
-                                    <p class="text-zinc-500 dark:text-zinc-400">Dress Code</p>
-                                    <p class="mt-1 font-medium text-zinc-900 dark:text-white">
-                                        {{ $event->dress_code ?: '—' }}
-                                    </p>
-                                </div>
+    <div class="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 transition hover:shadow-sm dark:border-white/10 dark:bg-zinc-900/70">
+        <div class="flex items-start justify-between gap-3">
+            <div>
+                <h3 class="font-medium text-zinc-900 dark:text-white">
+                    {{ $event->title }}
+                </h3>
+                <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                    {{ $event->venue ?: 'No venue set' }}
+                </p>
+            </div>
 
-                                <div class="rounded-xl border border-zinc-200 bg-white p-3 dark:border-white/10 dark:bg-zinc-950/60">
-                                    <p class="text-zinc-500 dark:text-zinc-400">Fee</p>
-                                    <p class="mt-1 font-medium text-zinc-900 dark:text-white">
-                                        ₱{{ number_format(($event->registration_fee ?? 0) / 100, 2) }}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-500 dark:border-white/10 dark:bg-zinc-900/70 dark:text-zinc-400 md:col-span-2">
-                            No upcoming events available right now.
-                        </div>
-                    @endforelse
+            <span class="rounded-full bg-cyan-500/10 px-2.5 py-1 text-xs font-medium text-cyan-300">
+                {{ optional($event->event_date)->format('M d, Y') }}
+            </span>
+        </div>
+
+        <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
+            <div class="rounded-xl border border-zinc-200 bg-white p-3 dark:border-white/10 dark:bg-zinc-950/60">
+                <p class="text-zinc-500 dark:text-zinc-400">Dress Code</p>
+                <p class="mt-1 font-medium text-zinc-900 dark:text-white">
+                    {{ $event->dress_code ?: '—' }}
+                </p>
+            </div>
+
+            <div class="rounded-xl border border-zinc-200 bg-white p-3 dark:border-white/10 dark:bg-zinc-950/60">
+                <p class="text-zinc-500 dark:text-zinc-400">Fee</p>
+                <p class="mt-1 font-medium text-zinc-900 dark:text-white">
+                    ₱{{ number_format(($event->registration_fee ?? 0) / 100, 2) }}
+                </p>
+            </div>
+        </div>
+
+        {{-- Status + Action --}}
+        <div class="mt-4 flex flex-col gap-3 border-t border-zinc-200 pt-4 dark:border-white/10 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                @if (!$registration)
+                    <span class="inline-flex items-center rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-xs font-medium text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                        Not Registered
+                    </span>
+                @elseif ($status === 'pending')
+                    <span class="inline-flex items-center rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-xs font-medium text-amber-300">
+                        Waiting for Approval
+                    </span>
+                @elseif ($status === 'paid')
+                    <span class="inline-flex items-center rounded-full border border-teal-500/20 bg-teal-500/10 px-2.5 py-1 text-xs font-medium text-teal-300">
+                        Registered
+                    </span>
+                @elseif ($status === 'cancelled')
+                    <span class="inline-flex items-center rounded-full border border-red-500/20 bg-red-500/10 px-2.5 py-1 text-xs font-medium text-red-300">
+                        Cancelled
+                    </span>
+                @else
+                    <span class="inline-flex items-center rounded-full border border-cyan-500/20 bg-cyan-500/10 px-2.5 py-1 text-xs font-medium text-cyan-300">
+                        {{ str($status)->headline() }}
+                    </span>
+                @endif
+            </div>
+
+            <div class="flex justify-end">
+                @if (!$registration)
+                    <flux:button
+                        type="button"
+                        variant="primary"
+                        wire:click="registerOrPay({{ $event->id }})"
+                    >
+                        Register Now
+                    </flux:button>
+                @elseif ($status === 'pending')
+                    <flux:button
+                        type="button"
+                        variant="ghost"
+                        disabled
+                    >
+                        Pending
+                    </flux:button>
+                @elseif ($status === 'paid')
+                    <flux:button
+                        type="button"
+                        variant="ghost"
+                        disabled
+                    >
+                        Registered
+                    </flux:button>
+                @elseif ($status === 'cancelled')
+                    <flux:button
+                        type="button"
+                        variant="primary"
+                        wire:click="registerOrPay({{ $event->id }})"
+                    >
+                        Register Again
+                    </flux:button>
+                @else
+                    <flux:button
+                        type="button"
+                        variant="ghost"
+                        disabled
+                    >
+                        {{ str($status)->headline() }}
+                    </flux:button>
+                @endif
+            </div>
+        </div>
+    </div>
+@empty
+    <div class="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-500 dark:border-white/10 dark:bg-zinc-900/70 dark:text-zinc-400 md:col-span-2">
+        No upcoming events available right now.
+    </div>
+@endforelse
                 </div>
             </section>
 

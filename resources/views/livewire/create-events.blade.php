@@ -40,7 +40,7 @@
         <flux:input
             label="Dress Code"
             placeholder="Formal or Semi-Fornal"
-            wire:model.defer="title"
+            wire:model.defer="dress_code"
         />
         @error('title') <p class="text-sm text-red-500">{{ $message }}</p> @enderror
     </div>

@@ -12,12 +12,18 @@ use App\Livewire\MakeDonations;
 use App\Http\Controllers\PayMongoWebhookController;
 use App\Livewire\Announcement;
 use App\Livewire\ManageAnnouncement;
+use App\Livewire\EventRegistrationPaymentPage;
+
+use App\Livewire\EventPayment;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-use App\Livewire\EventPayment;
+
+Route::get('/event-registrations/{registration}/payment', EventRegistrationPaymentPage::class)
+    ->middleware(['auth'])
+    ->name('event-registration.payment');
 
 Route::get('/about-us', function () {
     return view('public/about-us');
@@ -68,15 +74,6 @@ Route::get(uri:'/view/events', action: Events::class)
     
 Route::post('/webhook/paymongo', [PayMongoWebhookController::class, 'handle']);
 
-Route::get('/paymongo/return', function () {
-    session()->flash('info', 'Payment processing. Please wait for confirmation.');
 
-    if (auth()->check()) {
-        return redirect()->route('make-donations');
-    }
-    session(['url.intended' => route('make-donations')]);
-
-    return redirect()->route('login');
-})->name('paymongo.return');
 
 require __DIR__.'/settings.php';
