@@ -5,7 +5,7 @@
             <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">Update event details and visibility.</p>
         </div>
 
-     <div class="fixed bottom-6 right-6 z-50 w-full max-w-sm">
+     <div class="fixed bottom-0 right-1 z-50 w-full max-w-sm">
     @if (session('status'))
   <x-toast/>
 @endif
