@@ -169,84 +169,56 @@
     </div>
 
     <!-- HERO -->
-    <section>
-        <div class="relative mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-10 px-5 py-12 md:px-6 lg:grid-cols-2 lg:gap-16 lg:py-20">
-            <div>
-                <div class="animate-fade-up delay-1 mb-6 inline-flex items-center gap-2 rounded-full border border-teal-400/20 bg-teal-400/10 px-3 py-[5px] pl-2 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-400">
-                    <span class="h-1.5 w-1.5 rounded-full bg-teal-400 animate-blink-soft"></span>
-                    Faith · Learning · Service · Community
-                </div>
+ <section class="relative isolate overflow-hidden min-h-[70vh]">
+    {{-- Background image --}}
+    <div class="absolute inset-0 -z-20">
+        <img
+            src="{{ asset('images/herosection.jpg') }}"
+            alt="HSST alumni reunion background"
+            class="h-full w-full object-cover object-center"
+        >
+    </div>
 
-                <h1 class="animate-fade-up delay-2 mb-6 font-dm-serif text-[2.4rem] font-normal leading-[1.07] tracking-[-0.02em] text-zinc-100 sm:text-[2.8rem] md:text-[3.3rem] lg:text-[4rem]">
-                    Welcome to the<br>
-                    <span class="bg-gradient-to-r from-teal-400 via-teal-300 to-cyan-400 bg-clip-text italic text-transparent">
-                        official school<br>portal of HSST
-                    </span>
-                </h1>
+    {{-- Dark overlay for readability --}}
+    <div class="absolute inset-0 -z-10 bg-zinc-950/65"></div>
 
-                <p class="animate-fade-up delay-3 mb-10 max-w-[500px] text-[15.5px] font-light leading-[1.8] text-zinc-400">
-                    Stay updated with school announcements, upcoming events, alumni activities, and important community information from the Holy Spirit School of Tagbilaran.
-                </p>
+    {{-- Optional gradient for better text contrast --}}
+    <div class="absolute inset-0 -z-10 bg-gradient-to-b from-zinc-950/40 via-zinc-950/55 to-zinc-950/75"></div>
 
-                <div class="animate-fade-up delay-4 mb-14 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
-                    <a href="#news" class="rounded-[9px] bg-teal-400 px-[26px] py-3 text-center text-sm font-semibold tracking-[-0.01em] text-zinc-950 shadow-[0_4px_20px_rgba(62,207,174,0.2)] transition hover:-translate-y-0.5 hover:bg-teal-300 hover:shadow-[0_8px_30px_rgba(62,207,174,0.3)]">
-                        Explore News & Events
-                    </a>
-
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="rounded-[9px] border border-white/12 bg-white/[0.03] px-6 py-[11px] text-center text-sm font-medium text-zinc-400 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-zinc-100">
-                            Create an Account
-                        </a>
-                    @endif
-                </div>
-
-                <div class="animate-fade-up delay-4 grid grid-cols-1 overflow-hidden rounded-xl border border-white/10 bg-zinc-900 sm:grid-cols-3">
-                    <div class="border-b border-white/10 px-6 py-5 transition hover:bg-zinc-800 sm:border-b-0 sm:border-r">
-                        <div class="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-600">Updates</div>
-                        <div class="mb-1 text-base font-semibold tracking-[-0.01em] text-zinc-100">Announcements</div>
-                        <div class="text-[11.5px] font-light text-zinc-600">Important school notices</div>
-                    </div>
-                    <div class="border-b border-white/10 px-6 py-5 transition hover:bg-zinc-800 sm:border-b-0 sm:border-r">
-                        <div class="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-600">Activities</div>
-                        <div class="mb-1 text-base font-semibold tracking-[-0.01em] text-zinc-100">Events</div>
-                        <div class="text-[11.5px] font-light text-zinc-600">Reunions & gatherings</div>
-                    </div>
-                    <div class="px-6 py-5 transition hover:bg-zinc-800">
-                        <div class="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-600">Together</div>
-                        <div class="mb-1 text-base font-semibold tracking-[-0.01em] text-zinc-100">Community</div>
-                        <div class="text-[11.5px] font-light text-zinc-600">Students, alumni & staff</div>
-                    </div>
-                </div>
+    {{-- Content --}}
+    <div class="mx-auto flex min-h-[88vh] max-w-[1200px] items-center justify-center px-5 py-16 text-center md:px-6 lg:px-8">
+        <div class="max-w-4xl">
+            <div class="animate-fade-up delay-1 mb-6 inline-flex items-center gap-2 rounded-full border border-teal-400/20 bg-teal-400/10 px-3 py-[5px] pl-2 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-300">
+                <span class="h-1.5 w-1.5 rounded-full bg-teal-400 animate-blink-soft"></span>
+                Faith · Learning · Service · Community
             </div>
 
-            <div class="animate-fade-up delay-3 relative mx-auto w-full max-w-[560px] lg:max-w-none">
-                <div class="pointer-events-none absolute -right-4 -top-4 h-[72px] w-[72px] rounded-full border border-teal-400/20">
-                    <div class="absolute inset-[10px] rounded-full border border-teal-400/10"></div>
-                </div>
+           <h1 class="animate-fade-up delay-2 mb-6 font-dm-serif text-[2.5rem] font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-[3rem] md:text-[3.8rem] lg:text-[4.8rem]">
+                Reconnect, Remember, and<br>
+                <span class="bg-gradient-to-r from-teal-300 via-teal-200 to-cyan-300 bg-clip-text italic text-transparent">
+                    Celebrate with HSST Alumni
+                </span>
+            </h1>
 
-                <div class="overflow-hidden rounded-[22px] border border-white/12 bg-white/[0.04] shadow-[0_0_0_1px_rgba(62,207,174,0.06),0_24px_60px_rgba(0,0,0,0.5)] backdrop-blur-md">
-                    <div class="relative h-[300px] overflow-hidden">
-                        <img
-                            src="{{ asset('images/colorxplained.jpg') }}"
-                            alt="HSST Campus"
-                            class="h-full w-full object-cover"
-                        >
-                        <div class="absolute inset-0 bg-[linear-gradient(155deg,rgba(13,148,136,0.12)_0%,rgba(9,9,11,0.55)_100%)]"></div>
-                    </div>
+            <p class="animate-fade-up delay-3 mx-auto mb-10 max-w-2xl text-[15.5px] leading-[1.9] text-zinc-200 md:text-[16.5px]">
+                Stay updated with school announcements, upcoming events, alumni activities,
+                and important community information from the Holy Spirit School of Tagbilaran.
+            </p>
 
-                    <div class="flex items-center justify-between border-t border-white/10 px-[18px] py-[14px]">
-                        <div>
-                            <div class="mb-0.5 text-[13px] font-semibold text-zinc-100">Welcome to the official HSST portal</div>
-                            <div class="text-[11.5px] text-zinc-600">School news, events & alumni updates</div>
-                        </div>
-                        <div class="rounded-full border border-teal-400/20 bg-teal-400/10 px-[10px] py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-teal-400">
-                            Live
-                        </div>
-                    </div>
-                </div>
+            <div class="animate-fade-up delay-4 mb-14 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
+                <a href="#news" class="rounded-[10px] bg-teal-400 px-[28px] py-3 text-sm font-semibold tracking-[-0.01em] text-zinc-950 shadow-[0_4px_20px_rgba(62,207,174,0.25)] transition hover:-translate-y-0.5 hover:bg-teal-300 hover:shadow-[0_8px_30px_rgba(62,207,174,0.35)]">
+                    Explore News & Events
+                </a>
+
+                @if (Route::has('register'))
+                    <a href="{{ route('register') }}" class="rounded-[10px] border border-white/15 bg-white/[0.06] px-6 py-[11px] text-sm font-medium text-zinc-100 backdrop-blur-sm transition hover:border-white/25 hover:bg-white/[0.1]">
+                        Create an Account
+                    </a>
+                @endif
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <hr class="mx-auto max-w-[1200px] border-white/10">
 

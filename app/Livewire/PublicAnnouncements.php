@@ -36,17 +36,31 @@ class PublicAnnouncements extends Component
 
 public function render()
 {
-    $event = Event::query()
+       $events = Event::query()
+    ->select([
+        'id',
+        'title',
+        'venue',
+        'event_date',
+        'description',
+        'dress_code',
+        ])
         ->with([
             'schedules' => fn ($query) => $query
+                ->select([
+                    'id',
+                    'event_id',
+                    'schedule_time',
+                    'sort_order',
+                ])
                 ->orderBy('sort_order')
                 ->orderBy('schedule_time'),
         ])
-        ->select('id', 'title', 'venue', 'event_date', 'description','dress_code')
         ->whereNotNull('event_date')
-        ->where('event_date', '>=', now())
+        ->whereDate('event_date', '>=', today())
         ->orderBy('event_date', 'asc')
-        ->first();
+        ->take(8)
+        ->get();
 
     $announcements = Announcement::query()
         ->where('is_published', true)
@@ -65,7 +79,7 @@ public function render()
         ->get();
 
     return view('livewire.public-announcements', [
-        'event' => $event,
+        'events' => $events,
         'announcements' => $announcements,
     ]);
 }

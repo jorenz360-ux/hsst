@@ -13,8 +13,11 @@ use App\Http\Controllers\PayMongoWebhookController;
 use App\Livewire\Announcement;
 use App\Livewire\ManageAnnouncement;
 use App\Livewire\EventRegistrationPaymentPage;
-
 use App\Livewire\EventPayment;
+use App\Http\Controllers\PublicEventController;
+
+Route::get('/events', [PublicEventController::class, 'index'])->name('events.index');
+Route::get('/events/{event}', [PublicEventController::class, 'show'])->name('events.show');
 
 Route::get('/', function () {
     return view('welcome');
@@ -41,7 +44,6 @@ Route::get('/events/{event}/edit', \App\Livewire\EditEvent::class)
     ->middleware(['auth', 'verified', 'can:edit.event'])
     ->name('events.edit');
 
-Route::get('/events', \App\Livewire\PublicEvents::class);
 
 Route::get(uri:'/announcement', action: ManageAnnouncement::class)
     ->middleware(['auth', 'role:ssps|reunion-coordinator'])

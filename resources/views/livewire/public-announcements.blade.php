@@ -1,227 +1,196 @@
 <div>
-    <section id="news">
-        <div class="mx-auto max-w-[1200px] px-5 py-12 md:px-6 lg:py-[4.5rem]">
-            <div class="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
-                <div>
-                    <div class="mb-3 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-teal-400 before:h-px before:w-5 before:bg-teal-400/50 before:content-['']">
-                        News & Events
-                    </div>
-                    <h2 class="font-dm-serif text-[1.7rem] font-normal leading-[1.12] tracking-[-0.018em] text-zinc-100 sm:text-[2rem] lg:text-[2.5rem]">
-                        Latest announcements and upcoming school events
-                    </h2>
-                </div>
-
-                <a href="#" class="whitespace-nowrap border-b border-teal-400/20 pb-px text-[13px] font-medium text-teal-400 transition hover:text-teal-300">
-                    View all →
-                </a>
-            </div>
-
-       <div class="grid grid-cols-1 gap-3.5 lg:grid-cols-[1.55fr_1fr]">
-    {{-- Main Event Card --}}
-    @if ($event)
-        <a href="#"
-            class="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] text-left no-underline transition hover:-translate-y-0.5 hover:border-teal-400/20">
-            
-            <div class="relative h-[220px] overflow-hidden">
-                <img
-                    src="{{ asset('images/100yearsevent.jpg') }}"
-                    alt="{{ $event->title }}"
-                    class="h-full w-full object-cover"
-                >
-                <div class="absolute inset-0 bg-[linear-gradient(155deg,rgba(13,148,136,0.16)_0%,rgba(9,9,11,0.70)_100%)]"></div>
-            </div>
-
-            <div class="flex flex-1 flex-col gap-[7px] p-6">
-                <span class="inline-block w-fit rounded border border-teal-400/20 bg-teal-400/10 px-2 py-[3px] text-[10px] font-bold uppercase tracking-[0.14em] text-teal-400">
-                    Event
-                </span>
-
-                <div class="font-dm-serif text-[19px] font-normal leading-[1.28] text-zinc-100">
-                    {{ $event->title }}
-                </div>
-
-                @if($event->dress_code)
-                    <p class="text-[12px] font-medium text-zinc-100">
-                        {{ $event->dress_code }}
-                    </p>
-                @endif
-
-                <p class="text-[12.5px] font-light leading-[1.65] text-zinc-100">
-                    {{ \Illuminate\Support\Str::limit($event->description, 600) }}
+   <section id="events" class="py-14 lg:py-20">
+    <div class="mx-auto max-w-[1200px] px-5 md:px-6">
+        <div class="mb-8 flex items-end justify-between gap-4">
+            <div>
+                <p class="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-teal-400">
+                    Upcoming Events
                 </p>
-
-                <div class="mt-auto border-t border-white/10 pt-2.5 text-[11.5px] text-zinc-600">
-                    {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
-                    @if($event->schedules->first()?->schedule_time)
-                        · {{ \Carbon\Carbon::parse($event->schedules->first()->schedule_time)->format('g:i A') }}
-                    @endif
-                    @if($event->venue)
-                        · {{ $event->venue }}
-                    @endif
-                </div>
-            </div>
-        </a>
-    @else
-        <div class="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] text-left">
-            <div class="relative h-[220px] overflow-hidden">
-                <img
-                    src="{{ asset('images/100yearsevent.jpg') }}"
-                    alt="No upcoming event"
-                    class="h-full w-full object-cover opacity-60"
-                >
-                <div class="absolute inset-0 bg-[linear-gradient(155deg,rgba(63,63,70,0.20)_0%,rgba(9,9,11,0.82)_100%)]"></div>
+                <h2 class="font-dm-serif text-[1.9rem] leading-none text-zinc-100 sm:text-[2.3rem]">
+                    School & Alumni Gatherings
+                </h2>
             </div>
 
-            <div class="flex flex-1 flex-col gap-[7px] p-6">
-                <span class="inline-block w-fit rounded border border-zinc-700 bg-zinc-800 px-2 py-[3px] text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-300">
-                    Event
-                </span>
-
-                <div class="font-dm-serif text-[19px] font-normal leading-[1.28] text-zinc-100">
-                    No upcoming event yet
-                </div>
-
-                <p class="text-[12.5px] font-light leading-[1.65] text-zinc-600">
-                    Please check back soon for the next scheduled school or alumni event.
-                </p>
-
-                <div class="mt-auto border-t border-white/10 pt-2.5 text-[11.5px] text-zinc-600">
-                    Stay tuned for updates
-                </div>
-            </div>
+            <a href="{{ route('events.index') }}"
+               class="hidden text-sm font-medium text-zinc-400 transition hover:text-zinc-100 sm:inline-block">
+                View all events
+            </a>
         </div>
-    @endif
 
-    {{-- Announcement Carousel --}}
-    <div
-        x-data="{
-            current: 0,
-            total: {{ max($announcements->count(), 1) }},
-            init() {
-                if (this.total > 1) {
-                    setInterval(() => {
-                        this.next()
-                    }, 5000)
-                }
-            },
-            next() {
-                this.current = (this.current + 1) % this.total
-            },
-            prev() {
-                this.current = (this.current - 1 + this.total) % this.total
-            }
-        }"
-        class="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]"
-    >
-        @if ($announcements->count())
-            <div class="relative h-full min-h-[220px]">
-                @foreach ($announcements as $index => $announcement)
-                    <div
-                        x-show="current === {{ $index }}"
-                        x-transition:enter="transition ease-out duration-500"
-                        x-transition:enter-start="opacity-0 translate-x-3"
-                        x-transition:enter-end="opacity-100 translate-x-0"
-                        x-transition:leave="transition ease-in duration-300"
-                        x-transition:leave-start="opacity-100 translate-x-0"
-                        x-transition:leave-end="opacity-0 -translate-x-3"
-                        class="absolute inset-0 flex h-full flex-col"
-                    >
-                        <div class="flex h-[108px] items-center justify-center bg-[linear-gradient(155deg,rgba(168,85,247,0.12)_0%,rgba(9,9,11,0.97)_100%)] px-4 text-center">
-                            <div>
-                                <span class="inline-block rounded border border-violet-400/20 bg-violet-400/10 px-2 py-[3px] text-[10px] font-bold uppercase tracking-[0.14em] text-violet-400">
-                                    Announcement
-                                </span>
-                                @if($announcement->pinned)
-                                    <span class="ml-2 inline-block rounded border border-amber-400/20 bg-amber-400/10 px-2 py-[3px] text-[10px] font-bold uppercase tracking-[0.14em] text-amber-300">
-                                        Pinned
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
+        @if ($events->isNotEmpty())
+            <div class="relative">
+                <button
+                    type="button"
+                    onclick="document.getElementById('events-carousel').scrollBy({ left: -1200, behavior: 'smooth' })"
+                    class="absolute left-2 top-1/2 z-10 hidden -translate-y-1/2 rounded-full border border-white/10 bg-zinc-950/80 p-3 text-white backdrop-blur lg:flex"
+                    aria-label="Previous events"
+                >
+                    ‹
+                </button>
 
-                        <div class="flex flex-1 flex-col gap-[8px] p-5">
-                            <div class="text-[15px] font-semibold leading-[1.4] tracking-[-0.01em] text-zinc-100">
-                                {{ $announcement->title }}
-                            </div>
+                <div id="events-carousel" class="no-scrollbar overflow-x-auto scroll-smooth">
+                    <div class="flex min-w-max gap-5">
+                        @foreach ($events as $event)
+                            <article
+                                class="group w-[85vw] max-w-[380px] flex-shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] transition hover:-translate-y-1 hover:border-teal-400/20 sm:w-[48%] lg:w-[calc((100%-2.5rem)/3)]"
+                            >
+                                <div class="relative h-[220px] overflow-hidden">
+                                    <img
+                                        src="{{ asset('images/100yearsevent.jpg') }}"
+                                        alt="{{ $event->title }}"
+                                        class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                                    >
+                                    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent"></div>
 
-                            <p class="text-[12.5px] font-light leading-[1.7] text-zinc-300">
-                                {{ \Illuminate\Support\Str::limit(strip_tags($announcement->content), 220) }}
-                            </p>
+                                    <div class="absolute left-4 top-4">
+                                        <span class="inline-flex rounded-full border border-teal-400/20 bg-teal-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-teal-300">
+                                            Upcoming Event
+                                        </span>
+                                    </div>
+                                </div>
 
-                            <div class="mt-auto border-t border-white/10 pt-2.5 text-[11.5px] text-zinc-500">
-                                @if($announcement->published_at)
-                                    {{ $announcement->published_at->format('F d, Y') }}
-                                @else
-                                    Recently published
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+                                <div class="flex h-full flex-col p-5">
+                                    <h3 class="font-dm-serif text-[1.15rem] leading-[1.3] text-zinc-100">
+                                        <a href="{{ route('events.show', $event) }}" class="transition hover:text-teal-300">
+                                            {{ $event->title }}
+                                        </a>
+                                    </h3>
 
-            {{-- Controls --}}
-            @if($announcements->count() > 1)
-                <div class="absolute inset-x-0 bottom-3 z-10 flex items-center justify-between px-4">
-                    <div class="flex items-center gap-1.5">
-                        @foreach ($announcements as $index => $announcement)
-                            <button
-                                type="button"
-                                @click="current = {{ $index }}"
-                                class="h-2 rounded-full transition-all"
-                                :class="current === {{ $index }} ? 'w-6 bg-white' : 'w-2 bg-white/30'"
-                                aria-label="Go to slide {{ $index + 1 }}"
-                            ></button>
+                                    @if ($event->dress_code)
+                                        <p class="mt-2 text-[12px] font-medium text-zinc-300">
+                                            Dress Code: {{ $event->dress_code }}
+                                        </p>
+                                    @endif
+
+                                    <p class="mt-3 text-[12.8px] leading-[1.75] text-zinc-400">
+                                        {{ \Illuminate\Support\Str::limit($event->description, 140) }}
+                                    </p>
+
+                                    <div class="mt-5 border-t border-white/10 pt-3 text-[11.5px] text-zinc-400">
+                                        {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
+
+                                        @if ($event->schedules->first()?->schedule_time)
+                                            · {{ \Carbon\Carbon::parse($event->schedules->first()->schedule_time)->format('g:i A') }}
+                                        @endif
+
+                                        @if ($event->venue)
+                                            <div class="mt-1">{{ $event->venue }}</div>
+                                        @endif
+                                    </div>
+
+                                    <div class="mt-5">
+                                        <a
+                                            href="{{ route('events.show', $event) }}"
+                                            class="inline-flex items-center gap-2 rounded-full border border-teal-400/20 bg-teal-400/10 px-4 py-2 text-[12px] font-semibold text-teal-300 transition hover:border-teal-400/30 hover:bg-teal-400/15 hover:text-teal-200"
+                                        >
+                                            Read more
+                                            <span aria-hidden="true">→</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </article>
                         @endforeach
                     </div>
-
-                    <div class="flex items-center gap-2">
-                        <button
-                            type="button"
-                            @click="prev()"
-                            class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-black/30 text-zinc-300 transition hover:border-white/20 hover:text-white"
-                            aria-label="Previous announcement"
-                        >
-                            ‹
-                        </button>
-                        <button
-                            type="button"
-                            @click="next()"
-                            class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-black/30 text-zinc-300 transition hover:border-white/20 hover:text-white"
-                            aria-label="Next announcement"
-                        >
-                            ›
-                        </button>
-                    </div>
                 </div>
-            @endif
+
+                <button
+                    type="button"
+                    onclick="document.getElementById('events-carousel').scrollBy({ left: 1200, behavior: 'smooth' })"
+                    class="absolute right-2 top-1/2 z-10 hidden -translate-y-1/2 rounded-full border border-white/10 bg-zinc-950/80 p-3 text-white backdrop-blur lg:flex"
+                    aria-label="Next events"
+                >
+                    ›
+                </button>
+            </div>
+
+            <div class="mt-4 sm:hidden">
+                <a href="{{ route('events.index') }}"
+                   class="inline-block text-sm font-medium text-zinc-400 transition hover:text-zinc-100">
+                    View all events
+                </a>
+            </div>
         @else
-            <div class="flex h-full min-h-[220px] flex-col">
-                <div class="flex h-[108px] items-center justify-center bg-[linear-gradient(155deg,rgba(113,113,122,0.10)_0%,rgba(9,9,11,0.97)_100%)] text-[11px] italic text-zinc-600">
-                    No active announcements
+            <div class="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+                <div class="relative h-[220px] overflow-hidden">
+                    <img
+                        src="{{ asset('images/100yearsevent.jpg') }}"
+                        alt="No upcoming event"
+                        class="h-full w-full object-cover opacity-60"
+                    >
+                    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent"></div>
                 </div>
 
-                <div class="flex flex-1 flex-col gap-[7px] p-5">
-                    <span class="inline-block w-fit rounded border border-zinc-700 bg-zinc-800 px-2 py-[3px] text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-300">
-                        Announcement
+                <div class="p-6">
+                    <span class="inline-block rounded-full border border-zinc-700 bg-zinc-800 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-300">
+                        Event
                     </span>
 
-                    <div class="text-[14.5px] font-semibold leading-[1.4] tracking-[-0.01em] text-zinc-100">
-                        No announcements available
-                    </div>
+                    <h3 class="mt-4 font-dm-serif text-[1.2rem] text-zinc-100">
+                        No upcoming event yet
+                    </h3>
 
-                    <p class="text-[12.5px] font-light leading-[1.65] text-zinc-600">
-                        Please check back later for important school and alumni updates.
+                    <p class="mt-2 text-[13px] leading-[1.75] text-zinc-400">
+                        Please check back soon for the next scheduled school or alumni event.
                     </p>
-
-                    <div class="mt-auto border-t border-white/10 pt-2.5 text-[11.5px] text-zinc-600">
-                        Stay tuned
-                    </div>
                 </div>
             </div>
         @endif
     </div>
-</div>
+</section>
+<section id="announcements" class="py-14 lg:py-20">
+    <div class="mx-auto max-w-[1200px] px-5 md:px-6">
+        <div class="mb-8 flex items-end justify-between gap-4">
+            <div>
+                <p class="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-violet-400">
+                    Announcements
+                </p>
+                <h2 class="font-dm-serif text-[1.9rem] leading-none text-zinc-100 sm:text-[2.3rem]">
+                    Important Notices & Updates
+                </h2>
+            </div>
+
+            <a href="#" class="hidden text-sm font-medium text-zinc-400 transition hover:text-zinc-100 sm:inline-block">
+                View all announcements
+            </a>
         </div>
-    </section>
+
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            @forelse ($announcements as $announcement)
+                <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition hover:border-violet-400/20 hover:bg-white/[0.05]">
+                    <div class="mb-3 flex items-center gap-2">
+                        <span class="inline-block rounded-full border border-violet-400/20 bg-violet-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-violet-300">
+                            Announcement
+                        </span>
+
+                        @if ($announcement->pinned)
+                            <span class="inline-block rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-amber-300">
+                                Pinned
+                            </span>
+                        @endif
+                    </div>
+
+                    <h3 class="text-[1rem] font-semibold leading-[1.45] text-zinc-100">
+                        {{ $announcement->title }}
+                    </h3>
+
+                    <p class="mt-3 text-[12.8px] leading-[1.75] text-zinc-400">
+                        {{ \Illuminate\Support\Str::limit(strip_tags($announcement->content), 180) }}
+                    </p>
+
+                    <div class="mt-5 border-t border-white/10 pt-3 text-[11.5px] text-zinc-500">
+                        @if ($announcement->published_at)
+                            {{ $announcement->published_at->format('F d, Y') }}
+                        @else
+                            Recently published
+                        @endif
+                    </div>
+                </article>
+            @empty
+                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-zinc-400">
+                    No announcements available right now.
+                </div>
+            @endforelse
+        </div>
+    </div>
+</section>
 </div>
