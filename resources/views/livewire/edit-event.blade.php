@@ -5,11 +5,11 @@
             <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">Update event details and visibility.</p>
         </div>
 
-        @if (session('status'))
-            <div class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900">
-                <p class="text-sm font-medium text-green-600 dark:text-green-400">{{ session('status') }}</p>
-            </div>
-        @endif
+     <div class="fixed bottom-6 right-6 z-50 w-full max-w-sm">
+    @if (session('status'))
+  <x-toast/>
+@endif
+</div>
 
         <div class="grid gap-6 lg:grid-cols-[1.1fr_.9fr]">
             <div class="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
