@@ -156,8 +156,8 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN','hsst-app-an9vf.ondigitalocean.app'),
-
+    'domain' => env('SESSION_DOMAIN'),
+// 'hsst-app-an9vf.ondigitalocean.app'
     /*
     |--------------------------------------------------------------------------
     | HTTPS Only Cookies
