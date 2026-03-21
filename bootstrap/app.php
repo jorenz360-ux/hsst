@@ -23,6 +23,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'webhook/paymongo',
         ]);
     })
+    ->withMiddleware(function (Middleware $middleware) {
+    $middleware->trustProxies(at: '*');
+})
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
+    
+
