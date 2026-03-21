@@ -25,7 +25,7 @@ class EventRegistrationPaymentPage extends Component
     public Collection $paymentHistory;
 
     public $proof;
-    // public ?string $reference_number = null;
+    public ?string $reference_number = null;
     public ?string $remarks = null;
 
     /**
@@ -86,7 +86,7 @@ class EventRegistrationPaymentPage extends Component
             ->latest('id')
             ->get();
 
-        // $this->reference_number = null;
+        $this->reference_number = null;
         $this->remarks = null;
     }
 
@@ -193,7 +193,7 @@ class EventRegistrationPaymentPage extends Component
         $this->selectedItemId = blank($value) ? null : (int) $value;
         $this->resetValidation();
         $this->proof = null;
-        // $this->reference_number = null;
+        $this->reference_number = null;
         $this->remarks = null;
     }
 
@@ -217,7 +217,7 @@ class EventRegistrationPaymentPage extends Component
         $validated = $this->validate([
             'selectedItemId' => ['nullable', 'integer', 'exists:event_registration_items,id'],
             'proof' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
-            // 'reference_number' => ['nullable', 'string', 'max:100'],
+            'reference_number' => ['nullable', 'string', 'max:100'],
             'remarks' => ['nullable', 'string', 'max:1000'],
         ]);
 
@@ -230,7 +230,7 @@ class EventRegistrationPaymentPage extends Component
                 'event_registration_item_id' => $validated['selectedItemId'] ?? null,
                 'amount' => $this->amountDue,
                 'mode' => 'manual',
-                // 'reference_number' => $validated['reference_number'] ?: null,
+                'reference_number' => $validated['reference_number'] ?: null,
                 'remarks' => $validated['remarks'] ?: null,
                 'or_file_path' => $proofPath,
                 'status' => 'pending',
@@ -243,7 +243,7 @@ class EventRegistrationPaymentPage extends Component
         });
 
         $this->proof = null;
-        // $this->reference_number = null;
+        $this->reference_number = null;
         $this->remarks = null;
 
         $this->refreshPaymentState();
