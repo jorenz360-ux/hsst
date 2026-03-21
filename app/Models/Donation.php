@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Donation extends Model
 {
     use HasFactory;
@@ -14,17 +14,28 @@ class Donation extends Model
         'amount',
         'date_donated',
         'remarks',
-        'paymongo_checkout_session_id',
+        'reference_number',
+        'or_file_path',
+        'status',
+        'reviewed_by',
+        'reviewed_at',
+        'rejection_reason',
         'paid_at',
     ];
+
     protected $casts = [
-    'paid_at' => 'datetime',
-    'date_donated' => 'datetime',
-];
+        'paid_at' => 'datetime',
+        'date_donated' => 'datetime',
+        'reviewed_at' => 'datetime',
+    ];
+
     public function alumni()
     {
         return $this->belongsTo(Alumni::class);
     }
-    
-}
 
+    public function reviewer()
+    {
+        return $this->belongsTo(User::class, 'reviewed_by');
+    }
+}

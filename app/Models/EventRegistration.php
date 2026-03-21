@@ -15,8 +15,7 @@ class EventRegistration extends Model
         'event_id',
         'alumni_id',
         'status',
-        'fee_paid',
-        'paid_at',
+        'payment_status',
     ];
 
     protected $casts = [
@@ -37,4 +36,12 @@ class EventRegistration extends Model
     {
         return $this->hasMany(\App\Models\Payment::class, 'registration_id');
     }
+     public function itemSelections()
+    {
+        return $this->hasMany(EventRegistrationItemSelection::class, 'registration_id');
+    }
+    public function latestPayment()
+{
+    return $this->hasOne(Payment::class, 'registration_id')->latestOfMany();
+}
 }

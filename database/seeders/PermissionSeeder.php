@@ -116,6 +116,7 @@ class PermissionSeeder extends Seeder
             'announcement.manage',
             'view.admin.dashboard',
             'payments.view',
+            'donations.view',
         ]);
 
         $ssps->syncPermissions([
@@ -132,6 +133,7 @@ class PermissionSeeder extends Seeder
             'generate.report',
             'announcement.create',
             'view.ssps.dashboard',
+            'donations.view',
         ]);
 
         $batchRep->syncPermissions([

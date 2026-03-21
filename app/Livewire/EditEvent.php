@@ -10,6 +10,7 @@ use Livewire\Component;
 #[Title('Edit Event')]
 class EditEvent extends Component
 {
+    public array $itemRows = [];
     public Event $event;
 
     public string $title = '';
@@ -49,8 +50,55 @@ class EditEvent extends Component
                 'sort_order' => $schedule->sort_order,
             ])
             ->toArray();
+        $this->itemRows = $event->registrationItems()
+            ->get()
+            ->map(fn ($item) => [
+                'id' => $item->id,
+                'name' => $item->name,
+                'price' => $item->price / 100,
+                'event_schedule_id' => $item->event_schedule_id,
+            ])
+            ->toArray();
     }
 
+        public function addItemRow()
+    {
+        $this->itemRows[] = [
+            'id' => null,
+            'name' => '',
+            'price' => 0,
+            'event_schedule_id' => null,
+        ];
+    }
+
+    public function removeItemRow($index)
+    {
+        unset($this->itemRows[$index]);
+        $this->itemRows = array_values($this->itemRows);
+    }
+    public function saveItems()
+    {
+        $keptIds = [];
+
+        foreach ($this->itemRows as $row) {
+            $item = $this->event->registrationItems()->updateOrCreate(
+                ['id' => $row['id'] ?? null],
+                [
+                    'name' => $row['name'],
+                    'price' => $row['price'] * 100,
+                    'event_schedule_id' => $row['event_schedule_id'] ?: null,
+                ]
+            );
+
+            $keptIds[] = $item->id;
+        }
+
+        $this->event->registrationItems()
+            ->whereNotIn('id', $keptIds)
+            ->delete();
+
+        session()->flash('status', 'Registration items saved.');
+    }
     public function update(): void
     {
         $validated = $this->validate([

@@ -26,7 +26,7 @@ new class extends Component {
     $user = Auth::user();
 
     $this->username = $user->username;
-    $this->email = $user->email;
+    $this->email = $user->email ??'';
 
     // Build year options (adjust range as you like)
     $currentYear = (int) now()->format('Y');
@@ -66,13 +66,12 @@ public function updatedYeargrad($value): void
 {
     $user = Auth::user();
 
-    $validated = $this->validate([
+  $validated = $this->validate([
     'first_name' => ['required', 'string', 'max:255'],
     'middle_name' => ['nullable', 'string', 'max:255'],
     'last_name' => ['required', 'string', 'max:255'],
-
+    'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
     'yeargrad' => ['required', 'integer', 'min:1900', 'max:' . now()->format('Y')],
-    
 ]);
  $yeargrad = (int) $validated['yeargrad'];
 $schoolyear = ($yeargrad - 1) . '-' . $yeargrad;
@@ -101,6 +100,12 @@ $schoolyear = ($yeargrad - 1) . '-' . $yeargrad;
 
         // 3) Link user to alumni
         $user->update(['alumni_id' => $alumni->id]);
+    }
+     if ($validated['email'] !== $user->email) {
+        $user->update([
+            'email' => $validated['email'],
+            'email_verified_at' => null,
+        ]);
     }
 
     $this->dispatch('profile-updated');

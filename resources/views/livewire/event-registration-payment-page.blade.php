@@ -1,207 +1,478 @@
 <div>
-   <div class="mx-auto max-w-6xl space-y-6 p-6">
-    {{-- Header --}}
-    <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.22em] text-teal-400">
-                Event Registration Payment
-            </p>
-            <h1 class="mt-1 text-3xl font-semibold tracking-tight text-zinc-900 dark:text-white">
-                {{ $registration->event->title }}
-            </h1>
-            <p class="mt-2 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
-                Complete your payment outside the app, then upload your proof of payment for verification.
-            </p>
-        </div>
-
-        <div>
-            <span class="inline-flex items-center rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-300">
-                {{ str($registration->status)->headline() }}
-            </span>
-        </div>
-    </div>
-
-    {{-- Alerts --}}
-    @if (session('success'))
-        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 dark:border-emerald-900/40 dark:bg-emerald-950/20 dark:text-emerald-200">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <div class="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-        {{-- Main Upload Form --}}
-        <div class="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
-            <div class="mb-6">
-                <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">
-                    Upload Proof of Payment
-                </h2>
-                <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                    After sending your payment through the provided method, upload your screenshot or receipt here.
-                </p>
-            </div>
-
-            <form wire:submit.prevent="submitProof" class="space-y-5">
-                <div>
-                    <label class="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                        Reference Number <span class="text-zinc-400">(optional)</span>
-                    </label>
-                    <input
-                        type="text"
-                        wire:model.defer="reference_number"
-                        placeholder="e.g. GCash ref no. / bank transfer ref no."
-                        class="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 outline-none transition focus:border-teal-400 focus:ring-2 focus:ring-teal-500/20 dark:border-white/10 dark:bg-zinc-950 dark:text-white"
-                    >
-                    @error('reference_number')
-                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div>
-                    <label class="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                        Remarks <span class="text-zinc-400">(optional)</span>
-                    </label>
-                    <textarea
-                        wire:model.defer="remarks"
-                        rows="4"
-                        placeholder="Add a short note if needed..."
-                        class="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 outline-none transition focus:border-teal-400 focus:ring-2 focus:ring-teal-500/20 dark:border-white/10 dark:bg-zinc-950 dark:text-white"
-                    ></textarea>
-                    @error('remarks')
-                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div>
-                    <label class="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                        Proof of Payment
-                    </label>
-                    <input
-                        type="file"
-                        wire:model="proof"
-                        accept=".jpg,.jpeg,.png,.pdf"
-                        class="block w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 file:mr-4 file:rounded-xl file:border-0 file:bg-teal-500 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-teal-600 dark:border-white/10 dark:bg-zinc-950 dark:text-white"
-                    >
-                    <p class="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-                        Accepted formats: JPG, JPEG, PNG, PDF. Maximum size: 5MB.
+    <div class="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+        {{-- Header --}}
+        <section class="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-900 via-zinc-900 to-teal-950/40 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+            <div class="flex flex-col gap-6 px-6 py-6 lg:flex-row lg:items-end lg:justify-between">
+                <div class="max-w-3xl">
+                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-teal-400">
+                        Event Registration
                     </p>
 
-                    <div wire:loading wire:target="proof" class="mt-2 text-sm text-teal-500">
-                        Uploading file...
-                    </div>
+                    <h1 class="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                        {{ $event->title }}
+                    </h1>
 
-                    @error('proof')
-                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                    @enderror
+                    <p class="mt-3 text-sm leading-6 text-zinc-400 sm:text-[15px]">
+                        Register for the event, review required and optional payment items, and upload your proof of payment for verification.
+                    </p>
                 </div>
 
-                @if ($proof)
-                    <div class="rounded-2xl border border-teal-500/20 bg-teal-500/10 p-4 text-sm text-teal-800 dark:text-teal-200">
-                        File selected successfully and ready for submission.
+                <a href="{{ route('dashboard') }}"
+                   wire:navigate
+                   class="inline-flex items-center rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-zinc-200 transition hover:bg-white/[0.08]">
+                    Back to Dashboard
+                </a>
+            </div>
+        </section>
+
+        {{-- Alerts --}}
+        @if (session('success'))
+            <div class="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.08] px-5 py-4 text-sm text-emerald-300">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="rounded-2xl border border-rose-500/20 bg-rose-500/[0.08] px-5 py-4 text-sm text-rose-300">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        <div class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+            {{-- LEFT --}}
+            <div class="space-y-6">
+                {{-- Event Summary --}}
+                <section class="rounded-3xl border border-white/10 bg-zinc-900/60 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-sm">
+                    <div class="border-b border-white/10 px-5 py-4">
+                        <h2 class="text-lg font-semibold text-white">Event Summary</h2>
+                        <p class="mt-1 text-sm text-zinc-400">
+                            Your registration record is created automatically when you open this page.
+                        </p>
                     </div>
+
+                    <div class="grid gap-4 p-5 md:grid-cols-2">
+                        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                            <p class="text-xs uppercase tracking-wide text-zinc-500">Venue</p>
+                            <p class="mt-2 text-sm font-medium text-white">
+                                {{ $event->venue ?: 'No venue set' }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                            <p class="text-xs uppercase tracking-wide text-zinc-500">Event Date</p>
+                            <p class="mt-2 text-sm font-medium text-white">
+                                {{ optional($event->event_date)->format('M d, Y • h:i A') }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                            <p class="text-xs uppercase tracking-wide text-zinc-500">Dress Code</p>
+                            <p class="mt-2 text-sm font-medium text-white">
+                                {{ $event->dress_code ?: 'No dress code specified' }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                            <p class="text-xs uppercase tracking-wide text-zinc-500">Registration Record</p>
+                            <p class="mt-2 text-sm font-medium text-white">
+                                #{{ $registration->id }}
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                {{-- Program Schedule --}}
+                @if ($event->schedules->isNotEmpty())
+                    <section class="rounded-3xl border border-white/10 bg-zinc-900/60 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-sm">
+                        <div class="border-b border-white/10 px-5 py-4">
+                            <h2 class="text-lg font-semibold text-white">Program Schedule</h2>
+                            <p class="mt-1 text-sm text-zinc-400">
+                                Event activities and timeline.
+                            </p>
+                        </div>
+
+                        <div class="space-y-3 p-5">
+                            @foreach ($event->schedules as $schedule)
+                                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                                    <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                                        <div>
+                                            <p class="text-sm font-semibold text-white">
+                                                {{ $schedule->title }}
+                                            </p>
+                                            @if ($schedule->description)
+                                                <p class="mt-1 text-sm text-zinc-400">
+                                                    {{ $schedule->description }}
+                                                </p>
+                                            @endif
+                                        </div>
+
+                                        @if ($schedule->schedule_time)
+                                            <span class="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-zinc-300">
+                                                {{ \Illuminate\Support\Carbon::parse($schedule->schedule_time)->format('h:i A') }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </section>
                 @endif
 
-                <div class="flex justify-end border-t border-zinc-200 pt-5 dark:border-white/10">
-                    <button
-                        type="submit"
-                        class="inline-flex items-center justify-center rounded-2xl bg-teal-500 px-5 py-2.5 text-sm font-semibold text-zinc-950 shadow-sm transition hover:bg-teal-400"
-                    >
-                        Submit Proof
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        {{-- Sidebar --}}
-        <div class="space-y-6">
-            {{-- Registration Summary --}}
-            <div class="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
-                <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">
-                    Registration Summary
-                </h2>
-
-                <div class="mt-4 space-y-3 text-sm">
-                    <div class="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 dark:border-white/10 dark:bg-zinc-900/70">
-                        <p class="text-zinc-500 dark:text-zinc-400">Event</p>
-                        <p class="mt-1 font-medium text-zinc-900 dark:text-white">
-                            {{ $registration->event->title }}
+                {{-- Payment Selection --}}
+                <section class="rounded-3xl border border-white/10 bg-zinc-900/60 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-sm">
+                    <div class="border-b border-white/10 px-5 py-4">
+                        <h2 class="text-lg font-semibold text-white">Payment Items</h2>
+                        <p class="mt-1 text-sm text-zinc-400">
+                            Base registration comes first. Add-on items unlock only after registration payment is submitted or verified.
                         </p>
                     </div>
 
-                    <div class="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 dark:border-white/10 dark:bg-zinc-900/70">
-                        <p class="text-zinc-500 dark:text-zinc-400">Venue</p>
-                        <p class="mt-1 font-medium text-zinc-900 dark:text-white">
-                            {{ $registration->event->venue ?: 'No venue set' }}
+                    <div class="space-y-4 p-5">
+                        {{-- Base registration fee --}}
+                        <label class="block cursor-pointer rounded-2xl border border-teal-400/20 bg-teal-400/[0.07] p-4 transition hover:bg-teal-400/[0.10]">
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="flex gap-3">
+                                    <input
+                                        type="radio"
+                                        wire:model.live="selectedItemId"
+                                        value=""
+                                        class="mt-1 h-4 w-4 border-zinc-300 text-teal-500 focus:ring-teal-500"
+                                    >
+                                    <div>
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <p class="text-sm font-semibold text-white">
+                                                Event Registration Fee
+                                            </p>
+
+                                            @php
+                                                $baseBadgeClasses = match($this->basePaymentStatus) {
+                                                    'paid' => 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300',
+                                                    'pending' => 'border-amber-400/20 bg-amber-400/10 text-amber-300',
+                                                    'rejected' => 'border-rose-400/20 bg-rose-400/10 text-rose-300',
+                                                    'not_required' => 'border-sky-400/20 bg-sky-400/10 text-sky-300',
+                                                    default => 'border-white/10 bg-white/[0.05] text-zinc-300',
+                                                };
+
+                                                $baseBadgeLabel = match($this->basePaymentStatus) {
+                                                    'paid' => 'Verified',
+                                                    'pending' => 'Pending',
+                                                    'rejected' => 'Rejected',
+                                                    'not_required' => 'Not Required',
+                                                    default => 'Unpaid',
+                                                };
+                                            @endphp
+
+                                            <span class="rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide {{ $baseBadgeClasses }}">
+                                                {{ $baseBadgeLabel }}
+                                            </span>
+                                        </div>
+
+                                        <p class="mt-1 text-sm text-zinc-400">
+                                            This is the main event registration payment.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <p class="text-sm font-semibold text-white">
+                                    ₱{{ number_format($this->baseRegistrationFee / 100, 2) }}
+                                </p>
+                            </div>
+                        </label>
+
+                        {{-- Registration items --}}
+                        @forelse ($registrationItems as $item)
+                            @php
+                                $locked = ! $this->baseRegistrationSatisfied;
+                            @endphp
+
+                            <label class="block {{ $locked ? 'cursor-not-allowed opacity-60' : 'cursor-pointer' }} rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition {{ $locked ? '' : 'hover:bg-white/[0.06]' }}">
+                                <div class="flex items-start justify-between gap-4">
+                                    <div class="flex gap-3">
+                                        <input
+                                            type="radio"
+                                            wire:model.live="selectedItemId"
+                                            value="{{ $item->id }}"
+                                            @disabled($locked)
+                                            class="mt-1 h-4 w-4 border-zinc-300 text-teal-500 focus:ring-teal-500"
+                                        >
+
+                                        <div>
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                <p class="text-sm font-semibold text-white">
+                                                    {{ $item->name }}
+                                                </p>
+
+                                                @if ($item->is_required)
+                                                    <span class="rounded-full border border-rose-400/20 bg-rose-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-rose-300">
+                                                        Required
+                                                    </span>
+                                                @else
+                                                    <span class="rounded-full border border-sky-400/20 bg-sky-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sky-300">
+                                                        Optional
+                                                    </span>
+                                                @endif
+                                            </div>
+
+                                            @if ($item->description)
+                                                <p class="mt-1 text-sm text-zinc-400">
+                                                    {{ $item->description }}
+                                                </p>
+                                            @endif
+
+                                            @if ($item->schedule)
+                                                <p class="mt-1 text-xs text-zinc-500">
+                                                    Linked to {{ $item->schedule->title }}
+                                                    @if ($item->schedule->schedule_time)
+                                                        • {{ \Illuminate\Support\Carbon::parse($item->schedule->schedule_time)->format('h:i A') }}
+                                                    @endif
+                                                </p>
+                                            @endif
+
+                                            @if ($locked)
+                                                <p class="mt-2 text-xs text-amber-300">
+                                                    Complete the event registration payment first to unlock this item.
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <p class="text-sm font-semibold text-white">
+                                        ₱{{ number_format($item->price / 100, 2) }}
+                                    </p>
+                                </div>
+                            </label>
+                        @empty
+                            <div class="rounded-2xl border border-dashed border-white/10 px-4 py-8 text-center">
+                                <p class="text-sm text-zinc-400">No additional registration items for this event.</p>
+                            </div>
+                        @endforelse
+                    </div>
+                </section>
+
+                {{-- Upload form --}}
+                <section class="rounded-3xl border border-white/10 bg-zinc-900/60 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-sm">
+                    <div class="border-b border-white/10 px-5 py-4">
+                        <h2 class="text-lg font-semibold text-white">Upload Proof of Payment</h2>
+                        <p class="mt-1 text-sm text-zinc-400">
+                            Submit one payment proof at a time for the selected item.
                         </p>
                     </div>
 
-                    <div class="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 dark:border-white/10 dark:bg-zinc-900/70">
-                        <p class="text-zinc-500 dark:text-zinc-400">Event Date</p>
-                        <p class="mt-1 font-medium text-zinc-900 dark:text-white">
-                            {{ optional($registration->event->event_date)->format('M d, Y') }}
-                        </p>
-                    </div>
+                    <div class="p-5">
+                        @if ($this->paymentStatus === 'paid')
+                            <div class="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.08] px-4 py-4 text-sm text-emerald-300">
+                                This payment target is already verified.
+                            </div>
+                        @elseif ($this->paymentStatus === 'pending')
+                            <div class="rounded-2xl border border-amber-500/20 bg-amber-500/[0.08] px-4 py-4 text-sm text-amber-300">
+                                This payment target is already under review. Please wait for admin verification.
+                            </div>
+                        @elseif ($this->amountDue <= 0)
+                            <div class="rounded-2xl border border-sky-500/20 bg-sky-500/[0.08] px-4 py-4 text-sm text-sky-300">
+                                No payment is required for the selected target.
+                            </div>
+                        @else
+                            <form wire:submit.prevent="submitProof" class="space-y-5">
+                                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                                    <p class="text-xs uppercase tracking-wide text-zinc-500">Selected Payment Target</p>
+                                    <div class="mt-2 flex items-center justify-between gap-3">
+                                        <p class="text-sm font-medium text-white">
+                                            {{ $this->selectedLabel }}
+                                        </p>
+                                        <p class="text-lg font-semibold text-white">
+                                            ₱{{ number_format($this->amountDue / 100, 2) }}
+                                        </p>
+                                    </div>
+                                </div>
 
-                    <div class="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 dark:border-white/10 dark:bg-zinc-900/70">
-                        <p class="text-zinc-500 dark:text-zinc-400">Amount Due</p>
-                        <p class="mt-1 text-lg font-semibold text-zinc-900 dark:text-white">
-                            ₱{{ number_format(($payment->amount ?? 0) / 100, 2) }}
-                        </p>
+                                <div>
+                                    <label class="mb-1 block text-sm font-medium text-zinc-300">
+                                        Reference Number <span class="text-zinc-500">(optional)</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        wire:model.defer="reference_number"
+                                        placeholder="Enter reference number"
+                                        class="w-full rounded-2xl border border-white/10 bg-zinc-950/70 px-4 py-2.5 text-sm text-white outline-none transition focus:border-teal-400 focus:ring-2 focus:ring-teal-500/20"
+                                    >
+                                    @error('reference_number')
+                                        <p class="mt-1 text-sm text-rose-400">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label class="mb-1 block text-sm font-medium text-zinc-300">
+                                        Remarks <span class="text-zinc-500">(optional)</span>
+                                    </label>
+                                    <textarea
+                                        wire:model.defer="remarks"
+                                        rows="4"
+                                        placeholder="Add remarks if needed"
+                                        class="w-full rounded-2xl border border-white/10 bg-zinc-950/70 px-4 py-2.5 text-sm text-white outline-none transition focus:border-teal-400 focus:ring-2 focus:ring-teal-500/20"
+                                    ></textarea>
+                                    @error('remarks')
+                                        <p class="mt-1 text-sm text-rose-400">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label class="mb-1 block text-sm font-medium text-zinc-300">
+                                        Proof of Payment
+                                    </label>
+                                    <input
+                                        type="file"
+                                        wire:model="proof"
+                                        accept=".jpg,.jpeg,.png,.pdf"
+                                        class="block w-full rounded-2xl border border-white/10 bg-zinc-950/70 px-4 py-3 text-sm text-white file:mr-4 file:rounded-xl file:border-0 file:bg-teal-500 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-zinc-950 hover:file:bg-teal-400"
+                                    >
+                                    <p class="mt-2 text-xs text-zinc-500">
+                                        Accepted formats: JPG, JPEG, PNG, PDF. Max size: 5MB.
+                                    </p>
+
+                                    <div wire:loading wire:target="proof" class="mt-2 text-sm text-teal-400">
+                                        Uploading file...
+                                    </div>
+
+                                    @error('proof')
+                                        <p class="mt-1 text-sm text-rose-400">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div class="flex justify-end border-t border-white/10 pt-5">
+                                    <button
+                                        type="submit"
+                                        @disabled(! $this->canSubmit)
+                                        class="inline-flex items-center justify-center rounded-2xl bg-teal-500 px-5 py-2.5 text-sm font-semibold text-zinc-950 shadow-sm transition hover:bg-teal-400 disabled:cursor-not-allowed disabled:opacity-50"
+                                    >
+                                        Submit Proof
+                                    </button>
+                                </div>
+                            </form>
+                        @endif
                     </div>
-                </div>
+                </section>
             </div>
 
-            {{-- Payment Instructions --}}
-            <div class="rounded-3xl border border-zinc-200 bg-gradient-to-br from-teal-500/15 to-cyan-500/10 p-6 shadow-sm dark:border-white/10">
-                <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">
-                    Payment Instructions
-                </h2>
-                <p class="mt-2 text-sm leading-6 text-zinc-700 dark:text-zinc-300">
-                    Please send your payment using the official payment channel provided by the organizers, then upload your receipt or screenshot for verification.
-                </p>
-
-                <div class="mt-5 space-y-3 text-sm">
-                    <div class="rounded-2xl border border-white/10 bg-zinc-950/70 p-4 text-zinc-200">
-                        <p class="text-zinc-400">GCash</p>
-                        <p class="mt-1 font-medium">09XX-XXX-XXXX</p>
+            {{-- RIGHT --}}
+            <div class="space-y-6">
+                {{-- Registration status --}}
+                <section class="rounded-3xl border border-white/10 bg-zinc-900/60 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-sm">
+                    <div class="border-b border-white/10 px-5 py-4">
+                        <h2 class="text-lg font-semibold text-white">Registration Status</h2>
                     </div>
 
-                    <div class="rounded-2xl border border-white/10 bg-zinc-950/70 p-4 text-zinc-200">
-                        <p class="text-zinc-400">Account Name</p>
-                        <p class="mt-1 font-medium">Holy Spirit School Alumni Association</p>
+                    <div class="space-y-3 p-5">
+                        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                            <p class="text-xs uppercase tracking-wide text-zinc-500">Registration ID</p>
+                            <p class="mt-2 text-sm font-medium text-white">#{{ $registration->id }}</p>
+                        </div>
+
+                        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                            <p class="text-xs uppercase tracking-wide text-zinc-500">Base Registration Payment</p>
+                            <p class="mt-2 text-sm font-medium text-white">
+                                {{ str($this->basePaymentStatus)->replace('_', ' ')->headline() }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                            <p class="text-xs uppercase tracking-wide text-zinc-500">Selected Target Status</p>
+                            <p class="mt-2 text-sm font-medium text-white">
+                                {{ str($this->paymentStatus)->replace('_', ' ')->headline() }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                            <p class="text-xs uppercase tracking-wide text-zinc-500">Current Target</p>
+                            <p class="mt-2 text-sm font-medium text-white">
+                                {{ $this->selectedLabel }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                            <p class="text-xs uppercase tracking-wide text-zinc-500">Amount Due</p>
+                            <p class="mt-2 text-lg font-semibold text-white">
+                                ₱{{ number_format($this->amountDue / 100, 2) }}
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                {{-- Payment instructions --}}
+                <section class="rounded-3xl border border-white/10 bg-gradient-to-br from-teal-500/15 to-cyan-500/10 p-6 shadow-[0_16px_40px_rgba(0,0,0,0.25)]">
+                    <h2 class="text-lg font-semibold text-white">Payment Instructions</h2>
+                    <p class="mt-2 text-sm leading-6 text-zinc-300">
+                        Use the official payment channel provided by the organizers, then upload a clear proof of payment.
+                    </p>
+
+                    <div class="mt-5 space-y-3 text-sm">
+                        <div class="rounded-2xl border border-white/10 bg-zinc-950/70 p-4 text-zinc-200">
+                            <p class="text-zinc-400">GCash</p>
+                            <p class="mt-1 font-medium">09XX-XXX-XXXX</p>
+                        </div>
+
+                        <div class="rounded-2xl border border-white/10 bg-zinc-950/70 p-4 text-zinc-200">
+                            <p class="text-zinc-400">Account Name</p>
+                            <p class="mt-1 font-medium">Holy Spirit School Alumni Association</p>
+                        </div>
+
+                        <div class="rounded-2xl border border-white/10 bg-zinc-950/70 p-4 text-zinc-200">
+                            <p class="text-zinc-400">Reminder</p>
+                            <p class="mt-1">
+                                Use the exact amount and make sure the uploaded proof is clear and readable.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                {{-- Payment history --}}
+                <section class="rounded-3xl border border-white/10 bg-zinc-900/60 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-sm">
+                    <div class="border-b border-white/10 px-5 py-4">
+                        <h2 class="text-lg font-semibold text-white">Payment History</h2>
                     </div>
 
-                    <div class="rounded-2xl border border-white/10 bg-zinc-950/70 p-4 text-zinc-200">
-                        <p class="text-zinc-400">Reminder</p>
-                        <p class="mt-1">
-                            Use the correct amount and keep your receipt clear and readable.
-                        </p>
+                    <div class="space-y-3 p-5">
+                        @forelse ($paymentHistory as $history)
+                            <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                                <div class="flex items-start justify-between gap-3">
+                                    <div>
+                                        <p class="text-sm font-medium text-white">
+                                            {{ $history->registrationItem?->name ?? 'Event Registration Fee' }}
+                                        </p>
+                                        <p class="mt-1 text-xs text-zinc-500">
+                                            {{ optional($history->created_at)->format('M d, Y • h:i A') }}
+                                        </p>
+                                    </div>
+
+                                    <div class="text-right">
+                                        <p class="text-sm font-semibold text-white">
+                                            ₱{{ number_format($history->amount / 100, 2) }}
+                                        </p>
+                                        <p class="mt-1 text-xs text-zinc-400">
+                                            {{ str($history->status)->headline() }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                @if ($history->reference_number)
+                                    <p class="mt-2 text-xs text-zinc-400">
+                                        Ref #: {{ $history->reference_number }}
+                                    </p>
+                                @endif
+
+                                @if ($history->remarks)
+                                    <p class="mt-2 text-xs text-zinc-500">
+                                        {{ $history->remarks }}
+                                    </p>
+                                @endif
+                            </div>
+                        @empty
+                            <div class="rounded-2xl border border-dashed border-white/10 px-4 py-8 text-center">
+                                <p class="text-sm text-zinc-400">No payment submissions yet.</p>
+                            </div>
+                        @endforelse
                     </div>
-                </div>
-            </div>
-
-            {{-- Current Payment Status --}}
-            <div class="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
-                <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">
-                    Current Status
-                </h2>
-
-                <div class="mt-4">
-                    @if ($registration->status === 'paid')
-                        <span class="inline-flex items-center rounded-full border border-teal-500/20 bg-teal-500/10 px-3 py-1 text-xs font-medium text-teal-300">
-                            Registered
-                        </span>
-                    @elseif ($registration->status === 'pending')
-                        <span class="inline-flex items-center rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-300">
-                            Waiting for Approval
-                        </span>
-                    @else
-                        <span class="inline-flex items-center rounded-full border border-zinc-200 bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
-                            {{ str($registration->status)->headline() }}
-                        </span>
-                    @endif
-                </div>
+                </section>
             </div>
         </div>
     </div>
-</div>
 </div>

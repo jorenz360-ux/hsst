@@ -22,4 +22,8 @@ class EventSchedule extends Model
     {
         return $this->belongsTo(Event::class);
     }
+    public function registrationItems()
+{
+    return $this->hasMany(EventRegistrationItem::class, 'event_schedule_id')->orderBy('sort_order');
+}
 }

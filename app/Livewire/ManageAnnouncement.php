@@ -49,6 +49,6 @@ class ManageAnnouncement extends Component
         ]);
 
         $this->reset(['announceTitle', 'announceBody']);
-        session()->flash('info', 'Announcement published.');
+        session()->flash('status', 'Announcement published.');
     }
 }

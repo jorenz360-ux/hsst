@@ -62,7 +62,17 @@
                         <flux:sidebar.item icon="banknotes" :href="route('make-donations')" wire:navigate>
                         {{ __('Payment') }}
                     </flux:sidebar.item>
-                 @endcan   
+                 @endcan  
+                 @can('batches.view')
+                       <flux:sidebar.item icon="users" :href="route('view-batch')" wire:navigate>
+                        {{ __('Batch') }}
+                    </flux:sidebar.item>
+                 @endcan 
+                 @can('donations.view')
+                       <flux:sidebar.item icon="banknotes" :href="route('view-donations')" wire:navigate>
+                        {{ __('Donation') }}
+                    </flux:sidebar.item>
+                 @endcan
                 @can('generate.report')
                      <flux:sidebar.item icon="chart-pie" :href="route('reports')" wire:navigate>
                         {{ __('Reports') }}

@@ -39,6 +39,27 @@ class Event extends Model
             ->withTimestamps();
     }
 
+    // public function schedules()
+    // {
+    //     return $this->hasMany(EventSchedule::class)
+    //         ->orderBy('sort_order')
+    //         ->orderBy('schedule_time');
+    // }
+    // public function registrationItems()
+    // {
+    //     return $this->hasMany(EventRegistrationItem::class)->orderBy('sort_order');
+    // }
+    public function registrations()
+    {
+        return $this->hasMany(EventRegistration::class);
+    }
+    public function registrationItems()
+{
+    return $this->hasMany(EventRegistrationItem::class)
+        ->where('is_active', true)
+        ->orderBy('sort_order');
+}
+
 public function schedules()
 {
     return $this->hasMany(EventSchedule::class)

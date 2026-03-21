@@ -1,5 +1,9 @@
 <div>
-     {{-- Admin UI --}}
+      <div class="fixed bottom-0 right-1 z-50 w-full max-w-sm">
+        @if (session('status'))
+          <x-toast/>
+        @endif
+    </div>
       <div class="p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
     <flux:heading size="lg">Announcements</flux:heading>
     <flux:subheading>Create announcements to notify alumni.</flux:subheading>

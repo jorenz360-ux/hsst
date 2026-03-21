@@ -4,9 +4,11 @@ namespace App\Livewire;
 
 use App\Models\Batch;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Title;
 
 #[Title('Users')]
 class ManageUsers extends Component
@@ -30,7 +32,7 @@ class ManageUsers extends Component
     public string $hasAlumni = self::DEFAULT_HAS_ALUMNI;
     public int $perPage = self::DEFAULT_PER_PAGE;
 
-    protected $queryString = [
+    protected array $queryString = [
         'search' => ['except' => ''],
         'role' => ['except' => self::DEFAULT_ROLE],
         'batchId' => ['except' => self::DEFAULT_BATCH],
@@ -42,7 +44,7 @@ class ManageUsers extends Component
         'page' => ['except' => 1],
     ];
 
-    public function updated($property): void
+    public function updated(string $property): void
     {
         if (in_array($property, [
             'search',
@@ -54,12 +56,24 @@ class ManageUsers extends Component
             'hasAlumni',
             'perPage',
         ], true)) {
+            $this->normalizePerPage();
             $this->resetPage();
         }
     }
 
     public function resetFilters(): void
     {
+        $this->reset([
+            'search',
+            'role',
+            'batchId',
+            'yearGrad',
+            'schoolyear',
+            'isBatchRep',
+            'hasAlumni',
+            'perPage',
+        ]);
+
         $this->search = '';
         $this->role = self::DEFAULT_ROLE;
         $this->batchId = self::DEFAULT_BATCH;
@@ -77,7 +91,16 @@ class ManageUsers extends Component
         return $this->redirect(route('users.edit', $userId), navigate: true);
     }
 
-    protected function getRoleOptions(): array
+    protected function normalizePerPage(): void
+    {
+        $allowed = [10, 25, 50, 100];
+
+        if (! in_array($this->perPage, $allowed, true)) {
+            $this->perPage = self::DEFAULT_PER_PAGE;
+        }
+    }
+
+    protected function roleOptions(): array
     {
         return [
             'all',
@@ -88,68 +111,70 @@ class ManageUsers extends Component
         ];
     }
 
-    protected function getUsersQuery()
+    protected function usersQuery(): Builder
     {
+        $search = trim($this->search);
+
         return User::query()
             ->with(['roles', 'alumni.batch'])
-            ->when($this->search !== '', function ($query) {
-                $search = '%' . trim($this->search) . '%';
+            ->when($search !== '', function (Builder $query) use ($search) {
+                $like = '%' . $search . '%';
 
-                $query->where(function ($q) use ($search) {
-                    $q->where('username', 'like', $search)
-                        ->orWhere('email', 'like', $search)
-                        ->orWhereHas('alumni', function ($aq) use ($search) {
-                            $aq->where('fname', 'like', $search)
-                                ->orWhere('lname', 'like', $search)
-                                ->orWhere('mname', 'like', $search)
-                                ->orWhereRaw("CONCAT(fname, ' ', lname) LIKE ?", [$search])
-                                ->orWhereRaw("CONCAT(lname, ', ', fname) LIKE ?", [$search]);
+                $query->where(function (Builder $q) use ($like) {
+                    $q->where('username', 'like', $like)
+                        ->orWhere('email', 'like', $like)
+                        ->orWhereHas('alumni', function (Builder $alumniQuery) use ($like) {
+                            $alumniQuery->where('fname', 'like', $like)
+                                ->orWhere('lname', 'like', $like)
+                                ->orWhere('mname', 'like', $like)
+                                ->orWhereRaw("CONCAT(fname, ' ', lname) LIKE ?", [$like])
+                                ->orWhereRaw("CONCAT(lname, ', ', fname) LIKE ?", [$like]);
                         })
-                        ->orWhereHas('alumni.batch', function ($bq) use ($search) {
-                            $bq->where('schoolyear', 'like', $search)
-                                ->orWhere('yeargrad', 'like', $search);
+                        ->orWhereHas('alumni.batch', function (Builder $batchQuery) use ($like) {
+                            $batchQuery->where('schoolyear', 'like', $like)
+                                ->orWhere('yeargrad', 'like', $like);
                         });
                 });
             })
-            ->when($this->role !== self::DEFAULT_ROLE, function ($query) {
-                $query->whereHas('roles', function ($roleQuery) {
+            ->when($this->role !== self::DEFAULT_ROLE, function (Builder $query) {
+                $query->whereHas('roles', function (Builder $roleQuery) {
                     $roleQuery->where('name', $this->role);
                 });
             })
-            ->when($this->hasAlumni === 'yes', function ($query) {
+            ->when($this->hasAlumni === 'yes', function (Builder $query) {
                 $query->whereNotNull('alumni_id');
             })
-            ->when($this->hasAlumni === 'no', function ($query) {
+            ->when($this->hasAlumni === 'no', function (Builder $query) {
                 $query->whereNull('alumni_id');
             })
-            ->when($this->batchId !== self::DEFAULT_BATCH, function ($query) {
-                $query->whereHas('alumni', function ($alumniQuery) {
+            ->when($this->batchId !== self::DEFAULT_BATCH, function (Builder $query) {
+                $query->whereHas('alumni', function (Builder $alumniQuery) {
                     $alumniQuery->where('batch_id', $this->batchId);
                 });
             })
-            ->when($this->yearGrad !== self::DEFAULT_YEAR_GRAD, function ($query) {
-                $query->whereHas('alumni.batch', function ($batchQuery) {
+            ->when($this->yearGrad !== self::DEFAULT_YEAR_GRAD, function (Builder $query) {
+                $query->whereHas('alumni.batch', function (Builder $batchQuery) {
                     $batchQuery->where('yeargrad', $this->yearGrad);
                 });
             })
-            ->when($this->schoolyear !== self::DEFAULT_SCHOOL_YEAR, function ($query) {
-                $query->whereHas('alumni.batch', function ($batchQuery) {
+            ->when($this->schoolyear !== self::DEFAULT_SCHOOL_YEAR, function (Builder $query) {
+                $query->whereHas('alumni.batch', function (Builder $batchQuery) {
                     $batchQuery->where('schoolyear', $this->schoolyear);
                 });
             })
-            ->when($this->isBatchRep === 'yes', function ($query) {
-                $query->whereHas('alumni', function ($alumniQuery) {
+            ->when($this->isBatchRep === 'yes', function (Builder $query) {
+                $query->whereHas('alumni', function (Builder $alumniQuery) {
                     $alumniQuery->where('is_batch_rep', true);
                 });
             })
-            ->when($this->isBatchRep === 'no', function ($query) {
-                $query->whereHas('alumni', function ($alumniQuery) {
+            ->when($this->isBatchRep === 'no', function (Builder $query) {
+                $query->whereHas('alumni', function (Builder $alumniQuery) {
                     $alumniQuery->where('is_batch_rep', false);
                 });
             });
     }
 
-    protected function getBatchOptions()
+    protected function batchOptions(): Collection
     {
         return Batch::query()
             ->orderByDesc('yeargrad')
@@ -157,7 +182,7 @@ class ManageUsers extends Component
             ->get(['id', 'schoolyear', 'yeargrad']);
     }
 
-    protected function getyearGradOptions()
+    protected function yearGradOptions(): Collection
     {
         return Batch::query()
             ->whereNotNull('yeargrad')
@@ -167,7 +192,7 @@ class ManageUsers extends Component
             ->pluck('yeargrad');
     }
 
-    protected function getSchoolyearOptions()
+    protected function schoolYearOptions(): Collection
     {
         return Batch::query()
             ->whereNotNull('schoolyear')
@@ -179,18 +204,18 @@ class ManageUsers extends Component
 
     public function render()
     {
-        $usersQuery = $this->getUsersQuery();
+        $this->normalizePerPage();
 
-        $users = $usersQuery
+        $users = $this->usersQuery()
             ->latest('id')
             ->paginate($this->perPage);
 
         return view('livewire.manage-users', [
             'users' => $users,
-            'roles' => $this->getRoleOptions(),
-            'batches' => $this->getBatchOptions(),
-            'yearGrads' => $this->getyearGradOptions(),
-            'schoolyears' => $this->getSchoolyearOptions(),
+            'roles' => $this->roleOptions(),
+            'batches' => $this->batchOptions(),
+            'yearGrads' => $this->yearGradOptions(),
+            'schoolyears' => $this->schoolYearOptions(),
         ]);
     }
 }

@@ -7,79 +7,80 @@ use App\Models\Announcement;
 use App\Models\Donation;
 use App\Models\Event;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Batch Representative Dashboard')]
 class BatchRepDashboard extends Component
 {
     public function render()
     {
         $user = Auth::user();
-        $alumni = $user->alumni;
-        $batchId = $alumni?->batch_id;
+        $batchId = $user?->alumni?->batch_id;
 
         abort_unless($batchId, 403);
 
-        $batchAlumniCount = Alumni::where('batch_id', $batchId)->count();
+        $now = now();
+        $today = $now->toDateString();
 
-        $registeredUsersCount = Alumni::where('batch_id', $batchId)
+        $batchAlumniQuery = Alumni::query()
+            ->where('batch_id', $batchId);
+
+        $paidBatchDonationsQuery = Donation::query()
+            ->whereNotNull('paid_at')
+            ->whereHas('alumni', function ($query) use ($batchId) {
+                $query->where('batch_id', $batchId);
+            });
+
+        $upcomingEventsQuery = Event::query()
+            ->where('is_active', true)
+            ->whereDate('event_date', '>=', $today);
+
+        $batchAlumniCount = (clone $batchAlumniQuery)->count();
+
+        $registeredUsersCount = (clone $batchAlumniQuery)
             ->whereHas('user')
             ->count();
 
-        $batchRepCount = Alumni::where('batch_id', $batchId)
-            ->where('is_batch_rep', true)
-            ->count();
+        $upcomingEventsCount = (clone $upcomingEventsQuery)->count();
 
-        $upcomingEventsCount = Event::query()
-            ->where('is_active', true)
-            ->whereDate('event_date', '>=', now()->toDateString())
-            ->count();
+        $batchDonationTotal = (clone $paidBatchDonationsQuery)->sum('amount');
 
-        $batchDonationTotal = Donation::query()
-            ->whereNotNull('paid_at')
-            ->whereHas('alumni', fn ($q) => $q->where('batch_id', $batchId))
+        $batchDonationsThisMonth = (clone $paidBatchDonationsQuery)
+            ->whereYear('paid_at', $now->year)
+            ->whereMonth('paid_at', $now->month)
             ->sum('amount');
 
-        $batchDonationsThisMonth = Donation::query()
-            ->whereNotNull('paid_at')
-            ->whereYear('paid_at', now()->year)
-            ->whereMonth('paid_at', now()->month)
-            ->whereHas('alumni', fn ($q) => $q->where('batch_id', $batchId))
-            ->sum('amount');
-
-        $batchMembers = Alumni::query()
+        $batchMembers = (clone $batchAlumniQuery)
             ->with('user:id,alumni_id,username,email')
-            ->where('batch_id', $batchId)
             ->orderBy('lname')
             ->orderBy('fname')
             ->limit(10)
             ->get();
 
-        $upcomingEvents = Event::query()
-            ->where('is_active', true)
-            ->whereDate('event_date', '>=', now()->toDateString())
+        $upcomingEvents = (clone $upcomingEventsQuery)
             ->orderBy('event_date')
             ->limit(5)
             ->get();
 
         $announcements = Announcement::query()
             ->where('is_published', true)
-            ->where(function ($query) {
+            ->where(function ($query) use ($now) {
                 $query->whereNull('published_at')
-                    ->orWhere('published_at', '<=', now());
+                    ->orWhere('published_at', '<=', $now);
             })
-            ->where(function ($query) {
+            ->where(function ($query) use ($now) {
                 $query->whereNull('expires_at')
-                    ->orWhere('expires_at', '>', now());
+                    ->orWhere('expires_at', '>', $now);
             })
-            ->latest('published_at')
-            ->latest('created_at')
+            ->orderByDesc('published_at')
+            ->orderByDesc('created_at')
             ->limit(5)
             ->get();
 
         return view('livewire.batch-rep-dashboard', [
             'batchAlumniCount' => $batchAlumniCount,
             'registeredUsersCount' => $registeredUsersCount,
-            'batchRepCount' => $batchRepCount,
             'upcomingEventsCount' => $upcomingEventsCount,
             'batchDonationTotal' => $batchDonationTotal,
             'batchDonationsThisMonth' => $batchDonationsThisMonth,

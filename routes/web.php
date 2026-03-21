@@ -14,7 +14,18 @@ use App\Livewire\Announcement;
 use App\Livewire\ManageAnnouncement;
 use App\Livewire\EventRegistrationPaymentPage;
 use App\Livewire\EventPayment;
+use App\Livewire\Batch;
 use App\Http\Controllers\PublicEventController;
+use App\Livewire\Donations;
+
+Route::get('/view-batch', Batch::class)
+    ->middleware(['auth', 'role:batch-representative'])
+    ->name('view-batch');
+
+Route::get('/view-donations', Donations::class)
+    ->middleware(['auth', 'role:reunion-coordinator'])
+    ->name('view-donations');
+
 
 Route::get('/events', [PublicEventController::class, 'index'])->name('events.index');
 Route::get('/events/{event}', [PublicEventController::class, 'show'])->name('events.show');
@@ -24,9 +35,10 @@ Route::get('/', function () {
 })->name('home');
 
 
-Route::get('/event-registrations/{registration}/payment', EventRegistrationPaymentPage::class)
-    ->middleware(['auth'])
-    ->name('event-registration.payment');
+
+
+Route::get('/alumni/events/{event}', EventRegistrationPaymentPage::class)
+    ->name('alumni.events.show');
 
 Route::get('/about-us', function () {
     return view('public/about-us');
@@ -39,6 +51,7 @@ Route::get('/event-registrations/{registration}/pay', EventPayment::class)
 Route::get('/make-donations', MakeDonations::class)
     ->middleware(['auth', 'role:alumni'])
     ->name('make-donations');
+
 
 Route::get('/events/{event}/edit', \App\Livewire\EditEvent::class)
     ->middleware(['auth', 'verified', 'can:edit.event'])

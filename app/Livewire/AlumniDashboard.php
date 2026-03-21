@@ -7,7 +7,6 @@ use App\Models\Donation;
 use App\Models\Event;
 use App\Models\EventRegistration;
 use App\Models\Payment;
-use App\Services\PayMongoService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -15,10 +14,11 @@ use Livewire\Component;
 class AlumniDashboard extends Component
 {
     public array $myEventRegs = [];
+    public array $myEventItemPayments = []; // ✅ NEW
 
-    public int $paidTotal = 0;          // centavos
+    public int $paidTotal = 0;
     public ?string $lastPaidAt = null;
-    public ?int $lastPaidAmount = null; // centavos
+    public ?int $lastPaidAmount = null;
 
     public Collection $latestAnnouncements;
     public Collection $upcomingEvents;
@@ -38,6 +38,7 @@ class AlumniDashboard extends Component
 
         if ($alumniId && $this->upcomingEvents->isNotEmpty()) {
             $this->loadMyEventRegistrations($alumniId);
+            $this->loadMyEventItemPayments($alumniId); // ✅ NEW
         }
 
         $this->loadLatestAnnouncements();
@@ -48,27 +49,40 @@ class AlumniDashboard extends Component
         return Auth::user()?->alumni_id;
     }
 
+    /**
+     * -------------------------------
+     * DONATIONS
+     * -------------------------------
+     */
     protected function loadDonationSummary(int $alumniId): void
     {
         $paidQuery = Donation::query()
             ->where('alumni_id', $alumniId)
-            ->whereNotNull('paid_at')
             ->whereNotNull('paymongo_checkout_session_id');
 
         $this->paidTotal = (int) (clone $paidQuery)->sum('amount');
 
         $lastPayment = (clone $paidQuery)
-            ->select(['amount', 'paid_at'])
-            ->latest('paid_at')
+            ->select(['amount', 'created_at'])
+            ->latest('created_at')
             ->first();
 
         $this->lastPaidAmount = $lastPayment?->amount ? (int) $lastPayment->amount : null;
-        $this->lastPaidAt = $lastPayment?->paid_at?->format('M d, Y h:i A');
+        $this->lastPaidAt = $lastPayment?->created_at?->format('M d, Y h:i A');
     }
 
+    /**
+     * -------------------------------
+     * EVENTS
+     * -------------------------------
+     */
     protected function loadUpcomingEvents(): void
     {
         $this->upcomingEvents = Event::query()
+            ->with([
+                'registrationItems:id,event_id,event_schedule_id,name,description,price,is_required,is_active,sort_order',
+                'registrationItems.schedule:id,title,schedule_time',
+            ])
             ->select([
                 'id',
                 'title',
@@ -85,27 +99,128 @@ class AlumniDashboard extends Component
             ->get();
     }
 
+    /**
+     * -------------------------------
+     * REGISTRATION STATUS (BASE)
+     * -------------------------------
+     */
     protected function loadMyEventRegistrations(int $alumniId): void
     {
         $eventIds = $this->upcomingEvents->pluck('id')->all();
 
         $registrations = EventRegistration::query()
-            ->select(['id', 'event_id', 'status', 'paid_at', 'fee_paid'])
+            ->with([
+                'payments' => function ($query) {
+                    $query->select([
+                        'id',
+                        'registration_id',
+                        'event_registration_item_id',
+                        'status',
+                        'created_at',
+                    ])->latest('id');
+                }
+            ])
+            ->select([
+                'id',
+                'event_id',
+                'status',
+                'alumni_id',
+            ])
             ->where('alumni_id', $alumniId)
             ->whereIn('event_id', $eventIds)
             ->get();
 
         $this->myEventRegs = $registrations
             ->keyBy('event_id')
-            ->map(fn ($registration) => [
-                'id' => $registration->id,
-                'status' => $registration->status,
-                'paid_at' => $registration->paid_at,
-                'fee_paid' => $registration->fee_paid,
-            ])
+            ->map(function ($registration) {
+
+                // ✅ BASE PAYMENT ONLY
+                $basePayment = $registration->payments
+                    ->firstWhere('event_registration_item_id', null);
+
+                return [
+                    'id' => $registration->id,
+                    'status' => $registration->status,
+                    'payment_status' => $this->mapBasePaymentStatus($registration, $basePayment),
+                ];
+            })
             ->toArray();
     }
 
+    protected function mapBasePaymentStatus(EventRegistration $registration, $basePayment): string
+    {
+        $event = $this->upcomingEvents->firstWhere('id', $registration->event_id);
+        $isPaidEvent = (int) ($event?->registration_fee ?? 0) > 0;
+
+        if (! $isPaidEvent) {
+            return 'not_required';
+        }
+
+        if ($registration->status === 'paid') {
+            return 'paid';
+        }
+
+        return match ($basePayment?->status) {
+            'pending' => 'pending',
+            'verified' => 'paid',
+            'rejected' => 'rejected',
+            default => 'unpaid',
+        };
+    }
+
+    /**
+     * -------------------------------
+     * ITEM PAYMENT STATUS (NEW)
+     * -------------------------------
+     */
+    protected function loadMyEventItemPayments(int $alumniId): void
+    {
+        $eventIds = $this->upcomingEvents->pluck('id')->all();
+
+        $payments = Payment::query()
+            ->with([
+                'registration:id,event_id,alumni_id',
+            ])
+            ->select([
+                'id',
+                'registration_id',
+                'event_registration_item_id',
+                'status',
+                'created_at',
+            ])
+            ->whereNotNull('event_registration_item_id')
+            ->whereHas('registration', function ($q) use ($alumniId, $eventIds) {
+                $q->where('alumni_id', $alumniId)
+                  ->whereIn('event_id', $eventIds);
+            })
+            ->latest('id')
+            ->get();
+
+        $grouped = [];
+
+        foreach ($payments as $payment) {
+            $eventId = $payment->registration->event_id;
+            $itemId = $payment->event_registration_item_id;
+
+            // only keep latest per item
+            if (!isset($grouped[$eventId][$itemId])) {
+                $grouped[$eventId][$itemId] = match ($payment->status) {
+                    'verified' => 'verified',
+                    'pending' => 'pending',
+                    'rejected' => 'rejected',
+                    default => 'unpaid',
+                };
+            }
+        }
+
+        $this->myEventItemPayments = $grouped;
+    }
+
+    /**
+     * -------------------------------
+     * ANNOUNCEMENTS
+     * -------------------------------
+     */
     protected function loadLatestAnnouncements(): void
     {
         $this->latestAnnouncements = Announcement::query()
@@ -125,192 +240,19 @@ class AlumniDashboard extends Component
             ->get();
     }
 
-    // public function registerOrPay(int $eventId, PayMongoService $paymongo)
-    // {
-    //     $alumniId = $this->alumniId();
-
-    //     abort_if(!$alumniId, 403, 'Alumni profile is required.');
-
-    //     $event = Event::query()
-    //         ->select([
-    //             'id',
-    //             'title',
-    //             'registration_fee',
-    //             'is_active',
-    //             'event_date',
-    //         ])
-    //         ->whereKey($eventId)
-    //         ->firstOrFail();
-
-    //     abort_if(
-    //         !$event->is_active || $event->event_date->isPast(),
-    //         403,
-    //         'This event is no longer available for registration.'
-    //     );
-
-    //     $registration = EventRegistration::firstOrCreate(
-    //         [
-    //             'event_id' => $event->id,
-    //             'alumni_id' => $alumniId,
-    //         ],
-    //         [
-    //             'status' => 'pending',
-    //             'fee_paid' => 0,
-    //         ]
-    //     );
-
-    //     if ($registration->paid_at || $registration->status === 'paid') {
-    //         session()->flash('status', 'You are already registered and paid for this event.');
-    //         return;
-    //     }
-
-    //     $amountCentavos = (int) $event->registration_fee;
-
-    //     if ($amountCentavos <= 0) {
-    //         $registration->update([
-    //             'status' => 'paid',
-    //             'paid_at' => now(),
-    //             'fee_paid' => 0,
-    //         ]);
-
-    //         $this->loadUpcomingEvents();
-    //         $this->loadMyEventRegistrations($alumniId);
-
-    //         session()->flash('status', 'Registered successfully.');
-    //         return;
-    //     }
-
-    //     $payment = Payment::create([
-    //         'alumni_id' => $alumniId,
-    //         'registration_id' => $registration->id,
-    //         'amount' => $amountCentavos,
-    //         'mode' => 'gcash',
-    //         'remarks' => null,
-    //         'paid_at' => null,
-    //         'is_paid' => false,
-    //     ]);
-
-    //     $baseUrl = rtrim(config('app.url'), '/');
-
-    //     $payload = [
-    //         'payment_method_types' => ['gcash'],
-    //         'line_items' => [[
-    //             'name' => 'Event Registration: ' . $event->title,
-    //             'amount' => $amountCentavos,
-    //             'currency' => 'PHP',
-    //             'quantity' => 1,
-    //         ]],
-    //         'success_url' => $baseUrl . route('paymongo.return', absolute: false),
-    //         'cancel_url' => $baseUrl . route('paymongo.return', absolute: false),
-    //         'metadata' => [
-    //             'payment_id' => (string) $payment->id,
-    //             'registration_id' => (string) $registration->id,
-    //             'event_id' => (string) $event->id,
-    //             'alumni_id' => (string) $alumniId,
-    //             'type' => 'event_registration',
-    //         ],
-    //     ];
-
-    //     $response = $paymongo->createCheckoutSession($payload);
-
-    //     $checkoutId = data_get($response, 'data.id');
-    //     $checkoutUrl = data_get($response, 'data.attributes.checkout_url');
-
-    //     abort_if(
-    //         blank($checkoutId) || blank($checkoutUrl),
-    //         500,
-    //         'Unable to create checkout session.'
-    //     );
-
-    //     $payment->update([
-    //         'paymongo_checkout_session_id' => $checkoutId,
-    //     ]);
-
-    //     return redirect()->away($checkoutUrl);
-    // }
+    /**
+     * -------------------------------
+     * NAVIGATION (UPDATED)
+     * -------------------------------
+     */
     public function registerOrPay(int $eventId)
-{
-    $alumniId = $this->alumniId();
+    {
+        $alumniId = $this->alumniId();
 
-    abort_if(!$alumniId, 403, 'Alumni profile is required.');
+        abort_if(! $alumniId, 403);
 
-    $event = Event::query()
-        ->select([
-            'id',
-            'title',
-            'registration_fee',
-            'is_active',
-            'event_date',
-        ])
-        ->whereKey($eventId)
-        ->firstOrFail();
-
-    abort_if(
-        !$event->is_active || $event->event_date->isPast(),
-        403,
-        'This event is no longer available for registration.'
-    );
-
-    $registration = EventRegistration::firstOrCreate(
-        [
-            'event_id' => $event->id,
-            'alumni_id' => $alumniId,
-        ],
-        [
-            'status' => 'pending',
-            'fee_paid' => 0,
-        ]
-    );
-
-    if ($registration->paid_at || $registration->status === 'paid') {
-        session()->flash('status', 'You are already registered and paid for this event.');
-        return;
+        return redirect()->route('alumni.events.show', $eventId);
     }
-
-    $amountCentavos = (int) $event->registration_fee;
-
-    // Free event
-    if ($amountCentavos <= 0) {
-        $registration->update([
-            'status' => 'paid',
-            'paid_at' => now(),
-            'fee_paid' => 0,
-        ]);
-
-        $this->loadUpcomingEvents();
-        $this->loadMyEventRegistrations($alumniId);
-
-        session()->flash('status', 'Registered successfully.');
-        return;
-    }
-
-    // Paid event: create/update payment record for manual processing
-    $payment = Payment::firstOrCreate(
-        [
-            'registration_id' => $registration->id,
-        ],
-        [
-            'alumni_id' => $alumniId,
-            'amount' => $amountCentavos,
-            'mode' => 'manual',
-            'remarks' => null,
-            'paid_at' => null,
-            'is_paid' => false,
-        ]
-    );
-
-    // Mark registration as waiting for payment / verification
-    if ($registration->status !== 'paid') {
-        $registration->update([
-            'status' => 'pending',
-        ]);
-    }
-
-    // Redirect to manual payment instructions / upload page
-    return redirect()->route('event-registration.payment', [
-        'registration' => $registration->id,
-    ]);
-}
 
     public function render()
     {

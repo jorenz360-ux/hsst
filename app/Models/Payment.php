@@ -2,33 +2,53 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
 class Payment extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'alumni_id',
-        'registration_id', 
+        'registration_id',
+        'event_registration_item_id',
         'amount',
         'mode',
-        'remarks',
-        'paymongo_checkout_session_id',
+        'reference_number',
+        'or_number',
+        'or_file_path',
         'paid_at',
-        'is_paid',
+        'status',
+        'verified_by',
+        'verified_at',
+        'remarks',
     ];
+
     protected $casts = [
         'paid_at' => 'datetime',
-        'is_paid' => 'boolean',
+        'verified_at' => 'datetime',
+        'amount' => 'decimal:2',
     ];
+
     public function alumni()
     {
         return $this->belongsTo(Alumni::class);
     }
-    public function registration()
-{
-    return $this->belongsTo(\App\Models\EventRegistration::class, 'registration_id');
-}
-}
 
+    public function registration()
+    {
+        return $this->belongsTo(EventRegistration::class, 'registration_id');
+    }
+
+    public function registrationItem()
+    {
+        return $this->belongsTo(EventRegistrationItem::class, 'event_registration_item_id');
+    }
+
+    public function verifier()
+    {
+        return $this->belongsTo(User::class, 'verified_by');
+    }
+    public function getPaymentForAttribute(): string
+{
+    return $this->registrationItem?->name ?? 'Event Registration Fee';
+}
+}
