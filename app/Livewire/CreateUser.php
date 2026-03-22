@@ -8,7 +8,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Add User')]
 class CreateUser extends Component
 {
     public string $generatedUsername = '';

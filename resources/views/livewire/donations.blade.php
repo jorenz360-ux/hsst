@@ -1,11 +1,11 @@
-<div>
+<div class="min-h-screen bg-zinc-950 text-zinc-100 rounded-2xl">
     <div class="mx-auto max-w-7xl space-y-6 px-6 py-6">
 
         {{-- Header --}}
-        <section class="border border-white/10 bg-zinc-900/60 backdrop-blur-sm">
+        <section class="rounded-2xl border border-white/10 bg-zinc-900/70 shadow-sm">
             <div class="flex flex-col gap-5 px-5 py-5 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-teal-400">
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-amber-400">
                         Admin Panel
                     </p>
 
@@ -22,55 +22,55 @@
 
         {{-- Flash Messages --}}
         @if (session('success'))
-            <div class="border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
+            <div class="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
                 {{ session('success') }}
             </div>
         @endif
 
         @if (session('error'))
-            <div class="border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            <div class="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
                 {{ session('error') }}
             </div>
         @endif
 
         {{-- Filters --}}
-        <section class="border border-white/10 bg-zinc-900/60 backdrop-blur-sm">
+        <section class="rounded-2xl border border-white/10 bg-zinc-900/70 shadow-sm">
             <div class="flex flex-col gap-4 px-5 py-5 lg:flex-row lg:items-center lg:justify-between">
 
                 <div class="flex flex-wrap gap-2">
                     <button
                         wire:click="$set('statusFilter', 'all')"
-                        class="rounded-lg border px-4 py-2 text-sm font-medium transition
+                        class="rounded-xl border px-4 py-2 text-sm font-medium transition
                             {{ $statusFilter === 'all'
-                                ? 'border-teal-500/30 bg-teal-500/10 text-teal-300'
-                                : 'border-white/10 bg-zinc-900/40 text-zinc-300 hover:bg-zinc-800' }}">
+                                ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
+                                : 'border-white/10 bg-zinc-950 text-zinc-300 hover:bg-zinc-800' }}">
                         All
                     </button>
 
                     <button
                         wire:click="$set('statusFilter', 'pending')"
-                        class="rounded-lg border px-4 py-2 text-sm font-medium transition
+                        class="rounded-xl border px-4 py-2 text-sm font-medium transition
                             {{ $statusFilter === 'pending'
                                 ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
-                                : 'border-white/10 bg-zinc-900/40 text-zinc-300 hover:bg-zinc-800' }}">
+                                : 'border-white/10 bg-zinc-950 text-zinc-300 hover:bg-zinc-800' }}">
                         Pending
                     </button>
 
                     <button
                         wire:click="$set('statusFilter', 'verified')"
-                        class="rounded-lg border px-4 py-2 text-sm font-medium transition
+                        class="rounded-xl border px-4 py-2 text-sm font-medium transition
                             {{ $statusFilter === 'verified'
-                                ? 'border-green-500/30 bg-green-500/10 text-green-300'
-                                : 'border-white/10 bg-zinc-900/40 text-zinc-300 hover:bg-zinc-800' }}">
+                                ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
+                                : 'border-white/10 bg-zinc-950 text-zinc-300 hover:bg-zinc-800' }}">
                         Verified
                     </button>
 
                     <button
                         wire:click="$set('statusFilter', 'rejected')"
-                        class="rounded-lg border px-4 py-2 text-sm font-medium transition
+                        class="rounded-xl border px-4 py-2 text-sm font-medium transition
                             {{ $statusFilter === 'rejected'
-                                ? 'border-red-500/30 bg-red-500/10 text-red-300'
-                                : 'border-white/10 bg-zinc-900/40 text-zinc-300 hover:bg-zinc-800' }}">
+                                ? 'border-rose-500/30 bg-rose-500/10 text-rose-300'
+                                : 'border-white/10 bg-zinc-950 text-zinc-300 hover:bg-zinc-800' }}">
                         Rejected
                     </button>
                 </div>
@@ -80,14 +80,14 @@
                         type="text"
                         wire:model.live.debounce.300ms="search"
                         placeholder="Search donor name or reference number..."
-                        class="w-full border border-white/10 bg-zinc-900/40 px-4 py-2.5 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-teal-400"
+                        class="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-2.5 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20"
                     >
                 </div>
             </div>
         </section>
 
         {{-- Desktop Table --}}
-        <section class="hidden overflow-hidden border border-white/10 bg-zinc-900/60 backdrop-blur-sm lg:block">
+        <section class="hidden overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/70 shadow-sm lg:block">
             <div class="border-b border-white/10 px-5 py-4">
                 <h2 class="text-lg font-semibold text-white">Donation Records</h2>
                 <p class="mt-1 text-sm text-zinc-400">
@@ -97,7 +97,7 @@
 
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm">
-                    <thead class="border-b border-white/10 bg-zinc-950/60 text-zinc-400">
+                    <thead class="border-b border-white/10 bg-zinc-950/80 text-zinc-400">
                         <tr>
                             <th class="px-4 py-3 font-medium">Donor</th>
                             <th class="px-4 py-3 font-medium">Amount</th>
@@ -109,9 +109,9 @@
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody class="divide-y divide-white/10">
                         @forelse ($donations as $donation)
-                            <tr class="border-t border-white/10 align-top">
+                            <tr class="align-top transition hover:bg-amber-500/[0.04]">
                                 <td class="px-4 py-4">
                                     <div>
                                         <p class="font-medium text-white">
@@ -124,7 +124,7 @@
                                 </td>
 
                                 <td class="px-4 py-4 text-zinc-200">
-                                   ₱{{ number_format($donation->amount ?? 0, 2) }}
+                                    ₱{{ number_format($donation->amount ?? 0, 2) }}
                                 </td>
 
                                 <td class="px-4 py-4 text-zinc-400">
@@ -137,7 +137,7 @@
 
                                 <td class="px-4 py-4">
                                     @if ($donation->status === 'verified')
-                                        <span class="inline-flex items-center gap-2 rounded-full border border-green-400/30 bg-gradient-to-r from-green-500/15 to-emerald-500/10 px-3 py-1 text-xs font-semibold text-green-200">
+                                        <span class="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-200">
                                             <flux:icon name="check-circle" class="h-4 w-4" />
                                             Verified
                                         </span>
@@ -147,7 +147,7 @@
                                             Pending
                                         </span>
                                     @elseif ($donation->status === 'rejected')
-                                        <span class="inline-flex items-center gap-2 rounded-full border border-red-400/30 bg-red-500/10 px-3 py-1 text-xs font-semibold text-red-200">
+                                        <span class="inline-flex items-center gap-2 rounded-full border border-rose-400/30 bg-rose-500/10 px-3 py-1 text-xs font-semibold text-rose-200">
                                             <flux:icon name="x-circle" class="h-4 w-4" />
                                             Rejected
                                         </span>
@@ -163,7 +163,7 @@
                                         <a
                                             href="{{ Storage::disk('s3')->url($donation->or_file_path) }}"
                                             target="_blank"
-                                            class="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-zinc-900/40 px-3 py-2 text-xs font-medium text-zinc-200 transition hover:bg-zinc-800"
+                                            class="inline-flex items-center gap-2 rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-xs font-medium text-amber-300 transition hover:bg-amber-500/20"
                                         >
                                             <flux:icon name="paper-clip" class="h-4 w-4" />
                                             View Proof
@@ -178,7 +178,7 @@
                                         @if ($donation->status === 'pending')
                                             <button
                                                 wire:click="verifyDonation({{ $donation->id }})"
-                                                class="inline-flex items-center gap-2 rounded-lg bg-green-500 px-3 py-2 text-xs font-semibold text-zinc-950 transition hover:bg-green-400"
+                                                class="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-3 py-2 text-xs font-semibold text-zinc-950 transition hover:bg-emerald-400"
                                             >
                                                 <flux:icon name="check" class="h-4 w-4" />
                                                 Verify
@@ -186,7 +186,7 @@
 
                                             <button
                                                 wire:click="openRejectModal({{ $donation->id }})"
-                                                class="inline-flex items-center gap-2 rounded-lg bg-red-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-red-400"
+                                                class="inline-flex items-center gap-2 rounded-lg bg-rose-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-rose-400"
                                             >
                                                 <flux:icon name="x-mark" class="h-4 w-4" />
                                                 Reject
@@ -205,12 +205,12 @@
                             </tr>
 
                             @if ($donation->rejection_reason)
-                                <tr class="border-t border-white/5 bg-red-500/5">
+                                <tr class="bg-rose-500/5">
                                     <td colspan="7" class="px-4 py-3">
-                                        <p class="text-xs font-medium uppercase tracking-wide text-red-300">
+                                        <p class="text-xs font-medium uppercase tracking-wide text-rose-300">
                                             Rejection Reason
                                         </p>
-                                        <p class="mt-1 text-sm text-red-200">
+                                        <p class="mt-1 text-sm text-rose-200">
                                             {{ $donation->rejection_reason }}
                                         </p>
                                     </td>
@@ -235,7 +235,7 @@
         {{-- Mobile / Tablet Cards --}}
         <div class="space-y-4 lg:hidden">
             @forelse ($donations as $donation)
-                <section class="border border-white/10 bg-zinc-900/60 backdrop-blur-sm">
+                <section class="rounded-2xl border border-white/10 bg-zinc-900/70 shadow-sm">
                     <div class="space-y-4 p-5">
                         <div class="flex items-start justify-between gap-3">
                             <div>
@@ -248,7 +248,7 @@
                             </div>
 
                             @if ($donation->status === 'verified')
-                                <span class="inline-flex items-center gap-2 rounded-full border border-green-400/30 bg-gradient-to-r from-green-500/15 to-emerald-500/10 px-3 py-1 text-xs font-semibold text-green-200">
+                                <span class="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-200">
                                     <flux:icon name="check-circle" class="h-4 w-4" />
                                     Verified
                                 </span>
@@ -258,7 +258,7 @@
                                     Pending
                                 </span>
                             @elseif ($donation->status === 'rejected')
-                                <span class="inline-flex items-center gap-2 rounded-full border border-red-400/30 bg-red-500/10 px-3 py-1 text-xs font-semibold text-red-200">
+                                <span class="inline-flex items-center gap-2 rounded-full border border-rose-400/30 bg-rose-500/10 px-3 py-1 text-xs font-semibold text-rose-200">
                                     <flux:icon name="x-circle" class="h-4 w-4" />
                                     Rejected
                                 </span>
@@ -266,12 +266,12 @@
                         </div>
 
                         <div class="grid gap-3 sm:grid-cols-2">
-                            <div class="border border-white/10 bg-zinc-900/40 p-3">
+                            <div class="rounded-xl border border-white/10 bg-zinc-950 p-3">
                                 <p class="text-xs text-zinc-500">Reference Number</p>
                                 <p class="mt-1 text-sm text-white">{{ $donation->reference_number ?: '—' }}</p>
                             </div>
 
-                            <div class="border border-white/10 bg-zinc-900/40 p-3">
+                            <div class="rounded-xl border border-white/10 bg-zinc-950 p-3">
                                 <p class="text-xs text-zinc-500">Submitted At</p>
                                 <p class="mt-1 text-sm text-white">
                                     {{ optional($donation->created_at)->format('M d, Y h:i A') ?: '—' }}
@@ -279,16 +279,16 @@
                             </div>
 
                             @if ($donation->remarks)
-                                <div class="border border-white/10 bg-zinc-900/40 p-3 sm:col-span-2">
+                                <div class="rounded-xl border border-white/10 bg-zinc-950 p-3 sm:col-span-2">
                                     <p class="text-xs text-zinc-500">Remarks</p>
                                     <p class="mt-1 text-sm text-white">{{ $donation->remarks }}</p>
                                 </div>
                             @endif
 
                             @if ($donation->rejection_reason)
-                                <div class="border border-red-500/20 bg-red-500/10 p-3 sm:col-span-2">
-                                    <p class="text-xs text-red-300">Rejection Reason</p>
-                                    <p class="mt-1 text-sm text-red-200">{{ $donation->rejection_reason }}</p>
+                                <div class="rounded-xl border border-rose-500/20 bg-rose-500/10 p-3 sm:col-span-2">
+                                    <p class="text-xs text-rose-300">Rejection Reason</p>
+                                    <p class="mt-1 text-sm text-rose-200">{{ $donation->rejection_reason }}</p>
                                 </div>
                             @endif
                         </div>
@@ -298,7 +298,7 @@
                                 <a
                                     href="{{ Storage::disk('s3')->url($donation->or_file_path) }}"
                                     target="_blank"
-                                    class="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-zinc-900/40 px-3 py-2 text-xs font-medium text-zinc-200 transition hover:bg-zinc-800"
+                                    class="inline-flex items-center gap-2 rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-xs font-medium text-amber-300 transition hover:bg-amber-500/20"
                                 >
                                     <flux:icon name="paper-clip" class="h-4 w-4" />
                                     View Proof
@@ -308,7 +308,7 @@
                             @if ($donation->status === 'pending')
                                 <button
                                     wire:click="verifyDonation({{ $donation->id }})"
-                                    class="inline-flex items-center gap-2 rounded-lg bg-green-500 px-3 py-2 text-xs font-semibold text-zinc-950 transition hover:bg-green-400"
+                                    class="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-3 py-2 text-xs font-semibold text-zinc-950 transition hover:bg-emerald-400"
                                 >
                                     <flux:icon name="check" class="h-4 w-4" />
                                     Verify
@@ -316,7 +316,7 @@
 
                                 <button
                                     wire:click="openRejectModal({{ $donation->id }})"
-                                    class="inline-flex items-center gap-2 rounded-lg bg-red-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-red-400"
+                                    class="inline-flex items-center gap-2 rounded-lg bg-rose-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-rose-400"
                                 >
                                     <flux:icon name="x-mark" class="h-4 w-4" />
                                     Reject
@@ -326,7 +326,7 @@
                     </div>
                 </section>
             @empty
-                <div class="border border-white/10 bg-zinc-900/60 px-4 py-10 text-center text-zinc-500">
+                <div class="rounded-2xl border border-white/10 bg-zinc-900/70 px-4 py-10 text-center text-zinc-500">
                     No donation submissions found.
                 </div>
             @endforelse

@@ -5,7 +5,9 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Announcement;
 use Livewire\WithPagination;
+use Livewire\Attributes\Title;
 
+#[Title('Announcement')]
 class ManageAnnouncement extends Component
 {
     public string $announceTitle = '';

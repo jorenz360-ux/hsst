@@ -6,7 +6,9 @@ use App\Models\Donation;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Title;
 
+#[Title('Batch Donations')]
 class ManageDonations extends Component
 {
     use WithPagination;

@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Holy Spirit School of Tagbilaran</title>
+    <title>{{ $event->title }} | Holy Spirit School of Tagbilaran</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <style>
         [x-cloak] { display: none !important; }
 
-        .font-dm-sans { font-family: "DM Sans", system-ui, sans-serif; }
-        .font-dm-serif { font-family: "DM Serif Display", Georgia, serif; }
+        .font-body { font-family: "Inter", system-ui, sans-serif; }
+        .font-display { font-family: "DM Serif Display", Georgia, serif; }
 
         .hamburger-line { transition: all .22s ease; }
         .hamburger-open .line-1 { transform: translateY(6px) rotate(45deg); }
@@ -22,68 +23,85 @@
         .hamburger-open .line-3 { transform: translateY(-6px) rotate(-45deg); }
 
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(16px); }
+            from { opacity: 0; transform: translateY(18px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .animate-fade-up {
-            animation: fadeUp .55s ease both;
+        @keyframes floatSoft {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
         }
 
-        .delay-1 { animation-delay: .06s; }
-        .delay-2 { animation-delay: .14s; }
-        .delay-3 { animation-delay: .22s; }
-        .delay-4 { animation-delay: .30s; }
+        .animate-fade-up {
+            animation: fadeUp .6s cubic-bezier(.22,1,.36,1) both;
+        }
+
+        .animate-float-soft {
+            animation: floatSoft 5s ease-in-out infinite;
+        }
+
+        .delay-1 { animation-delay: .08s; }
+        .delay-2 { animation-delay: .16s; }
+        .delay-3 { animation-delay: .24s; }
+        .delay-4 { animation-delay: .32s; }
+
+        .glass-panel {
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
     </style>
 </head>
 <body
-    class="overflow-x-hidden bg-zinc-950 font-dm-sans text-zinc-100 antialiased selection:bg-teal-500/30 selection:text-white [background:radial-gradient(ellipse_60%_40%_at_0%_0%,rgba(13,148,136,0.14)_0%,transparent_60%),radial-gradient(ellipse_45%_35%_at_100%_5%,rgba(20,184,166,0.10)_0%,transparent_55%),linear-gradient(180deg,#09090b_0%,#111113_50%,#09090b_100%)] [background-attachment:fixed]"
+    class="overflow-x-hidden bg-[#050816] font-body text-slate-100 antialiased selection:bg-indigo-400/30 selection:text-white [background:
+    radial-gradient(circle_at_top_left,rgba(99,102,241,0.18),transparent_28%),
+    radial-gradient(circle_at_top_right,rgba(16,185,129,0.10),transparent_24%),
+    radial-gradient(circle_at_bottom_right,rgba(245,158,11,0.08),transparent_18%),
+    linear-gradient(180deg,#050816_0%,#070b18_32%,#090d1f_62%,#050816_100%)] [background-attachment:fixed]"
 >
 <div x-data="{ mobileOpen:false }" class="min-h-screen">
 
-    <!-- Header -->
-    <header class="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/85 backdrop-blur-xl">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 border-b border-white/10 bg-[#050816]/80 glass-panel">
+        <div class="mx-auto max-w-[1320px] px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between py-4">
                 <a href="{{ route('home') }}" class="flex items-center gap-4">
-                    <div class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white p-1 shadow-sm sm:h-14 sm:w-14">
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white p-1 shadow-[0_14px_36px_rgba(0,0,0,0.28)] sm:h-14 sm:w-14">
                         <img
                             src="{{ asset('images/hsstlogo.jpg') }}"
                             alt="Holy Spirit School of Tagbilaran Logo"
-                            class="h-full w-full rounded-md object-contain"
+                            class="h-full w-full rounded-xl object-contain"
                         >
                     </div>
 
                     <div class="hidden h-10 w-px bg-white/10 sm:block"></div>
 
                     <div class="min-w-0 leading-tight">
-                        <p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-teal-400 sm:text-[11px]">
-                            Official School Portal
+                        <p class="text-[10px] font-semibold uppercase tracking-[0.24em] text-emerald-300 sm:text-[11px]">
+                            Official Alumni Portal
                         </p>
                         <h1 class="truncate text-sm font-bold text-white sm:text-base lg:text-lg">
                             Holy Spirit School of Tagbilaran
                         </h1>
-                        <p class="hidden text-xs text-zinc-400 md:block">
-                            Faith • Learning • Service • Community
+                        <p class="hidden text-xs text-slate-400 md:block">
+                            Truth in Love · Faith · Learning · Community
                         </p>
                     </div>
                 </a>
 
                 <nav class="hidden items-center gap-1 lg:flex">
-                    <a href="{{ route('home') }}" class="rounded-lg px-4 py-2 text-sm font-medium text-zinc-300 transition hover:bg-white/5 hover:text-white">
+                    <a href="{{ route('home') }}" class="rounded-xl px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white">
                         Home
                     </a>
-                    <a href="{{ route('about-us') }}" class="rounded-lg px-4 py-2 text-sm font-medium text-zinc-300 transition hover:bg-white/5 hover:text-white">
+                    <a href="{{ route('about-us') }}" class="rounded-xl px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white">
                         About
                     </a>
-                    <a href="#core-values" class="rounded-lg px-4 py-2 text-sm font-medium text-zinc-300 transition hover:bg-white/5 hover:text-white">
-                        Core Values
+                    <a href="{{ route('events.index') }}" class="rounded-xl bg-white/5 px-4 py-2 text-sm font-medium text-white">
+                        Events
                     </a>
-                    <a href="#mission-vision" class="rounded-lg px-4 py-2 text-sm font-medium text-zinc-300 transition hover:bg-white/5 hover:text-white">
-                        Mission & Vision
+                    <a href="#event-details" class="rounded-xl px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white">
+                        Details
                     </a>
-                    <a href="#contact" class="rounded-lg px-4 py-2 text-sm font-medium text-zinc-300 transition hover:bg-white/5 hover:text-white">
+                    <a href="#contact" class="rounded-xl px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white">
                         Contact
                     </a>
                 </nav>
@@ -91,16 +109,16 @@
                 <div class="hidden items-center gap-2 lg:flex">
                     @if (Route::has('login'))
                         @auth
-                            <a href="{{ url('/dashboard') }}" class="rounded-[8px] bg-teal-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-teal-300">
+                            <a href="{{ url('/dashboard') }}" class="rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(99,102,241,0.28)] transition hover:-translate-y-0.5 hover:bg-indigo-400">
                                 Dashboard
                             </a>
                         @else
-                            <a href="{{ route('login') }}" class="rounded-[8px] border border-white/10 bg-zinc-900 px-5 py-2.5 text-sm font-medium text-zinc-100 transition hover:bg-zinc-800">
+                            <a href="{{ route('login') }}" class="rounded-2xl border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/10">
                                 Log in
                             </a>
 
                             @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="rounded-[8px] bg-teal-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-teal-300">
+                                <a href="{{ route('register') }}" class="rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(99,102,241,0.28)] transition hover:-translate-y-0.5 hover:bg-indigo-400">
                                     Register
                                 </a>
                             @endif
@@ -111,52 +129,52 @@
                 <button
                     @click="mobileOpen = !mobileOpen"
                     :class="mobileOpen ? 'hamburger-open' : ''"
-                    class="flex flex-col gap-[4.5px] rounded-[7px] border border-white/12 p-[9px_10px] lg:hidden"
+                    class="flex flex-col gap-[4.5px] rounded-xl border border-white/12 bg-white/5 p-[9px_10px] lg:hidden"
                     aria-label="Toggle Menu"
                 >
-                    <span class="hamburger-line line-1 block h-[1.5px] w-[18px] rounded bg-zinc-400"></span>
-                    <span class="hamburger-line line-2 block h-[1.5px] w-[18px] rounded bg-zinc-400"></span>
-                    <span class="hamburger-line line-3 block h-[1.5px] w-[18px] rounded bg-zinc-400"></span>
+                    <span class="hamburger-line line-1 block h-[1.5px] w-[18px] rounded bg-slate-300"></span>
+                    <span class="hamburger-line line-2 block h-[1.5px] w-[18px] rounded bg-slate-300"></span>
+                    <span class="hamburger-line line-3 block h-[1.5px] w-[18px] rounded bg-slate-300"></span>
                 </button>
             </div>
 
-            <!-- Mobile Menu -->
+            <!-- MOBILE MENU -->
             <div
                 x-cloak
                 x-show="mobileOpen"
                 x-transition.opacity.duration.200ms
                 class="border-t border-white/10 py-4 lg:hidden"
             >
-                <div class="flex flex-col gap-1 text-sm text-zinc-200">
-                    <a @click="mobileOpen=false" href="{{ route('home') }}" class="rounded-xl px-4 py-3 hover:bg-zinc-900">
+                <div class="flex flex-col gap-1 text-sm text-slate-200">
+                    <a @click="mobileOpen=false" href="{{ route('home') }}" class="rounded-xl px-4 py-3 hover:bg-white/5">
                         Home
                     </a>
-                    <a @click="mobileOpen=false" href="{{ route('about-us') }}" class="rounded-xl px-4 py-3 hover:bg-zinc-900">
+                    <a @click="mobileOpen=false" href="{{ route('about-us') }}" class="rounded-xl px-4 py-3 hover:bg-white/5">
                         About
                     </a>
-                    <a @click="mobileOpen=false" href="#core-values" class="rounded-xl px-4 py-3 hover:bg-zinc-900">
-                        Core Values
+                    <a @click="mobileOpen=false" href="{{ route('events.index') }}" class="rounded-xl px-4 py-3 hover:bg-white/5">
+                        Events
                     </a>
-                    <a @click="mobileOpen=false" href="#mission-vision" class="rounded-xl px-4 py-3 hover:bg-zinc-900">
-                        Mission & Vision
+                    <a @click="mobileOpen=false" href="#event-details" class="rounded-xl px-4 py-3 hover:bg-white/5">
+                        Details
                     </a>
-                    <a @click="mobileOpen=false" href="#contact" class="rounded-xl px-4 py-3 hover:bg-zinc-900">
+                    <a @click="mobileOpen=false" href="#contact" class="rounded-xl px-4 py-3 hover:bg-white/5">
                         Contact
                     </a>
 
                     @if (Route::has('login'))
                         <div class="mt-4 border-t border-white/10 pt-4">
                             @auth
-                                <a href="{{ url('/dashboard') }}" class="block rounded-[9px] bg-teal-400 px-4 py-3 text-center text-sm font-semibold text-zinc-950">
+                                <a href="{{ url('/dashboard') }}" class="block rounded-2xl bg-indigo-500 px-4 py-3 text-center text-sm font-semibold text-white">
                                     Dashboard
                                 </a>
                             @else
                                 <div class="flex flex-col gap-3">
-                                    <a href="{{ route('login') }}" class="block rounded-[9px] border border-white/12 px-4 py-3 text-center text-sm font-medium text-zinc-300">
+                                    <a href="{{ route('login') }}" class="block rounded-2xl border border-white/12 bg-white/5 px-4 py-3 text-center text-sm font-medium text-slate-200">
                                         Log in
                                     </a>
                                     @if (Route::has('register'))
-                                        <a href="{{ route('register') }}" class="block rounded-[9px] bg-teal-400 px-4 py-3 text-center text-sm font-semibold text-zinc-950">
+                                        <a href="{{ route('register') }}" class="block rounded-2xl bg-indigo-500 px-4 py-3 text-center text-sm font-semibold text-white">
                                             Register
                                         </a>
                                     @endif
@@ -166,229 +184,255 @@
                     @endif
                 </div>
             </div>
-
         </div>
     </header>
 
+    <!-- HERO / EVENT HEAD -->
+    <section class="relative overflow-hidden py-12 sm:py-14 lg:py-20">
+        <div class="absolute inset-0 -z-30">
+            <img
+                src="{{ asset('images/100yearsevent.jpg') }}"
+                alt="{{ $event->title }}"
+                class="h-full w-full object-cover object-center opacity-30"
+            >
+        </div>
+        <div class="absolute inset-0 -z-20 bg-[linear-gradient(180deg,rgba(5,8,22,0.48)_0%,rgba(5,8,22,0.80)_50%,rgba(5,8,22,0.98)_100%)]"></div>
+        <div class="absolute -left-24 top-24 -z-10 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"></div>
+        <div class="absolute right-0 top-1/3 -z-10 h-80 w-80 rounded-full bg-emerald-400/10 blur-3xl"></div>
 
-<section class="relative overflow-hidden py-12 sm:py-14 lg:py-20">
-    {{-- Background --}}
-    <div class="absolute inset-0 -z-20">
-        <img
-            src="{{ asset('images/100yearsevent.jpg') }}"
-            alt="{{ $event->title }}"
-            class="h-full w-full object-cover object-center opacity-20"
-        >
-    </div>
-    <div class="absolute inset-0 -z-10 bg-zinc-950/90"></div>
-    <div class="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(45,212,191,0.10),transparent_35%)]"></div>
+        <div class="mx-auto max-w-[1180px] px-5 md:px-6">
+            <a
+                href="{{ route('events.index') }}"
+                class="animate-fade-up delay-1 mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white"
+            >
+                <span aria-hidden="true">←</span>
+                Back to events
+            </a>
 
-    <div class="mx-auto max-w-[1100px] px-5 md:px-6">
-        {{-- Back link --}}
-        <a
-            href="{{ route('events.index') }}"
-            class="mb-8 inline-flex items-center gap-2 text-sm text-zinc-400 transition hover:text-zinc-100"
-        >
-            <span aria-hidden="true">←</span>
-            Back to events
-        </a>
+            <div class="overflow-hidden rounded-[34px] border border-white/10 bg-white/[0.04] shadow-[0_24px_80px_rgba(0,0,0,0.34)] glass-panel">
+                <div class="relative h-[300px] sm:h-[380px] lg:h-[460px]">
+                    <img
+                        src="{{ asset('images/100yearsevent.jpg') }}"
+                        alt="{{ $event->title }}"
+                        class="h-full w-full object-cover"
+                    >
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050816] via-[#050816]/38 to-transparent"></div>
 
-        {{-- Main shell --}}
-        <div class="overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.04] shadow-[0_20px_80px_rgba(0,0,0,0.28)] backdrop-blur-sm">
-            {{-- Hero image --}}
-            <div class="relative h-[280px] sm:h-[360px] lg:h-[420px]">
-                <img
-                    src="{{ asset('images/100yearsevent.jpg') }}"
-                    alt="{{ $event->title }}"
-                    class="h-full w-full object-cover"
-                >
-                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/45 to-transparent"></div>
-
-                <div class="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-10">
-                    <span class="inline-flex rounded-full border border-teal-400/20 bg-teal-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-teal-300">
-                        Event Details
-                    </span>
-
-                    <h1 class="mt-4 max-w-3xl font-dm-serif text-[2rem] leading-[1.02] tracking-[-0.025em] text-white sm:text-[2.7rem] lg:text-[3.5rem]">
-                        {{ $event->title }}
-                    </h1>
-                </div>
-            </div>
-
-            {{-- Content --}}
-            <div class="grid gap-0 lg:grid-cols-[1.45fr_0.9fr]">
-                {{-- Main content --}}
-                <div class="p-6 sm:p-8 lg:p-10">
-                    <div class="max-w-none">
-                        <div class="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-teal-400">
-                            About this event
+                    <div class="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-10">
+                        <div class="animate-fade-up delay-2 inline-flex rounded-full border border-indigo-400/20 bg-indigo-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-indigo-200">
+                            Official Event Details
                         </div>
 
-                        <div class="text-[15px] leading-[1.95] text-zinc-300">
-                            {!! nl2br(e($event->description ?: 'No description available yet.')) !!}
-                        </div>
+                        <h1 class="animate-fade-up delay-3 mt-4 max-w-4xl font-display text-[2.15rem] leading-[1.02] tracking-[-0.03em] text-white sm:text-[2.9rem] lg:text-[3.9rem]">
+                            {{ $event->title }}
+                        </h1>
+
+                        <p class="animate-fade-up delay-4 mt-4 max-w-2xl text-[14.5px] leading-7 text-slate-200 sm:text-[15.5px]">
+                            Stay informed, prepare ahead, and be part of another meaningful HSST gathering.
+                        </p>
                     </div>
+                </div>
 
-                    @if ($event->schedules->isNotEmpty())
-                        <div class="mt-12">
-                            <div class="mb-5 flex items-end justify-between gap-4">
-                                <div>
-                                    <div class="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-teal-400">
+                <div id="event-details" class="grid gap-0 lg:grid-cols-[1.42fr_0.92fr]">
+                    <!-- MAIN CONTENT -->
+                    <div class="p-6 sm:p-8 lg:p-10">
+                        <div class="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 sm:p-7">
+                            <div class="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-indigo-200">
+                                About this event
+                            </div>
+
+                            <h2 class="font-display text-[1.6rem] leading-none text-white sm:text-[1.9rem]">
+                                Event Overview
+                            </h2>
+
+                            <div class="mt-5 text-[15px] leading-[1.95] text-slate-300">
+                                {!! nl2br(e($event->description ?: 'No description available yet.')) !!}
+                            </div>
+                        </div>
+
+                        @if ($event->schedules->isNotEmpty())
+                            <div class="mt-10">
+                                <div class="mb-5">
+                                    <div class="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-200">
                                         Program Flow
                                     </div>
-                                    <h2 class="font-dm-serif text-[1.55rem] leading-none text-zinc-100 sm:text-[1.8rem]">
+                                    <h2 class="font-display text-[1.7rem] leading-none text-white sm:text-[2rem]">
                                         Event Schedule
                                     </h2>
                                 </div>
-                            </div>
 
-                            <div class="space-y-4">
-                                @foreach ($event->schedules as $schedule)
-                                    <div class="relative rounded-2xl border border-white/10 bg-zinc-950/45 p-5 sm:p-6">
-                                        <div class="grid gap-4 sm:grid-cols-[110px_1fr] sm:gap-6">
-                                            <div class="shrink-0">
-                                                <div class="inline-flex rounded-xl border border-teal-400/20 bg-teal-400/10 px-3 py-2 text-[12px] font-semibold text-teal-300">
-                                                    @if ($schedule->schedule_time)
-                                                        {{ \Carbon\Carbon::parse($schedule->schedule_time)->format('g:i A') }}
-                                                    @else
-                                                        TBA
+                                <div class="space-y-4">
+                                    @foreach ($event->schedules as $schedule)
+                                        <div class="group relative overflow-hidden rounded-[26px] border border-white/10 bg-white/[0.04] p-5 shadow-[0_12px_28px_rgba(0,0,0,0.18)] transition duration-300 hover:border-indigo-400/20 sm:p-6">
+                                            <div class="absolute inset-y-0 left-0 w-[3px] bg-gradient-to-b from-indigo-400 via-emerald-300 to-amber-300 opacity-80"></div>
+
+                                            <div class="grid gap-4 sm:grid-cols-[120px_1fr] sm:gap-6">
+                                                <div class="shrink-0">
+                                                    <div class="inline-flex rounded-2xl border border-indigo-400/20 bg-indigo-400/10 px-3.5 py-2.5 text-[12px] font-semibold text-indigo-200">
+                                                        @if ($schedule->schedule_time)
+                                                            {{ \Carbon\Carbon::parse($schedule->schedule_time)->format('g:i A') }}
+                                                        @else
+                                                            TBA
+                                                        @endif
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    @if ($schedule->title)
+                                                        <h3 class="text-[15px] font-semibold leading-[1.45] text-white sm:text-[16px]">
+                                                            {{ $schedule->title }}
+                                                        </h3>
+                                                    @endif
+
+                                                    @if ($schedule->description)
+                                                        <p class="mt-2 text-[13px] leading-[1.85] text-slate-400">
+                                                            {{ $schedule->description }}
+                                                        </p>
                                                     @endif
                                                 </div>
                                             </div>
-
-                                            <div>
-                                                @if ($schedule->title)
-                                                    <h3 class="text-[15px] font-semibold leading-[1.4] text-zinc-100 sm:text-[16px]">
-                                                        {{ $schedule->title }}
-                                                    </h3>
-                                                @endif
-
-                                                @if ($schedule->description)
-                                                    <p class="mt-2 text-[13px] leading-[1.8] text-zinc-400">
-                                                        {{ $schedule->description }}
-                                                    </p>
-                                                @endif
-                                            </div>
                                         </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
-                </div>
-
-                {{-- Sidebar --}}
-                <aside class="border-t border-white/10 bg-zinc-950/35 p-6 sm:p-8 lg:border-l lg:border-t-0 lg:p-10">
-                    <div class="sticky top-24 space-y-5">
-                        <div>
-                            <div class="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
-                                Event Overview
-                            </div>
-                            <h2 class="font-dm-serif text-[1.45rem] leading-none text-zinc-100">
-                                Quick Information
-                            </h2>
-                        </div>
-
-                        <div class="space-y-3">
-                            <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                                <div class="text-[11px] uppercase tracking-[0.16em] text-zinc-500">Date</div>
-                                <div class="mt-1.5 text-sm font-medium text-zinc-100">
-                                    @if ($event->event_date)
-                                        {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
-                                    @else
-                                        To be announced
-                                    @endif
+                                    @endforeach
                                 </div>
                             </div>
-
-                            <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                                <div class="text-[11px] uppercase tracking-[0.16em] text-zinc-500">Time</div>
-                                <div class="mt-1.5 text-sm font-medium text-zinc-100">
-                                    @if ($event->event_date)
-                                        {{ \Carbon\Carbon::parse($event->event_date)->format('g:i A') }}
-                                    @else
-                                        To be announced
-                                    @endif
-                                </div>
-                            </div>
-
-                            <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                                <div class="text-[11px] uppercase tracking-[0.16em] text-zinc-500">Venue</div>
-                                <div class="mt-1.5 text-sm font-medium text-zinc-100">
-                                    {{ $event->venue ?: 'To be announced' }}
-                                </div>
-                            </div>
-
-                            <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                                <div class="text-[11px] uppercase tracking-[0.16em] text-zinc-500">Dress Code</div>
-                                <div class="mt-1.5 text-sm font-medium text-zinc-100">
-                                    {{ $event->dress_code ?: 'Not specified' }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="rounded-2xl border border-teal-400/15 bg-teal-400/[0.05] p-4">
-                            <div class="text-[11px] uppercase tracking-[0.16em] text-teal-300/80">
-                                Reminder
-                            </div>
-                            <p class="mt-2 text-[13px] leading-[1.75] text-zinc-300">
-                                Please check the event details and schedule carefully for any updates before attending.
-                            </p>
-                        </div>
+                        @endif
                     </div>
-                </aside>
+
+                    <!-- SIDEBAR -->
+                    <aside class="border-t border-white/10 bg-[#0b1020]/70 p-6 sm:p-8 lg:border-l lg:border-t-0 lg:p-10">
+                        <div class="sticky top-24 space-y-5">
+                            <div>
+                                <div class="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                                    Quick Information
+                                </div>
+                                <h2 class="font-display text-[1.55rem] leading-none text-white">
+                                    Event Details
+                                </h2>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div class="rounded-[24px] border border-white/10 bg-white/[0.04] p-4">
+                                    <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">Date</div>
+                                    <div class="mt-2 text-sm font-medium text-white">
+                                        @if ($event->event_date)
+                                            {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
+                                        @else
+                                            To be announced
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="rounded-[24px] border border-white/10 bg-white/[0.04] p-4">
+                                    <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">Time</div>
+                                    <div class="mt-2 text-sm font-medium text-white">
+                                        @if ($event->schedules->first()?->schedule_time)
+                                            {{ \Carbon\Carbon::parse($event->schedules->first()->schedule_time)->format('g:i A') }}
+                                        @elseif ($event->event_date)
+                                            {{ \Carbon\Carbon::parse($event->event_date)->format('g:i A') }}
+                                        @else
+                                            To be announced
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="rounded-[24px] border border-white/10 bg-white/[0.04] p-4">
+                                    <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">Venue</div>
+                                    <div class="mt-2 text-sm font-medium text-white">
+                                        {{ $event->venue ?: 'To be announced' }}
+                                    </div>
+                                </div>
+
+                                <div class="rounded-[24px] border border-white/10 bg-white/[0.04] p-4">
+                                    <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">Dress Code</div>
+                                    <div class="mt-2 text-sm font-medium text-white">
+                                        {{ $event->dress_code ?: 'Not specified' }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="rounded-[26px] border border-emerald-400/15 bg-emerald-400/[0.06] p-5">
+                                <div class="text-[11px] uppercase tracking-[0.16em] text-emerald-300/85">
+                                    Reminder
+                                </div>
+                                <p class="mt-2 text-[13px] leading-[1.8] text-slate-300">
+                                    Please review the event details and schedule carefully. Updates may be posted by the school before the actual event date.
+                                </p>
+                            </div>
+
+                            <div class="rounded-[26px] border border-indigo-400/15 bg-indigo-400/[0.06] p-5">
+                                <div class="text-[11px] uppercase tracking-[0.16em] text-indigo-200/90">
+                                    Need more updates?
+                                </div>
+                                <p class="mt-2 text-[13px] leading-[1.8] text-slate-300">
+                                    Stay connected through the official alumni portal for announcements, registrations, and future HSST activities.
+                                </p>
+
+                                <div class="mt-4 flex flex-col gap-3">
+                                    @if (Route::has('register'))
+                                        <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded-2xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-400">
+                                            Join the Alumni Network
+                                        </a>
+                                    @endif
+
+                                    <a href="{{ route('events.index') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10">
+                                        Browse More Events
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-    <!-- Footer -->
-    <footer id="contact" class="border-t border-white/10 bg-zinc-950">
-        <div class="mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1.2fr_0.8fr_0.8fr] lg:px-8">
+    <!-- FOOTER -->
+    <footer id="contact" class="border-t border-white/10 bg-[#040712]">
+        <div class="mx-auto grid max-w-[1320px] gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1.2fr_0.8fr_0.8fr] lg:px-8">
             <div>
                 <div class="flex items-center gap-3">
-                    <div class="flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl bg-white p-1 shadow-sm">
+                    <div class="flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white p-1 shadow-sm">
                         <img src="{{ asset('images/hsstlogo.jpg') }}" alt="HSST Logo" class="h-full w-full object-contain">
                     </div>
                     <div>
-                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-teal-400">Official School Portal</p>
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300">Official Alumni Portal</p>
                         <p class="text-base font-bold text-white">Holy Spirit School of Tagbilaran</p>
                     </div>
                 </div>
 
-                <p class="mt-5 max-w-md text-sm leading-7 text-zinc-400">
+                <p class="mt-5 max-w-md text-sm leading-7 text-slate-400">
                     A digital home for official announcements, school events, alumni activities, and meaningful community connection at Holy Spirit School of Tagbilaran.
                 </p>
             </div>
 
             <div>
-                <h4 class="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-300">Quick links</h4>
-                <div class="mt-4 flex flex-col gap-3 text-sm text-zinc-400">
-                    <a href="{{ route('home') }}" class="hover:text-white">Home</a>
-                    <a href="{{ route('about-us') }}" class="hover:text-white">About Us</a>
-                    <a href="#core-values" class="hover:text-white">Core Values</a>
-                    <a href="#mission-vision" class="hover:text-white">Mission & Vision</a>
+                <h4 class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-300">Quick links</h4>
+                <div class="mt-4 flex flex-col gap-3 text-sm text-slate-400">
+                    <a href="{{ route('home') }}" class="transition hover:text-white">Home</a>
+                    <a href="{{ route('about-us') }}" class="transition hover:text-white">About Us</a>
+                    <a href="{{ route('events.index') }}" class="transition hover:text-white">Events</a>
+                    <a href="#event-details" class="transition hover:text-white">Event Details</a>
                 </div>
-            {{-- </div>
+            </div>
 
             <div>
-                <h4 class="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-300">Account</h4>
-                <div class="mt-4 flex flex-col gap-3 text-sm text-zinc-400">
+                <h4 class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-300">Account</h4>
+                <div class="mt-4 flex flex-col gap-3 text-sm text-slate-400">
                     @if (Route::has('login'))
-                        <a href="{{ route('login') }}" class="hover:text-white">Log in</a>
+                        <a href="{{ route('login') }}" class="transition hover:text-white">Log in</a>
                     @endif
                     @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="hover:text-white">Register</a>
+                        <a href="{{ route('register') }}" class="transition hover:text-white">Register</a>
                     @endif
-                    <a href="{{ url('/dashboard') }}" class="hover:text-white">Dashboard</a>
+                    <a href="{{ url('/dashboard') }}" class="transition hover:text-white">Dashboard</a>
                 </div>
-            </div> --}}
+            </div>
         </div>
 
         <div class="border-t border-white/10">
-            <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 text-sm text-zinc-500 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+            <div class="mx-auto flex max-w-[1320px] flex-col gap-3 px-4 py-6 text-sm text-slate-500 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
                 <p>© 2026 Holy Spirit School of Tagbilaran. All rights reserved.</p>
-                <p>Faith · Learning · Service · Community</p>
+                <p>Truth in Love · Faith · Learning · Community</p>
             </div>
         </div>
     </footer>
