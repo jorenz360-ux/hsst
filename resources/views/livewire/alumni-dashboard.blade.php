@@ -1,5 +1,5 @@
 <div>
-    <div class="mx-auto max-w-7xl space-y-4  py-4 sm:space-y-6 sm:px-6 sm:py-6 lg:px-8">
+    <div class="mx-auto max-w-7xl space-y-4  py-4 sm:space-y-6 sm:px-0 sm:py-6 lg:px-0">
 
         {{-- Header --}}
         <section class="overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-slate-950 via-zinc-900 to-indigo-950/40 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:rounded-3xl">
