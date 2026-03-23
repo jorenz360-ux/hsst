@@ -17,6 +17,7 @@ use App\Livewire\EventPayment;
 use App\Livewire\Batch;
 use App\Http\Controllers\PublicEventController;
 use App\Livewire\Donations;
+use App\Http\Controllers\Welcome;
 
 Route::get('/view-batch', Batch::class)
     ->middleware(['auth', 'role:batch-representative'])
@@ -30,9 +31,7 @@ Route::get('/view-donations', Donations::class)
 Route::get('/events', [PublicEventController::class, 'index'])->name('events.index');
 Route::get('/events/{event}', [PublicEventController::class, 'show'])->name('events.show');
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [Welcome::class, 'index'])->name('home');
 
 
 
