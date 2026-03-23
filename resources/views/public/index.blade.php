@@ -22,29 +22,6 @@
         .hamburger-open .line-2 { opacity: 0; }
         .hamburger-open .line-3 { transform: translateY(-6px) rotate(-45deg); }
 
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(18px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes floatSoft {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-        }
-
-        .animate-fade-up {
-            animation: fadeUp .6s cubic-bezier(.22,1,.36,1) both;
-        }
-
-        .animate-float-soft {
-            animation: floatSoft 5s ease-in-out infinite;
-        }
-
-        .delay-1 { animation-delay: .08s; }
-        .delay-2 { animation-delay: .16s; }
-        .delay-3 { animation-delay: .24s; }
-        .delay-4 { animation-delay: .32s; }
-
         .glass-panel {
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
@@ -60,7 +37,7 @@
 >
 <div x-data="{ mobileOpen:false }" class="min-h-screen">
 
-    <!-- HEADER -->
+    {{-- HEADER --}}
     <header class="sticky top-0 z-50 border-b border-white/10 bg-[#050816]/80 glass-panel">
         <div class="mx-auto max-w-[1320px] px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between py-4">
@@ -98,11 +75,11 @@
                     <a href="{{ route('events.index') }}" class="rounded-xl bg-white/5 px-4 py-2 text-sm font-medium text-white">
                         Events
                     </a>
+                    <a href="#event-calendar" class="rounded-xl px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white">
+                        Calendar
+                    </a>
                     <a href="#upcoming-events" class="rounded-xl px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white">
                         Upcoming
-                    </a>
-                    <a href="#contact" class="rounded-xl px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white">
-                        Contact
                     </a>
                 </nav>
 
@@ -138,7 +115,6 @@
                 </button>
             </div>
 
-            <!-- MOBILE MENU -->
             <div
                 x-cloak
                 x-show="mobileOpen"
@@ -146,21 +122,11 @@
                 class="border-t border-white/10 py-4 lg:hidden"
             >
                 <div class="flex flex-col gap-1 text-sm text-slate-200">
-                    <a @click="mobileOpen=false" href="{{ route('home') }}" class="rounded-xl px-4 py-3 hover:bg-white/5">
-                        Home
-                    </a>
-                    <a @click="mobileOpen=false" href="{{ route('about-us') }}" class="rounded-xl px-4 py-3 hover:bg-white/5">
-                        About
-                    </a>
-                    <a @click="mobileOpen=false" href="{{ route('events.index') }}" class="rounded-xl px-4 py-3 hover:bg-white/5">
-                        Events
-                    </a>
-                    <a @click="mobileOpen=false" href="#upcoming-events" class="rounded-xl px-4 py-3 hover:bg-white/5">
-                        Upcoming
-                    </a>
-                    <a @click="mobileOpen=false" href="#contact" class="rounded-xl px-4 py-3 hover:bg-white/5">
-                        Contact
-                    </a>
+                    <a @click="mobileOpen=false" href="{{ route('home') }}" class="rounded-xl px-4 py-3 hover:bg-white/5">Home</a>
+                    <a @click="mobileOpen=false" href="{{ route('about-us') }}" class="rounded-xl px-4 py-3 hover:bg-white/5">About</a>
+                    <a @click="mobileOpen=false" href="{{ route('events.index') }}" class="rounded-xl px-4 py-3 hover:bg-white/5">Events</a>
+                    <a @click="mobileOpen=false" href="#event-calendar" class="rounded-xl px-4 py-3 hover:bg-white/5">Calendar</a>
+                    <a @click="mobileOpen=false" href="#upcoming-events" class="rounded-xl px-4 py-3 hover:bg-white/5">Upcoming</a>
 
                     @if (Route::has('login'))
                         <div class="mt-4 border-t border-white/10 pt-4">
@@ -187,132 +153,266 @@
         </div>
     </header>
 
-    <!-- HERO -->
-    <section class="relative isolate overflow-hidden">
-        <div class="absolute inset-0 -z-20 bg-[linear-gradient(180deg,rgba(5,8,22,0.35)_0%,rgba(5,8,22,0.82)_56%,rgba(5,8,22,1)_100%)]"></div>
-        <div class="absolute -left-24 top-24 -z-10 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"></div>
-        <div class="absolute right-0 top-1/3 -z-10 h-80 w-80 rounded-full bg-emerald-400/10 blur-3xl"></div>
-
-        <div class="mx-auto max-w-[1320px] px-5 py-16 md:px-6 lg:px-8 lg:py-20">
-            <div class="grid items-center gap-12 lg:grid-cols-[1.08fr_.92fr]">
-                <div class="max-w-3xl">
-                    <div class="animate-fade-up delay-1 mb-5 inline-flex items-center gap-2 rounded-full border border-indigo-400/20 bg-indigo-400/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.20em] text-indigo-100">
-                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
-                        Alumni Gatherings · School Celebrations · Community Events
+    {{-- HERO --}}
+    <section class="relative overflow-hidden py-16 lg:py-20">
+        <div class="mx-auto max-w-[1320px] px-5 md:px-6 lg:px-8">
+            <div class="grid items-center gap-8 lg:grid-cols-[1.05fr_.95fr]">
+                <div>
+                    <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-indigo-400/20 bg-indigo-400/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-indigo-200">
+                        HSST Events & Community Gatherings
                     </div>
 
-                    <h1 class="animate-fade-up delay-2 font-display text-[2.8rem] leading-[0.96] tracking-[-0.035em] text-white sm:text-[3.5rem] md:text-[4.2rem] lg:text-[5rem]">
-                        Discover what’s
-                        <span class="bg-gradient-to-r from-white via-indigo-100 to-emerald-100 bg-clip-text text-transparent italic">
-                            happening next
-                        </span>
-                        at HSST
+                    <h1 class="font-display text-[2.4rem] leading-[1.02] tracking-[-0.02em] text-white sm:text-[3.2rem] lg:text-[4rem]">
+                        Stay connected with upcoming HSST events
                     </h1>
 
-                    <p class="animate-fade-up delay-3 mt-6 max-w-2xl text-[15.5px] leading-8 text-slate-300 sm:text-[16.5px]">
-                        Explore upcoming HSST events, alumni homecoming activities, reunions, and school celebrations. Stay informed, register with ease, and reconnect through one official platform.
+                    <p class="mt-5 max-w-2xl text-[15px] leading-8 text-slate-300 sm:text-base">
+                        Discover reunions, school celebrations, alumni programs, and community activities through one welcoming official events page.
                     </p>
 
-                    <div class="animate-fade-up delay-4 mt-8 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap">
-                        <a href="#upcoming-events" class="rounded-2xl bg-indigo-500 px-7 py-3.5 text-sm font-semibold text-white shadow-[0_20px_44px_rgba(99,102,241,0.30)] transition hover:-translate-y-0.5 hover:bg-indigo-400">
-                            Browse Events
+                    <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                        <a href="#upcoming-events" class="inline-flex items-center justify-center rounded-2xl bg-indigo-500 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-indigo-400">
+                            Explore upcoming events
                         </a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="rounded-2xl border border-white/12 bg-white/5 px-7 py-3.5 text-sm font-medium text-white transition hover:bg-white/10">
-                                Join the Alumni Network
-                            </a>
-                        @endif
+                        <a href="#event-calendar" class="inline-flex items-center justify-center rounded-2xl border border-white/12 bg-white/5 px-6 py-3.5 text-sm font-medium text-white transition hover:bg-white/10">
+                            Browse event calendar
+                        </a>
                     </div>
                 </div>
 
-                <div class="animate-fade-up delay-4 lg:justify-self-end">
-                    <div class="relative overflow-hidden rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.92)_0%,rgba(10,14,28,0.96)_100%)] shadow-[0_28px_90px_rgba(0,0,0,0.42)]">
-                        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.16),transparent_28%)]"></div>
+                @if ($featuredEvent)
+                    <div class="overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.04] shadow-[0_16px_40px_rgba(0,0,0,0.22)]">
+                        <div class="relative h-[260px] overflow-hidden">
+                            <img
+                                src="{{ asset('images/100yearsevent.jpg') }}"
+                                alt="{{ $featuredEvent->title }}"
+                                class="h-full w-full object-cover"
+                            >
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#050816] via-[#050816]/35 to-transparent"></div>
 
-                        <div class="relative p-6">
-                            <div class="mb-5 flex items-center justify-between gap-3">
-                                <div>
-                                    <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-indigo-200">Event Highlights</p>
-                                    <h3 class="mt-1 text-xl font-semibold tracking-[-0.02em] text-white">Made for alumni connection</h3>
+                            <div class="absolute left-5 top-5">
+                                <span class="inline-flex rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-amber-200">
+                                    Featured Next Event
+                                </span>
+                            </div>
+
+                            <div class="absolute inset-x-0 bottom-0 p-5">
+                                <h2 class="font-display text-[1.5rem] leading-[1.1] text-white sm:text-[1.8rem]">
+                                    {{ $featuredEvent->title }}
+                                </h2>
+                            </div>
+                        </div>
+
+                        <div class="p-6">
+                            <p class="text-[14px] leading-7 text-slate-400">
+                                {{ \Illuminate\Support\Str::limit($featuredEvent->description, 180) }}
+                            </p>
+
+                            <div class="mt-5 grid gap-3 sm:grid-cols-2">
+                                <div class="rounded-2xl border border-white/10 bg-[#0d1326]/80 p-4">
+                                    <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">Date</div>
+                                    <div class="mt-2 text-sm font-medium text-white">
+                                        {{ \Carbon\Carbon::parse($featuredEvent->event_date)->format('F d, Y') }}
+                                    </div>
                                 </div>
 
-                                <div class="animate-float-soft rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white">
-                                    HSST
+                                <div class="rounded-2xl border border-white/10 bg-[#0d1326]/80 p-4">
+                                    <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">Time</div>
+                                    <div class="mt-2 text-sm font-medium text-white">
+                                        @if ($featuredEvent->schedules->first()?->schedule_time)
+                                            {{ \Carbon\Carbon::parse($featuredEvent->schedules->first()->schedule_time)->format('g:i A') }}
+                                        @else
+                                            To be announced
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="grid gap-4">
-                                <div class="rounded-[26px] border border-white/10 bg-white/[0.04] p-5">
-                                    <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-300">Grand Homecoming</div>
-                                    <p class="mt-2 text-sm leading-7 text-slate-300">
-                                        Welcome back generations of HSSTians through meaningful reunions and campus-centered celebrations.
-                                    </p>
+                            <div class="mt-3 rounded-2xl border border-white/10 bg-[#0d1326]/80 p-4">
+                                <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">Venue</div>
+                                <div class="mt-2 text-sm font-medium text-white">
+                                    {{ $featuredEvent->venue ?: 'Venue to be announced' }}
                                 </div>
+                            </div>
 
-                                <div class="grid gap-4 sm:grid-cols-2">
-                                    <div class="rounded-[26px] border border-white/10 bg-white/[0.04] p-5">
-                                        <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-indigo-500/15 text-sm font-bold text-indigo-200">
-                                            01
-                                        </div>
-                                        <h4 class="text-sm font-semibold text-white">School Events</h4>
-                                        <p class="mt-2 text-sm leading-7 text-slate-400">
-                                            Celebrate official programs and community milestones.
-                                        </p>
-                                    </div>
-
-                                    <div class="rounded-[26px] border border-white/10 bg-white/[0.04] p-5">
-                                        <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-400/15 text-sm font-bold text-amber-200">
-                                            02
-                                        </div>
-                                        <h4 class="text-sm font-semibold text-white">Alumni Gatherings</h4>
-                                        <p class="mt-2 text-sm leading-7 text-slate-400">
-                                            Reconnect with classmates and alumni circles.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div class="rounded-[26px] border border-white/10 bg-gradient-to-r from-indigo-500/12 via-white/[0.04] to-emerald-500/10 p-5">
-                                    <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300">Official access</div>
-                                    <p class="mt-2 text-sm leading-7 text-slate-200">
-                                        View details, track dates, and enter each event through a consistent and school-managed public experience.
-                                    </p>
-                                </div>
+                            <div class="mt-6">
+                                <a
+                                    href="{{ route('events.show', $featuredEvent) }}"
+                                    class="inline-flex w-full items-center justify-center rounded-2xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-400"
+                                >
+                                    View featured event
+                                </a>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
+    </section>
 
+    {{-- CALENDAR --}}
+    <section id="event-calendar" class="pb-16 lg:pb-20">
         <div class="mx-auto max-w-[1320px] px-5 md:px-6 lg:px-8">
-            <div class="grid grid-cols-1 gap-3 rounded-[32px] border border-white/10 bg-white/[0.04] p-4 shadow-[0_18px_54px_rgba(0,0,0,0.18)] glass-panel sm:grid-cols-3 sm:p-5">
-                <div class="rounded-2xl border border-white/10 bg-[#0d1326]/80 p-5">
-                    <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Purpose</div>
-                    <p class="mt-2 text-sm leading-7 text-slate-200">
-                        Discover official events, school celebrations, and alumni activities in one organized page.
-                    </p>
+            <div class="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                    <div class="mb-3 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.22em] text-emerald-200 before:h-px before:w-6 before:bg-emerald-400/50 before:content-['']">
+                        Event Calendar
+                    </div>
+                    <h2 class="font-display text-[2rem] leading-[1.05] tracking-[-0.02em] text-white sm:text-[2.45rem]">
+                        Browse events by date
+                    </h2>
                 </div>
 
-                <div class="rounded-2xl border border-white/10 bg-[#0d1326]/80 p-5">
-                    <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Experience</div>
-                    <p class="mt-2 text-sm leading-7 text-slate-200">
-                        Enjoy a premium, easy-to-browse event experience consistent with the HSST public portal.
-                    </p>
+                <p class="max-w-[560px] text-[15px] leading-8 text-slate-400">
+                    Explore the monthly calendar, then click a date to view the events scheduled for that day.
+                </p>
+            </div>
+
+            <div class="grid gap-6 xl:grid-cols-[1.2fr_.8fr]">
+                <div class="overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.04] shadow-[0_12px_28px_rgba(0,0,0,0.18)]">
+                    <div class="flex flex-col gap-4 border-b border-white/10 px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-white">{{ $calendarLabel }}</h3>
+                            <p class="mt-1 text-sm text-slate-400">
+                                Dates with events are highlighted with dots and counts.
+                            </p>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <a
+                                href="{{ route('events.index', ['month' => $prevMonth, 'date' => $selectedDate]) }}#event-calendar"
+                                class="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+                            >
+                                Prev
+                            </a>
+
+                            <a
+                                href="{{ route('events.index', ['month' => now()->format('Y-m'), 'date' => now()->toDateString()]) }}#event-calendar"
+                                class="rounded-xl bg-indigo-500 px-3 py-2 text-sm font-medium text-white transition hover:bg-indigo-400"
+                            >
+                                Today
+                            </a>
+
+                            <a
+                                href="{{ route('events.index', ['month' => $nextMonth, 'date' => $selectedDate]) }}#event-calendar"
+                                class="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+                            >
+                                Next
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-7 border-b border-white/10 bg-[#0d1326]/70 text-center text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                        @foreach (['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $dayName)
+                            <div class="px-2 py-3">{{ $dayName }}</div>
+                        @endforeach
+                    </div>
+
+                    <div class="grid grid-cols-7">
+                        @foreach ($calendarDays as $day)
+                            <a
+                                href="{{ route('events.index', ['month' => $currentMonth, 'date' => $day['date']]) }}#event-calendar"
+                                class="
+                                    min-h-[110px] border-b border-r border-white/10 p-2 transition
+                                    {{ $day['isCurrentMonth'] ? 'bg-white/[0.02] hover:bg-white/[0.05]' : 'bg-[#050816]/50 text-slate-600' }}
+                                    {{ $day['isSelected'] ? 'ring-2 ring-inset ring-indigo-400' : '' }}
+                                "
+                            >
+                                <div class="flex items-start justify-between">
+                                    <span class="
+                                        inline-flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold
+                                        {{ $day['isToday'] ? 'bg-indigo-500 text-white' : 'text-slate-200' }}
+                                    ">
+                                        {{ $day['day'] }}
+                                    </span>
+
+                                    @if ($day['count'] > 0)
+                                        <span class="rounded-full border border-indigo-400/20 bg-indigo-400/10 px-2 py-0.5 text-[11px] font-medium text-indigo-200">
+                                            {{ $day['count'] }}
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <div class="mt-3 space-y-1">
+                                    @foreach (collect($day['events'])->take(2) as $event)
+                                        <div class="truncate rounded-lg border border-emerald-400/15 bg-emerald-400/10 px-2 py-1 text-[11px] text-emerald-200">
+                                            {{ $event->title }}
+                                        </div>
+                                    @endforeach
+
+                                    @if ($day['count'] > 2)
+                                        <div class="text-[11px] text-slate-500">
+                                            +{{ $day['count'] - 2 }} more
+                                        </div>
+                                    @endif
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
 
-                <div class="rounded-2xl border border-white/10 bg-[#0d1326]/80 p-5">
-                    <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Connection</div>
-                    <p class="mt-2 text-sm leading-7 text-slate-200">
-                        Reconnect with the HSST community through programs designed for belonging and participation.
-                    </p>
+                <div class="overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.04] shadow-[0_12px_28px_rgba(0,0,0,0.18)]">
+                    <div class="border-b border-white/10 px-5 py-5">
+                        <h3 class="text-lg font-semibold text-white">{{ $selectedDateLabel }}</h3>
+                        <p class="mt-1 text-sm text-slate-400">
+                            Events scheduled on the selected date.
+                        </p>
+                    </div>
+
+                    <div class="p-5">
+                        @forelse ($selectedDayEvents as $event)
+                            <article class="mb-4 rounded-2xl border border-white/10 bg-[#0d1326]/70 p-4 last:mb-0">
+                                <h4 class="font-semibold text-white">
+                                    {{ $event->title }}
+                                </h4>
+
+                                <p class="mt-2 text-sm leading-7 text-slate-400">
+                                    {{ \Illuminate\Support\Str::limit($event->description, 120) }}
+                                </p>
+
+                                <div class="mt-4 grid gap-3">
+                                    <div class="rounded-2xl border border-white/10 bg-[#11172d] p-3">
+                                        <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">Venue</div>
+                                        <div class="mt-1 text-sm text-white">
+                                            {{ $event->venue ?: 'Venue to be announced' }}
+                                        </div>
+                                    </div>
+
+                                    <div class="rounded-2xl border border-white/10 bg-[#11172d] p-3">
+                                        <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">Time</div>
+                                        <div class="mt-1 text-sm text-white">
+                                            @if ($event->schedules->first()?->schedule_time)
+                                                {{ \Carbon\Carbon::parse($event->schedules->first()->schedule_time)->format('g:i A') }}
+                                            @else
+                                                To be announced
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <a
+                                        href="{{ route('events.show', $event) }}"
+                                        class="inline-flex w-full items-center justify-center rounded-2xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-400"
+                                    >
+                                        View details
+                                    </a>
+                                </div>
+                            </article>
+                        @empty
+                            <div class="rounded-2xl border border-dashed border-white/10 bg-[#0d1326]/40 p-6 text-center">
+                                <p class="text-sm font-medium text-slate-300">No events scheduled on this date.</p>
+                                <p class="mt-2 text-sm text-slate-500">Try another date or check the upcoming events below.</p>
+                            </div>
+                        @endforelse
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- EVENTS LIST -->
-    <section id="upcoming-events" class="py-16 lg:py-20">
+    {{-- UPCOMING EVENTS --}}
+    <section id="upcoming-events" class="pb-16 lg:pb-20">
         <div class="mx-auto max-w-[1320px] px-5 md:px-6 lg:px-8">
             <div class="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
@@ -430,7 +530,7 @@
         </div>
     </section>
 
-    <!-- CTA -->
+    {{-- CTA --}}
     <section class="pb-20">
         <div class="mx-auto max-w-[1320px] px-5 md:px-6 lg:px-8">
             <div class="relative overflow-hidden rounded-[38px] border border-white/10 bg-[linear-gradient(135deg,rgba(79,70,229,0.18),rgba(15,23,42,0.88),rgba(16,185,129,0.10))] p-8 shadow-[0_20px_60px_rgba(0,0,0,0.24)] glass-panel sm:p-10 lg:p-14">
@@ -471,7 +571,7 @@
         </div>
     </section>
 
-    <!-- FOOTER -->
+    {{-- FOOTER --}}
     <footer id="contact" class="border-t border-white/10 bg-[#040712]">
         <div class="mx-auto grid max-w-[1320px] gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1.2fr_0.8fr_0.8fr] lg:px-8">
             <div>
@@ -496,6 +596,7 @@
                     <a href="{{ route('home') }}" class="transition hover:text-white">Home</a>
                     <a href="{{ route('about-us') }}" class="transition hover:text-white">About Us</a>
                     <a href="{{ route('events.index') }}" class="transition hover:text-white">Events</a>
+                    <a href="#event-calendar" class="transition hover:text-white">Calendar</a>
                     <a href="#upcoming-events" class="transition hover:text-white">Upcoming</a>
                 </div>
             </div>

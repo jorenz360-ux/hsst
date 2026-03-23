@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-zinc-950 text-zinc-100 rounded-2xl">
+<div class="min-h-screen rounded-2xl bg-zinc-950 text-zinc-100">
     @can('create.event')
         @if (session('status'))
             <div
@@ -41,7 +41,7 @@
                         Events Management
                     </h1>
                     <p class="mt-1 text-sm text-zinc-400">
-                        Manage reunion events, schedules, registration items, and payment validations in one place.
+                        Manage events through a calendar-first dashboard with quick payment validation tools.
                     </p>
                 </div>
 
@@ -59,6 +59,26 @@
                 </div>
             </div>
 
+            {{-- Stats --}}
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <div class="rounded-2xl border border-white/10 bg-zinc-900 p-5 shadow-sm">
+                    <p class="text-sm text-zinc-400">Total Events</p>
+                    <p class="mt-2 text-3xl font-bold text-white">{{ $stats['total'] }}</p>
+                </div>
+                <div class="rounded-2xl border border-amber-500/20 bg-zinc-900 p-5 shadow-sm">
+                    <p class="text-sm text-zinc-400">Upcoming</p>
+                    <p class="mt-2 text-3xl font-bold text-amber-400">{{ $stats['upcoming'] }}</p>
+                </div>
+                <div class="rounded-2xl border border-sky-500/20 bg-zinc-900 p-5 shadow-sm">
+                    <p class="text-sm text-zinc-400">Past</p>
+                    <p class="mt-2 text-3xl font-bold text-sky-400">{{ $stats['past'] }}</p>
+                </div>
+                <div class="rounded-2xl border border-emerald-500/20 bg-zinc-900 p-5 shadow-sm">
+                    <p class="text-sm text-zinc-400">Active</p>
+                    <p class="mt-2 text-3xl font-bold text-emerald-400">{{ $stats['active'] }}</p>
+                </div>
+            </div>
+
             {{-- Tabs --}}
             <div class="rounded-2xl border border-white/10 bg-zinc-900 p-1 shadow-sm">
                 <div class="grid w-full grid-cols-2 gap-1">
@@ -69,7 +89,7 @@
                             : 'text-zinc-400 hover:bg-zinc-800' }}
                             rounded-xl px-4 py-2.5 text-sm font-medium transition"
                     >
-                        Events
+                        Calendar View
                     </button>
 
                     <button
@@ -87,13 +107,10 @@
             {{-- Payments Tab --}}
             @if ($tab === 'payments')
                 <div class="space-y-5">
-                    {{-- Payment Filters --}}
                     <div class="rounded-2xl border border-white/10 bg-zinc-900 p-5 shadow-sm">
                         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
                             <div>
-                                <label class="mb-2 block text-sm font-medium text-zinc-300">
-                                    Search
-                                </label>
+                                <label class="mb-2 block text-sm font-medium text-zinc-300">Search</label>
                                 <input
                                     type="text"
                                     wire:model.live.debounce.300ms="paymentSearch"
@@ -103,9 +120,7 @@
                             </div>
 
                             <div>
-                                <label class="mb-2 block text-sm font-medium text-zinc-300">
-                                    Payment Type
-                                </label>
+                                <label class="mb-2 block text-sm font-medium text-zinc-300">Payment Type</label>
                                 <select
                                     wire:model.live="paymentType"
                                     class="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-100 outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20"
@@ -117,9 +132,7 @@
                             </div>
 
                             <div>
-                                <label class="mb-2 block text-sm font-medium text-zinc-300">
-                                    Per page
-                                </label>
+                                <label class="mb-2 block text-sm font-medium text-zinc-300">Per page</label>
                                 <select
                                     wire:model.live="paymentPerPage"
                                     class="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-100 outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20"
@@ -132,14 +145,11 @@
                         </div>
                     </div>
 
-                    {{-- Payment Table --}}
                     <div class="overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-sm">
                         <div class="border-b border-white/10 px-5 py-4">
-                            <h2 class="text-base font-semibold text-white">
-                                Pending Payment Validations
-                            </h2>
+                            <h2 class="text-base font-semibold text-white">Pending Payment Validations</h2>
                             <p class="mt-1 text-sm text-zinc-400">
-                                Review whether the proof is for the base registration fee or a registration item like dinner.
+                                Review whether the proof is for the base registration fee or a registration item.
                             </p>
                         </div>
 
@@ -162,12 +172,12 @@
                                     @forelse($pendingPayments as $payment)
                                         <tr class="transition hover:bg-amber-500/[0.04]">
                                             <td class="px-5 py-4 text-zinc-100">
-                                                {{ $payment->registration->alumni->fname }}
-                                                {{ $payment->registration->alumni->lname }}
+                                                {{ $payment->registration->alumni->fname ?? '' }}
+                                                {{ $payment->registration->alumni->lname ?? '' }}
                                             </td>
 
                                             <td class="px-5 py-4 text-zinc-300">
-                                                {{ $payment->registration->event->title }}
+                                                {{ $payment->registration->event->title ?? '—' }}
                                             </td>
 
                                             <td class="px-5 py-4">
@@ -220,9 +230,7 @@
                                             <td class="px-5 py-4 text-zinc-300">
                                                 <div class="flex flex-col">
                                                     <span>{{ $payment->created_at->format('M d, Y') }}</span>
-                                                    <span class="text-xs text-zinc-500">
-                                                        {{ $payment->created_at->format('h:i A') }}
-                                                    </span>
+                                                    <span class="text-xs text-zinc-500">{{ $payment->created_at->format('h:i A') }}</span>
                                                 </div>
                                             </td>
 
@@ -272,129 +280,200 @@
 
             {{-- Events Tab --}}
             @if ($tab === 'events')
-                <div class="rounded-2xl border border-white/10 bg-zinc-900 p-5 shadow-sm">
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-                        <div>
-                            <label class="mb-2 block text-sm font-medium text-zinc-300">
-                                Search
-                            </label>
-                            <input
-                                type="text"
-                                wire:model.live.debounce.300ms="search"
-                                placeholder="Search title or venue..."
-                                class="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-100 outline-none transition placeholder:text-zinc-500 focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20"
-                            />
-                        </div>
+                <div class="space-y-6">
+                    {{-- Filters --}}
+                    <div class="rounded-2xl border border-white/10 bg-zinc-900 p-5 shadow-sm">
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                            <div>
+                                <label class="mb-2 block text-sm font-medium text-zinc-300">Search</label>
+                                <input
+                                    type="text"
+                                    wire:model.live.debounce.300ms="search"
+                                    placeholder="Search title or venue..."
+                                    class="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-100 outline-none transition placeholder:text-zinc-500 focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20"
+                                />
+                            </div>
 
-                        <div>
-                            <label class="mb-2 block text-sm font-medium text-zinc-300">
-                                Status
-                            </label>
-                            <select
-                                wire:model.live="status"
-                                class="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-100 outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20"
-                            >
-                                <option value="upcoming">Upcoming</option>
-                                <option value="past">Past</option>
-                                <option value="all">All</option>
-                            </select>
-                        </div>
+                            <div>
+                                <label class="mb-2 block text-sm font-medium text-zinc-300">Status</label>
+                                <select
+                                    wire:model.live="status"
+                                    class="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-100 outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20"
+                                >
+                                    <option value="upcoming">Upcoming</option>
+                                    <option value="past">Past</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
 
-                        <div>
-                            <label class="mb-2 block text-sm font-medium text-zinc-300">
-                                Visibility
-                            </label>
-                            <select
-                                wire:model.live="active"
-                                class="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-100 outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20"
-                            >
-                                <option value="all">All</option>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
-                        </div>
+                            <div>
+                                <label class="mb-2 block text-sm font-medium text-zinc-300">Visibility</label>
+                                <select
+                                    wire:model.live="active"
+                                    class="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-100 outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20"
+                                >
+                                    <option value="all">All</option>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
 
-                        <div>
-                            <label class="mb-2 block text-sm font-medium text-zinc-300">
-                                Per page
-                            </label>
-                            <select
-                                wire:model.live="perPage"
-                                class="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-100 outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20"
-                            >
-                                <option value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                            </select>
+                            <div>
+                                <label class="mb-2 block text-sm font-medium text-zinc-300">List Per Page</label>
+                                <select
+                                    wire:model.live="perPage"
+                                    class="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-100 outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20"
+                                >
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-sm">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-left text-sm">
-                            <thead class="bg-zinc-950/80">
-                                <tr class="text-zinc-400">
-                                    <th class="px-5 py-3 font-medium">Title</th>
-                                    <th class="px-5 py-3 font-medium">Venue</th>
-                                    <th class="px-5 py-3 font-medium">Date</th>
-                                    <th class="px-5 py-3 font-medium text-right">Fee</th>
-                                    <th class="px-5 py-3 font-medium">Active</th>
-                                    <th class="px-5 py-3 font-medium">Created by</th>
-                                    <th class="px-5 py-3 font-medium text-right">Actions</th>
-                                </tr>
-                            </thead>
+                    <div class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+                        {{-- Calendar --}}
+                        <div class="xl:col-span-8">
+                            <div class="overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-sm">
+                                <div class="flex flex-col gap-4 border-b border-white/10 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                                    <div>
+                                        <h2 class="text-lg font-semibold text-white">{{ $calendarLabel }}</h2>
+                                        <p class="mt-1 text-sm text-zinc-400">
+                                            Click a day to review scheduled events.
+                                        </p>
+                                    </div>
 
-                            <tbody class="divide-y divide-white/10">
-                                @forelse ($events as $event)
-                                    <tr class="transition hover:bg-amber-500/[0.04]">
-                                        <td class="px-5 py-4 font-medium text-zinc-100">
-                                            {{ $event['title'] }}
-                                        </td>
+                                    <div class="flex items-center gap-2">
+                                        <button
+                                            type="button"
+                                            wire:click="previousMonth"
+                                            class="rounded-xl border border-white/10 bg-zinc-950 px-3 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-800"
+                                        >
+                                            Prev
+                                        </button>
 
-                                        <td class="px-5 py-4 text-zinc-300">
-                                            {{ $event['venue'] }}
-                                        </td>
+                                        <button
+                                            type="button"
+                                            wire:click="goToToday"
+                                            class="rounded-xl bg-amber-500 px-3 py-2 text-sm font-medium text-zinc-950 transition hover:bg-amber-400"
+                                        >
+                                            Today
+                                        </button>
 
-                                        <td class="px-5 py-4">
-                                            <div class="flex flex-col">
-                                                <span class="text-zinc-100">
-                                                    {{ $event['event_date']->format('M d, Y') }}
+                                        <button
+                                            type="button"
+                                            wire:click="nextMonth"
+                                            class="rounded-xl border border-white/10 bg-zinc-950 px-3 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-800"
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-7 border-b border-white/10 bg-zinc-950/80 text-center text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                                    @foreach (['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $dayName)
+                                        <div class="px-2 py-3">{{ $dayName }}</div>
+                                    @endforeach
+                                </div>
+
+                                <div class="grid grid-cols-7">
+                                    @foreach ($calendarDays as $day)
+                                        <button
+                                            type="button"
+                                            wire:click="selectDate('{{ $day['date'] }}')"
+                                            class="
+                                                min-h-[122px] border-b border-r border-white/10 p-2 text-left align-top transition
+                                                {{ !$day['isCurrentMonth'] ? 'bg-zinc-950/40 text-zinc-600' : 'bg-zinc-900 text-zinc-100 hover:bg-zinc-800/80' }}
+                                                {{ $day['isSelected'] ? 'ring-2 ring-inset ring-amber-400' : '' }}
+                                            "
+                                        >
+                                            <div class="flex items-start justify-between">
+                                                <span class="
+                                                    inline-flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold
+                                                    {{ $day['isToday'] ? 'bg-amber-500 text-zinc-950' : 'text-zinc-300' }}
+                                                ">
+                                                    {{ $day['day'] }}
                                                 </span>
-                                                <span class="text-xs text-zinc-500">
-                                                    {{ $event['event_date']->format('h:i A') }}
+
+                                                @if ($day['count'] > 0)
+                                                    <span class="rounded-full border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-300">
+                                                        {{ $day['count'] }}
+                                                    </span>
+                                                @endif
+                                            </div>
+
+                                            <div class="mt-3 space-y-1">
+                                                @foreach (collect($day['events'])->take(2) as $event)
+                                                    <div class="truncate rounded-lg border px-2 py-1 text-[11px]
+                                                        {{ $event['is_active']
+                                                            ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300'
+                                                            : 'border-zinc-700 bg-zinc-800 text-zinc-300' }}">
+                                                        {{ $event['time'] }} · {{ $event['title'] }}
+                                                    </div>
+                                                @endforeach
+
+                                                @if ($day['count'] > 2)
+                                                    <div class="text-[11px] text-zinc-500">
+                                                        +{{ $day['count'] - 2 }} more
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Selected Day Panel --}}
+                        <div class="xl:col-span-4">
+                            <div class="rounded-2xl border border-white/10 bg-zinc-900 shadow-sm">
+                                <div class="border-b border-white/10 px-5 py-4">
+                                    <h3 class="text-base font-semibold text-white">{{ $selectedDateLabel }}</h3>
+                                    <p class="mt-1 text-sm text-zinc-400">
+                                        Events scheduled for the selected day.
+                                    </p>
+                                </div>
+
+                                <div class="p-5">
+                                    @forelse ($selectedDayEvents as $event)
+                                        <div class="mb-4 rounded-2xl border border-white/10 bg-zinc-950/70 p-4 last:mb-0">
+                                            <div class="flex items-start justify-between gap-3">
+                                                <div class="min-w-0">
+                                                    <h4 class="truncate font-semibold text-white">
+                                                        {{ $event['title'] }}
+                                                    </h4>
+                                                    <p class="mt-1 text-sm text-zinc-400">
+                                                        {{ $event['venue'] ?: 'No venue set' }}
+                                                    </p>
+                                                </div>
+
+                                                <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-medium
+                                                    {{ $event['is_active']
+                                                        ? 'border border-emerald-500/20 bg-emerald-500/10 text-emerald-300'
+                                                        : 'border border-zinc-500/20 bg-zinc-500/10 text-zinc-400' }}">
+                                                    {{ $event['is_active'] ? 'Active' : 'Inactive' }}
                                                 </span>
                                             </div>
-                                        </td>
 
-                                        <td class="px-5 py-4 text-right font-medium text-zinc-100">
-                                            ₱{{ $event['fee_pesos'] }}
-                                        </td>
+                                            <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
+                                                <div class="rounded-xl border border-white/10 bg-zinc-900 p-3">
+                                                    <p class="text-xs uppercase tracking-wide text-zinc-500">Time</p>
+                                                    <p class="mt-1 font-medium text-zinc-100">{{ $event['time'] }}</p>
+                                                </div>
 
-                                        <td class="px-5 py-4">
-                                            @if ($event['is_active'])
-                                                <span class="inline-flex rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-300">
-                                                    Active
-                                                </span>
-                                            @else
-                                                <span class="inline-flex rounded-full border border-zinc-500/20 bg-zinc-500/10 px-2.5 py-1 text-xs font-medium text-zinc-400">
-                                                    Inactive
-                                                </span>
-                                            @endif
-                                        </td>
+                                                <div class="rounded-xl border border-white/10 bg-zinc-900 p-3">
+                                                    <p class="text-xs uppercase tracking-wide text-zinc-500">Fee</p>
+                                                    <p class="mt-1 font-medium text-zinc-100">₱{{ $event['fee_pesos'] }}</p>
+                                                </div>
+                                            </div>
 
-                                        <td class="px-5 py-4 text-zinc-300">
-                                            {{ $event['creator'] ?? '—' }}
-                                        </td>
-
-                                        <td class="px-5 py-4">
-                                            @can('edit.event')
-                                                <div class="flex justify-end gap-2">
+                                            <div class="mt-4 flex flex-wrap gap-2">
+                                                @can('edit.event')
                                                     <button
                                                         type="button"
                                                         wire:click="toggleActive({{ $event['id'] }})"
-                                                        wire:loading.attr="disabled"
-                                                        class="inline-flex items-center rounded-xl border border-white/10 bg-zinc-950 px-3 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-800 disabled:opacity-50"
+                                                        class="inline-flex items-center rounded-xl border border-white/10 bg-zinc-900 px-3 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-800"
                                                     >
                                                         {{ $event['is_active'] ? 'Disable' : 'Enable' }}
                                                     </button>
@@ -404,30 +483,129 @@
                                                         wire:navigate
                                                         class="inline-flex items-center rounded-xl bg-amber-500 px-3 py-2 text-sm font-medium text-zinc-950 transition hover:bg-amber-400"
                                                     >
-                                                        Edit
+                                                        Edit Event
                                                     </a>
-                                                </div>
-                                            @endcan
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="px-5 py-12 text-center text-sm text-zinc-500">
-                                            No events found.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                                @endcan
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <div class="rounded-2xl border border-dashed border-white/10 bg-zinc-950/50 p-6 text-center">
+                                            <p class="text-sm font-medium text-zinc-300">No events on this date.</p>
+                                            <p class="mt-1 text-sm text-zinc-500">Select another day or create a new event.</p>
+                                        </div>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="flex flex-col gap-3 border-t border-white/10 px-5 py-4 text-sm sm:flex-row sm:items-center sm:justify-between">
-                        <p class="text-zinc-400">
-                            Showing {{ $events->firstItem() ?? 0 }}–{{ $events->lastItem() ?? 0 }} of {{ $events->total() }}
-                        </p>
+                    {{-- Event List Table --}}
+                    <div class="overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-sm">
+                        <div class="border-b border-white/10 px-5 py-4">
+                            <h2 class="text-base font-semibold text-white">Event List</h2>
+                            <p class="mt-1 text-sm text-zinc-400">
+                                Detailed tabular view for searching, reviewing, and editing events.
+                            </p>
+                        </div>
 
-                        <div class="[&>*]:!shadow-none">
-                            {{ $events->links() }}
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-left text-sm">
+                                <thead class="bg-zinc-950/80">
+                                    <tr class="text-zinc-400">
+                                        <th class="px-5 py-3 font-medium">Title</th>
+                                        <th class="px-5 py-3 font-medium">Venue</th>
+                                        <th class="px-5 py-3 font-medium">Date</th>
+                                        <th class="px-5 py-3 font-medium text-right">Fee</th>
+                                        <th class="px-5 py-3 font-medium">Active</th>
+                                        <th class="px-5 py-3 font-medium">Created by</th>
+                                        <th class="px-5 py-3 font-medium text-right">Actions</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody class="divide-y divide-white/10">
+                                    @forelse ($events as $event)
+                                        <tr class="transition hover:bg-amber-500/[0.04]">
+                                            <td class="px-5 py-4 font-medium text-zinc-100">
+                                                {{ $event['title'] }}
+                                            </td>
+
+                                            <td class="px-5 py-4 text-zinc-300">
+                                                {{ $event['venue'] }}
+                                            </td>
+
+                                            <td class="px-5 py-4">
+                                                <div class="flex flex-col">
+                                                    <span class="text-zinc-100">
+                                                        {{ $event['event_date']->format('M d, Y') }}
+                                                    </span>
+                                                    <span class="text-xs text-zinc-500">
+                                                        {{ $event['event_date']->format('h:i A') }}
+                                                    </span>
+                                                </div>
+                                            </td>
+
+                                            <td class="px-5 py-4 text-right font-medium text-zinc-100">
+                                                ₱{{ $event['fee_pesos'] }}
+                                            </td>
+
+                                            <td class="px-5 py-4">
+                                                @if ($event['is_active'])
+                                                    <span class="inline-flex rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-300">
+                                                        Active
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex rounded-full border border-zinc-500/20 bg-zinc-500/10 px-2.5 py-1 text-xs font-medium text-zinc-400">
+                                                        Inactive
+                                                    </span>
+                                                @endif
+                                            </td>
+
+                                            <td class="px-5 py-4 text-zinc-300">
+                                                {{ $event['creator'] ?? '—' }}
+                                            </td>
+
+                                            <td class="px-5 py-4">
+                                                @can('edit.event')
+                                                    <div class="flex justify-end gap-2">
+                                                        <button
+                                                            type="button"
+                                                            wire:click="toggleActive({{ $event['id'] }})"
+                                                            wire:loading.attr="disabled"
+                                                            class="inline-flex items-center rounded-xl border border-white/10 bg-zinc-950 px-3 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-800 disabled:opacity-50"
+                                                        >
+                                                            {{ $event['is_active'] ? 'Disable' : 'Enable' }}
+                                                        </button>
+
+                                                        <a
+                                                            href="{{ route('events.edit', $event['id']) }}"
+                                                            wire:navigate
+                                                            class="inline-flex items-center rounded-xl bg-amber-500 px-3 py-2 text-sm font-medium text-zinc-950 transition hover:bg-amber-400"
+                                                        >
+                                                            Edit
+                                                        </a>
+                                                    </div>
+                                                @endcan
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="px-5 py-12 text-center text-sm text-zinc-500">
+                                                No events found.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="flex flex-col gap-3 border-t border-white/10 px-5 py-4 text-sm sm:flex-row sm:items-center sm:justify-between">
+                            <p class="text-zinc-400">
+                                Showing {{ $events->firstItem() ?? 0 }}–{{ $events->lastItem() ?? 0 }} of {{ $events->total() }}
+                            </p>
+
+                            <div class="[&>*]:!shadow-none">
+                                {{ $events->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>

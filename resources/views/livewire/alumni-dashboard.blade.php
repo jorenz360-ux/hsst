@@ -1,15 +1,15 @@
 <div>
-    <div class="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl space-y-4 px-3 py-4 sm:space-y-6 sm:px-6 sm:py-6 lg:px-8">
 
         {{-- Header --}}
-        <section class="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-900 via-zinc-900 to-teal-950/40 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-            <div class="flex flex-col gap-6 px-6 py-6 lg:flex-row lg:items-end lg:justify-between">
+        <section class="overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-slate-950 via-zinc-900 to-indigo-950/40 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:rounded-3xl">
+            <div class="flex flex-col gap-4 px-4 py-5 sm:px-6 sm:py-6 lg:flex-row lg:items-end lg:justify-between">
                 <div class="max-w-3xl">
-                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-teal-400">
+                    <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-indigo-400 sm:text-xs sm:tracking-[0.24em]">
                         Alumni Portal
                     </p>
 
-                    <h1 class="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                    <h1 class="mt-2 text-xl font-bold tracking-tight text-white sm:text-3xl">
                         Welcome back, {{ auth()->user()->username ?? 'Alumnus' }}
                     </h1>
 
@@ -19,14 +19,14 @@
                     </p>
                 </div>
 
-                <div class="flex flex-wrap gap-3">
+                <div class="grid w-full grid-cols-1 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:gap-3">
                     <a href="#profile-section"
-                       class="inline-flex items-center rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-zinc-200 transition hover:bg-white/[0.08]">
+                       class="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-zinc-200 transition hover:bg-white/[0.08]">
                         Edit Profile
                     </a>
 
                     <a href="#upcoming-events"
-                       class="inline-flex items-center rounded-xl bg-teal-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-teal-400">
+                       class="inline-flex items-center justify-center rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-400">
                         View Events
                     </a>
                 </div>
@@ -35,7 +35,7 @@
 
         {{-- Profile Status --}}
         @if(auth()->user()->alumni)
-            <section class="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.08] px-5 py-4">
+            <section class="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.08] px-4 py-4 sm:px-5">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <p class="text-sm font-semibold text-emerald-300">Profile Complete</p>
@@ -44,7 +44,7 @@
                         </p>
                     </div>
 
-                    <span class="inline-flex w-fit items-center rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-300">
+                    <span class="inline-flex w-fit items-center rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
                         Active
                     </span>
                 </div>
@@ -52,39 +52,39 @@
         @endif
 
         {{-- Overview --}}
-        <section class="rounded-3xl border border-white/10 bg-zinc-900/60 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-sm">
-            <div class="border-b border-white/10 px-5 py-4">
-                <h2 class="text-lg font-semibold text-white">Overview</h2>
+        <section class="rounded-2xl border border-white/10 bg-zinc-900/60 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-sm sm:rounded-3xl">
+            <div class="border-b border-white/10 px-4 py-4 sm:px-5">
+                <h2 class="text-base font-semibold text-white sm:text-lg">Overview</h2>
                 <p class="mt-1 text-sm text-zinc-400">
                     A quick summary of your alumni activity and available events.
                 </p>
             </div>
 
-            <div class="grid gap-4 p-5 sm:grid-cols-2 xl:grid-cols-4">
-                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                    <p class="text-xs font-medium uppercase tracking-wide text-zinc-400">My Batch</p>
-                    <p class="mt-3 text-lg font-semibold text-white">
+            <div class="grid gap-3 p-4 sm:grid-cols-2 sm:gap-4 sm:p-5 xl:grid-cols-4">
+                <div class="rounded-xl border border-indigo-500/10 bg-white/[0.03] p-4 sm:rounded-2xl">
+                    <p class="text-[11px] font-medium uppercase tracking-wide text-zinc-400">My Batch</p>
+                    <p class="mt-2 text-base font-semibold text-white sm:mt-3 sm:text-lg">
                         {{ auth()->user()->alumni?->batch?->schoolyear ?? 'Not set' }}
                     </p>
                 </div>
 
-                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                    <p class="text-xs font-medium uppercase tracking-wide text-zinc-400">Upcoming Events</p>
-                    <p class="mt-3 text-2xl font-bold text-white">
+                <div class="rounded-xl border border-indigo-500/10 bg-white/[0.03] p-4 sm:rounded-2xl">
+                    <p class="text-[11px] font-medium uppercase tracking-wide text-zinc-400">Upcoming Events</p>
+                    <p class="mt-2 text-xl font-bold text-white sm:mt-3 sm:text-2xl">
                         {{ $upcomingEvents->count() ?? 0 }}
                     </p>
                 </div>
 
-                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                    <p class="text-xs font-medium uppercase tracking-wide text-zinc-400">Total Donated</p>
-                    <p class="mt-3 text-lg font-semibold text-white">
+                <div class="rounded-xl border border-indigo-500/10 bg-white/[0.03] p-4 sm:rounded-2xl">
+                    <p class="text-[11px] font-medium uppercase tracking-wide text-zinc-400">Total Donated</p>
+                    <p class="mt-2 text-base font-semibold text-white sm:mt-3 sm:text-lg">
                         ₱{{ number_format(($paidTotal ?? 0) / 100, 2) }}
                     </p>
                 </div>
 
-                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                    <p class="text-xs font-medium uppercase tracking-wide text-zinc-400">Last Donation</p>
-                    <p class="mt-3 text-lg font-semibold text-white">
+                <div class="rounded-xl border border-indigo-500/10 bg-white/[0.03] p-4 sm:rounded-2xl">
+                    <p class="text-[11px] font-medium uppercase tracking-wide text-zinc-400">Last Donation</p>
+                    <p class="mt-2 text-base font-semibold text-white sm:mt-3 sm:text-lg">
                         {{ $lastPaidAt ? '₱' . number_format(($lastPaidAmount ?? 0) / 100, 2) : 'No donation yet' }}
                     </p>
                     @if ($lastPaidAt)
@@ -96,18 +96,18 @@
             </div>
         </section>
 
-        <div class="grid gap-6 xl:grid-cols-[1.35fr_0.65fr]">
+        <div class="grid gap-4 xl:grid-cols-[1.35fr_0.65fr] xl:gap-6">
 
             {{-- EVENTS --}}
-            <section id="upcoming-events" class="rounded-3xl border border-white/10 bg-zinc-900/60 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-sm">
-                <div class="border-b border-white/10 px-5 py-4">
-                    <h2 class="text-lg font-semibold text-white">Upcoming Events</h2>
+            <section id="upcoming-events" class="rounded-2xl border border-white/10 bg-zinc-900/60 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-sm sm:rounded-3xl">
+                <div class="border-b border-white/10 px-4 py-4 sm:px-5">
+                    <h2 class="text-base font-semibold text-white sm:text-lg">Upcoming Events</h2>
                     <p class="mt-1 text-sm text-zinc-400">
                         Explore upcoming alumni activities and their available registration items.
                     </p>
                 </div>
 
-                <div class="space-y-4 p-5">
+                <div class="space-y-3 p-4 sm:space-y-4 sm:p-5">
                     @forelse ($upcomingEvents as $event)
                         @php
                             $registration = $myEventRegs[$event->id] ?? null;
@@ -118,7 +118,7 @@
                                 'pending' => 'border-amber-400/20 bg-amber-400/10 text-amber-300',
                                 'rejected' => 'border-rose-400/20 bg-rose-400/10 text-rose-300',
                                 'not_required' => 'border-sky-400/20 bg-sky-400/10 text-sky-300',
-                                default => 'border-white/10 bg-white/[0.05] text-zinc-300',
+                                default => 'border-indigo-400/15 bg-indigo-400/10 text-indigo-200',
                             };
 
                             $statusLabel = match ($paymentStatus) {
@@ -131,21 +131,21 @@
                             };
                         @endphp
 
-                        <article class="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03]">
-                            <div class="flex flex-col gap-5 px-5 py-5">
+                        <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] sm:rounded-3xl">
+                            <div class="space-y-4 px-4 py-4 sm:space-y-5 sm:px-5 sm:py-5">
                                 <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                                    <div class="min-w-0">
+                                    <div class="min-w-0 flex-1">
                                         <div class="flex flex-wrap items-center gap-2">
-                                            <h3 class="text-lg font-semibold text-white">
+                                            <h3 class="text-base font-semibold text-white sm:text-lg">
                                                 {{ $event->title }}
                                             </h3>
 
-                                            <span class="inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide {{ $statusClasses }}">
+                                            <span class="inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide sm:text-[11px] {{ $statusClasses }}">
                                                 {{ $statusLabel }}
                                             </span>
                                         </div>
 
-                                        <div class="mt-3 flex flex-wrap gap-2 text-xs text-zinc-400">
+                                        <div class="mt-3 flex flex-wrap gap-2 text-[11px] text-zinc-400 sm:text-xs">
                                             <span class="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1">
                                                 {{ $event->event_date?->format('M d, Y • h:i A') }}
                                             </span>
@@ -162,121 +162,131 @@
                                         </div>
                                     </div>
 
-                                    <div class="w-full max-w-xs rounded-2xl border border-white/10 bg-zinc-950/50 p-4">
-                                        <p class="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                                            Registration Fee
-                                        </p>
-                                        <p class="mt-2 text-2xl font-bold text-white">
-                                            ₱{{ number_format(($event->registration_fee ?? 0) / 100, 2) }}
-                                        </p>
+                                    <div class="w-full lg:max-w-xs">
+                                        <div class="rounded-xl border border-indigo-500/10 bg-slate-950/50 p-4 sm:rounded-2xl">
+                                            <div class="flex items-center justify-between gap-3 lg:block">
+                                                <div>
+                                                    <p class="text-[11px] font-medium uppercase tracking-wide text-zinc-500">
+                                                        Registration Fee
+                                                    </p>
+                                                    <p class="mt-1 text-xl font-bold text-white sm:text-2xl">
+                                                        ₱{{ number_format(($event->registration_fee ?? 0) / 100, 2) }}
+                                                    </p>
+                                                </div>
+                                            </div>
 
-                                        <div class="mt-4">
-                                          <a
-                                                href="{{ route('alumni.events.show', $event) }}"
-                                                wire:navigate
-                                                class="inline-flex w-full items-center justify-center rounded-xl bg-teal-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-teal-400">
-                                                @if ($paymentStatus === 'paid')
-                                                    View Registration
-                                                @elseif ($paymentStatus === 'pending')
-                                                    Check Payment Status
-                                                @elseif ($paymentStatus === 'rejected')
-                                                    Upload New Proof
-                                                @elseif ($paymentStatus === 'not_required')
-                                                    Register Now
-                                                @elseif ($paymentStatus === 'unpaid')
-                                                    Continue Payment
-                                                @else
-                                                    Register / Pay
-                                                @endif
-                                            </a>
+                                            <div class="mt-4">
+                                                <a
+                                                    href="{{ route('alumni.events.show', $event) }}"
+                                                    wire:navigate
+                                                    class="inline-flex w-full items-center justify-center rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-400"
+                                                >
+                                                    @if ($paymentStatus === 'paid')
+                                                        View Registration
+                                                    @elseif ($paymentStatus === 'pending')
+                                                        Check Payment Status
+                                                    @elseif ($paymentStatus === 'rejected')
+                                                        Upload New Proof
+                                                    @elseif ($paymentStatus === 'not_required')
+                                                        Register Now
+                                                    @elseif ($paymentStatus === 'unpaid')
+                                                        Continue Payment
+                                                    @else
+                                                        Register / Pay
+                                                    @endif
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                @foreach ($event->registrationItems as $item)
-    @php
-        $itemStatus = $myEventItemPayments[$event->id][$item->id] ?? 'unpaid';
+                                @if ($event->registrationItems->count())
+                                    <div class="space-y-2 sm:space-y-3">
+                                        @foreach ($event->registrationItems as $item)
+                                            @php
+                                                $itemStatus = $myEventItemPayments[$event->id][$item->id] ?? 'unpaid';
 
-        $itemBadgeClasses = match ($itemStatus) {
-            'verified' => 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300',
-            'pending' => 'border-amber-400/20 bg-amber-400/10 text-amber-300',
-            'rejected' => 'border-rose-400/20 bg-rose-400/10 text-rose-300',
-            default => 'border-white/10 bg-white/[0.05] text-zinc-300',
-        };
+                                                $itemBadgeClasses = match ($itemStatus) {
+                                                    'verified' => 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300',
+                                                    'pending' => 'border-amber-400/20 bg-amber-400/10 text-amber-300',
+                                                    'rejected' => 'border-rose-400/20 bg-rose-400/10 text-rose-300',
+                                                    default => 'border-indigo-400/15 bg-indigo-400/10 text-indigo-200',
+                                                };
 
-        $itemBadgeLabel = match ($itemStatus) {
-            'verified' => 'Verified',
-            'pending' => 'Pending',
-            'rejected' => 'Rejected',
-            default => 'Unpaid',
-        };
-    @endphp
+                                                $itemBadgeLabel = match ($itemStatus) {
+                                                    'verified' => 'Verified',
+                                                    'pending' => 'Pending',
+                                                    'rejected' => 'Rejected',
+                                                    default => 'Unpaid',
+                                                };
+                                            @endphp
 
-    <div class="flex items-start justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
-        <div class="min-w-0">
-            <div class="flex flex-wrap items-center gap-2">
-                <p class="text-sm font-medium text-white">
-                    {{ $item->name }}
-                </p>
+                                            <div class="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 sm:rounded-2xl">
+                                                <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                                    <div class="min-w-0">
+                                                        <div class="flex flex-wrap items-center gap-2">
+                                                            <p class="text-sm font-medium text-white">
+                                                                {{ $item->name }}
+                                                            </p>
 
-                {{-- Required / Optional --}}
-                @if ($item->is_required)
-                    <span class="rounded-full border border-rose-400/20 bg-rose-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-rose-300">
-                        Required
-                    </span>
-                @else
-                    <span class="rounded-full border border-sky-400/20 bg-sky-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sky-300">
-                        Optional
-                    </span>
-                @endif
+                                                            @if ($item->is_required)
+                                                                <span class="rounded-full border border-rose-400/20 bg-rose-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-rose-300">
+                                                                    Required
+                                                                </span>
+                                                            @else
+                                                                <span class="rounded-full border border-sky-400/20 bg-sky-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sky-300">
+                                                                    Optional
+                                                                </span>
+                                                            @endif
 
-                {{-- ✅ NEW: Payment Status Badge --}}
-                <span class="rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide {{ $itemBadgeClasses }}">
-                    {{ $itemBadgeLabel }}
-                </span>
-            </div>
+                                                            <span class="rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide {{ $itemBadgeClasses }}">
+                                                                {{ $itemBadgeLabel }}
+                                                            </span>
+                                                        </div>
 
-            @if ($item->description)
-                <p class="mt-1 text-xs leading-5 text-zinc-400">
-                    {{ $item->description }}
-                </p>
-            @endif
+                                                        @if ($item->description)
+                                                            <p class="mt-1 text-xs leading-5 text-zinc-400">
+                                                                {{ $item->description }}
+                                                            </p>
+                                                        @endif
 
-            @if ($item->schedule)
-                <p class="mt-1 text-xs text-zinc-500">
-                    Linked to {{ $item->schedule->title }}
-                    @if ($item->schedule->schedule_time)
-                        • {{ \Illuminate\Support\Carbon::parse($item->schedule->schedule_time)->format('h:i A') }}
-                    @endif
-                </p>
-            @endif
+                                                        @if ($item->schedule)
+                                                            <p class="mt-1 text-xs text-zinc-500">
+                                                                Linked to {{ $item->schedule->title }}
+                                                                @if ($item->schedule->schedule_time)
+                                                                    • {{ \Illuminate\Support\Carbon::parse($item->schedule->schedule_time)->format('h:i A') }}
+                                                                @endif
+                                                            </p>
+                                                        @endif
 
-            {{-- ✅ Optional UX hint --}}
-            @if ($itemStatus === 'rejected')
-                <p class="mt-2 text-xs text-rose-400">
-                    Your payment was rejected. Please upload a new proof.
-                </p>
-            @endif
+                                                        @if ($itemStatus === 'rejected')
+                                                            <p class="mt-2 text-xs text-rose-400">
+                                                                Your payment was rejected. Please upload a new proof.
+                                                            </p>
+                                                        @endif
 
-            @if ($itemStatus === 'pending')
-                <p class="mt-2 text-xs text-amber-400">
-                    Waiting for admin verification.
-                </p>
-            @endif
-        </div>
+                                                        @if ($itemStatus === 'pending')
+                                                            <p class="mt-2 text-xs text-amber-400">
+                                                                Waiting for admin verification.
+                                                            </p>
+                                                        @endif
+                                                    </div>
 
-        <div class="shrink-0 text-right">
-            <p class="text-sm font-semibold text-white">
-                ₱{{ number_format($item->price / 100, 2) }}
-            </p>
-        </div>
-    </div>
-@endforeach
+                                                    <div class="shrink-0 text-left sm:text-right">
+                                                        <p class="text-sm font-semibold text-white">
+                                                            ₱{{ number_format($item->price / 100, 2) }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </div>
                         </article>
                     @empty
-                        <div class="rounded-3xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-12 text-center">
-                            <h3 class="text-lg font-semibold text-white">No upcoming events yet</h3>
+                        <div class="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] px-5 py-10 text-center sm:rounded-3xl sm:px-6 sm:py-12">
+                            <h3 class="text-base font-semibold text-white sm:text-lg">No upcoming events yet</h3>
                             <p class="mt-2 text-sm text-zinc-400">
                                 New alumni events will appear here once they are published.
                             </p>
@@ -286,42 +296,42 @@
             </section>
 
             {{-- SIDEBAR --}}
-            <aside class="space-y-6">
-                <section class="rounded-3xl border border-white/10 bg-zinc-900/60 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-sm">
-                    <div class="border-b border-white/10 px-5 py-4">
-                        <h2 class="text-lg font-semibold text-white">Quick Actions</h2>
+            <aside class="space-y-4 sm:space-y-6">
+                <section class="rounded-2xl border border-white/10 bg-zinc-900/60 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-sm sm:rounded-3xl">
+                    <div class="border-b border-white/10 px-4 py-4 sm:px-5">
+                        <h2 class="text-base font-semibold text-white sm:text-lg">Quick Actions</h2>
                     </div>
 
-                    <div class="space-y-3 p-5">
+                    <div class="grid gap-2 p-4 sm:space-y-3 sm:p-5">
                         <a href="#upcoming-events"
-                           class="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-zinc-200 transition hover:bg-white/[0.06]">
+                           class="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-zinc-200 transition hover:border-indigo-400/20 hover:bg-indigo-400/10 sm:rounded-2xl">
                             <span>Browse Events</span>
                             <span>→</span>
                         </a>
 
                         <a href="#profile-section"
-                           class="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-zinc-200 transition hover:bg-white/[0.06]">
+                           class="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-zinc-200 transition hover:border-indigo-400/20 hover:bg-indigo-400/10 sm:rounded-2xl">
                             <span>Update Profile</span>
                             <span>→</span>
                         </a>
                     </div>
                 </section>
 
-                <section class="rounded-3xl border border-white/10 bg-zinc-900/60 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-sm">
-                    <div class="border-b border-white/10 px-5 py-4">
-                        <h2 class="text-lg font-semibold text-white">Recent Activity</h2>
+                <section class="rounded-2xl border border-white/10 bg-zinc-900/60 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-sm sm:rounded-3xl">
+                    <div class="border-b border-white/10 px-4 py-4 sm:px-5">
+                        <h2 class="text-base font-semibold text-white sm:text-lg">Recent Activity</h2>
                     </div>
 
-                    <div class="space-y-3 p-5">
-                        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                            <p class="text-xs uppercase tracking-wide text-zinc-500">Last Donation</p>
+                    <div class="grid gap-2 p-4 sm:gap-3 sm:p-5">
+                        <div class="rounded-xl border border-indigo-500/10 bg-white/[0.03] p-4 sm:rounded-2xl">
+                            <p class="text-[11px] uppercase tracking-wide text-zinc-500">Last Donation</p>
                             <p class="mt-2 text-sm font-medium text-white">
                                 {{ $lastPaidAt ? $lastPaidAt : 'No donation recorded yet' }}
                             </p>
                         </div>
 
-                        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                            <p class="text-xs uppercase tracking-wide text-zinc-500">Announcements</p>
+                        <div class="rounded-xl border border-indigo-500/10 bg-white/[0.03] p-4 sm:rounded-2xl">
+                            <p class="text-[11px] uppercase tracking-wide text-zinc-500">Announcements</p>
                             <p class="mt-2 text-sm font-medium text-white">
                                 {{ $latestAnnouncements->count() }} active post(s)
                             </p>

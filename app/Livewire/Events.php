@@ -4,7 +4,9 @@ namespace App\Livewire;
 
 use App\Models\Event;
 use App\Models\Payment;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -16,6 +18,7 @@ class Events extends Component
     use WithPagination;
 
     public string $tab = 'events';
+
     public string $search = '';
     public string $status = 'upcoming'; // upcoming|past|all
     public string $active = 'all';      // all|active|inactive
@@ -25,13 +28,24 @@ class Events extends Component
     public string $paymentType = 'all'; // all|registration|item
     public int $paymentPerPage = 10;
 
+    public string $calendarMonth;
+    public ?string $selectedDate = null;
+
     protected $queryString = [
         'tab' => ['except' => 'events'],
         'search' => ['except' => ''],
         'status' => ['except' => 'upcoming'],
         'active' => ['except' => 'all'],
         'page' => ['except' => 1],
+        'calendarMonth' => ['except' => ''],
+        'selectedDate' => ['except' => null],
     ];
+
+    public function mount(): void
+    {
+        $this->calendarMonth = now()->startOfMonth()->format('Y-m');
+        $this->selectedDate ??= now()->toDateString();
+    }
 
     public function updatingSearch(): void
     {
@@ -44,6 +58,11 @@ class Events extends Component
     }
 
     public function updatingActive(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingPerPage(): void
     {
         $this->resetPage();
     }
@@ -63,11 +82,36 @@ class Events extends Component
         $this->resetPage(pageName: 'paymentsPage');
     }
 
+    public function previousMonth(): void
+    {
+        $this->calendarMonth = Carbon::createFromFormat('Y-m', $this->calendarMonth)
+            ->subMonth()
+            ->format('Y-m');
+    }
+
+    public function nextMonth(): void
+    {
+        $this->calendarMonth = Carbon::createFromFormat('Y-m', $this->calendarMonth)
+            ->addMonth()
+            ->format('Y-m');
+    }
+
+    public function goToToday(): void
+    {
+        $this->calendarMonth = now()->startOfMonth()->format('Y-m');
+        $this->selectedDate = now()->toDateString();
+    }
+
+    public function selectDate(string $date): void
+    {
+        $this->selectedDate = $date;
+    }
+
     public function render()
     {
         $now = now();
 
-        $events = Event::query()
+        $baseEventsQuery = Event::query()
             ->select([
                 'id',
                 'title',
@@ -96,7 +140,9 @@ class Events extends Component
                 } elseif ($this->status === 'past') {
                     $q->where('event_date', '<', $now);
                 }
-            })
+            });
+
+        $events = (clone $baseEventsQuery)
             ->orderBy('event_date', 'asc')
             ->paginate($this->perPage);
 
@@ -109,6 +155,69 @@ class Events extends Component
             'is_active' => (bool) $e->is_active,
             'creator' => $e->creator?->username,
         ]);
+
+        $calendarStart = Carbon::createFromFormat('Y-m', $this->calendarMonth)->startOfMonth();
+        $calendarEnd = $calendarStart->copy()->endOfMonth();
+
+        $calendarEvents = (clone $baseEventsQuery)
+            ->whereBetween('event_date', [
+                $calendarStart->copy()->startOfMonth(),
+                $calendarEnd->copy()->endOfMonth(),
+            ])
+            ->orderBy('event_date', 'asc')
+            ->get()
+            ->map(fn ($e) => [
+                'id' => $e->id,
+                'title' => $e->title,
+                'venue' => $e->venue,
+                'event_date' => $e->event_date,
+                'time' => $e->event_date?->format('h:i A'),
+                'fee_pesos' => number_format(((int) $e->registration_fee) / 100, 2),
+                'is_active' => (bool) $e->is_active,
+                'creator' => $e->creator?->username,
+                'date_key' => $e->event_date?->toDateString(),
+            ]);
+
+        $eventsByDate = $calendarEvents
+            ->groupBy('date_key')
+            ->map(fn (Collection $items) => $items->values());
+
+        $monthGridStart = $calendarStart->copy()->startOfWeek(Carbon::SUNDAY);
+        $monthGridEnd = $calendarEnd->copy()->endOfWeek(Carbon::SATURDAY);
+
+        $calendarDays = collect();
+        $cursor = $monthGridStart->copy();
+
+        while ($cursor <= $monthGridEnd) {
+            $dateKey = $cursor->toDateString();
+            $dayEvents = $eventsByDate->get($dateKey, collect());
+
+            $calendarDays->push([
+                'date' => $dateKey,
+                'day' => $cursor->day,
+                'isCurrentMonth' => $cursor->month === $calendarStart->month,
+                'isToday' => $cursor->isToday(),
+                'isSelected' => $this->selectedDate === $dateKey,
+                'events' => $dayEvents,
+                'count' => $dayEvents->count(),
+            ]);
+
+            $cursor->addDay();
+        }
+
+        $selectedDayEvents = $eventsByDate->get(
+            $this->selectedDate ?? now()->toDateString(),
+            collect()
+        );
+
+        $statsQuery = Event::query();
+
+        $stats = [
+            'total' => (clone $statsQuery)->count(),
+            'upcoming' => (clone $statsQuery)->where('event_date', '>=', $now)->count(),
+            'past' => (clone $statsQuery)->where('event_date', '<', $now)->count(),
+            'active' => (clone $statsQuery)->where('is_active', true)->count(),
+        ];
 
         $pendingPayments = Payment::query()
             ->with([
@@ -152,6 +261,11 @@ class Events extends Component
         return view('livewire.events', [
             'events' => $events,
             'pendingPayments' => $pendingPayments,
+            'calendarDays' => $calendarDays,
+            'selectedDayEvents' => $selectedDayEvents,
+            'calendarLabel' => $calendarStart->format('F Y'),
+            'selectedDateLabel' => Carbon::parse($this->selectedDate ?? now())->format('F d, Y'),
+            'stats' => $stats,
         ]);
     }
 
@@ -184,18 +298,19 @@ class Events extends Component
                 'verified_at' => now(),
             ]);
 
-            // Base registration payment only
-            if (is_null($payment->event_registration_item_id)) {
+            if (is_null($payment->event_registration_item_id) && $payment->registration) {
                 $payment->registration->update([
                     'status' => 'paid',
-                    // 'fee_paid' => 1,
                 ]);
             }
         });
 
-        session()->flash('status', is_null($payment->event_registration_item_id)
-            ? 'Registration payment verified.'
-            : 'Registration item payment verified.');
+        session()->flash(
+            'status',
+            is_null($payment->event_registration_item_id)
+                ? 'Registration payment verified.'
+                : 'Registration item payment verified.'
+        );
         session()->flash('status_id', now()->timestamp . '-' . uniqid());
     }
 
@@ -203,8 +318,7 @@ class Events extends Component
     {
         abort_unless(auth()->user()->can('edit.event'), 403);
 
-        $payment = Payment::query()
-            ->findOrFail($paymentId);
+        $payment = Payment::query()->findOrFail($paymentId);
 
         $payment->update([
             'status' => 'rejected',
