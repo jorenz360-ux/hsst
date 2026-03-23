@@ -55,8 +55,7 @@
 
             <nav class="hidden items-center gap-1 lg:flex">
                 <a href="#homecoming" class="rounded-xl px-4 py-2 text-sm text-[#d6d0c4] transition hover:bg-white/5 hover:text-white">Home</a>
-                <a href="#features" class="rounded-xl px-4 py-2 text-sm text-[#d6d0c4] transition hover:bg-white/5 hover:text-white">Features</a>
-                <a href="#events" class="rounded-xl px-4 py-2 text-sm text-[#d6d0c4] transition hover:bg-white/5 hover:text-white">Events</a>
+               <a href="#events" class="rounded-xl px-4 py-2 text-sm text-[#d6d0c4] transition hover:bg-white/5 hover:text-white">Events</a>
                 <a href="#announcements" class="rounded-xl px-4 py-2 text-sm text-[#d6d0c4] transition hover:bg-white/5 hover:text-white">Announcements</a>
                 <a href="#contact" class="rounded-xl px-4 py-2 text-sm text-[#d6d0c4] transition hover:bg-white/5 hover:text-white">Contact</a>
             </nav>
@@ -103,8 +102,7 @@
     >
         <div class="flex flex-col gap-1">
             <a @click="mobileOpen=false" href="#homecoming" class="rounded-xl px-4 py-3 text-sm text-[#d6d0c4] hover:bg-white/5 hover:text-white">Home</a>
-            <a @click="mobileOpen=false" href="#features" class="rounded-xl px-4 py-3 text-sm text-[#d6d0c4] hover:bg-white/5 hover:text-white">Features</a>
-            <a @click="mobileOpen=false" href="#events" class="rounded-xl px-4 py-3 text-sm text-[#d6d0c4] hover:bg-white/5 hover:text-white">Events</a>
+          <a @click="mobileOpen=false" href="#events" class="rounded-xl px-4 py-3 text-sm text-[#d6d0c4] hover:bg-white/5 hover:text-white">Events</a>
             <a @click="mobileOpen=false" href="#announcements" class="rounded-xl px-4 py-3 text-sm text-[#d6d0c4] hover:bg-white/5 hover:text-white">Announcements</a>
             <a @click="mobileOpen=false" href="#contact" class="rounded-xl px-4 py-3 text-sm text-[#d6d0c4] hover:bg-white/5 hover:text-white">Contact</a>
         </div>
@@ -177,94 +175,49 @@
     </section>
 
     {{-- HOMECOMING --}}
-    <section id="homecoming" class="bg-[#111315] py-20 lg:py-28">
-        <div class="mx-auto grid max-w-[1320px] items-center gap-12 px-5 md:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8">
-            <div class="overflow-hidden">
-                <img
-                    src="{{ asset('images/hsstlogo.jpg') }}"
-                    alt="HSST Logo"
-                    class="mx-auto aspect-square w-full max-w-[460px] object-contain bg-[#17191c] p-10"
-                >
+<section id="homecoming" class="w-full bg-[#111315] py-20 lg:py-28">
+    <div class="w-full px-5 md:px-8 lg:px-12 xl:px-16">
+        <div class="max-w-5xl">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#c6a56b]">
+                Grand Alumni Homecoming
+            </p>
+
+            <h2 class="mt-5 font-display text-[2.3rem] leading-[1.03] text-white sm:text-[3rem] lg:text-[3.9rem]">
+                Whether you studied in 1926 or graduated in 2026, you remain part of the HSST family.
+            </h2>
+
+            <p class="mt-6 max-w-3xl text-[15px] leading-8 text-[#d6d0c4]">
+                The HSST Alumni Homecoming is a celebration of shared history, friendship, and return. It brings together generations of graduates in one meaningful space to reconnect with classmates, revisit the campus, and renew a lifelong bond with the school.
+            </p>
+        </div>
+
+        <div class="mt-14 grid gap-10 border-t border-white/10 pt-10 sm:grid-cols-2">
+            <div>
+                <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c6a56b]">
+                    What to expect
+                </p>
+                <h3 class="mt-3 text-lg font-semibold text-white">
+                    A more graceful alumni experience
+                </h3>
+                <p class="mt-4 text-sm leading-7 text-[#9e988c]">
+                    Reunion moments, featured gatherings, school updates, and a more refined registration experience designed for returning alumni.
+                </p>
             </div>
 
             <div>
-                <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#c6a56b]">
-                    Grand Alumni Homecoming
+                <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c6a56b]">
+                    Why it matters
                 </p>
-
-                <h2 class="mt-5 font-display text-[2.2rem] leading-[1.03] text-white sm:text-[2.8rem] lg:text-[3.6rem]">
-                    Whether you studied in 1926 or graduated in 2026, you remain part of the HSST family.
-                </h2>
-
-                <p class="mt-6 max-w-2xl text-[15px] leading-8 text-[#d6d0c4]">
-                    The HSST Alumni Homecoming is a celebration of shared history, friendship, and return. It brings together generations of graduates in one meaningful space to reconnect with classmates, revisit the campus, and renew a lifelong bond with the school.
+                <h3 class="mt-3 text-lg font-semibold text-white">
+                    A stronger connection across generations
+                </h3>
+                <p class="mt-4 text-sm leading-7 text-[#9e988c]">
+                    It strengthens alumni-school connection and gives every HSSTian a central place to stay informed, involved, and welcomed back home.
                 </p>
-
-                <div class="mt-10 grid gap-6 sm:grid-cols-2">
-                    <div>
-                        <h3 class="text-lg font-semibold text-white">What to expect</h3>
-                        <p class="mt-3 text-sm leading-7 text-[#9e988c]">
-                            Reunion moments, featured gatherings, school updates, and a more graceful registration experience.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h3 class="text-lg font-semibold text-white">Why it matters</h3>
-                        <p class="mt-3 text-sm leading-7 text-[#9e988c]">
-                            It strengthens alumni-school connection and gives every HSSTian a central place to stay informed and involved.
-                        </p>
-                    </div>
-                </div>
             </div>
         </div>
-    </section>
-
-    {{-- FEATURES --}}
-    <section id="features" class="bg-[#0b0b0c] py-20 lg:py-28">
-        <div class="mx-auto max-w-[1320px] px-5 md:px-6 lg:px-8">
-            <div class="mb-14 grid gap-6 lg:grid-cols-[1.1fr_.9fr] lg:items-end">
-                <div>
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.30em] text-[#c6a56b]">
-                        Platform Features
-                    </p>
-                    <h2 class="mt-4 font-display text-[2rem] leading-[1.04] text-white sm:text-[2.5rem] lg:text-[3.1rem]">
-                        Built for participation, not just display.
-                    </h2>
-                </div>
-
-                <p class="max-w-[560px] text-[15px] leading-8 text-[#9e988c]">
-                    A more elegant and organized platform for official alumni communication, announcements, event participation, and trusted school-managed updates.
-                </p>
-            </div>
-
-            <div class="grid gap-10 md:grid-cols-2 xl:grid-cols-4">
-                <div>
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.30em] text-[#c6a56b]">01</p>
-                    <h3 class="mt-4 text-lg font-semibold text-white">Official Announcements</h3>
-                    <p class="mt-3 text-sm leading-7 text-[#9e988c]">
-                        Publish trusted school and alumni updates in one clear communication channel.
-                    </p>
-                </div>
-
-                <div>
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.30em] text-[#c6a56b]">02</p>
-                    <h3 class="mt-4 text-lg font-semibold text-white">Event Registration</h3>
-                    <p class="mt-3 text-sm leading-7 text-[#9e988c]">
-                        Support reunions, homecomings, and alumni participation with a smoother flow.
-                    </p>
-                </div>
-
-                <div>
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.30em] text-[#c6a56b]">03</p>
-                    <h3 class="mt-4 text-lg font-semibold text-white">Admin Verification</h3>
-                    <p class="mt-3 text-sm leading-7 text-[#9e988c]">
-                        Give organizers and administrators a more reliable workflow for reviewing submissions.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
+    </div>
+</section>
     {{-- EVENTS --}}
     <section id="events" class="bg-[#111315] py-20 lg:py-28">
         <div class="mx-auto max-w-[1320px] px-5 md:px-6 lg:px-8">
@@ -274,13 +227,13 @@
                         Upcoming Events
                     </p>
                     <h2 class="font-display text-[2rem] leading-[1.04] text-white sm:text-[2.5rem]">
-                        School & alumni gatherings
+                        Alumni News and Events
                     </h2>
                 </div>
 
                 <a href="{{ route('events.index') }}"
                    class="text-sm font-medium text-[#d6d0c4] transition hover:text-white">
-                    View all events
+                    VIEW ALL
                 </a>
             </div>
 
@@ -473,7 +426,6 @@
                 <p class="mb-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6f6a61]">Quick Links</p>
                 <div class="space-y-3">
                     <a href="#homecoming" class="block text-sm text-[#d6d0c4] transition hover:text-white">Home</a>
-                    <a href="#features" class="block text-sm text-[#d6d0c4] transition hover:text-white">Features</a>
                     <a href="#events" class="block text-sm text-[#d6d0c4] transition hover:text-white">Events</a>
                     <a href="#announcements" class="block text-sm text-[#d6d0c4] transition hover:text-white">Announcements</a>
                 </div>
