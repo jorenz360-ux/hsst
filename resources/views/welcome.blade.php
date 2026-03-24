@@ -258,9 +258,9 @@
                                 </p>
 
                                 <h3 class="mt-3 font-display text-[1.8rem] leading-[1.18] text-white transition group-hover:text-[#c6a56b]">
-                                    <a href="{{ route('events.show', $event) }}">
-                                        {{ $event->title }}
-                                    </a>
+                                     <a href="{{ route('events.show', ['event' => $event->slug]) }}">
+                                    {{ $event->title }}
+                                </a>
                                 </h3>
 
                                 @if ($event->venue)

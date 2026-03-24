@@ -35,7 +35,6 @@ Route::get('/', [Welcome::class, 'index'])->name('home');
 
 
 
-
 Route::get('/alumni/events/{event}', EventRegistrationPaymentPage::class)
     ->name('alumni.events.show');
 

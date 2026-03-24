@@ -14,7 +14,7 @@ use Livewire\Component;
 class AlumniDashboard extends Component
 {
     public array $myEventRegs = [];
-    public array $myEventItemPayments = []; // ✅ NEW
+    public array $myEventItemPayments = [];
 
     public int $paidTotal = 0;
     public ?string $lastPaidAt = null;
@@ -38,7 +38,7 @@ class AlumniDashboard extends Component
 
         if ($alumniId && $this->upcomingEvents->isNotEmpty()) {
             $this->loadMyEventRegistrations($alumniId);
-            $this->loadMyEventItemPayments($alumniId); // ✅ NEW
+            $this->loadMyEventItemPayments($alumniId);
         }
 
         $this->loadLatestAnnouncements();
@@ -49,11 +49,6 @@ class AlumniDashboard extends Component
         return Auth::user()?->alumni_id;
     }
 
-    /**
-     * -------------------------------
-     * DONATIONS
-     * -------------------------------
-     */
     protected function loadDonationSummary(int $alumniId): void
     {
         $paidQuery = Donation::query()
@@ -71,11 +66,6 @@ class AlumniDashboard extends Component
         $this->lastPaidAt = $lastPayment?->created_at?->format('M d, Y h:i A');
     }
 
-    /**
-     * -------------------------------
-     * EVENTS
-     * -------------------------------
-     */
     protected function loadUpcomingEvents(): void
     {
         $this->upcomingEvents = Event::query()
@@ -85,6 +75,7 @@ class AlumniDashboard extends Component
             ])
             ->select([
                 'id',
+                'slug',
                 'title',
                 'venue',
                 'event_date',
@@ -99,11 +90,6 @@ class AlumniDashboard extends Component
             ->get();
     }
 
-    /**
-     * -------------------------------
-     * REGISTRATION STATUS (BASE)
-     * -------------------------------
-     */
     protected function loadMyEventRegistrations(int $alumniId): void
     {
         $eventIds = $this->upcomingEvents->pluck('id')->all();
@@ -133,8 +119,6 @@ class AlumniDashboard extends Component
         $this->myEventRegs = $registrations
             ->keyBy('event_id')
             ->map(function ($registration) {
-
-                // ✅ BASE PAYMENT ONLY
                 $basePayment = $registration->payments
                     ->firstWhere('event_registration_item_id', null);
 
@@ -168,11 +152,6 @@ class AlumniDashboard extends Component
         };
     }
 
-    /**
-     * -------------------------------
-     * ITEM PAYMENT STATUS (NEW)
-     * -------------------------------
-     */
     protected function loadMyEventItemPayments(int $alumniId): void
     {
         $eventIds = $this->upcomingEvents->pluck('id')->all();
@@ -202,8 +181,7 @@ class AlumniDashboard extends Component
             $eventId = $payment->registration->event_id;
             $itemId = $payment->event_registration_item_id;
 
-            // only keep latest per item
-            if (!isset($grouped[$eventId][$itemId])) {
+            if (! isset($grouped[$eventId][$itemId])) {
                 $grouped[$eventId][$itemId] = match ($payment->status) {
                     'verified' => 'verified',
                     'pending' => 'pending',
@@ -216,11 +194,6 @@ class AlumniDashboard extends Component
         $this->myEventItemPayments = $grouped;
     }
 
-    /**
-     * -------------------------------
-     * ANNOUNCEMENTS
-     * -------------------------------
-     */
     protected function loadLatestAnnouncements(): void
     {
         $this->latestAnnouncements = Announcement::query()
@@ -240,18 +213,16 @@ class AlumniDashboard extends Component
             ->get();
     }
 
-    /**
-     * -------------------------------
-     * NAVIGATION (UPDATED)
-     * -------------------------------
-     */
     public function registerOrPay(int $eventId)
     {
         $alumniId = $this->alumniId();
 
         abort_if(! $alumniId, 403);
 
-        return redirect()->route('alumni.events.show', $eventId);
+        $event = $this->upcomingEvents->firstWhere('id', $eventId)
+            ?? Event::query()->select(['id', 'slug'])->findOrFail($eventId);
+
+        return redirect()->route('alumni.events.show', ['event' => $event->slug]);
     }
 
     public function render()

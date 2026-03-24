@@ -13,6 +13,7 @@ class Welcome extends Controller
             ->select([
                 'id',
                 'title',
+                'slug',
                 'venue',
                 'event_date',
                 'description',
