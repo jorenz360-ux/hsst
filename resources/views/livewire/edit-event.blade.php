@@ -1,5 +1,4 @@
-<div>
-    <div class="mx-auto max-w-7xl space-y-6">
+  <div class="mx-auto max-w-7xl space-y-6 px-6 py-6">
         {{-- Page Header --}}
         <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -8,7 +7,7 @@
                 </p>
                 <h1 class="mt-1 text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
                     Edit Event
-                </h1>
+                </h1> 
                 <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                     Update event details, manage the program schedule, and configure paid registration items.
                 </p>
@@ -351,4 +350,3 @@
             </div>
         </div>
     </div>
-</div>

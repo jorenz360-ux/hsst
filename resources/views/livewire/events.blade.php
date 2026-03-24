@@ -479,7 +479,7 @@
                                                     </button>
 
                                                     <a
-                                                        href="{{ route('events.edit', $event['id']) }}"
+                                                        href="{{ route('events.edit', $event) }}"
                                                         wire:navigate
                                                         class="inline-flex items-center rounded-xl bg-amber-500 px-3 py-2 text-sm font-medium text-zinc-950 transition hover:bg-amber-400"
                                                     >
@@ -566,7 +566,7 @@
 
                                             <td class="px-5 py-4">
                                                 @can('edit.event')
-                                                    <div class="flex justify-end gap-2">
+                                                   <div class="flex justify-end gap-2">
                                                         <button
                                                             type="button"
                                                             wire:click="toggleActive({{ $event['id'] }})"
@@ -577,7 +577,7 @@
                                                         </button>
 
                                                         <a
-                                                            href="{{ route('events.edit', $event['id']) }}"
+                                                            href="{{ route('events.edit', ['event' => $event['slug']]) }}"
                                                             wire:navigate
                                                             class="inline-flex items-center rounded-xl bg-amber-500 px-3 py-2 text-sm font-medium text-zinc-950 transition hover:bg-amber-400"
                                                         >

@@ -115,6 +115,7 @@ class Events extends Component
             ->select([
                 'id',
                 'title',
+                'slug',
                 'venue',
                 'event_date',
                 'registration_fee',
@@ -146,15 +147,16 @@ class Events extends Component
             ->orderBy('event_date', 'asc')
             ->paginate($this->perPage);
 
-        $events->getCollection()->transform(fn ($e) => [
-            'id' => $e->id,
-            'title' => $e->title,
-            'venue' => $e->venue,
-            'event_date' => $e->event_date,
-            'fee_pesos' => number_format(((int) $e->registration_fee) / 100, 2),
-            'is_active' => (bool) $e->is_active,
-            'creator' => $e->creator?->username,
-        ]);
+       $events->getCollection()->transform(fn ($e) => [
+        'id' => $e->id,
+        'slug' => $e->slug,
+        'title' => $e->title,
+        'venue' => $e->venue,
+        'event_date' => $e->event_date,
+        'fee_pesos' => number_format(((int) $e->registration_fee)),
+        'is_active' => (bool) $e->is_active,
+        'creator' => $e->creator?->username,
+    ]);
 
         $calendarStart = Carbon::createFromFormat('Y-m', $this->calendarMonth)->startOfMonth();
         $calendarEnd = $calendarStart->copy()->endOfMonth();

@@ -20,6 +20,7 @@ class PublicEventController extends Controller
             ->select([
                 'id',
                 'title',
+                'slug',
                 'venue',
                 'event_date',
                 'description',
@@ -48,6 +49,7 @@ class PublicEventController extends Controller
             ->select([
                 'id',
                 'title',
+                'slug',
                 'venue',
                 'event_date',
                 'description',
@@ -75,6 +77,7 @@ class PublicEventController extends Controller
             ->select([
                 'id',
                 'title',
+                'slug',
                 'venue',
                 'event_date',
                 'description',

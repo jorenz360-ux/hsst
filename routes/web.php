@@ -81,6 +81,7 @@ Route::get('/donations', ManageDonations::class)
 Route::get(uri:'/create/events', action: CreateEvents::class)
     ->middleware(['auth', 'role:ssps|reunion-coordinator'])
     ->name('create-event');
+    
 Route::get(uri:'/view/events', action: Events::class)
     ->middleware(['auth', 'role:ssps|reunion-coordinator'])
     ->name('event-view');

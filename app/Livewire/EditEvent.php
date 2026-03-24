@@ -154,7 +154,7 @@ class EditEvent extends Component
             'scheduleRows.*.title.required' => 'Each schedule item must have a title.',
             'scheduleRows.*.schedule_time.date_format' => 'Schedule time must be in HH:MM format.',
         ]);
-
+ 
         $keptIds = [];
 
         foreach ($validated['scheduleRows'] as $index => $row) {

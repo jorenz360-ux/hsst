@@ -1,5 +1,5 @@
 <div>
-    <div class="min-h-screen bg-zinc-950 text-zinc-100">
+    <div class="min-h-screen bg-zinc-950 text-zinc-100 p-6">
 
     {{-- Toast --}}
     <div class="fixed bottom-0 right-1 z-50 w-full max-w-sm">
@@ -20,7 +20,7 @@
             <flux:modal.trigger name="create-announcement">
                 <flux:button
                     icon="plus"
-                    class="bg-amber-500 text-zinc-950 hover:bg-amber-400 shadow shadow-amber-500/20"
+                    variant="primary" color="orange"
                 >
                     New announcement
                 </flux:button>
