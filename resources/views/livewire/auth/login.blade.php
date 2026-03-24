@@ -1,5 +1,5 @@
 <x-layouts.auth title="Sign in">
-    <div class="relative overflow-hidden border border-white/10 bg-[#111315] text-[#f5f1e8] shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+    <div class="">
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(198,165,107,0.12),transparent_28%)]"></div>
         <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(255,255,255,0)_100%)]"></div>
 

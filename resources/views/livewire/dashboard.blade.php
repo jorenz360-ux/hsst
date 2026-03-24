@@ -25,13 +25,13 @@
                         Create Announcement
                     </a>
 
-                    <a
-                        href="#"
-                        class="inline-flex items-center gap-2 rounded-2xl bg-indigo-400 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-indigo-300"
-                    >
-                        <flux:icon name="plus" class="h-4 w-4" />
-                        Add Event
-                    </a>
+                   <flux:button
+                    icon="plus"
+                      variant="primary" 
+                      color="orange"
+                >
+                    Add Event
+                </flux:button>
                 </div>
             </div>
         </section>
