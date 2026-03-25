@@ -21,6 +21,7 @@ class Event extends Model
         'description',
         'is_active',
         'dress_code',
+        'banner_image',
         'created_by',
     ];
 

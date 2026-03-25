@@ -6,6 +6,7 @@ use App\Models\Alumni;
 use App\Models\Batch;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -19,13 +20,49 @@ class CreateNewUser implements CreatesNewUsers
     /**
      * Validate and create a newly registered user.
      *
-     * @param array<string, string> $input
+     * @param array<string, mixed> $input
      */
     public function create(array $input): User
     {
-        Validator::make($input, [
-            'username' => ['required', 'string', 'max:255', Rule::unique(User::class, 'username')],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class, 'email')],
+        $input = $this->sanitizeInput($input);
+        $validated = $this->validateInput($input);
+
+        try {
+            return DB::transaction(function () use ($validated): User {
+                $batch = $this->createOrGetBatch((int) $validated['yeargrad']);
+                $alumni = $this->createAlumni($validated, $batch);
+                $user = $this->createUserAccount($validated, $alumni);
+
+                $user->assignRole('alumni');
+
+                return $user;
+            }, 3);
+        } catch (Throwable $e) {
+            $this->logRegistrationFailure($e, $input);
+            throw $e;
+        }
+    }
+
+    /**
+     * @param array<string, mixed> $input
+     * @return array<string, mixed>
+     */
+    protected function validateInput(array $input): array
+    {
+        return Validator::make($input, [
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique(User::class, 'username'),
+            ],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique(User::class, 'email'),
+            ],
             'password' => $this->passwordRules(),
 
             'fname' => ['required', 'string', 'max:255'],
@@ -33,55 +70,126 @@ class CreateNewUser implements CreatesNewUsers
             'lname' => ['required', 'string', 'max:255'],
 
             'yeargrad' => ['required', 'integer', 'min:1900', 'max:' . now()->year],
+
+            'address_line_1' => ['required', 'string', 'max:255'],
+            'address_line_2' => ['nullable', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:120'],
+            'state_province' => ['required', 'string', 'max:120'],
+            'postal_code' => ['nullable', 'string', 'max:30'],
+            'country' => ['required', 'string', 'max:100'],
+
+            'formatted_address' => ['nullable', 'string'],
+            'place_id' => ['nullable', 'string', 'max:255'],
+            'latitude' => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
         ])->validate();
+    }
 
-        try {
+    protected function createOrGetBatch(int $yeargrad): Batch
+    {
+        return Batch::firstOrCreate(
+            ['yeargrad' => $yeargrad],
+            ['schoolyear' => ($yeargrad - 1) . '-' . $yeargrad]
+        );
+    }
 
-            return DB::transaction(function () use ($input) {
+    /**
+     * @param array<string, mixed> $validated
+     */
+    protected function createAlumni(array $validated, Batch $batch): Alumni
+    {
+        return Alumni::create([
+            'fname' => $validated['fname'],
+            'mname' => $validated['mname'] ?? null,
+            'lname' => $validated['lname'],
+            'batch_id' => $batch->id,
+            'is_batch_rep' => false,
 
-                $yeargrad = (int) $input['yeargrad'];
-                $schoolyear = ($yeargrad - 1) . '-' . $yeargrad;
+            'address_line_1' => $validated['address_line_1'],
+            'address_line_2' => $validated['address_line_2'] ?? null,
+            'city' => $validated['city'],
+            'state_province' => $validated['state_province'],
+            'postal_code' => $validated['postal_code'] ?? null,
+            'country' => $validated['country'],
 
-                $batch = Batch::firstOrCreate(
-                    ['yeargrad' => $yeargrad],
-                    ['schoolyear' => $schoolyear]
-                );
+            'formatted_address' => $validated['formatted_address'] ?? null,
+            'place_id' => $validated['place_id'] ?? null,
+            'latitude' => $validated['latitude'] ?? null,
+            'longitude' => $validated['longitude'] ?? null,
+        ]);
+    }
 
-                $alumni = Alumni::create([
-                    'fname' => $input['fname'],
-                    'mname' => $input['mname'] ?? null,
-                    'lname' => $input['lname'],
-                    'batch_id' => $batch->id,
-                    'is_batch_rep' => false,
-                ]);
+    /**
+     * @param array<string, mixed> $validated
+     */
+    protected function createUserAccount(array $validated, Alumni $alumni): User
+    {
+        return User::create([
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'alumni_id' => $alumni->id,
+        ]);
+    }
 
-                $user = User::create([
-                    'username' => $input['username'],
-                    'email' => $input['email'],
-                    'password' => $input['password'], // hash if not auto-hashed
-                    'alumni_id' => $alumni->id,
-                ]);
+    protected function logRegistrationFailure(Throwable $e, array $input): void
+    {
+        Log::error('Alumni registration failed', [
+            'message' => $e->getMessage(),
+            'username' => $input['username'] ?? null,
+            'email' => $input['email'] ?? null,
+            'yeargrad' => $input['yeargrad'] ?? null,
+        ]);
+    }
 
-                $user->assignRole('alumni');
+    /**
+     * Normalize incoming registration input.
+     *
+     * @param array<string, mixed> $input
+     * @return array<string, mixed>
+     */
+    protected function sanitizeInput(array $input): array
+    {
+        $fieldsToTrim = [
+            'username',
+            'email',
+            'fname',
+            'mname',
+            'lname',
+            'address_line_1',
+            'address_line_2',
+            'city',
+            'state_province',
+            'postal_code',
+            'country',
+            'formatted_address',
+            'place_id',
+        ];
 
-                return $user;
-            });
-
-        } catch (Throwable $e) {
-
-            // Log error for production debugging
-            Log::error('Alumni registration failed', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'input' => $input
-            ]);
-
-            // Show error in local development
-            if (config('app.debug')) {
-                dd('Registration error', $e->getMessage(), $e);
+        foreach ($fieldsToTrim as $field) {
+            if (array_key_exists($field, $input) && is_string($input[$field])) {
+                $input[$field] = trim($input[$field]);
             }
-
-            throw $e;
         }
+
+        if (isset($input['email']) && is_string($input['email'])) {
+            $input['email'] = strtolower($input['email']);
+        }
+
+        foreach ([
+            'mname',
+            'address_line_2',
+            'postal_code',
+            'formatted_address',
+            'place_id',
+            'latitude',
+            'longitude',
+        ] as $nullableField) {
+            if (array_key_exists($nullableField, $input) && $input[$nullableField] === '') {
+                $input[$nullableField] = null;
+            }
+        }
+
+        return $input;
     }
 }

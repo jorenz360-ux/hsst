@@ -403,91 +403,109 @@
                     Browse school-managed events, alumni activities, and celebrations prepared for the HSST community.
                 </p>
             </div>
+ 
+@if ($events->count())
+    <div class="grid gap-8 md:grid-cols-2 xl:grid-cols-2">
+        @foreach ($events as $event)
+            @php
+                $bannerUrl = $event->banner_image
+                    ? \Illuminate\Support\Facades\Storage::disk('s3')->url($event->banner_image)
+                    : asset('images/100yearsevent.jpg');
+            @endphp
 
-            @if ($events->count())
-                <div class="grid gap-10 md:grid-cols-2 xl:grid-cols-2">
-                    @foreach ($events as $event)
-                        <article class="group">
-                            <div class="overflow-hidden bg-[#17191c]">
-                                <img
-                                    src="{{ asset('images/100yearsevent.jpg') }}"
-                                    alt="{{ $event->title }}"
-                                    class="h-[260px] w-full object-cover transition duration-700 group-hover:scale-105"
-                                >
-                            </div>
+            <article class="group overflow-hidden border border-white/8 bg-[#141618] transition duration-300 hover:border-[#c6a56b]/40 hover:bg-[#181b1f]">
+                <div class="relative overflow-hidden bg-[#17191c]">
+                    <img
+                        src="{{ $bannerUrl }}"
+                        alt="{{ $event->title }}"
+                        class="h-[260px] w-full object-cover transition duration-700 group-hover:scale-105"
+                    >
 
-                            <div class="pt-5">
-                                <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[#c6a56b]">
-                                    {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
-                                    @if ($event->schedules->first()?->schedule_time)
-                                        · {{ \Carbon\Carbon::parse($event->schedules->first()->schedule_time)->format('g:i A') }}
-                                    @endif
-                                </p>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
 
-                                <h2 class="mt-3 font-display text-[1.6rem] leading-[1.15] text-white">
-                                    <a href="{{ route('events.show', $event) }}" class="transition hover:text-[#c6a56b]">
-                                        {{ $event->title }}
-                                    </a>
-                                </h2>
-
-                                <p class="mt-4 text-[14px] leading-7 text-[#9e988c]">
-                                    {{ \Illuminate\Support\Str::limit($event->description, 170) }}
-                                </p>
-
-                                <div class="mt-5 grid gap-3 sm:grid-cols-2">
-                                    <div class="border border-white/10 bg-[#111315] p-4">
-                                        <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6f6a61]">Date</div>
-                                        <div class="mt-2 text-sm font-medium text-white">
-                                            {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
-                                        </div>
-                                    </div>
-
-                                    <div class="border border-white/10 bg-[#111315] p-4">
-                                        <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6f6a61]">Venue</div>
-                                        <div class="mt-2 text-sm font-medium text-white">
-                                            {{ $event->venue ?: 'Venue to be announced' }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="mt-6 flex flex-col gap-3 sm:flex-row">
-                                    <a
-                                        href="{{ route('events.show', $event) }}"
-                                        class="inline-flex flex-1 items-center justify-center bg-[#c6a56b] px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-black transition hover:bg-[#d8b67a]"
-                                    >
-                                        View Event
-                                    </a>
-
-                                    @if (Route::has('register'))
-                                        <a
-                                            href="{{ route('register') }}"
-                                            class="inline-flex flex-1 items-center justify-center border border-white/15 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10"
-                                        >
-                                            Join HSST Portal
-                                        </a>
-                                    @endif
-                                </div>
-                            </div>
-                        </article>
-                    @endforeach
-                </div>
-
-                <div class="mt-10">
-                    {{ $events->links() }}
-                </div>
-            @else
-                <div class="border border-white/10 bg-[#17191c] p-10 text-center">
-                    <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center bg-[#c6a56b]/10 text-lg font-bold text-[#c6a56b]">
-                        HS
+                    <div class="absolute left-4 top-4">
+                        <span class="inline-flex items-center bg-black/60 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
+                            Upcoming Event
+                        </span>
                     </div>
-                    <h2 class="font-display text-[1.7rem] text-white">
-                        No upcoming events available
-                    </h2>
-                    <p class="mx-auto mt-3 max-w-xl text-[14px] leading-7 text-[#9e988c]">
-                        Please check back soon for newly scheduled school events, alumni celebrations, and upcoming HSST activities.
-                    </p>
                 </div>
-            @endif
+
+                <div class="p-6">
+                    <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[#c6a56b]">
+                        {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
+                        @if ($event->schedules->first()?->schedule_time)
+                            · {{ \Carbon\Carbon::parse($event->schedules->first()->schedule_time)->format('g:i A') }}
+                        @endif
+                    </p>
+
+                    <h2 class="mt-3 font-display text-[1.6rem] leading-[1.15] text-white">
+                        <a href="{{ route('events.show', $event) }}" class="transition hover:text-[#c6a56b]">
+                            {{ $event->title }}
+                        </a>
+                    </h2>
+
+                    <p class="mt-4 text-[14px] leading-7 text-[#9e988c]">
+                        {{ \Illuminate\Support\Str::limit($event->description, 170) }}
+                    </p>
+
+                    <div class="mt-5 grid gap-3 sm:grid-cols-2">
+                        <div class="border border-white/10 bg-[#111315] p-4">
+                            <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6f6a61]">
+                                Date
+                            </div>
+                            <div class="mt-2 text-sm font-medium text-white">
+                                {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
+                            </div>
+                        </div>
+
+                        <div class="border border-white/10 bg-[#111315] p-4">
+                            <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6f6a61]">
+                                Venue
+                            </div>
+                            <div class="mt-2 text-sm font-medium text-white">
+                                {{ $event->venue ?: 'Venue to be announced' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+                        <a
+                            href="{{ route('events.show', $event) }}"
+                            class="inline-flex flex-1 items-center justify-center bg-[#c6a56b] px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-black transition hover:bg-[#d8b67a]"
+                        >
+                            View Event
+                        </a>
+
+                        @if (Route::has('register'))
+                            <a
+                                href="{{ route('register') }}"
+                                class="inline-flex flex-1 items-center justify-center border border-white/15 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+                            >
+                                Join HSST Portal
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            </article>
+        @endforeach
+    </div>
+
+    <div class="mt-10">
+        {{ $events->links() }}
+    </div>
+@else
+    <div class="border border-white/10 bg-[#17191c] p-10 text-center">
+        <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center bg-[#c6a56b]/10 text-lg font-bold text-[#c6a56b]">
+            HS
+        </div>
+        <h2 class="font-display text-[1.7rem] text-white">
+            No upcoming events available
+        </h2>
+        <p class="mx-auto mt-3 max-w-xl text-[14px] leading-7 text-[#9e988c]">
+            Please check back soon for newly scheduled school events, alumni celebrations, and upcoming HSST activities.
+        </p>
+    </div>
+@endif
         </div>
     </section>
 

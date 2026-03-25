@@ -18,6 +18,7 @@ class Welcome extends Controller
                 'event_date',
                 'description',
                 'dress_code',
+                'banner_image',
             ])
             ->with([
                 'schedules' => fn ($query) => $query

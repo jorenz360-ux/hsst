@@ -14,9 +14,16 @@ protected $table = 'alumni';
         'fname',
         'mname',
         'batch_id',
-        'is_batch_rep'
-    ];
+        'is_batch_rep',
 
+        // Address fields
+        'address_line_1',
+        'address_line_2',
+        'city',
+        'state_province',
+        'postal_code',
+        'country',
+    ];
     public function batch()
     {
         return $this->belongsTo(Batch::class);

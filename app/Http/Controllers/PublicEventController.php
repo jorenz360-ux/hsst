@@ -25,6 +25,7 @@ class PublicEventController extends Controller
                 'event_date',
                 'description',
                 'dress_code',
+                'banner_image',
             ])
             ->with([
                 'schedules' => fn ($query) => $query
@@ -54,6 +55,7 @@ class PublicEventController extends Controller
                 'event_date',
                 'description',
                 'dress_code',
+                'banner_image',
             ])
             ->with([
                 'schedules' => fn ($query) => $query
@@ -81,6 +83,7 @@ class PublicEventController extends Controller
                 'venue',
                 'event_date',
                 'description',
+                'banner_image',
             ])
             ->with([
                 'schedules' => fn ($query) => $query
