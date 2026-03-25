@@ -96,7 +96,7 @@
     <section class="relative overflow-hidden">
         <div class="absolute inset-0">
             <img src="{{ asset('images/herosection.jpg') }}" alt="HSST campus or alumni event" class="h-full w-full object-cover object-center">
-            <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-[#0F2A6B]/80 via-[#0F2A6B]/60 to-transparent"></div>
         </div>
 
         <div class="relative z-10 mx-auto max-w-[1320px] px-5 py-20 md:px-6 lg:py-28">
