@@ -139,22 +139,16 @@
     <section class="relative overflow-hidden">
         <div class="absolute inset-0">
             <img
-                src="{{ asset('images/hsstherosect.png') }}"
+                src="{{ asset('images/hsstherosect1.png') }}"
                 alt="HSST campus or alumni event"
                 class="h-full w-full object-cover object-center"
             >
-           <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,23,42,0.94)_0%,rgba(15,23,42,0.82)_38%,rgba(15,23,42,0.56)_62%,rgba(15,23,42,0.24)_100%)]"></div>
-<div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.06),transparent_28%)]"></div>
+          <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,23,42,0.82)_0%,rgba(15,23,42,0.64)_30%,rgba(217,119,6,0.16)_68%,rgba(255,255,255,0.02)_100%)]"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.24),transparent_30%)]"></div>
         </div>
 
         <div class="relative z-10 mx-auto max-w-[1380px] px-4 py-14 sm:px-6 sm:py-16 md:py-24 lg:px-8 lg:py-32 2xl:py-36">
             <div class="max-w-3xl">
-                <div class="inline-flex items-center gap-2 border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-sm">
-                    <span class="h-2 w-2 rounded-full bg-white"></span>
-                    <p class="text-[10px] font-extrabold uppercase tracking-[0.24em] text-white">
-                        Holy Spirit School of Tagbilaran
-                    </p>
-                </div>
 
                 <h1 class="mt-6 font-display text-[2.8rem] leading-[1.02] tracking-[-0.03em] text-white sm:text-[3.8rem] lg:text-[5rem] 2xl:text-[5.8rem]">
                     Reconnect with the
@@ -173,9 +167,9 @@
                         </a>
                     @endif
 
-                    <a href="#events" class="inline-flex items-center justify-center border border-white/20 bg-white/10 px-8 py-4 text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:bg-white/15">
-                        Explore Events
-                    </a>
+                   <a href="#events" class="inline-flex items-center justify-center bg-[#1E3A8A] px-8 py-4 text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[#1E40AF]">
+    Explore Events
+</a>
                 </div>
 
                 @php

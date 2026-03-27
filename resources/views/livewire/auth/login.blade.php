@@ -26,14 +26,15 @@
     </style>
 </head>
 <body class="h-full bg-slate-100 text-slate-900 antialiased">
-    <div class="min-h-screen">
+    <div class="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.08),transparent_24%),linear-gradient(180deg,#f8fbff_0%,#eef3fb_100%)]">
         <div class="mx-auto min-h-screen max-w-7xl">
-            <div class="w-full overflow-hidden">
+            <div class="w-full overflow-hidden sm:rounded-[28px] sm:border sm:border-slate-200/80 sm:bg-white sm:shadow-[0_24px_60px_rgba(15,23,42,0.12)] md:rounded-none md:border-0 md:bg-transparent md:shadow-none">
                 <div class="grid min-h-screen grid-cols-1 md:grid-cols-[320px_minmax(0,1fr)] lg:grid-cols-[360px_minmax(0,1fr)]">
 
-                    {{-- Sidebar --}}
+                    {{-- Desktop Sidebar --}}
                     <aside class="relative hidden overflow-hidden bg-gradient-to-b from-[#153eaf] to-[#0f2f83] text-white md:flex md:flex-col">
                         <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.14),transparent_24%)]"></div>
+
                         <div class="relative flex h-full flex-col p-6 lg:p-7">
                             <div class="mb-8 flex items-center gap-3">
                                 <div class="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-white/20 bg-white/10 shadow-inner backdrop-blur">
@@ -108,25 +109,79 @@
 
                     {{-- Main --}}
                     <main class="flex min-h-screen flex-col bg-gradient-to-b from-white to-slate-50 md:min-h-0">
+
+                        {{-- Mobile Header --}}
+                      {{-- Mobile Header --}}
+<div class="border-b border-white/10 bg-gradient-to-b from-[#153eaf] to-[#0f2f83] md:hidden">
+    <div class="flex items-center justify-between px-4 py-4">
+        <button
+            type="button"
+            onclick="history.back()"
+            class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-white/15"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
+            </svg>
+            Back
+        </button>
+
+        <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-white/20 bg-white/10 shadow-sm backdrop-blur">
+                <img
+                    src="{{ asset('images/hsstlogo.jpg') }}"
+                    alt="HSST Logo"
+                    class="h-full w-full object-contain bg-white"
+                >
+            </div>
+
+            <div class="text-right">
+                <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-white/75">
+                    Alumni Portal
+                </p>
+                <p class="text-sm font-bold leading-tight text-white">
+                    HSST
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+                        {{-- Main Header --}}
                         <div class="border-b border-slate-200 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.05),transparent_22%),linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-4 py-6 sm:px-6 md:px-8 md:py-7">
-                            <p class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-blue-700">
-                                Step 1 of 2
-                            </p>
+                            <div class="flex items-start justify-between gap-4">
+                                <div>
+                                    <p class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-blue-700">
+                                        Step 1 of 2
+                                    </p>
 
-                            <h2 class="font-display text-[1.9rem] leading-tight tracking-[-0.03em] text-slate-900 sm:text-[2.05rem]">
-                                Log in to your account
-                            </h2>
+                                    <h2 class="font-display text-[1.9rem] leading-tight tracking-[-0.03em] text-slate-900 sm:text-[2.05rem]">
+                                        Log in to your account
+                                    </h2>
 
-                            <p class="mt-2 max-w-2xl text-sm leading-7 text-slate-500">
-                                Enter your credentials below to access the Holy Spirit
-                                School of Tagbilaran alumni portal.
-                            </p>
+                                    <p class="mt-2 max-w-2xl text-sm leading-7 text-slate-500">
+                                        Enter your credentials below to access the Holy Spirit
+                                        School of Tagbilaran alumni portal.
+                                    </p>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onclick="history.back()"
+                                    class="hidden md:inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
+                                    </svg>
+                                    Back
+                                </button>
+                            </div>
 
                             <div class="mt-5 h-2 w-full overflow-hidden rounded-full bg-slate-200">
                                 <div class="h-full w-1/2 rounded-full bg-gradient-to-r from-blue-600 to-blue-700"></div>
                             </div>
                         </div>
 
+                        {{-- Form Section --}}
                         <div class="flex flex-1 items-center px-4 py-6 sm:px-6 md:px-10 lg:px-14 md:py-10">
                             <div class="w-full max-w-2xl">
                                 @if (session('status'))
@@ -140,6 +195,8 @@
 
                                     <div class="rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-6 md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none">
                                         <div class="space-y-5">
+
+                                            {{-- Username --}}
                                             <div>
                                                 <label for="username" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
                                                     Username
@@ -171,6 +228,7 @@
                                                 @enderror
                                             </div>
 
+                                            {{-- Password --}}
                                             <div>
                                                 <div class="mb-2 flex items-center justify-between gap-3">
                                                     <label for="password" class="block text-xs font-bold tracking-[0.01em] text-slate-500">
@@ -211,6 +269,7 @@
                                                 @enderror
                                             </div>
 
+                                            {{-- Remember --}}
                                             <div class="flex items-center justify-between gap-4">
                                                 <label for="remember" class="inline-flex cursor-pointer items-center gap-2.5 text-sm text-slate-600">
                                                     <input
@@ -224,6 +283,7 @@
                                                 </label>
                                             </div>
 
+                                            {{-- Submit --}}
                                             <button
                                                 type="submit"
                                                 data-test="login-button"

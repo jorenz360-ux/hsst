@@ -87,22 +87,73 @@
 
                     {{-- Main --}}
                     <main class="flex min-h-screen flex-col bg-gradient-to-b from-white to-slate-50 lg:min-h-0">
+
+                        {{-- Mobile Header --}}
+                        <div class="border-b border-white/10 bg-gradient-to-b from-[#153eaf] to-[#0f2f83] lg:hidden">
+                            <div class="flex items-center justify-between px-4 py-4">
+                                <button
+                                    type="button"
+                                    onclick="history.back()"
+                                    class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-white/15"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
+                                    </svg>
+                                    Back
+                                </button>
+
+                                <div class="flex items-center gap-3">
+                                    <div class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-white/20 bg-white/10 shadow-sm backdrop-blur">
+                                        <img
+                                            src="{{ asset('images/hsstlogo.jpg') }}"
+                                            alt="HSST Logo"
+                                            class="h-full w-full object-contain bg-white"
+                                        >
+                                    </div>
+
+                                    <div class="text-right">
+                                        <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-white/75">
+                                            Alumni Portal
+                                        </p>
+                                        <p class="text-sm font-bold leading-tight text-white">
+                                            HSST
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <form method="POST" action="{{ route('register') }}" id="registerForm" novalidate class="flex min-h-screen flex-col lg:min-h-0">
                             @csrf
 
-                            {{-- Header --}}
-                            <div class="border-b border-slate-200 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.05),transparent_22%),linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-4 py-6 sm:px-6 md:px-8 md:py-7">
-                                <p id="eyebrow" class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-blue-700">
-                                    Step 1 of 4
-                                </p>
+                            {{-- Step Header --}}
+                            <div class="border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-4 py-6 sm:px-6 md:px-8 md:py-7">
+                                <div class="flex items-start justify-between gap-4">
+                                    <div>
+                                        <p id="eyebrow" class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-blue-700">
+                                            Step 1 of 4
+                                        </p>
 
-                                <h2 id="stepTitle" class="font-display text-[1.9rem] leading-tight tracking-[-0.03em] text-slate-900 sm:text-[2.05rem]">
-                                    Account setup
-                                </h2>
+                                        <h2 id="stepTitle" class="font-display text-[1.9rem] leading-tight tracking-[-0.03em] text-slate-900 sm:text-[2.05rem]">
+                                            Account setup
+                                        </h2>
 
-                                <p id="stepDesc" class="mt-2 max-w-2xl text-sm leading-7 text-slate-500">
-                                    Choose the login credentials for your alumni account.
-                                </p>
+                                        <p id="stepDesc" class="mt-2 max-w-2xl text-sm leading-7 text-slate-500">
+                                            Choose the login credentials for your alumni account.
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        onclick="history.back()"
+                                        class="hidden lg:inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
+                                        </svg>
+                                        Back
+                                    </button>
+                                </div>
 
                                 <div class="mt-5 h-2 w-full overflow-hidden rounded-full bg-slate-200">
                                     <div id="progressFill" class="h-full w-1/4 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 transition-all duration-300"></div>
@@ -473,6 +524,18 @@
                                         </svg>
                                     </button>
                                 </div>
+
+                                @if (Route::has('login'))
+                                    <div class="pt-5 text-center text-sm text-slate-500 lg:text-left">
+                                        Already have an account?
+                                        <a
+                                            href="{{ route('login') }}"
+                                            class="font-bold text-blue-700 hover:underline"
+                                        >
+                                            Log in here
+                                        </a>
+                                    </div>
+                                @endif
                             </div>
                         </form>
                     </main>
@@ -515,6 +578,8 @@
 
         function buildNav() {
             const nav = document.getElementById("stepNav");
+            if (!nav) return;
+
             nav.innerHTML = "";
 
             STEPS.forEach((s, i) => {
