@@ -143,8 +143,8 @@
                 alt="HSST campus or alumni event"
                 class="h-full w-full object-cover object-center"
             >
-            <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,42,107,0.92)_0%,rgba(15,42,107,0.78)_38%,rgba(15,42,107,0.48)_62%,rgba(15,42,107,0.18)_100%)]"></div>
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.10),transparent_28%)]"></div>
+           <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,23,42,0.94)_0%,rgba(15,23,42,0.82)_38%,rgba(15,23,42,0.56)_62%,rgba(15,23,42,0.24)_100%)]"></div>
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.06),transparent_28%)]"></div>
         </div>
 
         <div class="relative z-10 mx-auto max-w-[1380px] px-4 py-14 sm:px-6 sm:py-16 md:py-24 lg:px-8 lg:py-32 2xl:py-36">
