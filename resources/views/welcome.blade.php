@@ -87,7 +87,7 @@
             <button
                 @click="mobileOpen = !mobileOpen"
                 :class="mobileOpen ? 'hamburger-open' : ''"
-                class="flex flex-col gap-[4.5px] border border-white/20 bg-white/10 p-3 lg:hidden"
+                class="flex flex-col gap-[4.5px] border border-white/20 p-3 lg:hidden"
                 aria-label="Menu"
             >
                 <span class="hamburger-line line-1 block h-[1.5px] w-[20px] rounded bg-white"></span>
@@ -139,12 +139,12 @@
     <section class="relative overflow-hidden">
         <div class="absolute inset-0">
             <img
-                src="{{ asset('images/hsstherosect1.png') }}"
+                src="{{ asset('images/hsstherosect.png') }}"
                 alt="HSST campus or alumni event"
                 class="h-full w-full object-cover object-center"
             >
-          <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,23,42,0.82)_0%,rgba(15,23,42,0.64)_30%,rgba(217,119,6,0.16)_68%,rgba(255,255,255,0.02)_100%)]"></div>
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.24),transparent_30%)]"></div>
+         <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,23,42,0.94)_0%,rgba(15,23,42,0.82)_38%,rgba(15,23,42,0.56)_62%,rgba(15,23,42,0.24)_100%)]"></div>
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.06),transparent_28%)]"></div>
         </div>
 
         <div class="relative z-10 mx-auto max-w-[1380px] px-4 py-14 sm:px-6 sm:py-16 md:py-24 lg:px-8 lg:py-32 2xl:py-36">
@@ -152,7 +152,7 @@
 
                 <h1 class="mt-6 font-display text-[2.8rem] leading-[1.02] tracking-[-0.03em] text-white sm:text-[3.8rem] lg:text-[5rem] 2xl:text-[5.8rem]">
                     Reconnect with the
-                    <span class="text-white">HSST alumni legacy.</span>
+                    <span class="text-white">HSSTian alumni legacy.</span>
                 </h1>
 
                 <p class="mt-6 max-w-2xl text-base leading-8 text-white/90 md:text-lg">
