@@ -256,23 +256,23 @@
                         class="h-[320px] w-full object-contain bg-transparent transition-all duration-500 sm:h-[420px] sm:bg-slate-200 md:h-[500px] lg:h-[580px]"
                     >
 
-                    <button
-                        @click="prev()"
-                        class="absolute left-3 top-1/2 -translate-y-1/2 bg-white p-2.5 shadow-lg transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
-                    >
-                        <svg class="h-6 w-6 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
+                 <button
+                    @click="prev()"
+                    class="absolute left-3 top-1/2 hidden -translate-y-1/2 bg-white p-2.5 shadow-lg transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] sm:block"
+                >
+                    <svg class="h-6 w-6 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
 
-                    <button
-                        @click="next()"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 bg-white p-2.5 shadow-lg transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
-                    >
-                        <svg class="h-6 w-6 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
+                <button
+                    @click="next()"
+                    class="absolute right-3 top-1/2 hidden -translate-y-1/2 bg-white p-2.5 shadow-lg transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] sm:block"
+                >
+                    <svg class="h-6 w-6 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
                 </div>
 
                 <div class="mt-6 flex justify-center gap-3">
