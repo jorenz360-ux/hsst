@@ -1,5 +1,5 @@
 <div>
-    <div class="space-y-6">
+    <div class="space-y-6 p-8">
         {{-- Header --}}
         <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>

@@ -1,699 +1,894 @@
-<x-layouts.auth title="Sign up">
-    <div class="">
-        <div
-            x-data="registrationWizard()"
-            x-init="init()"
-            class="relative overflow-hidden border border-white/10 bg-[#111315]/90 text-[#f5f1e8] shadow-[0_30px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl"
-        >
-            {{-- Ambient background --}}
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(198,165,107,0.16),transparent_26%)]"></div>
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.04),transparent_22%)]"></div>
-            <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.03)_0%,rgba(255,255,255,0)_100%)]"></div>
+{{-- resources/views/auth/register.blade.php --}}
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account — HSST Alumni Portal</title>
 
-            <div class="relative px-4 py-4 sm:px-5 sm:py-5">
-                {{-- Header – compact --}}
-                <div class="mb-4 flex flex-col items-center text-center">
-                    <div class="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/95 p-1.5 shadow-[0_8px_20px_rgba(0,0,0,0.18)] sm:h-16 sm:w-16">
-                        <img
-                            src="{{ asset('images/hsstlogo.jpg') }}"
-                            alt="HSST Logo"
-                            class="h-full w-full object-contain"
-                        >
-                    </div>
-                    <p class="mt-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-[#c6a56b]">
-                        Holy Spirit School of Tagbilaran
-                    </p>
-                    <h1 class="mt-2 font-['DM_Serif_Display'] text-[1.7rem] leading-[1.1] tracking-[-0.02em] text-white sm:text-[2rem]">
-                        Create your alumni account
-                    </h1>
-                    <p class="mt-1 max-w-xl text-xs leading-5 text-[#9e988c] sm:text-[13px]">
-                        Join the alumni portal to manage your profile, receive updates, and participate in upcoming reunion activities.
-                    </p>
-                </div>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap"
+        rel="stylesheet"
+    />
 
-                <x-auth-session-status
-                    class="mb-3 border border-[#c6a56b]/20 bg-[#c6a56b]/10 px-3 py-2 text-center text-xs text-[#e6decd]"
-                    :status="session('status')"
-                />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-                {{-- COMPACT PROGRESS AREA – only current step info --}}
-                <div class="mb-4 overflow-hidden border border-white/10 bg-[#0b0b0c]/80">
-                    <div class="px-3 py-3">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#c6a56b]">
-                                    Step <span x-text="currentStep"></span> of <span x-text="totalSteps"></span>
-                                </p>
-                                <h2 class="mt-1 text-base font-semibold text-white" x-text="steps[currentStep-1].title"></h2>
-                                <p class="mt-0.5 text-xs leading-5 text-[#9e988c]" x-text="steps[currentStep-1].description"></p>
-                            </div>
-                            {{-- Mini step dots --}}
-                            <div class="flex gap-1">
-                                <template x-for="(_, idx) in steps" :key="idx">
-                                    <div
-                                        class="h-1.5 w-4 rounded-full transition-all"
-                                        :class="currentStep > idx+1 ? 'bg-[#c6a56b]' : (currentStep === idx+1 ? 'bg-[#c6a56b]' : 'bg-white/20')"
-                                    ></div>
-                                </template>
-                            </div>
-                        </div>
-                        {{-- Progress bar --}}
-                        <div class="mt-2 h-1 overflow-hidden rounded-full bg-white/10">
-                            <div
-                                class="h-full rounded-full bg-[#c6a56b] transition-all duration-500 ease-out"
-                                :style="`width: ${(currentStep / totalSteps) * 100}%`"
-                            ></div>
-                        </div>
-                    </div>
-                </div>
+    <style>
+        body {
+            font-family: "DM Sans", system-ui, sans-serif;
+        }
 
-                <form method="POST" action="{{ route('register.store') }}" class="space-y-4" novalidate>
-                    @csrf
+        .font-display {
+            font-family: "DM Serif Display", serif;
+        }
+    </style>
+</head>
+<body class="h-full bg-slate-100 text-slate-900 antialiased">
+    <div class="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.08),transparent_24%),linear-gradient(180deg,#f8fbff_0%,#eef3fb_100%)] px-0 sm:px-4 lg:px-0">
+        <div class="mx-auto min-h-screen max-w-7xl">
+            <div class="w-full overflow-hidden bg-white shadow-none sm:rounded-[28px] sm:border sm:border-slate-200/80 sm:shadow-[0_24px_60px_rgba(15,23,42,0.12)] lg:rounded-none lg:border-0 lg:shadow-none">
+                <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[340px_minmax(0,1fr)]">
 
-                    {{-- Step container --}}
-                    <div class="overflow-hidden border border-white/10 bg-[#0b0b0c]/85 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
-                        {{-- Step header --}}
-                        <div class="border-b border-white/10 px-4 py-3 sm:px-5">
-                            <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-                                <div>
-                                    <p class="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#c6a56b]">
-                                        Step <span x-text="currentStep"></span> of <span x-text="totalSteps"></span>
-                                    </p>
-                                    <h2 class="mt-1 text-base font-semibold tracking-[-0.02em] text-white sm:text-lg">
-                                        <span x-show="currentStep === 1">Account setup</span>
-                                        <span x-show="currentStep === 2">Personal information</span>
-                                        <span x-show="currentStep === 3">Address details</span>
-                                        <span x-show="currentStep === 4">Security setup</span>
-                                    </h2>
-                                    <p class="mt-0.5 text-xs leading-5 text-[#9e988c] sm:text-sm">
-                                        <span x-show="currentStep === 1">Choose the login details you will use for your alumni portal account.</span>
-                                        <span x-show="currentStep === 2">Tell us who you are and when you graduated.</span>
-                                        <span x-show="currentStep === 3">Provide your current mailing or residential address.</span>
-                                        <span x-show="currentStep === 4">Set a secure password and complete your registration.</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                    {{-- Sidebar --}}
+                    <aside class="relative hidden overflow-hidden bg-gradient-to-b from-[#153eaf] to-[#0f2f83] text-white lg:flex lg:flex-col">
+                        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.14),transparent_24%)]"></div>
+                        <div class="absolute -bottom-10 -right-10 h-48 w-48 rounded-full bg-white/5 blur-sm"></div>
 
-                        {{-- Step content – compact --}}
-                        <div class="px-4 py-4 sm:px-5 sm:py-5">
-                            {{-- STEP 1: ACCOUNT --}}
-                            <section
-                                x-show="currentStep === 1"
-                                x-transition:enter="transition ease-out duration-300"
-                                x-transition:enter-start="opacity-0 translate-y-3"
-                                x-transition:enter-end="opacity-100 translate-y-0"
-                                x-transition:leave="transition ease-in duration-200"
-                                x-transition:leave-start="opacity-100 translate-y-0"
-                                x-transition:leave-end="opacity-0 -translate-y-2"
-                                class="space-y-4"
-                                data-step="1"
-                            >
-                                <div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
-                                    <div class="space-y-1.5">
-                                        <label for="username" class="block text-xs font-medium text-[#d6d0c4]">
-                                            Username
-                                        </label>
-                                        <div class="rounded-lg border border-white/10 bg-[#111315] transition focus-within:border-[#c6a56b] focus-within:ring-2 focus-within:ring-[#c6a56b]/15">
-                                            <flux:input
-                                                id="username"
-                                                name="username"
-                                                :value="old('username')"
-                                                type="text"
-                                                autocomplete="username"
-                                                :placeholder="__('Choose a username')"
-                                                required
-                                                class="!border-0 !bg-transparent !text-white placeholder:!text-[#6f6a61] !text-sm"
-                                            />
-                                        </div>
-                                        <p class="text-[11px] leading-4 text-[#7f796f]">
-                                            Use a memorable username for future login.
-                                        </p>
-                                    </div>
-
-                                    <div class="space-y-1.5">
-                                        <label for="email" class="block text-xs font-medium text-[#d6d0c4]">
-                                            Email address
-                                        </label>
-                                        <div class="rounded-lg border border-white/10 bg-[#111315] transition focus-within:border-[#c6a56b] focus-within:ring-2 focus-within:ring-[#c6a56b]/15">
-                                            <flux:input
-                                                id="email"
-                                                name="email"
-                                                :value="old('email')"
-                                                type="email"
-                                                autocomplete="email"
-                                                placeholder="email@example.com"
-                                                required
-                                                class="!border-0 !bg-transparent !text-white placeholder:!text-[#6f6a61] !text-sm"
-                                            />
-                                        </div>
-                                        <p class="text-[11px] leading-4 text-[#7f796f]">
-                                            We will use this for account-related notifications.
-                                        </p>
-                                    </div>
-                                </div>
-                            </section>
-
-                            {{-- STEP 2: PERSONAL --}}
-                            <section
-                                x-show="currentStep === 2"
-                                x-transition:enter="transition ease-out duration-300"
-                                x-transition:enter-start="opacity-0 translate-y-3"
-                                x-transition:enter-end="opacity-100 translate-y-0"
-                                x-transition:leave="transition ease-in duration-200"
-                                x-transition:leave-start="opacity-100 translate-y-0"
-                                x-transition:leave-end="opacity-0 -translate-y-2"
-                                class="space-y-4"
-                                data-step="2"
-                            >
-                                <div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
-                                    <div class="space-y-1.5">
-                                        <label for="fname" class="block text-xs font-medium text-[#d6d0c4]">
-                                            First name
-                                        </label>
-                                        <div class="rounded-lg border border-white/10 bg-[#111315] transition focus-within:border-[#c6a56b] focus-within:ring-2 focus-within:ring-[#c6a56b]/15">
-                                            <flux:input
-                                                id="fname"
-                                                name="fname"
-                                                :value="old('fname')"
-                                                type="text"
-                                                autocomplete="given-name"
-                                                :placeholder="__('First name')"
-                                                required
-                                                class="!border-0 !bg-transparent !text-white placeholder:!text-[#6f6a61] !text-sm"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div class="space-y-1.5">
-                                        <label for="lname" class="block text-xs font-medium text-[#d6d0c4]">
-                                            Last name
-                                        </label>
-                                        <div class="rounded-lg border border-white/10 bg-[#111315] transition focus-within:border-[#c6a56b] focus-within:ring-2 focus-within:ring-[#c6a56b]/15">
-                                            <flux:input
-                                                id="lname"
-                                                name="lname"
-                                                :value="old('lname')"
-                                                type="text"
-                                                autocomplete="family-name"
-                                                :placeholder="__('Last name')"
-                                                required
-                                                class="!border-0 !bg-transparent !text-white placeholder:!text-[#6f6a61] !text-sm"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
-                                    <div class="space-y-1.5">
-                                        <label for="mname" class="block text-xs font-medium text-[#d6d0c4]">
-                                            Middle name <span class="text-[#7f796f]">(optional)</span>
-                                        </label>
-                                        <div class="rounded-lg border border-white/10 bg-[#111315] transition focus-within:border-[#c6a56b] focus-within:ring-2 focus-within:ring-[#c6a56b]/15">
-                                            <flux:input
-                                                id="mname"
-                                                name="mname"
-                                                :value="old('mname')"
-                                                type="text"
-                                                autocomplete="additional-name"
-                                                :placeholder="__('Middle name')"
-                                                class="!border-0 !bg-transparent !text-white placeholder:!text-[#6f6a61] !text-sm"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div class="space-y-1.5">
-                                        <label for="yeargrad" class="block text-xs font-medium text-[#d6d0c4]">
-                                            Year graduated
-                                        </label>
-                                        <div class="rounded-lg border border-white/10 bg-[#111315] transition focus-within:border-[#c6a56b] focus-within:ring-2 focus-within:ring-[#c6a56b]/15">
-                                            <flux:input
-                                                id="yeargrad"
-                                                name="yeargrad"
-                                                :value="old('yeargrad')"
-                                                type="number"
-                                                min="1900"
-                                                max="{{ now()->year }}"
-                                                :placeholder="__('e.g. 2015')"
-                                                required
-                                                class="!border-0 !bg-transparent !text-white placeholder:!text-[#6f6a61] !text-sm"
-                                            />
-                                        </div>
-                                        <p class="text-[11px] leading-4 text-[#7f796f]">
-                                            Enter the year you graduated from HSST.
-                                        </p>
-                                    </div>
-                                </div>
-                            </section>
-
-                            {{-- STEP 3: ADDRESS with toggle for line 2 --}}
-                            <section
-                                x-show="currentStep === 3"
-                                x-transition:enter="transition ease-out duration-300"
-                                x-transition:enter-start="opacity-0 translate-y-3"
-                                x-transition:enter-end="opacity-100 translate-y-0"
-                                x-transition:leave="transition ease-in duration-200"
-                                x-transition:leave-start="opacity-100 translate-y-0"
-                                x-transition:leave-end="opacity-0 -translate-y-2"
-                                class="space-y-4"
-                                data-step="3"
-                            >
-                                {{-- <div class="rounded-xl border border-[#c6a56b]/15 bg-[#c6a56b]/[0.05] px-3 py-2 text-xs leading-5 text-[#d8d1c2]">
-                                    Enter your address manually as requested. Use your current residential or mailing address.
-                                </div> --}}
-                                <div class="space-y-1.5 xl:col-span-2">
-                                    <label for="google_autocomplete" class="block text-xs font-medium text-[#d6d0c4]">
-                                        Search address
-                                    </label>
-                                    <div class="rounded-lg border border-white/10 bg-[#111315] transition focus-within:border-[#c6a56b] focus-within:ring-2 focus-within:ring-[#c6a56b]/15">
-                                        <input
-                                            id="google_autocomplete"
-                                            type="text"
-                                            placeholder="Start typing your address..."
-                                            class="w-full rounded-lg border-0 bg-transparent px-3 py-2 text-sm text-white placeholder:text-[#6f6a61] focus:outline-none focus:ring-0"
-                                        >
-                                    </div>
-                                    <p class="text-[11px] leading-4 text-[#7f796f]">
-                                        Select a suggested address to auto-fill the fields below. You can still edit them manually.
-                                    </p>
-                                </div>
-                                <div class="grid grid-cols-1 gap-3 xl:grid-cols-2">
-                                    <div class="space-y-1.5 xl:col-span-2">
-                                        <label for="address_line_1" class="block text-xs font-medium text-[#d6d0c4]">
-                                            Address line 1
-                                        </label>
-                                        <div class="rounded-lg border border-white/10 bg-[#111315] transition focus-within:border-[#c6a56b] focus-within:ring-2 focus-within:ring-[#c6a56b]/15">
-                                            <flux:textarea
-                                                id="address_line_1"
-                                                name="address_line_1"
-                                                rows="2"
-                                                :placeholder="__('House/Unit No., Street, Barangay / District')"
-                                                required
-                                                class="!border-0 !bg-transparent !text-white placeholder:!text-[#6f6a61] !text-sm"
-                                            >{{ old('address_line_1') }}</flux:textarea>
-                                        </div>
-                                        <p class="text-[11px] leading-4 text-[#7f796f]">
-                                            Include the main street address and local area details.
-                                        </p>
-                                    </div>
-
-                                    {{-- Toggle button for Address Line 2 --}}
-                                    <div class="xl:col-span-2">
-                                        <button
-                                            type="button"
-                                            @click="showAddressLine2 = !showAddressLine2"
-                                            class="inline-flex items-center gap-1 text-xs font-medium text-[#c6a56b] hover:text-[#d8b67a] transition"
-                                            :aria-expanded="showAddressLine2"
-                                        >
-                                            <span x-text="showAddressLine2 ? '− Hide' : '+ Add'"></span>
-                                            <span>apartment, suite, or other details</span>
-                                        </button>
-                                    </div>
-
-                                    {{-- Address line 2 – conditionally shown --}}
-                                    <div
-                                        x-show="showAddressLine2"
-                                        x-transition.duration.200ms
-                                        class="space-y-1.5 xl:col-span-2"
+                        <div class="relative flex h-full flex-col p-6 lg:p-7">
+                            <div class="mb-8 flex items-center gap-3">
+                                <div class="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-white/20 bg-white/10 shadow-inner backdrop-blur">
+                                    <img
+                                        src="{{ asset('images/hsstlogo.jpg') }}"
+                                        alt="HSST Logo"
+                                        class="h-full w-full object-contain bg-white"
                                     >
-                                        <label for="address_line_2" class="block text-xs font-medium text-[#d6d0c4]">
-                                            Address line 2 <span class="text-[#7f796f]">(optional)</span>
-                                        </label>
-                                        <div class="rounded-lg border border-white/10 bg-[#111315] transition focus-within:border-[#c6a56b] focus-within:ring-2 focus-within:ring-[#c6a56b]/15">
-                                            <flux:input
-                                                id="address_line_2"
-                                                name="address_line_2"
-                                                :value="old('address_line_2')"
-                                                type="text"
-                                                autocomplete="address-line2"
-                                                :placeholder="__('Subdivision, building, floor, unit, etc.')"
-                                                class="!border-0 !bg-transparent !text-white placeholder:!text-[#6f6a61] !text-sm"
-                                            />
-                                        </div>
-                                    </div>
                                 </div>
 
-                                <div class="grid grid-cols-1 gap-3 lg:grid-cols-2 xl:grid-cols-4">
-                                    <div class="space-y-1.5 xl:col-span-2">
-                                        <label for="city" class="block text-xs font-medium text-[#d6d0c4]">
-                                            City / Municipality
-                                        </label>
-                                        <div class="rounded-lg border border-white/10 bg-[#111315] transition focus-within:border-[#c6a56b] focus-within:ring-2 focus-within:ring-[#c6a56b]/15">
-                                            <flux:input
-                                                id="city"
-                                                name="city"
-                                                :value="old('city')"
-                                                type="text"
-                                                autocomplete="address-level2"
-                                                :placeholder="__('City or municipality')"
-                                                required
-                                                class="!border-0 !bg-transparent !text-white placeholder:!text-[#6f6a61] !text-sm"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div class="space-y-1.5 xl:col-span-2">
-                                        <label for="state_province" class="block text-xs font-medium text-[#d6d0c4]">
-                                            Province / State / Region
-                                        </label>
-                                        <div class="rounded-lg border border-white/10 bg-[#111315] transition focus-within:border-[#c6a56b] focus-within:ring-2 focus-within:ring-[#c6a56b]/15">
-                                            <flux:input
-                                                id="state_province"
-                                                name="state_province"
-                                                :value="old('state_province')"
-                                                type="text"
-                                                autocomplete="address-level1"
-                                                :placeholder="__('Province, state, or region')"
-                                                required
-                                                class="!border-0 !bg-transparent !text-white placeholder:!text-[#6f6a61] !text-sm"
-                                            />
-                                        </div>
-                                    </div>
+                                <div>
+                                    <p class="text-sm font-bold leading-tight">
+                                        Holy Spirit School of Tagbilaran
+                                    </p>
+                                    <p class="mt-1 text-xs text-white/70">
+                                        Alumni Portal
+                                    </p>
                                 </div>
+                            </div>
 
-                                <div class="grid grid-cols-1 gap-3 lg:grid-cols-3">
-                                    <div class="space-y-1.5">
-                                        <label for="postal_code" class="block text-xs font-medium text-[#d6d0c4]">
-                                            Postal / ZIP
-                                        </label>
-                                        <div class="rounded-lg border border-white/10 bg-[#111315] transition focus-within:border-[#c6a56b] focus-within:ring-2 focus-within:ring-[#c6a56b]/15">
-                                            <flux:input
-                                                id="postal_code"
-                                                name="postal_code"
-                                                :value="old('postal_code')"
-                                                type="text"
-                                                autocomplete="postal-code"
-                                                :placeholder="__('Postal or ZIP code')"
-                                                required
-                                                class="!border-0 !bg-transparent !text-white placeholder:!text-[#6f6a61] !text-sm"
-                                            />
-                                        </div>
-                                    </div>
+                            <div class="mb-8">
+                                <p class="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-white/70">
+                                    Create account
+                                </p>
 
-                                    <div class="space-y-1.5 lg:col-span-2">
-                                        <label for="country" class="block text-xs font-medium text-[#d6d0c4]">
-                                            Country
-                                        </label>
-                                        <div class="rounded-lg border border-white/10 bg-[#111315] transition focus-within:border-[#c6a56b] focus-within:ring-2 focus-within:ring-[#c6a56b]/15">
-                                            <flux:input
-                                                id="country"
-                                                name="country"
-                                                :value="old('country', 'Philippines')"
-                                                type="text"
-                                                autocomplete="country-name"
-                                                :placeholder="__('Country')"
-                                                required
-                                                class="!border-0 !bg-transparent !text-white placeholder:!text-[#6f6a61] !text-sm"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
+                                <h1 class="font-display text-4xl leading-none tracking-[-0.03em] text-white">
+                                    Join the alumni portal.
+                                </h1>
 
-                            {{-- STEP 4: SECURITY --}}
-                            <section
-                                x-show="currentStep === 4"
-                                x-transition:enter="transition ease-out duration-300"
-                                x-transition:enter-start="opacity-0 translate-y-3"
-                                x-transition:enter-end="opacity-100 translate-y-0"
-                                x-transition:leave="transition ease-in duration-200"
-                                x-transition:leave-start="opacity-100 translate-y-0"
-                                x-transition:leave-end="opacity-0 -translate-y-2"
-                                class="space-y-4"
-                                data-step="4"
-                            >
-                                <div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
-                                    <div class="space-y-1.5">
-                                        <label for="password" class="block text-xs font-medium text-[#d6d0c4]">
-                                            Password
-                                        </label>
-                                        <div class="rounded-lg border border-white/10 bg-[#111315] transition focus-within:border-[#c6a56b] focus-within:ring-2 focus-within:ring-[#c6a56b]/15">
-                                            <flux:input
-                                                id="password"
-                                                name="password"
-                                                type="password"
-                                                autocomplete="new-password"
-                                                :placeholder="__('Create a password')"
-                                                viewable
-                                                required
-                                                class="!border-0 !bg-transparent !text-white placeholder:!text-[#6f6a61] !text-sm"
-                                            />
-                                        </div>
-                                        <p class="text-[11px] leading-4 text-[#7f796f]">
-                                            Use a strong password with letters, numbers, and symbols if possible.
-                                        </p>
-                                    </div>
+                                <p class="mt-4 max-w-xs text-sm leading-7 text-white/80">
+                                    Complete your account setup to access announcements,
+                                    upcoming reunions, alumni updates, and your profile dashboard.
+                                </p>
+                            </div>
 
-                                    <div class="space-y-1.5">
-                                        <label for="password_confirmation" class="block text-xs font-medium text-[#d6d0c4]">
-                                            Confirm password
-                                        </label>
-                                        <div class="rounded-lg border border-white/10 bg-[#111315] transition focus-within:border-[#c6a56b] focus-within:ring-2 focus-within:ring-[#c6a56b]/15">
-                                            <flux:input
-                                                id="password_confirmation"
-                                                name="password_confirmation"
-                                                type="password"
-                                                autocomplete="new-password"
-                                                :placeholder="__('Confirm your password')"
-                                                viewable
-                                                required
-                                                class="!border-0 !bg-transparent !text-white placeholder:!text-[#6f6a61] !text-sm"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                            <div id="stepNav" class="space-y-3"></div>
 
-                                <div class="rounded-xl border border-[#c6a56b]/20 bg-[#c6a56b]/10 p-3 text-xs leading-5 text-[#e2dacb]">
-                                    By creating an account, you confirm that the information you provided is accurate and belongs to you as an alumnus or alumna of Holy Spirit School of Tagbilaran.
-                                </div>
-                            </section>
+                            <div class="mt-auto border-t border-white/15 pt-5 text-sm leading-6 text-white/75">
+                                <p>Already have an account?</p>
+                                <a
+                                    href="{{ route('login') }}"
+                                    class="mt-1 inline-block font-semibold text-white hover:underline"
+                                >
+                                    Log in to your account
+                                </a>
+                            </div>
                         </div>
-                    </div>
+                    </aside>
 
-                    {{-- Footer actions – compact --}}
-                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <div class="text-xs text-[#8f8a80]">
-                            Already registered?
-                            <flux:link :href="route('login')" wire:navigate class="ml-1 text-[#c6a56b] hover:text-[#d8b67a]">
-                                {{ __('Log in') }}
-                            </flux:link>
-                        </div>
+                    {{-- Main --}}
+                    <main class="flex min-h-screen flex-col bg-gradient-to-b from-white to-slate-50 lg:min-h-0">
+                        <form method="POST" action="{{ route('register') }}" id="registerForm" novalidate class="flex min-h-screen flex-col lg:min-h-0">
+                            @csrf
 
-                        <div class="flex items-center justify-end gap-2">
-                            <button
-                                type="button"
-                                @click="prevStep()"
-                                x-show="currentStep > 1"
-                                x-transition.opacity
-                                class="inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-[#d6d0c4] transition hover:bg-white/10"
-                            >
-                                Back
-                            </button>
+                            {{-- Header --}}
+                            <div class="border-b border-slate-200 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.05),transparent_22%),linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-4 py-6 sm:px-6 md:px-8 md:py-7">
+                                <p id="eyebrow" class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-blue-700">
+                                    Step 1 of 4
+                                </p>
 
-                            <button
-                                type="button"
-                                @click="nextStep()"
-                                x-show="currentStep < totalSteps"
-                                x-transition.opacity
-                                class="inline-flex items-center justify-center rounded-lg bg-[#c6a56b] px-4 py-2 text-xs font-semibold text-black transition hover:bg-[#d8b67a] shadow-[0_8px_20px_rgba(198,165,107,0.18)]"
-                            >
-                                Continue
-                            </button>
+                                <h2 id="stepTitle" class="font-display text-[1.9rem] leading-tight tracking-[-0.03em] text-slate-900 sm:text-[2.05rem]">
+                                    Account setup
+                                </h2>
 
-                            <flux:button
-                                type="submit"
-                                variant="primary"
-                                x-show="currentStep === totalSteps"
-                                x-transition.opacity
-                                data-test="register-user-button"
-                                class="!rounded-lg !border-0 !bg-[#c6a56b] !px-4 !py-2 !text-xs !font-semibold !text-black hover:!bg-[#d8b67a] shadow-[0_8px_20px_rgba(198,165,107,0.18)]"
-                            >
-                                {{ __('Create account') }}
-                            </flux:button>
-                        </div>
-                    </div>
-                </form>
+                                <p id="stepDesc" class="mt-2 max-w-2xl text-sm leading-7 text-slate-500">
+                                    Choose the login credentials for your alumni account.
+                                </p>
+
+                                <div class="mt-5 h-2 w-full overflow-hidden rounded-full bg-slate-200">
+                                    <div id="progressFill" class="h-full w-1/4 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 transition-all duration-300"></div>
+                                </div>
+                            </div>
+
+                            {{-- Body --}}
+                            <div class="flex-1 px-4 py-6 sm:px-6 md:px-8 lg:px-12 xl:px-16 md:py-8 lg:py-10">
+
+                                {{-- PANEL 1 --}}
+                                <section id="panel-1" class="panel active">
+                                    <div class="mx-auto max-w-3xl rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
+                                        <div class="grid gap-5 md:grid-cols-2">
+                                            <div>
+                                                <label for="username" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Username
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="username"
+                                                    name="username"
+                                                    value="{{ old('username') }}"
+                                                    placeholder="e.g. jdelacruz"
+                                                    autocomplete="username"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                                <p class="mt-2 text-xs leading-5 text-slate-400">
+                                                    This is what you'll use to sign in.
+                                                </p>
+                                                <p id="err-username" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                    @error('username'){{ $message }}@enderror
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <label for="email" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Email address
+                                                </label>
+                                                <input
+                                                    type="email"
+                                                    id="email"
+                                                    name="email"
+                                                    value="{{ old('email') }}"
+                                                    placeholder="you@example.com"
+                                                    autocomplete="email"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                                <p class="mt-2 text-xs leading-5 text-slate-400">
+                                                    For account notifications and recovery.
+                                                </p>
+                                                <p id="err-email" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                    @error('email'){{ $message }}@enderror
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                {{-- PANEL 2 --}}
+                                <section id="panel-2" class="panel hidden">
+                                    <div class="mx-auto max-w-3xl rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
+                                        <div class="grid gap-5 md:grid-cols-2">
+                                            <div>
+                                                <label for="fname" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    First name
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="fname"
+                                                    name="fname"
+                                                    value="{{ old('fname') }}"
+                                                    placeholder="First name"
+                                                    autocomplete="given-name"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                                <p id="err-fname" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                    @error('fname'){{ $message }}@enderror
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <label for="lname" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Last name
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="lname"
+                                                    name="lname"
+                                                    value="{{ old('lname') }}"
+                                                    placeholder="Last name"
+                                                    autocomplete="family-name"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                                <p id="err-lname" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                    @error('lname'){{ $message }}@enderror
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <label for="mname" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Middle name <span class="font-normal text-slate-400">(optional)</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="mname"
+                                                    name="mname"
+                                                    value="{{ old('mname') }}"
+                                                    placeholder="Middle name"
+                                                    autocomplete="additional-name"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                            </div>
+
+                                            <div>
+                                                <label for="yeargrad" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Year graduated
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    id="yeargrad"
+                                                    name="yeargrad"
+                                                    value="{{ old('yeargrad') }}"
+                                                    placeholder="e.g. 2015"
+                                                    min="1950"
+                                                    max="2026"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                                <p class="mt-2 text-xs leading-5 text-slate-400">
+                                                    Year you completed your studies at HSST.
+                                                </p>
+                                                <p id="err-yeargrad" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                    @error('yeargrad'){{ $message }}@enderror
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                {{-- PANEL 3 --}}
+                                <section id="panel-3" class="panel hidden">
+                                    <div class="mx-auto max-w-3xl rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
+                                        <div class="space-y-5">
+                                            <div>
+                                                <label for="google_autocomplete" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Search address
+                                                </label>
+
+                                                <div class="relative">
+                                                    <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                            <circle cx="11" cy="11" r="8" />
+                                                            <path d="m21 21-4.35-4.35" />
+                                                        </svg>
+                                                    </span>
+
+                                                    <input
+                                                        type="text"
+                                                        id="google_autocomplete"
+                                                        placeholder="Start typing your address..."
+                                                        autocomplete="off"
+                                                        class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                    >
+                                                </div>
+
+                                                <p class="mt-2 text-xs leading-5 text-slate-400">
+                                                    Select a suggestion to auto-fill the fields below. You can still edit them manually.
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <label for="address_line_1" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Street address
+                                                </label>
+                                                <textarea
+                                                    id="address_line_1"
+                                                    name="address_line_1"
+                                                    placeholder="House/Unit no., street name, barangay or district"
+                                                    class="min-h-[88px] w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >{{ old('address_line_1') }}</textarea>
+                                                <p id="err-addr1" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                    @error('address_line_1'){{ $message }}@enderror
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <button
+                                                    type="button"
+                                                    id="toggleAddr2Btn"
+                                                    onclick="toggleAddr2()"
+                                                    class="inline-flex items-center gap-2 text-sm font-semibold text-blue-700 transition hover:text-blue-800"
+                                                >
+                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                                        <path d="M12 5v14M5 12h14" />
+                                                    </svg>
+                                                    Add apartment, suite, or other details
+                                                </button>
+                                            </div>
+
+                                            <div id="addr2wrap" class="{{ old('address_line_2') ? '' : 'hidden' }}">
+                                                <label for="address_line_2" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Address line 2 <span class="font-normal text-slate-400">(optional)</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="address_line_2"
+                                                    name="address_line_2"
+                                                    value="{{ old('address_line_2') }}"
+                                                    placeholder="Subdivision, building, floor, unit, etc."
+                                                    autocomplete="address-line2"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                            </div>
+
+                                            <div class="grid gap-5 md:grid-cols-2">
+                                                <div>
+                                                    <label for="city" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                        City / Municipality
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id="city"
+                                                        name="city"
+                                                        value="{{ old('city') }}"
+                                                        placeholder="City or municipality"
+                                                        autocomplete="address-level2"
+                                                        class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                    >
+                                                    <p id="err-city" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                        @error('city'){{ $message }}@enderror
+                                                    </p>
+                                                </div>
+
+                                                <div>
+                                                    <label for="state_province" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                        Province / State / Region
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id="state_province"
+                                                        name="state_province"
+                                                        value="{{ old('state_province') }}"
+                                                        placeholder="Province or state"
+                                                        autocomplete="address-level1"
+                                                        class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                    >
+                                                    <p id="err-province" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                        @error('state_province'){{ $message }}@enderror
+                                                    </p>
+                                                </div>
+
+                                                <div>
+                                                    <label for="postal_code" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                        Postal / ZIP code
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id="postal_code"
+                                                        name="postal_code"
+                                                        value="{{ old('postal_code') }}"
+                                                        placeholder="Postal or ZIP code"
+                                                        autocomplete="postal-code"
+                                                        class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                    >
+                                                    <p id="err-postal" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                        @error('postal_code'){{ $message }}@enderror
+                                                    </p>
+                                                </div>
+
+                                                <div>
+                                                    <label for="country" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                        Country
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id="country"
+                                                        name="country"
+                                                        value="{{ old('country', 'Philippines') }}"
+                                                        autocomplete="country-name"
+                                                        class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                    >
+                                                    <p id="err-country" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                        @error('country'){{ $message }}@enderror
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                {{-- PANEL 4 --}}
+                                <section id="panel-4" class="panel hidden">
+                                    <div class="mx-auto max-w-3xl rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
+                                        <div class="grid gap-5 md:grid-cols-2">
+                                            <div>
+                                                <label for="password" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Password
+                                                </label>
+                                                <input
+                                                    type="password"
+                                                    id="password"
+                                                    name="password"
+                                                    placeholder="Create a password"
+                                                    autocomplete="new-password"
+                                                    oninput="checkPasswordStrength(this.value)"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+
+                                                <div id="pwStrength" class="mt-3 flex gap-1">
+                                                    <div id="bar1" class="h-1 flex-1 rounded-full bg-slate-200"></div>
+                                                    <div id="bar2" class="h-1 flex-1 rounded-full bg-slate-200"></div>
+                                                    <div id="bar3" class="h-1 flex-1 rounded-full bg-slate-200"></div>
+                                                    <div id="bar4" class="h-1 flex-1 rounded-full bg-slate-200"></div>
+                                                </div>
+
+                                                <p id="pwLabel" class="mt-2 text-xs leading-5 text-slate-400">
+                                                    Use letters, numbers, and symbols for a stronger password.
+                                                </p>
+
+                                                <p id="err-password" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                    @error('password'){{ $message }}@enderror
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <label for="password_confirmation" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Confirm password
+                                                </label>
+                                                <input
+                                                    type="password"
+                                                    id="password_confirmation"
+                                                    name="password_confirmation"
+                                                    placeholder="Re-enter your password"
+                                                    autocomplete="new-password"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                                <p id="err-confirm" class="field-error mt-2 hidden text-xs leading-5 text-red-600"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-6 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm leading-6 text-blue-900">
+                                            By creating an account, you confirm that all information provided is accurate and that you are an alumnus or alumna of Holy Spirit School of Tagbilaran.
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+
+                            {{-- Footer actions --}}
+                            <div class="border-t border-slate-200 bg-slate-50 px-4 py-4 sm:px-6 md:px-8">
+                                <div class="mx-auto flex max-w-3xl items-center justify-end gap-3 lg:max-w-none">
+                                    <button
+                                        type="button"
+                                        id="btnBack"
+                                        onclick="prevStep()"
+                                        class="hidden h-11 rounded-[14px] border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-100"
+                                    >
+                                        Back
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        id="btnNext"
+                                        onclick="nextStep()"
+                                        class="inline-flex h-11 items-center justify-center gap-2 rounded-[14px] bg-gradient-to-b from-blue-600 to-blue-700 px-5 text-sm font-bold text-white shadow-[0_16px_30px_rgba(37,99,235,0.18)] transition hover:brightness-105 active:translate-y-[1px]"
+                                    >
+                                        <span id="btnNextLabel">Continue</span>
+                                        <svg id="btnNextIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M5 12h14M12 5l7 7-7 7" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </main>
+                </div>
             </div>
         </div>
     </div>
-@if(config('services.google_maps.api_key'))
-    <script
-        async
-        defer
-        src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.api_key') }}&libraries=places&callback=initGoogleAddressAutocomplete"
-    ></script>
-@endif
-<script>
-    let googleAddressAutocompleteInstance = null;
 
-    function initGoogleAddressAutocomplete() {
-        const autocompleteInput = document.getElementById('google_autocomplete');
+    <script>
+        const STEPS = [
+            {
+                short: "Account",
+                sub: "Username & email",
+                title: "Account setup",
+                desc: "Choose the login credentials for your alumni account.",
+            },
+            {
+                short: "Personal",
+                sub: "Name & graduation year",
+                title: "Personal info",
+                desc: "Tell us your name and the year you graduated from HSST.",
+            },
+            {
+                short: "Address",
+                sub: "Current location",
+                title: "Address details",
+                desc: "Provide your current mailing or residential address.",
+            },
+            {
+                short: "Security",
+                sub: "Password & confirm",
+                title: "Security setup",
+                desc: "Set a secure password to complete your registration.",
+            },
+        ];
 
-        if (!autocompleteInput || !window.google || !google.maps || !google.maps.places) {
-            return;
+        let currentStep = 1;
+        let isSubmitting = false;
+        const totalSteps = STEPS.length;
+
+        function buildNav() {
+            const nav = document.getElementById("stepNav");
+            nav.innerHTML = "";
+
+            STEPS.forEach((s, i) => {
+                const n = i + 1;
+                const isDone = n < currentStep;
+                const isActive = n === currentStep;
+
+                const itemClasses = isActive
+                    ? "border border-white/20 bg-white/15"
+                    : isDone
+                    ? "border border-white/15 bg-white/10"
+                    : "border border-white/10 bg-white/[0.06]";
+
+                const dotClasses = isDone
+                    ? "bg-white text-blue-700 border border-white/20"
+                    : isActive
+                    ? "bg-white/15 text-white border border-white/20"
+                    : "bg-white/10 text-white/75 border border-white/15";
+
+                nav.innerHTML += `
+                    <div class="flex items-center gap-3 rounded-2xl px-4 py-3 ${itemClasses}">
+                        <div class="flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${dotClasses}">
+                            ${isDone ? "✓" : n}
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-white">${s.short}</p>
+                            <p class="text-xs text-white/70">${s.sub}</p>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
-        googleAddressAutocompleteInstance = new google.maps.places.Autocomplete(autocompleteInput, {
-            types: ['address'],
-            fields: ['address_components', 'formatted_address'],
-        });
+        function updateHeader() {
+            const s = STEPS[currentStep - 1];
+            document.getElementById("eyebrow").textContent = `Step ${currentStep} of ${totalSteps}`;
+            document.getElementById("stepTitle").textContent = s.title;
+            document.getElementById("stepDesc").textContent = s.desc;
+            document.getElementById("progressFill").style.width = `${(currentStep / totalSteps) * 100}%`;
 
-        googleAddressAutocompleteInstance.addListener('place_changed', handleGooglePlaceChanged);
-    }
+            const btnBack = document.getElementById("btnBack");
+            btnBack.classList.toggle("hidden", currentStep === 1);
 
-    function handleGooglePlaceChanged() {
-        if (!googleAddressAutocompleteInstance) return;
+            document.getElementById("btnNextLabel").textContent =
+                currentStep === totalSteps ? "Create account" : "Continue";
 
-        const place = googleAddressAutocompleteInstance.getPlace();
-        if (!place || !place.address_components) return;
+            document.getElementById("btnNextIcon").style.display =
+                currentStep === totalSteps ? "none" : "inline-block";
+        }
 
-        const components = {
-            street_number: '',
-            route: '',
-            subpremise: '',
-            locality: '',
-            postal_town: '',
-            administrative_area_level_1: '',
-            postal_code: '',
-            country: '',
-            neighborhood: '',
-            sublocality: '',
-            sublocality_level_1: '',
-        };
+        function showPanel(n) {
+            document.querySelectorAll(".panel").forEach((panel) => {
+                panel.classList.add("hidden");
+                panel.classList.remove("block");
+            });
 
-        for (const component of place.address_components) {
-            const type = component.types[0];
-            if (components.hasOwnProperty(type)) {
-                components[type] = component.long_name;
+            const currentPanel = document.getElementById(`panel-${n}`);
+            if (currentPanel) {
+                currentPanel.classList.remove("hidden");
+                currentPanel.classList.add("block");
             }
         }
 
-        const addressLine1Parts = [
-            components.street_number,
-            components.route,
-        ].filter(Boolean);
+        function clearErrors() {
+            document.querySelectorAll(".field-error").forEach((el) => {
+                if (!el.textContent.trim()) el.classList.add("hidden");
+            });
 
-        const addressLine2Parts = [
-            components.subpremise,
-        ].filter(Boolean);
-
-        const cityValue =
-            components.locality ||
-            components.postal_town ||
-            components.sublocality_level_1 ||
-            components.sublocality ||
-            components.neighborhood;
-
-        const addressLine1 = addressLine1Parts.join(' ').trim();
-        const addressLine2 = addressLine2Parts.join(', ').trim();
-
-        setFieldValue('address_line_1', addressLine1);
-        setFieldValue('address_line_2', addressLine2);
-        setFieldValue('city', cityValue);
-        setFieldValue('state_province', components.administrative_area_level_1);
-        setFieldValue('postal_code', components.postal_code);
-        setFieldValue('country', components.country);
-
-        const addressLine1Field = document.getElementById('address_line_1');
-        if (addressLine1Field) {
-            addressLine1Field.focus();
+            document.querySelectorAll("input, textarea").forEach((el) => {
+                el.classList.remove("border-red-500", "ring-4", "ring-red-100");
+            });
         }
-    }
 
-    function setFieldValue(fieldId, value) {
-        const field = document.getElementById(fieldId);
-        if (!field) return;
+        function showError(fieldId, errId, message) {
+            const field = document.getElementById(fieldId);
+            const err = document.getElementById(errId);
 
-        field.value = value || '';
+            if (field) {
+                field.classList.add("border-red-500", "ring-4", "ring-red-100");
+            }
 
-        field.dispatchEvent(new Event('input', { bubbles: true }));
-        field.dispatchEvent(new Event('change', { bubbles: true }));
-    }
+            if (err) {
+                err.textContent = message;
+                err.classList.remove("hidden");
+            }
+        }
 
-    function registrationWizard() {
-        return {
-            currentStep: 1,
-            totalSteps: 4,
-            showAddressLine2: {{ old('address_line_2') ? 'true' : 'false' }},
-            steps: [
-                { title: 'Account', description: 'Login details' },
-                { title: 'Personal', description: 'Basic alumni identity' },
-                { title: 'Address', description: 'Current location details' },
-                { title: 'Security', description: 'Password and finish' }
-            ],
+        function validateStep(step) {
+            clearErrors();
+            let valid = true;
 
-            init() {
-                this.$nextTick(() => {
-                    this.focusFirstField();
+            if (step === 1) {
+                const username = document.getElementById("username").value.trim();
+                const email = document.getElementById("email").value.trim();
 
-                    if (this.currentStep === 3) {
-                        setTimeout(() => {
-                            if (typeof initGoogleAddressAutocomplete === 'function') {
-                                initGoogleAddressAutocomplete();
-                            }
-                        }, 200);
-                    }
-                });
-            },
-
-            getStepElement(stepNumber) {
-                return this.$root.querySelector(`[data-step='${stepNumber}']`);
-            },
-
-            getFocusableFields(stepNumber) {
-                const section = this.getStepElement(stepNumber);
-                if (!section) return [];
-
-                return Array.from(
-                    section.querySelectorAll('input, select, textarea')
-                ).filter(field => field.offsetParent !== null && !field.disabled);
-            },
-
-            focusFirstField() {
-                const firstField = this.getFocusableFields(this.currentStep)[0];
-                if (firstField) firstField.focus();
-            },
-
-            validateStep(stepNumber) {
-                const fields = this.getFocusableFields(stepNumber);
-
-                for (const field of fields) {
-                    if (!field.checkValidity()) {
-                        field.reportValidity();
-                        field.focus();
-                        return false;
-                    }
+                if (!username) {
+                    showError("username", "err-username", "Please enter a username.");
+                    valid = false;
                 }
 
-                return true;
-            },
+                if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    showError("email", "err-email", "Please enter a valid email address.");
+                    valid = false;
+                }
+            }
 
-            nextStep() {
-                if (!this.validateStep(this.currentStep)) return;
+            if (step === 2) {
+                const fname = document.getElementById("fname").value.trim();
+                const lname = document.getElementById("lname").value.trim();
+                const yeargrad = document.getElementById("yeargrad").value.trim();
 
-                if (this.currentStep < this.totalSteps) {
-                    this.currentStep++;
-                    this.$nextTick(() => {
-                        this.focusFirstField();
+                if (!fname) {
+                    showError("fname", "err-fname", "First name is required.");
+                    valid = false;
+                }
 
-                        if (this.currentStep === 3) {
-                            setTimeout(() => {
-                                if (typeof initGoogleAddressAutocomplete === 'function') {
-                                    initGoogleAddressAutocomplete();
-                                }
-                            }, 200);
+                if (!lname) {
+                    showError("lname", "err-lname", "Last name is required.");
+                    valid = false;
+                }
+
+                if (!yeargrad || yeargrad < 1950 || yeargrad > 2026) {
+                    showError("yeargrad", "err-yeargrad", "Please enter a valid graduation year (1950–2026).");
+                    valid = false;
+                }
+            }
+
+            if (step === 3) {
+                const addr1 = document.getElementById("address_line_1").value.trim();
+                const city = document.getElementById("city").value.trim();
+                const province = document.getElementById("state_province").value.trim();
+                const postal = document.getElementById("postal_code").value.trim();
+                const country = document.getElementById("country").value.trim();
+
+                if (!addr1) {
+                    showError("address_line_1", "err-addr1", "Street address is required.");
+                    valid = false;
+                }
+                if (!city) {
+                    showError("city", "err-city", "City / municipality is required.");
+                    valid = false;
+                }
+                if (!province) {
+                    showError("state_province", "err-province", "Province / state is required.");
+                    valid = false;
+                }
+                if (!postal) {
+                    showError("postal_code", "err-postal", "Postal / ZIP code is required.");
+                    valid = false;
+                }
+                if (!country) {
+                    showError("country", "err-country", "Country is required.");
+                    valid = false;
+                }
+            }
+
+            if (step === 4) {
+                const pw = document.getElementById("password").value;
+                const pw2 = document.getElementById("password_confirmation").value;
+
+                if (!pw) {
+                    showError("password", "err-password", "Password is required.");
+                    valid = false;
+                }
+
+                if (!pw2) {
+                    showError("password_confirmation", "err-confirm", "Please confirm your password.");
+                    valid = false;
+                } else if (pw !== pw2) {
+                    showError("password_confirmation", "err-confirm", "Passwords do not match.");
+                    valid = false;
+                }
+            }
+
+            return valid;
+        }
+
+        function nextStep() {
+            if (isSubmitting) return;
+
+            if (!validateStep(currentStep)) {
+                const btn = document.getElementById("btnNext");
+                btn.style.transform = "translateX(-4px)";
+                setTimeout(() => (btn.style.transform = "translateX(4px)"), 80);
+                setTimeout(() => (btn.style.transform = ""), 160);
+                return;
+            }
+
+            if (currentStep < totalSteps) {
+                currentStep++;
+                buildNav();
+                updateHeader();
+                showPanel(currentStep);
+
+                if (currentStep === 3) {
+                    setTimeout(() => {
+                        if (typeof initGoogleAddressAutocomplete === "function") {
+                            initGoogleAddressAutocomplete();
                         }
-                    });
+                    }, 200);
                 }
-            },
+            } else {
+                const btn = document.getElementById("btnNext");
+                const btnLabel = document.getElementById("btnNextLabel");
+                const btnIcon = document.getElementById("btnNextIcon");
 
-            prevStep() {
-                if (this.currentStep > 1) {
-                    this.currentStep--;
-                    this.$nextTick(() => this.focusFirstField());
+                btn.disabled = true;
+                isSubmitting = true;
+                btnLabel.textContent = "Creating account...";
+                btnIcon.style.display = "inline-block";
+                btnIcon.innerHTML = `
+                    <circle cx="12" cy="12" r="10" fill="none" stroke="white" stroke-width="2" stroke-dasharray="30" stroke-dashoffset="15">
+                        <animate attributeName="stroke-dashoffset" dur="0.6s" repeatCount="indefinite" from="0" to="30"/>
+                    </circle>
+                `;
+                btnIcon.setAttribute("viewBox", "0 0 24 24");
+                btnIcon.style.width = "16px";
+                btnIcon.style.height = "16px";
+
+                document.getElementById("registerForm").submit();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                clearErrors();
+                currentStep--;
+                buildNav();
+                updateHeader();
+                showPanel(currentStep);
+            }
+        }
+
+        function toggleAddr2() {
+            const wrap = document.getElementById("addr2wrap");
+            const btn = document.getElementById("toggleAddr2Btn");
+            const isHidden = wrap.classList.contains("hidden");
+
+            wrap.classList.toggle("hidden");
+
+            btn.innerHTML = isHidden
+                ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14"/></svg> Hide additional address details`
+                : `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Add apartment, suite, or other details`;
+        }
+
+        function checkPasswordStrength(val) {
+            const bars = [
+                document.getElementById("bar1"),
+                document.getElementById("bar2"),
+                document.getElementById("bar3"),
+                document.getElementById("bar4"),
+            ];
+            const label = document.getElementById("pwLabel");
+
+            let score = 0;
+            if (val.length >= 8) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+
+            const colors = [
+                "bg-slate-200",
+                "bg-red-500",
+                "bg-amber-500",
+                "bg-emerald-500",
+                "bg-blue-600"
+            ];
+
+            const labels = [
+                "Use letters, numbers, and symbols for a stronger password.",
+                "Weak — try adding numbers or symbols.",
+                "Fair — add uppercase or symbols.",
+                "Good password.",
+                "Strong password!",
+            ];
+
+            bars.forEach((bar, i) => {
+                bar.className = "h-1 flex-1 rounded-full bg-slate-200";
+                if (i < score) {
+                    bar.classList.remove("bg-slate-200");
+                    bar.classList.add(colors[score]);
+                }
+            });
+
+            label.textContent = val.length === 0
+                ? "Use letters, numbers, and symbols for a stronger password."
+                : labels[score];
+        }
+
+        let googleAutocompleteInstance = null;
+
+        function initGoogleAddressAutocomplete() {
+            const input = document.getElementById("google_autocomplete");
+            if (!input || !window.google?.maps?.places) return;
+            if (googleAutocompleteInstance) return;
+
+            googleAutocompleteInstance = new google.maps.places.Autocomplete(input, {
+                types: ["address"],
+                fields: ["address_components", "formatted_address"],
+            });
+
+            googleAutocompleteInstance.addListener("place_changed", () => {
+                const place = googleAutocompleteInstance.getPlace();
+                if (!place?.address_components) return;
+
+                const c = {};
+                for (const comp of place.address_components) {
+                    c[comp.types[0]] = comp.long_name;
+                }
+
+                const line1 = [c.street_number, c.route].filter(Boolean).join(" ");
+                const line2 = c.subpremise || "";
+                const city = c.locality || c.postal_town || c.sublocality_level_1 || c.neighborhood || "";
+
+                setVal("address_line_1", line1);
+                setVal("address_line_2", line2);
+                setVal("city", city);
+                setVal("state_province", c.administrative_area_level_1 || "");
+                setVal("postal_code", c.postal_code || "");
+                setVal("country", c.country || "");
+
+                if (line2) {
+                    document.getElementById("addr2wrap").classList.remove("hidden");
+                }
+            });
+        }
+
+        function setVal(id, value) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.value = value;
+            el.dispatchEvent(new Event("input", { bubbles: true }));
+            el.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+
+        function jumpToErrorStep() {
+            for (let step = 1; step <= totalSteps; step++) {
+                const panel = document.getElementById(`panel-${step}`);
+                if (!panel) continue;
+
+                const hasVisibleOrServerError = Array.from(panel.querySelectorAll(".field-error")).some(
+                    (el) => el.textContent.trim() !== ""
+                );
+
+                if (hasVisibleOrServerError) {
+                    currentStep = step;
+                    buildNav();
+                    updateHeader();
+                    showPanel(currentStep);
+
+                    if (step === 3 && document.getElementById("address_line_2")?.value) {
+                        document.getElementById("addr2wrap").classList.remove("hidden");
+                    }
+
+                    panel.querySelectorAll(".field-error").forEach((el) => {
+                        if (el.textContent.trim() !== "") el.classList.remove("hidden");
+                    });
+
+                    break;
                 }
             }
-        };
-    }
-</script>
-</x-layouts.auth>
+        }
+
+        buildNav();
+        updateHeader();
+        jumpToErrorStep();
+    </script>
+
+    @if(config('services.google_maps.api_key'))
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.api_key') }}&libraries=places&callback=initGoogleAddressAutocomplete"></script>
+    @else
+        <script>
+            window.initGoogleAddressAutocomplete = function() {};
+        </script>
+    @endif
+</body>
+</html>
