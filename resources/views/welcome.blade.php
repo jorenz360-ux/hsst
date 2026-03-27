@@ -534,10 +534,10 @@
     function carousel() {
         return {
             images: [
-                '{{ asset("images/image5.jpg") }}',
-                '{{ asset("images/100YEARSLOGOELEMENT.jpg") }}'
-                '{{ asset("images/image3.jpg") }}',
-                '{{ asset("images/image4.jpg") }}',
+                @json(asset('images/image5.jpg')),
+                  @json(asset('images/100YEARSLOGOELEMENT.jpg')),
+                @json(asset('images/image3.jpg')),
+                @json(asset('images/image4.jpg'))
             ],
             currentIndex: 0,
             interval: null,
@@ -564,11 +564,13 @@
             },
 
             prev() {
-                this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
+                this.currentIndex =
+                    (this.currentIndex - 1 + this.images.length) % this.images.length;
             },
 
             next() {
-                this.currentIndex = (this.currentIndex + 1) % this.images.length;
+                this.currentIndex =
+                    (this.currentIndex + 1) % this.images.length;
             },
 
             handleTouchStart(e) {
@@ -593,7 +595,7 @@
                 this.touchStartX = 0;
                 this.touchEndX = 0;
             }
-        }
+        };
     }
 </script>
 </body>
