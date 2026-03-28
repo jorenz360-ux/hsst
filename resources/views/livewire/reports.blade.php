@@ -43,7 +43,7 @@
 
         {{-- Tabs --}}
         <div class="rounded-[24px] border border-white/10 bg-zinc-900/80 p-1.5 shadow-[0_10px_30px_rgba(0,0,0,0.25)] backdrop-blur">
-            <div class="grid grid-cols-1 gap-1.5 md:grid-cols-3">
+            <div class="grid grid-cols-1 gap-1.5 md:grid-cols-4">
                 <button
                     wire:click="$set('tab', 'donations')"
                     class="{{ $tab === 'donations'
@@ -69,6 +69,14 @@
                         : 'text-zinc-400 hover:bg-white/[0.04]' }} rounded-2xl px-4 py-3 text-sm font-semibold transition"
                 >
                     Event Registrations
+                </button>
+                <button
+                    wire:click="$set('tab', 'involvement')"
+                    class="{{ $tab === 'involvement'
+                        ? 'bg-orange-500 text-zinc-950 shadow-[0_8px_24px_rgba(249,115,22,0.28)]'
+                        : 'text-zinc-400 hover:bg-white/[0.04]' }} rounded-2xl px-4 py-3 text-sm font-semibold transition"
+                >
+                    Alumni Involvement
                 </button>
             </div>
         </div>
@@ -716,5 +724,153 @@
                 </section>
             </div>
         @endif
+        {{-- Alumni Involvement Report --}}
+@if ($tab === 'involvement')
+    <div class="space-y-6">
+
+        {{-- Controls --}}
+        <section class="rounded-[24px] border border-white/10 bg-zinc-900/70 p-6 shadow-[0_12px_32px_rgba(0,0,0,0.22)] backdrop-blur">
+            <div class="mb-5 flex flex-col gap-2">
+                <h2 class="text-lg font-semibold text-white">Alumni Involvement Controls</h2>
+                <p class="text-sm text-zinc-400">
+                    Review and export alumni participation preferences such as committee, priest, and medical roles.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-zinc-300">
+                        Involvement Type
+                    </label>
+                    <select
+                        wire:model.live="involvementType"
+                        class="w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-500/20"
+                    >
+                        <option value="all">All</option>
+                        <option value="committee">Committee Member</option>
+                        <option value="priest">Priest Concelebrate</option>
+                        <option value="medical">Medical Practitioner</option>
+                    </select>
+                </div>
+
+                <div class="flex items-end">
+                    <button
+                        type="button"
+                        wire:click="resetInvolvementFilters"
+                        class="inline-flex w-full items-center justify-center rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm font-medium text-zinc-200 transition hover:bg-zinc-800"
+                    >
+                        Reset Filters
+                    </button>
+                </div>
+
+                <div class="flex items-end">
+                    <button
+                        type="button"
+                        wire:click="downloadInvolvementReport"
+                        class="inline-flex w-full items-center justify-center rounded-2xl bg-orange-500 px-4 py-3 text-sm font-semibold text-zinc-950 shadow-[0_10px_28px_rgba(249,115,22,0.25)] transition hover:bg-orange-400"
+                    >
+                        Download CSV
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        {{-- Summary --}}
+        <section class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <div class="rounded-[24px] border border-orange-500/10 bg-gradient-to-br from-zinc-900 to-orange-950/20 p-6">
+                <p class="text-sm text-zinc-400">Total Submissions</p>
+                <h2 class="mt-3 text-3xl font-bold text-white">
+                    {{ $totalInvolvements }}
+                </h2>
+            </div>
+
+            <div class="rounded-[24px] border border-indigo-500/10 bg-gradient-to-br from-zinc-900 to-indigo-950/20 p-6">
+                <p class="text-sm text-zinc-400">Committee</p>
+                <h2 class="mt-3 text-3xl font-bold text-white">
+                    {{ $committeeCount }}
+                </h2>
+            </div>
+
+            <div class="rounded-[24px] border border-amber-500/10 bg-gradient-to-br from-zinc-900 to-amber-950/20 p-6">
+                <p class="text-sm text-zinc-400">Priest</p>
+                <h2 class="mt-3 text-3xl font-bold text-white">
+                    {{ $priestCount }}
+                </h2>
+            </div>
+
+            <div class="rounded-[24px] border border-emerald-500/10 bg-gradient-to-br from-zinc-900 to-emerald-950/20 p-6">
+                <p class="text-sm text-zinc-400">Medical</p>
+                <h2 class="mt-3 text-3xl font-bold text-white">
+                    {{ $medicalCount }}
+                </h2>
+            </div>
+        </section>
+
+        {{-- Table --}}
+        <section class="overflow-hidden rounded-[24px] border border-white/10 bg-zinc-900/75 shadow-[0_18px_40px_rgba(0,0,0,0.28)]">
+            <div class="px-6 py-5 border-b border-white/10">
+                <h2 class="text-lg font-semibold text-white">
+                    Alumni Involvement Records
+                </h2>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="border-b border-white/10 bg-zinc-950/80 text-zinc-400">
+                        <tr>
+                            <th class="px-6 py-4">Name</th>
+                            <th class="px-6 py-4">Batch</th>
+                            <th class="px-6 py-4">Committee</th>
+                            <th class="px-6 py-4">Priest</th>
+                            <th class="px-6 py-4">Medical</th>
+                            <th class="px-6 py-4">Specialty</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="divide-y divide-white/10">
+                        @forelse ($involvements as $item)
+                            <tr class="hover:bg-orange-500/[0.04] transition">
+                                <td class="px-6 py-4 text-white">
+                                    {{ trim(collect([$item->alumni->fname, $item->alumni->mname, $item->alumni->lname])->filter()->implode(' ')) }}
+                                </td>
+
+                                <td class="px-6 py-4 text-zinc-300">
+                                    {{ $item->alumni?->batch?->yeargrad ?? '—' }}
+                                </td>
+
+                                <td class="px-6 py-4">
+                                    {{ $item->wants_committee_member ? 'Yes' : 'No' }}
+                                </td>
+
+                                <td class="px-6 py-4">
+                                    {{ $item->is_priest_concelebrate ? 'Yes' : 'No' }}
+                                </td>
+
+                                <td class="px-6 py-4">
+                                    {{ $item->is_medical_practitioner ? 'Yes' : 'No' }}
+                                </td>
+
+                                <td class="px-6 py-4 text-zinc-300">
+                                    {{ $item->medical_specialty ?? '—' }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="px-6 py-14 text-center text-zinc-500">
+                                    No involvement records found.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="px-6 py-4 border-t border-white/10">
+                {{ $involvements->links() }}
+            </div>
+        </section>
+
+    </div>
+@endif
     </div>
 </div>

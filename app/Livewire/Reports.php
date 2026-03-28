@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Alumni;
+use App\Models\AlumniInvolvement;
 use App\Models\Batch;
 use App\Models\Donation;
 use App\Models\Event;
@@ -32,11 +33,18 @@ class Reports extends Component
     public string $selectedEvent = 'all';
     public string $registrationStatus = 'all';
 
+    /**
+     * Alumni involvement filters
+     * all | involved
+     */
+    public string $involvementType = 'all'; // all | committee | priest | medical
+
     protected $queryString = [
         'tab' => ['except' => 'donations'],
         'selectedBatch' => ['except' => 'all'],
         'selectedEvent' => ['except' => 'all'],
         'registrationStatus' => ['except' => 'all'],
+        'involvementType' => ['except' => 'all'],
     ];
 
     public function mount(): void
@@ -80,6 +88,11 @@ class Reports extends Component
         $this->resetPage('eventRegistrationsPage');
     }
 
+    public function updatingInvolvementType(): void
+    {
+        $this->resetPage('involvementPage');
+    }
+
     public function updatedSelectedBatch($value): void
     {
         if ($this->isBatchRepresentative()) {
@@ -107,6 +120,12 @@ class Reports extends Component
         $this->resetPage('eventRegistrationsPage');
     }
 
+    public function resetInvolvementFilters(): void
+    {
+        $this->involvementType = 'all';
+        $this->resetPage('involvementPage');
+    }
+
     public function resetBatchFilter(): void
     {
         if ($this->isBatchRepresentative()) {
@@ -123,6 +142,7 @@ class Reports extends Component
         $this->resetPage('donationsPage');
         $this->resetPage('batchMembersPage');
         $this->resetPage('eventRegistrationsPage');
+        $this->resetPage('involvementPage');
     }
 
     protected function user()
@@ -256,6 +276,24 @@ class Reports extends Component
         return $query;
     }
 
+    protected function baseInvolvementQuery(): Builder
+    {
+        $query = AlumniInvolvement::query()
+            ->with([
+                'alumni:id,fname,lname,mname,batch_id',
+                'alumni.batch:id,yeargrad,schoolyear',
+            ]);
+
+        $query = $this->applyBatchScopeToAlumniRelation($query);
+
+        return match ($this->involvementType) {
+            'committee' => $query->where('wants_committee_member', true),
+            'priest' => $query->where('is_priest_concelebrate', true),
+            'medical' => $query->where('is_medical_practitioner', true),
+            default => $query,
+        };
+    }
+
     protected function availableBatches()
     {
         if ($this->isBatchRepresentative()) {
@@ -326,9 +364,9 @@ class Reports extends Component
                     : '—';
 
                 fputcsv($handle, [
+                    $donorName,
                     $donation->alumni?->batch?->yeargrad ?? '—',
                     $donation->alumni?->batch?->schoolyear ?? '—',
-                    $donorName,
                     $donation->amount,
                     $donation->created_at?->format('Y-m-d h:i A') ?? '—',
                 ]);
@@ -416,6 +454,55 @@ class Reports extends Component
         ]);
     }
 
+    public function downloadInvolvementReport(): StreamedResponse
+    {
+        $involvements = $this->baseInvolvementQuery()
+            ->latest()
+            ->get();
+
+        $filename = 'alumni-involvement-report-' . now()->format('Y-m-d-His') . '.csv';
+
+        return response()->streamDownload(function () use ($involvements) {
+            $handle = fopen('php://output', 'w');
+
+            fputcsv($handle, [
+                'Alumni Name',
+                'Batch',
+                'School Year',
+                'Committee Member',
+                'Priest Concelebrate',
+                'Medical Practitioner',
+                'Medical Specialty',
+                'Submitted At',
+            ]);
+
+            foreach ($involvements as $involvement) {
+                $alumniName = $involvement->alumni
+                    ? trim(collect([
+                        $involvement->alumni->fname,
+                        $involvement->alumni->mname,
+                        $involvement->alumni->lname,
+                    ])->filter()->implode(' '))
+                    : '—';
+
+                fputcsv($handle, [
+                    $alumniName,
+                    $involvement->alumni?->batch?->yeargrad ?? '—',
+                    $involvement->alumni?->batch?->schoolyear ?? '—',
+                    $involvement->wants_committee_member ? 'Yes' : 'No',
+                    $involvement->is_priest_concelebrate ? 'Yes' : 'No',
+                    $involvement->is_medical_practitioner ? 'Yes' : 'No',
+                    $involvement->medical_specialty ?? '—',
+                    $involvement->created_at?->format('Y-m-d h:i A') ?? '—',
+                ]);
+            }
+
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv',
+        ]);
+    }
+
     public function render()
     {
         $donationQuery = $this->baseDonationQuery();
@@ -445,6 +532,35 @@ class Reports extends Component
         $pendingEventRegistrations = (clone $eventRegistrationQuery)->where('status', 'pending')->count();
         $rejectedEventRegistrations = (clone $eventRegistrationQuery)->where('status', 'rejected')->count();
 
+        $involvementQuery = $this->baseInvolvementQuery();
+
+        $involvements = (clone $involvementQuery)
+            ->latest()
+            ->paginate(10, ['*'], 'involvementPage');
+
+        $totalInvolvements = (clone $involvementQuery)->count();
+
+        $committeeCount = AlumniInvolvement::query()
+            ->when($this->resolvedBatchId(), function ($query, $batchId) {
+                $query->whereHas('alumni', fn ($q) => $q->where('batch_id', $batchId));
+            })
+            ->where('wants_committee_member', true)
+            ->count();
+
+        $priestCount = AlumniInvolvement::query()
+            ->when($this->resolvedBatchId(), function ($query, $batchId) {
+                $query->whereHas('alumni', fn ($q) => $q->where('batch_id', $batchId));
+            })
+            ->where('is_priest_concelebrate', true)
+            ->count();
+
+        $medicalCount = AlumniInvolvement::query()
+            ->when($this->resolvedBatchId(), function ($query, $batchId) {
+                $query->whereHas('alumni', fn ($q) => $q->where('batch_id', $batchId));
+            })
+            ->where('is_medical_practitioner', true)
+            ->count();
+
         return view('livewire.reports', [
             'donations' => $donations,
             'totalDonationsAmount' => $totalDonationsAmount,
@@ -459,6 +575,12 @@ class Reports extends Component
             'paidEventRegistrations' => $paidEventRegistrations,
             'pendingEventRegistrations' => $pendingEventRegistrations,
             'rejectedEventRegistrations' => $rejectedEventRegistrations,
+
+            'involvements' => $involvements,
+            'totalInvolvements' => $totalInvolvements,
+            'committeeCount' => $committeeCount,
+            'priestCount' => $priestCount,
+            'medicalCount' => $medicalCount,
 
             'allBatches' => $this->availableBatches(),
             'allEvents' => $this->availableEvents(),
