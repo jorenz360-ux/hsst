@@ -113,64 +113,66 @@
     </div>
 
     {{-- HERO --}}
-    <section class="relative overflow-hidden">
-        <div class="absolute inset-0">
-            <img
-                src="{{ asset('images/100yearsevent.jpg') }}"
-                alt="{{ $event->title }}"
-                class="h-full w-full object-cover object-center"
-            >
-            <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,42,107,0.92)_0%,rgba(15,42,107,0.78)_38%,rgba(15,42,107,0.48)_62%,rgba(15,42,107,0.25)_100%)]"></div>
-            <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,42,107,0.08)_0%,rgba(15,42,107,0.62)_78%,rgba(255,255,255,1)_100%)]"></div>
-        </div>
+@php
+    $bannerUrl = $event->banner_image
+        ? \Illuminate\Support\Facades\Storage::disk('s3')->url($event->banner_image)
+        : asset('images/100yearsevent.jpg');
+@endphp
 
-        <div class="relative z-10 mx-auto flex min-h-[72vh] max-w-[1380px] items-end px-4 pb-14 pt-28 sm:px-6 lg:px-8 lg:pb-16">
-            <div class="max-w-4xl">
-                <p class="text-[11px] font-extrabold uppercase tracking-[0.32em] text-white/85">
-                    Official Event Details
-                </p>
+<section class="relative overflow-hidden">
+    <div class="absolute inset-0">
+        <img
+            src="{{ $bannerUrl }}"
+            alt="{{ $event->title }}"
+            class="h-full w-full object-cover object-center"
+        ></div>
 
-                <h1 class="mt-5 font-display text-[2.7rem] leading-[0.96] tracking-[-0.03em] text-white sm:text-[3.8rem] lg:text-[5rem]">
-                    {{ $event->title }}
-                </h1>
+    <div class="relative z-10 mx-auto flex min-h-[72vh] max-w-[1380px] items-end px-4 pb-14 pt-28 sm:px-6 lg:px-8 lg:pb-16">
+        <div class="max-w-4xl">
+            <p class="text-[11px] font-extrabold uppercase tracking-[0.32em] text-white/85">
+                Official Event Details
+            </p>
 
-                <div class="mt-6 flex flex-col gap-3 text-sm text-white/85 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6">
-                    <span>
-                        @if ($event->event_date)
-                            {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
-                        @else
-                            Date to be announced
-                        @endif
-                    </span>
+            <h1 class="mt-5 font-display text-[2.7rem] leading-[0.96] tracking-[-0.03em] text-white sm:text-[3.8rem] lg:text-[5rem]">
+                {{ $event->title }}
+            </h1>
 
-                    <span>{{ $event->venue ?: 'Venue to be announced' }}</span>
-
-                    @if ($event->schedules->first()?->schedule_time)
-                        <span>{{ \Carbon\Carbon::parse($event->schedules->first()->schedule_time)->format('g:i A') }}</span>
+            <div class="mt-6 flex flex-col gap-3 text-sm text-white/85 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6">
+                <span>
+                    @if ($event->event_date)
+                        {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
+                    @else
+                        Date to be announced
                     @endif
-                </div>
+                </span>
 
-                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                <span>{{ $event->venue ?: 'Venue to be announced' }}</span>
+
+                @if ($event->schedules->first()?->schedule_time)
+                    <span>{{ \Carbon\Carbon::parse($event->schedules->first()->schedule_time)->format('g:i A') }}</span>
+                @endif
+            </div>
+
+            <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                <a
+                    href="{{ route('events.index') }}"
+                    class="inline-flex items-center justify-center border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-white/15"
+                >
+                    Back to Events
+                </a>
+
+                @if (Route::has('register'))
                     <a
-                        href="{{ route('events.index') }}"
-                        class="inline-flex items-center justify-center border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-white/15"
+                        href="{{ route('register') }}"
+                        class="inline-flex items-center justify-center bg-white px-6 py-3 text-sm font-bold uppercase tracking-[0.16em] text-[#0F2A6B] transition hover:bg-slate-100"
                     >
-                        Back to Events
+                        Join the Alumni Portal
                     </a>
-
-                    @if (Route::has('register'))
-                        <a
-                            href="{{ route('register') }}"
-                            class="inline-flex items-center justify-center bg-white px-6 py-3 text-sm font-bold uppercase tracking-[0.16em] text-[#0F2A6B] transition hover:bg-slate-100"
-                        >
-                            Join the Alumni Portal
-                        </a>
-                    @endif
-                </div>
+                @endif
             </div>
         </div>
-    </section>
-
+    </div>
+</section>
     {{-- CONTENT --}}
     <section id="event-details" class="bg-white py-14 md:py-20 lg:py-24">
         <div class="mx-auto max-w-[1180px] px-4 sm:px-6 lg:px-8">
