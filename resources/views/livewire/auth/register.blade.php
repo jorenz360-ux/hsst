@@ -701,8 +701,12 @@
                     valid = false;
                 }
 
-                if (!yeargrad || yeargrad < 1950 || yeargrad > 2026) {
-                    showError("yeargrad", "err-yeargrad", "Please enter a valid graduation year (1950–2026).");
+                if (!yeargrad || yeargrad < 1900 || yeargrad > ${new Date().getFullYear()}) {
+                    showError(
+                        "yeargrad",
+                        "err-yeargrad",
+                        `Please enter a valid graduation year (1900–${new Date().getFullYear()}).`
+                    );
                     valid = false;
                 }
             }
