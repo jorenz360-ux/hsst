@@ -109,6 +109,7 @@
             <table class="w-full text-sm">
                 <thead class="bg-zinc-950/80 text-zinc-400">
                     <tr>
+                        <th class="px-5 py-4">Id</th>
                         <th class="px-5 py-4">User</th>
                         <th class="px-5 py-4">Full Name</th>
                         <th class="px-5 py-4">Batch</th>
@@ -120,6 +121,7 @@
                 <tbody class="divide-y divide-white/10">
                     @forelse ($users as $user)
                         <tr class="hover:bg-amber-500/[0.04] transition">
+                              <td class="px-5 py-4 text-white">{{ $user->id}}</td>
                             <td class="px-5 py-4 text-white">{{ $user->username }}</td>
 
                             <td class="px-5 py-4 text-zinc-300">

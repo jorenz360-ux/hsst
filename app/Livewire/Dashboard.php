@@ -2,20 +2,29 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use Livewire\WithPagination;
-use App\Models\Donation;
-use App\Models\Event;
 use App\Models\Alumni;
-use App\Models\User;
 use App\Models\Announcement;
 use App\Models\Batch;
+use App\Models\Donation;
+use App\Models\Event;
+use App\Models\User;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class Dashboard extends Component
 {
     use WithPagination;
 
     public string $title = 'Dashboard';
+
+    protected $paginationTheme = 'tailwind';
+
+    protected $queryString = [
+        'donationsPage' => ['except' => 1],
+        'latestPaymentsPage' => ['except' => 1],
+        'upcomingEventsPage' => ['except' => 1],
+        'announcementsPage' => ['except' => 1],
+    ];
 
     public function render()
     {
@@ -34,7 +43,7 @@ class Dashboard extends Component
         $donations = (clone $paidDonationsQuery)
             ->with(['alumni:id,lname,fname,mname'])
             ->latest('paid_at')
-            ->paginate(5);
+            ->paginate(3, ['*'], 'donationsPage');
 
         $allDonationsTotal = (clone $paidDonationsQuery)->sum('amount');
 
@@ -60,8 +69,7 @@ class Dashboard extends Component
             ->with(['alumni:id,lname,fname,mname'])
             ->whereNotNull('paid_at')
             ->latest('paid_at')
-            ->limit(5)
-            ->get();
+            ->paginate(3, ['*'], 'latestPaymentsPage');
 
         $upcomingEvents = Event::query()
             ->select([
@@ -76,8 +84,7 @@ class Dashboard extends Component
             ->where('is_active', true)
             ->whereDate('event_date', '>=', now()->toDateString())
             ->orderBy('event_date')
-            ->limit(4)
-            ->get();
+            ->paginate(4, ['*'], 'upcomingEventsPage');
 
         $totalAlumni = Alumni::count();
         $totalUsers = User::count();
@@ -106,8 +113,7 @@ class Dashboard extends Component
             ])
             ->latest('published_at')
             ->latest('created_at')
-            ->limit(5)
-            ->get();
+            ->paginate(3, ['*'], 'announcementsPage');
 
         return view('livewire.dashboard', [
             'donations' => $donations,

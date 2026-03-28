@@ -300,7 +300,7 @@
                         </div>
                     </div>
                 </section>
-            </aside>
+            </aside> 
         </div>
     </div>
 </div>

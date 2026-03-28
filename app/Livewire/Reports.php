@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Alumni;
 use App\Models\Batch;
 use App\Models\Donation;
 use App\Models\Event;
@@ -22,6 +23,10 @@ class Reports extends Component
 
     public ?string $donationStartDate = null;
     public ?string $donationEndDate = null;
+
+    /**
+     * Global batch filter applied to all tabs.
+     */
     public string $selectedBatch = 'all';
 
     public string $selectedEvent = 'all';
@@ -29,6 +34,9 @@ class Reports extends Component
 
     protected $queryString = [
         'tab' => ['except' => 'donations'],
+        'selectedBatch' => ['except' => 'all'],
+        'selectedEvent' => ['except' => 'all'],
+        'registrationStatus' => ['except' => 'all'],
     ];
 
     public function mount(): void
@@ -42,6 +50,11 @@ class Reports extends Component
         }
     }
 
+    public function updatingTab(): void
+    {
+        $this->resetAllPages();
+    }
+
     public function updatingDonationStartDate(): void
     {
         $this->resetPage('donationsPage');
@@ -50,6 +63,11 @@ class Reports extends Component
     public function updatingDonationEndDate(): void
     {
         $this->resetPage('donationsPage');
+    }
+
+    public function updatingSelectedBatch(): void
+    {
+        $this->resetAllPages();
     }
 
     public function updatingSelectedEvent(): void
@@ -62,10 +80,16 @@ class Reports extends Component
         $this->resetPage('eventRegistrationsPage');
     }
 
-    public function updatedSelectedBatch(): void
+    public function updatedSelectedBatch($value): void
     {
         if ($this->isBatchRepresentative()) {
             $this->selectedBatch = (string) ($this->getUserBatchId() ?? 'all');
+
+            return;
+        }
+
+        if ($value !== 'all' && ! Batch::query()->whereKey((int) $value)->exists()) {
+            $this->selectedBatch = 'all';
         }
     }
 
@@ -80,6 +104,24 @@ class Reports extends Component
     {
         $this->selectedEvent = 'all';
         $this->registrationStatus = 'all';
+        $this->resetPage('eventRegistrationsPage');
+    }
+
+    public function resetBatchFilter(): void
+    {
+        if ($this->isBatchRepresentative()) {
+            $this->selectedBatch = (string) ($this->getUserBatchId() ?? 'all');
+        } else {
+            $this->selectedBatch = 'all';
+        }
+
+        $this->resetAllPages();
+    }
+
+    protected function resetAllPages(): void
+    {
+        $this->resetPage('donationsPage');
+        $this->resetPage('batchMembersPage');
         $this->resetPage('eventRegistrationsPage');
     }
 
@@ -105,31 +147,41 @@ class Reports extends Component
         return $batchId ? (int) $batchId : null;
     }
 
+    protected function resolvedBatchId(): ?int
+    {
+        if ($this->isBatchRepresentative()) {
+            return $this->getUserBatchId();
+        }
+
+        if ($this->selectedBatch === 'all') {
+            return null;
+        }
+
+        return (int) $this->selectedBatch;
+    }
+
+    protected function applyBatchScopeToAlumniRelation(Builder $query, string $relation = 'alumni'): Builder
+    {
+        $batchId = $this->resolvedBatchId();
+
+        if ($batchId === null) {
+            return $query;
+        }
+
+        return $query->whereHas($relation, function (Builder $q) use ($batchId) {
+            $q->where('batch_id', $batchId);
+        });
+    }
+
     protected function baseDonationQuery(): Builder
     {
-        $query = Donation::query()->with([
-            'alumni.batch',
-        ]);
+        $query = Donation::query()
+            ->with([
+                'alumni:id,fname,lname,mname,batch_id',
+                'alumni.batch:id,yeargrad,schoolyear',
+            ]);
 
-        if ($this->isBatchRepresentative()) {
-            $batchId = $this->getUserBatchId();
-
-            if (! $batchId) {
-                return $query->whereRaw('1 = 0');
-            }
-
-            $query->whereHas('alumni', function (Builder $q) use ($batchId) {
-                $q->where('batch_id', $batchId);
-            });
-        } else {
-            if ($this->selectedBatch !== 'all') {
-                $selectedBatchId = (int) $this->selectedBatch;
-
-                $query->whereHas('alumni', function (Builder $q) use ($selectedBatchId) {
-                    $q->where('batch_id', $selectedBatchId);
-                });
-            }
-        }
+        $query = $this->applyBatchScopeToAlumniRelation($query);
 
         if ($this->donationStartDate) {
             $query->whereDate('created_at', '>=', $this->donationStartDate);
@@ -142,24 +194,41 @@ class Reports extends Component
         return $query;
     }
 
-    protected function baseBatchQuery(): Builder
+    protected function baseBatchSummaryQuery(): Builder
     {
         $query = Batch::query()
             ->withCount('alumni')
             ->orderBy('yeargrad', 'desc');
 
-        if ($this->isBatchRepresentative()) {
-            $batchId = $this->getUserBatchId();
+        $batchId = $this->resolvedBatchId();
 
-            if (! $batchId) {
-                return $query->whereRaw('1 = 0');
-            }
-
-            return $query->where('id', $batchId);
+        if ($batchId !== null) {
+            $query->where('id', $batchId);
         }
 
-        if ($this->selectedBatch !== 'all') {
-            $query->where('id', (int) $this->selectedBatch);
+        return $query;
+    }
+
+    protected function baseBatchMembersQuery(): Builder
+    {
+        $query = Alumni::query()
+            ->with([
+                'batch:id,yeargrad,schoolyear',
+            ])
+            ->select([
+                'id',
+                'fname',
+                'lname',
+                'mname',
+                'batch_id',
+            ])
+            ->orderBy('lname')
+            ->orderBy('fname');
+
+        $batchId = $this->resolvedBatchId();
+
+        if ($batchId !== null) {
+            $query->where('batch_id', $batchId);
         }
 
         return $query;
@@ -170,7 +239,7 @@ class Reports extends Component
         $query = EventRegistration::query()
             ->with([
                 'event:id,title,slug,event_date,venue',
-                'alumni:id,fname,lname,batch_id',
+                'alumni:id,fname,lname,mname,batch_id',
                 'alumni.batch:id,yeargrad,schoolyear',
             ]);
 
@@ -182,17 +251,7 @@ class Reports extends Component
             $query->where('status', $this->registrationStatus);
         }
 
-        if ($this->isBatchRepresentative()) {
-            $batchId = $this->getUserBatchId();
-
-            if (! $batchId) {
-                return $query->whereRaw('1 = 0');
-            }
-
-            $query->whereHas('alumni', function (Builder $q) use ($batchId) {
-                $q->where('batch_id', $batchId);
-            });
-        }
+        $query = $this->applyBatchScopeToAlumniRelation($query);
 
         return $query;
     }
@@ -225,6 +284,19 @@ class Reports extends Component
             ->get(['id', 'title', 'event_date']);
     }
 
+    protected function selectedBatchModel(): ?Batch
+    {
+        $batchId = $this->resolvedBatchId();
+
+        if (! $batchId) {
+            return null;
+        }
+
+        return Batch::query()
+            ->select(['id', 'yeargrad', 'schoolyear'])
+            ->find($batchId);
+    }
+
     public function downloadDonations(): StreamedResponse
     {
         $donations = $this->baseDonationQuery()
@@ -246,13 +318,17 @@ class Reports extends Component
 
             foreach ($donations as $donation) {
                 $donorName = $donation->alumni
-                    ? trim($donation->alumni->fname . ' ' . $donation->alumni->lname)
+                    ? trim(collect([
+                        $donation->alumni->fname,
+                        $donation->alumni->mname,
+                        $donation->alumni->lname,
+                    ])->filter()->implode(' '))
                     : '—';
 
                 fputcsv($handle, [
-                    $donorName,
                     $donation->alumni?->batch?->yeargrad ?? '—',
                     $donation->alumni?->batch?->schoolyear ?? '—',
+                    $donorName,
                     $donation->amount,
                     $donation->created_at?->format('Y-m-d h:i A') ?? '—',
                 ]);
@@ -266,7 +342,7 @@ class Reports extends Component
 
     public function downloadBatchReport(): StreamedResponse
     {
-        $batches = $this->baseBatchQuery()->get();
+        $batches = $this->baseBatchSummaryQuery()->get();
 
         $filename = 'batch-report-' . now()->format('Y-m-d-His') . '.csv';
 
@@ -316,7 +392,11 @@ class Reports extends Component
 
             foreach ($registrations as $registration) {
                 $alumniName = $registration->alumni
-                    ? trim($registration->alumni->fname . ' ' . $registration->alumni->lname)
+                    ? trim(collect([
+                        $registration->alumni->fname,
+                        $registration->alumni->mname,
+                        $registration->alumni->lname,
+                    ])->filter()->implode(' '))
                     : '—';
 
                 fputcsv($handle, [
@@ -347,7 +427,12 @@ class Reports extends Component
         $totalDonationsAmount = (clone $donationQuery)->sum('amount');
         $totalDonationCount = (clone $donationQuery)->count();
 
-        $batchReports = $this->baseBatchQuery()->get();
+        $batchSummaryQuery = $this->baseBatchSummaryQuery();
+        $batchReports = (clone $batchSummaryQuery)->get();
+
+        $batchMembersQuery = $this->baseBatchMembersQuery();
+        $batchMembers = (clone $batchMembersQuery)
+            ->paginate(10, ['*'], 'batchMembersPage');
 
         $eventRegistrationQuery = $this->baseEventRegistrationQuery();
 
@@ -366,7 +451,8 @@ class Reports extends Component
             'totalDonationCount' => $totalDonationCount,
 
             'batchReports' => $batchReports,
-            'totalBatchMembers' => $batchReports->sum('alumni_count'),
+            'batchMembers' => $batchMembers,
+            'totalBatchMembers' => (clone $batchMembersQuery)->count(),
 
             'eventRegistrations' => $eventRegistrations,
             'totalEventRegistrations' => $totalEventRegistrations,
@@ -376,6 +462,7 @@ class Reports extends Component
 
             'allBatches' => $this->availableBatches(),
             'allEvents' => $this->availableEvents(),
+            'currentBatch' => $this->selectedBatchModel(),
 
             'isBatchRepresentative' => $this->isBatchRepresentative(),
             'isReunionCoordinator' => $this->isReunionCoordinator(),
