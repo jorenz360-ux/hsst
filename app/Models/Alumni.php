@@ -49,5 +49,9 @@ public function events(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
         ->withPivot(['fee_paid', 'paid_at', 'status'])
         ->withTimestamps();
 }
+public function involvement()
+{
+    return $this->hasOne(\App\Models\AlumniInvolvement::class);
+}
 }
 

@@ -1,3 +1,4 @@
+<div>
 <div class="min-h-screen bg-zinc-950 text-zinc-100 rounded-2xl">
     <div class="space-y-8 p-6">
 
@@ -303,4 +304,7 @@
             </aside> 
         </div>
     </div>
+</div>
+
+    
 </div>

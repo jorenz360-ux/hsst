@@ -20,18 +20,23 @@ class AlumniDashboard extends Component
     public ?string $lastPaidAt = null;
     public ?int $lastPaidAmount = null;
 
+    public bool $hasVolunteerInfo = false;
+    public array $volunteerRoles = [];
+    public ?string $volunteerSpecialty = null;
+
     public Collection $latestAnnouncements;
     public Collection $upcomingEvents;
 
     public function mount(): void
     {
-        $alumniId = $this->alumniId();
-
         $this->latestAnnouncements = collect();
         $this->upcomingEvents = collect();
 
+        $alumniId = $this->alumniId();
+
         if ($alumniId) {
             $this->loadDonationSummary($alumniId);
+            $this->loadVolunteerInfo();
         }
 
         $this->loadUpcomingEvents();
@@ -49,6 +54,42 @@ class AlumniDashboard extends Component
         return Auth::user()?->alumni_id;
     }
 
+   protected function loadVolunteerInfo(): void
+{
+    $user = Auth::user()?->loadMissing('alumni.involvement');
+
+    $involvement = $user?->alumni?->involvement;
+
+    if (! $involvement) {
+        $this->hasVolunteerInfo = false;
+        $this->volunteerRoles = [];
+        $this->volunteerSpecialty = null;
+        return;
+    }
+
+    $roles = [];
+
+    if ((bool) $involvement->wants_committee_member) {
+        $roles[] = 'Committee Member';
+    }
+
+    if ((bool) $involvement->is_priest_concelebrate) {
+        $roles[] = 'Priest for Thanksgiving Mass';
+    }
+
+    if ((bool) $involvement->is_medical_practitioner) {
+        $roles[] = 'Medical Practitioner for Medical Mission';
+    }
+
+    $this->volunteerRoles = $roles;
+    $this->volunteerSpecialty = filled($involvement->medical_specialty)
+        ? $involvement->medical_specialty
+        : null;
+
+    $this->hasVolunteerInfo =
+        ! empty($roles) || filled($this->volunteerSpecialty);
+}
+
     protected function loadDonationSummary(int $alumniId): void
     {
         $paidQuery = Donation::query()
@@ -62,7 +103,10 @@ class AlumniDashboard extends Component
             ->latest('created_at')
             ->first();
 
-        $this->lastPaidAmount = $lastPayment?->amount ? (int) $lastPayment->amount : null;
+        $this->lastPaidAmount = $lastPayment?->amount
+            ? (int) $lastPayment->amount
+            : null;
+
         $this->lastPaidAt = $lastPayment?->created_at?->format('M d, Y h:i A');
     }
 
@@ -94,6 +138,11 @@ class AlumniDashboard extends Component
     {
         $eventIds = $this->upcomingEvents->pluck('id')->all();
 
+        if (empty($eventIds)) {
+            $this->myEventRegs = [];
+            return;
+        }
+
         $registrations = EventRegistration::query()
             ->with([
                 'payments' => function ($query) {
@@ -104,7 +153,7 @@ class AlumniDashboard extends Component
                         'status',
                         'created_at',
                     ])->latest('id');
-                }
+                },
             ])
             ->select([
                 'id',
@@ -118,7 +167,7 @@ class AlumniDashboard extends Component
 
         $this->myEventRegs = $registrations
             ->keyBy('event_id')
-            ->map(function ($registration) {
+            ->map(function (EventRegistration $registration) {
                 $basePayment = $registration->payments
                     ->firstWhere('event_registration_item_id', null);
 
@@ -156,6 +205,11 @@ class AlumniDashboard extends Component
     {
         $eventIds = $this->upcomingEvents->pluck('id')->all();
 
+        if (empty($eventIds)) {
+            $this->myEventItemPayments = [];
+            return;
+        }
+
         $payments = Payment::query()
             ->with([
                 'registration:id,event_id,alumni_id',
@@ -168,9 +222,9 @@ class AlumniDashboard extends Component
                 'created_at',
             ])
             ->whereNotNull('event_registration_item_id')
-            ->whereHas('registration', function ($q) use ($alumniId, $eventIds) {
-                $q->where('alumni_id', $alumniId)
-                  ->whereIn('event_id', $eventIds);
+            ->whereHas('registration', function ($query) use ($alumniId, $eventIds) {
+                $query->where('alumni_id', $alumniId)
+                    ->whereIn('event_id', $eventIds);
             })
             ->latest('id')
             ->get();
@@ -178,8 +232,12 @@ class AlumniDashboard extends Component
         $grouped = [];
 
         foreach ($payments as $payment) {
-            $eventId = $payment->registration->event_id;
+            $eventId = $payment->registration?->event_id;
             $itemId = $payment->event_registration_item_id;
+
+            if (! $eventId || ! $itemId) {
+                continue;
+            }
 
             if (! isset($grouped[$eventId][$itemId])) {
                 $grouped[$eventId][$itemId] = match ($payment->status) {
@@ -197,7 +255,14 @@ class AlumniDashboard extends Component
     protected function loadLatestAnnouncements(): void
     {
         $this->latestAnnouncements = Announcement::query()
-            ->select(['id', 'title', 'body', 'created_at', 'published_at', 'pinned'])
+            ->select([
+                'id',
+                'title',
+                'body',
+                'created_at',
+                'published_at',
+                'pinned',
+            ])
             ->where('is_published', true)
             ->where(function ($query) {
                 $query->whereNull('published_at')
@@ -207,6 +272,7 @@ class AlumniDashboard extends Component
                 $query->whereNull('expires_at')
                     ->orWhere('expires_at', '>', now());
             })
+            ->latest('pinned')
             ->latest('published_at')
             ->latest('id')
             ->limit(5)

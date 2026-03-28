@@ -1,3 +1,8 @@
+@php
+    $user = auth()->user();
+    $alumni = $user?->alumni;
+@endphp
+
 <div>
     <div class="mx-auto max-w-7xl space-y-4 px-3 py-4 sm:space-y-6 sm:px-4 sm:py-6 lg:px-4">
 
@@ -10,7 +15,7 @@
                     </p>
 
                     <h1 class="mt-2 text-xl font-bold tracking-tight text-white sm:text-3xl">
-                        Welcome back, {{ auth()->user()->username ?? 'Alumnus' }}
+                        Welcome back, {{ $user->username ?? 'Alumnus' }}
                     </h1>
 
                     <p class="mt-3 text-sm leading-6 text-zinc-400 sm:text-[15px]">
@@ -19,22 +24,19 @@
                     </p>
                 </div>
 
-                <div class="grid w-full grid-cols-1 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:gap-3">
-                    <a href="#profile-section"
-                       class="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-zinc-200 transition hover:bg-white/[0.08]">
-                        Edit Profile
-                    </a>
-
-                    <a href="#upcoming-events"
-                       class="inline-flex items-center justify-center rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-400">
-                        View Events
-                    </a>
-                </div>
+              <div class="grid w-full grid-cols-1 gap-2 sm:flex sm:w-auto sm:justify-end sm:self-center">
+    <a
+        href="{{ route('profile.edit') }}#volunteer-section"
+        class="inline-flex items-center justify-center rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-400"
+    >
+        Be Involved
+    </a>
+</div>
             </div>
         </section>
 
         {{-- Profile Status --}}
-        @if(auth()->user()->alumni)
+        @if($alumni)
             <section class="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.08] px-4 py-4 sm:px-5">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
@@ -64,7 +66,7 @@
                 <div class="rounded-xl border border-indigo-500/10 bg-white/[0.03] p-4 sm:rounded-2xl">
                     <p class="text-[11px] font-medium uppercase tracking-wide text-zinc-400">My Batch</p>
                     <p class="mt-2 text-base font-semibold text-white sm:mt-3 sm:text-lg">
-                        {{ auth()->user()->alumni?->batch?->schoolyear ?? 'Not set' }}
+                        {{ $alumni?->batch?->schoolyear ?? 'Not set' }}
                     </p>
                 </div>
 
@@ -297,6 +299,80 @@
 
             {{-- SIDEBAR --}}
             <aside class="space-y-4 sm:space-y-6">
+{{-- Be Involved CTA --}}
+<section class="overflow-hidden rounded-2xl border border-indigo-400/15 bg-gradient-to-br from-indigo-950/80 via-slate-950 to-zinc-900 shadow-[0_16px_40px_rgba(0,0,0,0.25)] sm:rounded-3xl">
+    <div class="border-b border-white/10 px-4 py-4 sm:px-5">
+        <div class="flex items-start justify-between gap-3">
+            <div>
+                <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-indigo-300">
+                    Be Involved
+                </p>
+
+                <h2 class="mt-2 text-base font-semibold text-white sm:text-lg">
+                    {{ $hasVolunteerInfo ? 'Your Reunion Involvement' : 'Be Involved in the Reunion' }}
+                </h2>
+            </div>
+
+            <span
+                @class([
+                    'inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide',
+                    'border-emerald-400/20 bg-emerald-400/10 text-emerald-300' => $hasVolunteerInfo,
+                    'border-indigo-400/20 bg-indigo-400/10 text-indigo-200' => ! $hasVolunteerInfo,
+                ])
+            >
+                {{ $hasVolunteerInfo ? 'Saved' : 'Open' }}
+            </span>
+        </div>
+    </div>
+
+    <div class="space-y-4 px-4 py-4 sm:px-5 sm:py-5">
+        @if($hasVolunteerInfo)
+            <div class="rounded-2xl border border-emerald-400/15 bg-emerald-500/[0.08] p-4">
+                <p class="text-sm font-medium text-emerald-300">
+                    Your involvement preferences have been submitted.
+                </p>
+                <p class="mt-1 text-xs leading-5 text-zinc-400">
+                    You may still update your preferences anytime before the reunion.
+                </p>
+            </div>
+
+            @if(!empty($volunteerRoles))
+                <div class="space-y-2">
+                    <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                        Selected Involvement
+                    </p>
+
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($volunteerRoles as $role)
+                            <span class="inline-flex items-center rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-xs font-medium text-white">
+                                {{ $role }}
+                            </span>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            @if($volunteerSpecialty)
+                <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+                    <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                        Field of Specialty
+                    </p>
+                    <p class="mt-2 text-sm text-white">
+                        {{ $volunteerSpecialty }}
+                    </p>
+                </div>
+            @endif
+        @endif
+
+        <a
+            href="{{ route('profile.edit') }}#volunteer-section"
+            class="inline-flex w-full items-center justify-center rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-400"
+        >
+            {{ $hasVolunteerInfo ? 'Update Volunteer Info' : 'Complete Volunteer Info' }}
+        </a>
+    </div>
+</section>
+
                 <section class="rounded-2xl border border-white/10 bg-zinc-900/60 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-sm sm:rounded-3xl">
                     <div class="border-b border-white/10 px-4 py-4 sm:px-5">
                         <h2 class="text-base font-semibold text-white sm:text-lg">Quick Actions</h2>
@@ -312,6 +388,12 @@
                         <a href="#profile-section"
                            class="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-zinc-200 transition hover:border-indigo-400/20 hover:bg-indigo-400/10 sm:rounded-2xl">
                             <span>Update Profile</span>
+                            <span>→</span>
+                        </a>
+
+                        <a href="{{ route('profile.edit') }}#volunteer-section"
+                           class="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-zinc-200 transition hover:border-indigo-400/20 hover:bg-indigo-400/10 sm:rounded-2xl">
+                            <span>Be Involved</span>
                             <span>→</span>
                         </a>
                     </div>
