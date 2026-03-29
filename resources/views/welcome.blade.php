@@ -842,58 +842,143 @@
       <div>
         <span class="eyebrow text-royal reveal">Latest</span>
         <div class="gold-line my-3 reveal d1"></div>
-        <h2 class="font-serif text-royal-deeper reveal d1" style="font-size:clamp(2rem,3.5vw,2.8rem);line-height:1.15;">News &amp; Updates</h2>
+        <h2 class="font-serif text-royal-deeper reveal d1" style="font-size:clamp(2rem,3.5vw,2.8rem);line-height:1.15;">
+          News &amp; Updates
+        </h2>
       </div>
-      <a href="#" class="text-royal text-xs font-bold uppercase tracking-widest font-sans hover:underline reveal d2 mb-2">All News →</a>
+
+      @if(Route::has('announcements.index'))
+        <a
+          href="{{ route('announcements.index') }}"
+          class="text-royal text-xs font-bold uppercase tracking-widest font-sans hover:underline reveal d2 mb-2"
+        >
+          All News →
+        </a>
+      @endif
     </div>
 
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="card reveal d1 bg-white border border-royal/10 overflow-hidden group md:col-span-2">
-        <div class="h-48 relative overflow-hidden" style="background:linear-gradient(135deg,#091852,#1a3fc4,#2952d9);">
-          <div class="absolute inset-0 flex items-center justify-center opacity-10">
-            <p class="font-serif text-white font-black" style="font-size:8rem;">100</p>
+    @if ($announcements->isNotEmpty())
+      <div class="grid md:grid-cols-3 gap-6">
+        @php
+          $featuredAnnouncement = $announcements->first();
+          $sideAnnouncements = $announcements->slice(1, 2);
+          $featuredDate = $featuredAnnouncement->published_at
+              ? \Carbon\Carbon::parse($featuredAnnouncement->published_at)
+              : \Carbon\Carbon::parse($featuredAnnouncement->created_at);
+        @endphp
+
+        {{-- Featured News --}}
+        <article class="card reveal d1 bg-white border border-royal/10 overflow-hidden group md:col-span-2">
+          <div class="h-48 relative overflow-hidden bg-[linear-gradient(135deg,#091852,#1a3fc4,#2952d9)]">
+            <div class="absolute inset-0 flex items-center justify-center opacity-10">
+              <p class="font-serif text-white font-black" style="font-size:8rem;">
+                {{ $featuredAnnouncement->pinned ? '★' : 'HSST' }}
+              </p>
+            </div>
+
+            <div class="absolute bottom-0 inset-x-0 p-6 flex items-end justify-between">
+              <span class="bg-spirit text-white text-[.65rem] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
+                {{ $featuredAnnouncement->pinned ? 'Pinned' : 'Announcement' }}
+              </span>
+
+              <span class="text-white/40 text-xs font-sans">
+                {{ $featuredDate->timezone('Asia/Manila')->format('F j, Y') }}
+              </span>
+            </div>
           </div>
-          <div class="absolute bottom-0 inset-x-0 p-6 flex items-end justify-between">
-            <span class="bg-spirit text-white text-[.65rem] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Centennial</span>
-            <span class="text-white/40 text-xs font-sans">
-              {{ now('Asia/Manila')->format('F j, Y') }}
-            </span>
+
+          <div class="p-7">
+            <p class="eyebrow text-royal mb-2">
+              {{ $featuredAnnouncement->pinned ? 'Important Update' : 'Latest Update' }}
+            </p>
+
+            <h3 class="font-serif text-royal-deeper text-xl font-bold mb-3 group-hover:text-royal transition-colors leading-snug">
+              {{ $featuredAnnouncement->title }}
+            </h3>
+
+            <p class="text-royal/50 font-sans text-sm leading-relaxed">
+              {{ \Illuminate\Support\Str::limit($featuredAnnouncement->body ?? 'Stay tuned for the latest alumni news and official announcements.', 180) }}
+            </p>
+
+            @if(Route::has('announcements.show'))
+              <div class="mt-5">
+                <a
+                  href="{{ route('announcements.show', $featuredAnnouncement->id) }}"
+                  class="inline-flex items-center text-royal text-xs font-bold uppercase tracking-[0.16em] hover:text-royal-dark transition-colors"
+                >
+                  Read More →
+                </a>
+              </div>
+            @endif
           </div>
-        </div>
-        <div class="p-7">
-          <p class="eyebrow text-royal mb-2">Major Milestone · 5 min read</p>
-          <h3 class="font-serif text-royal-deeper text-xl font-bold mb-3 group-hover:text-royal transition-colors leading-snug">
-            Holy Spirit School of Tagbilaran Marks 100 Years: A Century of Crusaders
-          </h3>
-          <p class="text-royal/50 font-sans text-sm leading-relaxed">
-            From its humble beginnings in 1926 to educating over 10,000 alumni across the globe, HSS celebrates a century of faith, service, and excellence - and looks boldly to the next hundred years.
-          </p>
+        </article>
+
+        {{-- Side News --}}
+        <div class="flex flex-col gap-5">
+          @forelse ($sideAnnouncements as $announcement)
+            @php
+              $newsDate = $announcement->published_at
+                  ? \Carbon\Carbon::parse($announcement->published_at)
+                  : \Carbon\Carbon::parse($announcement->created_at);
+            @endphp
+
+            <article class="card reveal d{{ $loop->iteration + 1 }} bg-white border border-royal/10 overflow-hidden group flex-1">
+              <div class="h-28 {{ $loop->first
+                  ? 'bg-[linear-gradient(135deg,#0f2580,#2952d9)]'
+                  : 'bg-[linear-gradient(135deg,#1a3fc4,#94b0f8)]' }}">
+              </div>
+
+              <div class="p-5">
+                <p class="eyebrow text-royal mb-1">
+                  {{ $announcement->pinned ? 'Pinned Update' : 'Announcement' }}
+                </p>
+
+                <h3 class="font-serif text-royal-deeper text-sm font-bold group-hover:text-royal transition-colors leading-snug">
+                  {{ \Illuminate\Support\Str::limit($announcement->title, 85) }}
+                </h3>
+
+                <p class="text-royal/35 text-xs font-sans mt-2">
+                  {{ $newsDate->timezone('Asia/Manila')->format('M j, Y') }}
+                </p>
+
+                @if(Route::has('announcements.show'))
+                  <div class="mt-3">
+                    <a
+                      href="{{ route('announcements.show', $announcement->id) }}"
+                      class="inline-flex items-center text-royal text-[11px] font-bold uppercase tracking-[0.14em] hover:text-royal-dark transition-colors"
+                    >
+                      Read More →
+                    </a>
+                  </div>
+                @endif
+              </div>
+            </article>
+          @empty
+            <article class="card reveal d2 bg-white border border-royal/10 overflow-hidden group flex-1">
+              <div class="h-28 bg-[linear-gradient(135deg,#0f2580,#2952d9)]"></div>
+              <div class="p-5">
+                <p class="eyebrow text-royal mb-1">Announcement</p>
+                <h3 class="font-serif text-royal-deeper text-sm font-bold leading-snug">
+                  More updates will be posted soon
+                </h3>
+                <p class="text-royal/35 text-xs font-sans mt-2">
+                  {{ now('Asia/Manila')->format('M j, Y') }}
+                </p>
+              </div>
+            </article>
+          @endforelse
         </div>
       </div>
-
-      <div class="flex flex-col gap-5">
-        <div class="card reveal d2 bg-white border border-royal/10 overflow-hidden group flex-1">
-          <div class="h-28" style="background:linear-gradient(135deg,#0f2580,#2952d9);"></div>
-          <div class="p-5">
-            <p class="eyebrow text-royal mb-1">CRUSADE · 3 min read</p>
-            <h3 class="font-serif text-royal-deeper text-sm font-bold group-hover:text-royal transition-colors leading-snug">CRUSADE Campaign Surpasses 60% Goal in First Month</h3>
-            <p class="text-royal/35 text-xs font-sans mt-2">Feb 20, 2025</p>
-          </div>
-        </div>
-
-        <div class="card reveal d3 bg-white border border-royal/10 overflow-hidden group flex-1">
-          <div class="h-28" style="background:linear-gradient(135deg,#1a3fc4,#94b0f8);"></div>
-          <div class="p-5">
-            <p class="eyebrow text-royal mb-1">Athletics · 2 min read</p>
-            <h3 class="font-serif text-royal-deeper text-sm font-bold group-hover:text-royal transition-colors leading-snug">Crusaders Win Regional Championship - 3rd Year in a Row</h3>
-            <p class="text-royal/35 text-xs font-sans mt-2">Jan 15, 2025</p>
-          </div>
-        </div>
+    @else
+      <div class="rounded-3xl border border-royal/10 bg-white p-10 text-center reveal">
+        <p class="font-serif text-2xl text-royal-deeper mb-2">No news yet</p>
+        <p class="text-royal/50 text-sm font-sans">
+          Please check back soon for the latest alumni announcements and updates.
+        </p>
       </div>
-    </div>
+    @endif
   </div>
 </section>
-
 <section class="py-24 relative overflow-hidden" style="background:linear-gradient(150deg,#091852,#1a3fc4);">
   <div class="absolute inset-0 pointer-events-none opacity-5" style="background-image:radial-gradient(circle at 25% 50%,white 1px,transparent 1px);background-size:36px 36px;"></div>
   <div class="max-w-3xl mx-auto px-6 text-center relative z-10">
