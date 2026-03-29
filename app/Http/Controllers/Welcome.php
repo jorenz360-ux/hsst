@@ -34,7 +34,7 @@ class Welcome extends Controller
             ->whereNotNull('event_date')
             ->whereDate('event_date', '>=', today())
             ->orderBy('event_date', 'asc')
-            ->take(8)
+            ->take(3)
             ->get();
 
         $announcements = Announcement::query()
