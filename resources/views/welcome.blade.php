@@ -364,7 +364,43 @@
     </div>
   </div>
 </section>
+<section class="bg-white py-20">
+  <div class="mx-auto max-w-5xl px-6 text-center">
+    <span class="eyebrow text-royal">Welcome Home, Crusaders</span>
+    <div class="gold-line mx-auto my-4"></div>
 
+    <h2 class="font-serif text-royal-deeper text-3xl md:text-5xl leading-tight">
+      Whether you studied or graduated in <em class="text-royal">1926 or {{ now('Asia/Manila')->format('Y') }}</em>,
+      you are part of our Alumni family.
+    </h2>
+
+    <p class="mt-6 text-base md:text-lg leading-relaxed text-royal-deeper/70 max-w-3xl mx-auto">
+      Our powerful network now includes more than <strong class="text-royal-deeper">100,000 alumni</strong>,
+      and continues to grow each year. No matter where life has taken you, Holy Spirit School will always be home.
+    </p>
+
+    <p class="mt-5 text-base md:text-lg leading-relaxed text-royal-deeper/70 max-w-3xl mx-auto">
+      We look forward to welcoming you back to our alma mater. Please explore the
+      <strong class="text-royal-deeper">Calendar of Activities</strong> we have prepared for everyone to participate in and enjoy.
+    </p>
+
+    <div class="mt-8 flex flex-wrap justify-center gap-4">
+      <a
+        href="#events"
+        class="inline-flex items-center rounded-full bg-royal px-6 py-3 text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:bg-royal-dark"
+      >
+        View Activities
+      </a>
+
+      <a
+        href="#about"
+        class="inline-flex items-center rounded-full border border-royal/20 px-6 py-3 text-sm font-bold uppercase tracking-[0.16em] text-royal transition hover:border-royal hover:bg-royal-frost"
+      >
+        Learn More
+      </a>
+    </div>
+  </div>
+</section>
 <div class="bg-royal py-3 ticker-wrap overflow-hidden">
   <div class="ticker-inner text-white/60 text-xs font-sans font-semibold tracking-widest uppercase">
     <span class="mx-8">HSSTian Alumni Centennial Celebration</span>

@@ -13,7 +13,7 @@
             <p class="mt-2 max-w-2xl text-sm text-zinc-400">
                 View, filter, and manage user accounts linked to alumni records, batches, and assigned roles.
             </p>
-        </div>
+        </div> 
 
         <div class="flex flex-wrap gap-3">
             <button
