@@ -318,10 +318,10 @@
       </div>
 
       <h1 class="font-serif text-white mb-6 animate-fade-up leading-[1.05]" style="font-size:clamp(3.2rem,7vw,6rem);animation-delay:.2s;">
-        Once a<br/>
-        <em class="text-royal-pale italic">Crusader,</em><br/>
-        Always a<br/>
-        Crusader.
+        Come home<br/>
+        <em class="text-royal-pale italic">to memory,</em><br/>
+        legacy, and<br/>
+        connection.
       </h1>
 
       <p class="text-white/70 font-sans text-base leading-relaxed max-w-xl mb-10 animate-fade-up" style="animation-delay:.32s;">
