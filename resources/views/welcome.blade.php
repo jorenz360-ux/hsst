@@ -153,6 +153,25 @@
 <!-- ═══════ HERO ═══════ -->
 <section class="relative grain hero-bg wave-clip min-h-screen flex items-center pt-24 pb-40 overflow-hidden">
 
+  {{-- School hero image --}}
+  <div class="absolute inset-0">
+    <img
+      src="{{ asset('images/hsstherosect1.png') }}"
+      alt="Holy Spirit School of Tagbilaran"
+      class="absolute inset-0 h-full w-full object-cover object-center"
+    >
+
+    {{-- Main blue overlay for text readability --}}
+    <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,24,68,0.96)_0%,rgba(14,36,98,0.88)_34%,rgba(20,52,140,0.62)_62%,rgba(20,52,140,0.28)_100%)]"></div>
+
+    {{-- Soft white/blue light blend on right side --}}
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_78%_40%,rgba(255,255,255,0.16),transparent_24%)]"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_85%_50%,rgba(147,197,253,0.18),transparent_32%)]"></div>
+
+    {{-- Bottom fade for smooth section ending --}}
+    <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#071633] to-transparent"></div>
+  </div>
+
   <!-- Glowing orbs -->
   <div class="absolute top-16 right-0 w-[480px] h-[480px] rounded-full opacity-10 animate-glow pointer-events-none" style="background:radial-gradient(circle,#2952d9,transparent 70%);"></div>
   <div class="absolute -bottom-20 -left-16 w-96 h-96 rounded-full opacity-10 animate-glow pointer-events-none" style="animation-delay:2s;background:radial-gradient(circle,#94b0f8,transparent 70%);"></div>
@@ -169,11 +188,11 @@
     <svg width="360" height="360" viewBox="0 0 360 360" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="180" cy="180" r="170" stroke="white" stroke-width="1" stroke-dasharray="6 10" opacity=".12"/>
       <circle cx="180" cy="180" r="130" stroke="white" stroke-width=".8" opacity=".08"/>
-      <text x="180" y="190" text-anchor="middle" font-size="36" font-family="serif" fill="white" opacity=".06" font-weight="bold">HSS</text>
+      <text x="180" y="190" text-anchor="middle" font-size="36" font-family="serif" fill="white" opacity=".06" font-weight="bold">HSST</text>
     </svg>
   </div>
 
-  <div class="relative z-10 max-w-6xl mx-auto px-6">
+  <div class="relative z-10 max-w-6xl mx-auto px-6 w-full">
     <div class="max-w-3xl">
 
       <!-- Eyebrow -->
@@ -190,7 +209,7 @@
         Crusader.
       </h1>
 
-      <p class="text-white/60 font-sans text-base leading-relaxed max-w-xl mb-10 animate-fade-up" style="animation-delay:.32s;">
+      <p class="text-white/70 font-sans text-base leading-relaxed max-w-xl mb-10 animate-fade-up" style="animation-delay:.32s;">
         Welcome home, HSSTian. Join thousands of alumni united by faith, service, and the spirit of the Holy Cross - and help shape the next 100 years of Holy Spirit School.
       </p>
 
@@ -198,9 +217,12 @@
       <div class="flex flex-wrap gap-4 mb-14 animate-fade-up" style="animation-delay:.42s;">
         <a href="#crusade" class="group relative overflow-hidden bg-spirit hover:bg-spirit-light text-white font-bold text-sm px-8 py-3.5 rounded-full flex items-center gap-2 shadow-xl transition-all duration-300">
           <span>Join the CRUSADE</span>
-          <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
         </a>
-        <a href="#about" class="text-white/70 hover:text-white border border-white/25 hover:border-white/50 font-semibold text-sm px-8 py-3.5 rounded-full transition-all duration-300">
+
+        <a href="#about" class="text-white/80 hover:text-white border border-white/25 hover:border-white/50 font-semibold text-sm px-8 py-3.5 rounded-full transition-all duration-300">
           Learn More
         </a>
       </div>
@@ -209,23 +231,26 @@
       <div class="flex flex-wrap gap-8 animate-fade-up" style="animation-delay:.52s;">
         <div>
           <p class="font-serif text-3xl font-bold text-white">100<span class="text-spirit">+</span></p>
-          <p class="text-white/40 text-xs font-sans mt-0.5 uppercase tracking-wider">Years of Excellence</p>
+          <p class="text-white/50 text-xs font-sans mt-0.5 uppercase tracking-wider">Years of Excellence</p>
         </div>
+
         <div class="w-px bg-white/10 self-stretch"></div>
+
         <div>
           <p class="font-serif text-3xl font-bold text-white">100K<span class="text-spirit">+</span></p>
-          <p class="text-white/40 text-xs font-sans mt-0.5 uppercase tracking-wider">Living Alumni</p>
+          <p class="text-white/50 text-xs font-sans mt-0.5 uppercase tracking-wider">Living Alumni</p>
         </div>
+
         <div class="w-px bg-white/10 self-stretch"></div>
+
         <div>
           <p class="font-serif text-3xl font-bold text-white">3</p>
-          <p class="text-white/40 text-xs font-sans mt-0.5 uppercase tracking-wider">CRUSADE Pillars</p>
+          <p class="text-white/50 text-xs font-sans mt-0.5 uppercase tracking-wider">CRUSADE Pillars</p>
         </div>
       </div>
     </div>
   </div>
 </section>
-
 <!-- ═══════ TICKER ═══════ -->
 <div class="bg-royal py-3 ticker-wrap overflow-hidden">
   <div class="ticker-inner text-white/60 text-xs font-sans font-semibold tracking-widest uppercase">
@@ -759,28 +784,47 @@
   const logoText = document.getElementById('logo-text');
   const logoSub  = document.getElementById('logo-sub');
   const navLinks = document.getElementById('nav-links');
+
   window.addEventListener('scroll', () => {
     if (scrollY > 60) {
       nav.classList.add('scrolled');
-      logoText.classList.replace('text-white','text-royal-deeper');
-      logoSub.classList.replace('text-white/50','text-royal/50');
+
+      logoText.classList.remove('text-white');
+      logoText.classList.add('text-royal-deeper');
+
+      logoSub.classList.remove('text-white/50');
+      logoSub.classList.add('text-royal/50');
+
       navLinks.querySelectorAll('a').forEach(a => {
-        a.classList.replace('text-white/70','text-royal-deeper/70');
+        a.classList.remove('text-white/70', 'hover:text-white');
+        a.classList.add('text-gray-700', 'hover:text-black');
       });
     } else {
       nav.classList.remove('scrolled');
-      logoText.classList.replace('text-royal-deeper','text-white');
-      logoSub.classList.replace('text-royal/50','text-white/50');
+
+      logoText.classList.remove('text-royal-deeper');
+      logoText.classList.add('text-white');
+
+      logoSub.classList.remove('text-royal/50');
+      logoSub.classList.add('text-white/50');
+
       navLinks.querySelectorAll('a').forEach(a => {
-        a.classList.replace('text-royal-deeper/70','text-white/70');
+        a.classList.remove('text-gray-700', 'hover:text-black');
+        a.classList.add('text-white/70', 'hover:text-white');
       });
     }
   });
 
   // Intersection reveal
   const ro = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); ro.unobserve(e.target); } });
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('on');
+        ro.unobserve(e.target);
+      }
+    });
   }, { threshold: 0.1 });
+
   document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
 
   // Donation amount selector
@@ -793,6 +837,7 @@
     btn.classList.add('bg-royal','text-white','border-royal');
     document.getElementById('custom-amt').value = '';
   }
+
   function clearSelected() {
     document.querySelectorAll('.amt-btn').forEach(b => {
       b.classList.remove('bg-royal','text-white','border-royal');
