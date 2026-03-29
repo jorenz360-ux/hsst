@@ -6,7 +6,7 @@
   <title>HSSTian Alumni Association - Holy Spirit School of Tagbilaran</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -290,27 +290,140 @@
       <!-- Left visual -->
       <div class="reveal relative">
         <!-- Main card -->
-        <div class="rounded-3xl overflow-hidden shadow-2xl" style="background:linear-gradient(145deg,#091852,#1a3fc4);">
-          <div class="h-72 flex flex-col items-center justify-center gap-4 p-10 text-center">
-            <!-- Cross icon -->
-            <div class="relative w-20 h-20 flex items-center justify-center mb-2">
-              <div class="absolute w-4 h-20 bg-white/15 rounded-full"></div>
-              <div class="absolute w-20 h-4 bg-white/15 rounded-full"></div>
-              <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center z-10">
-                <span class="text-white font-serif font-bold text-sm">HSS</span>
-              </div>
-            </div>
-            <p class="text-white/90 font-serif italic text-xl leading-snug">"In Veritate et Caritate"</p>
-            <p class="text-white/40 text-xs font-sans tracking-widest uppercase">In Truth and in Love</p>
-          </div>
-          <div class="bg-white/5 px-8 py-6 flex justify-between text-center border-t border-white/10">
-            <div><p class="font-serif text-2xl font-bold text-white">1926</p><p class="text-white/40 text-xs mt-0.5 font-sans">Founded</p></div>
-            <div class="w-px bg-white/10"></div>
-            <div><p class="font-serif text-2xl font-bold text-white">Tagbilaran</p><p class="text-white/40 text-xs mt-0.5 font-sans">Bohol, Philippines</p></div>
-            <div class="w-px bg-white/10"></div>
-            <div><p class="font-serif text-2xl font-bold text-white">100<span class="text-spirit">yrs</span></p><p class="text-white/40 text-xs mt-0.5 font-sans">Centennial</p></div>
-          </div>
+        <div
+    x-data="{
+        current: 0,
+        slides: [
+            '{{ asset('images/image1.jpg') }}',
+            '{{ asset('images/image2.jpg') }}',
+            '{{ asset('images/image3.jpg') }}',
+            '{{ asset('images/image4.jpg') }}'
+        ],
+        interval: null,
+        start() {
+            this.stop();
+            this.interval = setInterval(() => {
+                this.current = (this.current + 1) % this.slides.length;
+            }, 4000);
+        },
+        stop() {
+            if (this.interval) clearInterval(this.interval);
+        },
+        next() {
+            this.current = (this.current + 1) % this.slides.length;
+        },
+        prev() {
+            this.current = (this.current - 1 + this.slides.length) % this.slides.length;
+        }
+    }"
+    x-init="start()"
+    @mouseenter="stop()"
+    @mouseleave="start()"
+    class="relative overflow-hidden rounded-[2rem] border border-royal/10 bg-white shadow-[0_24px_60px_rgba(9,24,82,0.10)]"
+>
+    <!-- Top header -->
+    {{-- <div class="relative z-10 border-b border-royal/10 bg-[linear-gradient(135deg,#091852,#1a3fc4)] px-6 py-5 text-center">
+        <div class="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/15">
+            <img
+                src="{{ asset('images/hsst-logo.png') }}"
+                alt="HSST Logo"
+                class="h-10 w-10 object-contain"
+            >
         </div>
+
+        <p class="font-serif text-2xl italic leading-snug text-white">
+            “In Veritate et Caritate”
+        </p>
+        <p class="mt-1 text-[11px] font-medium uppercase tracking-[0.25em] text-white/60">
+            In Truth and in Love
+        </p>
+    </div> --}}
+
+    <!-- Carousel image area -->
+    <div class="relative bg-[#eef4ff]">
+        <div class="relative h-[360px] md:h-[400px] w-full overflow-hidden">
+            <template x-for="(slide, index) in slides" :key="index">
+                <div
+                    x-show="current === index"
+                    x-transition:enter="transition ease-out duration-500"
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100"
+                    x-transition:leave="transition ease-in duration-400"
+                    x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                    class="absolute inset-0 flex items-center justify-center bg-[#eef4ff]"
+                >
+                    <img
+                        :src="slide"
+                        alt="HSST 100 Years Anniversary"
+                        class="max-h-full max-w-full object-contain"
+                    >
+                </div>
+            </template>
+
+            <!-- subtle overlay frame -->
+            <div class="pointer-events-none absolute inset-0 ring-1 ring-inset ring-royal/10"></div>
+
+            <!-- badge -->
+            <div class="absolute left-4 top-4 rounded-full bg-[#0b1d57] px-4 py-2 shadow-lg">
+                <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-white">
+                    HSST Centennial
+                </span>
+            </div>
+
+            <!-- arrows -->
+            <button
+                type="button"
+                @click="prev()"
+                class="absolute left-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/85 text-[#091852] shadow-md transition hover:bg-white"
+            >
+                &#10094;
+            </button>
+
+            <button
+                type="button"
+                @click="next()"
+                class="absolute right-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/85 text-[#091852] shadow-md transition hover:bg-white"
+            >
+                &#10095;
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer stats -->
+    <div class="border-t border-royal/10 bg-white px-6 py-5">
+        <div class="grid grid-cols-3 text-center">
+            <div>
+                <p class="font-serif text-2xl font-bold text-[#091852]">1926</p>
+                <p class="mt-1 text-[11px] uppercase tracking-[0.2em] text-slate-500">Founded</p>
+            </div>
+
+            <div class="border-x border-royal/10 px-2">
+                <p class="font-serif text-2xl font-bold text-[#091852]">Tagbilaran</p>
+                <p class="mt-1 text-[11px] uppercase tracking-[0.2em] text-slate-500">Bohol, Philippines</p>
+            </div>
+
+            <div>
+                <p class="font-serif text-2xl font-bold text-[#091852]">
+                    100<span class="text-[#d4af37]">yrs</span>
+                </p>
+                <p class="mt-1 text-[11px] uppercase tracking-[0.2em] text-slate-500">Centennial</p>
+            </div>
+        </div>
+
+        <!-- dots -->
+        <div class="mt-5 flex justify-center gap-2">
+            <template x-for="(slide, index) in slides" :key="'dot-' + index">
+                <button
+                    type="button"
+                    @click="current = index"
+                    class="h-2.5 rounded-full transition-all duration-300"
+                    :class="current === index ? 'w-8 bg-[#1a3fc4]' : 'w-2.5 bg-slate-300 hover:bg-slate-400'"
+                ></button>
+            </template>
+        </div>
+    </div>
+</div>
 
         <!-- Floating badge -->
         <div class="absolute -bottom-6 -right-6 bg-spirit rounded-2xl p-5 shadow-xl animate-float">
