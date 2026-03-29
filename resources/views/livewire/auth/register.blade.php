@@ -701,14 +701,14 @@
                     valid = false;
                 }
 
-                if (!yeargrad || yeargrad < 1900 || yeargrad > ${new Date().getFullYear()}) {
-                    showError(
-                        "yeargrad",
-                        "err-yeargrad",
-                        `Please enter a valid graduation year (1900–${new Date().getFullYear()}).`
-                    );
-                    valid = false;
-                }
+              if (!yeargrad || yeargrad < 1900 || yeargrad > new Date().getFullYear()) {
+                showError(
+                    "yeargrad",
+                    "err-yeargrad",
+                    `Please enter a valid graduation year (1900–${new Date().getFullYear()}).`
+                );
+                valid = false;
+            }
             }
 
             if (step === 3) {
