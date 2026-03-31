@@ -544,88 +544,88 @@
             </div>
 
             @if ($events->count())
-                <div class="grid gap-8 md:grid-cols-2 xl:grid-cols-2">
-                    @foreach ($events as $event)
-                        @php
-                            $bannerUrl = $event->banner_image
-                                ? \Illuminate\Support\Facades\Storage::disk('s3')->url($event->banner_image)
-                                : asset('images/100yearsevent.jpg');
-                        @endphp
+               <div class="grid gap-8 md:grid-cols-3 xl:grid-cols-3">
+    @foreach ($events as $event)
+        @php
+            $bannerUrl = $event->banner_image
+                ? \Illuminate\Support\Facades\Storage::disk('s3')->url($event->banner_image)
+                : asset('images/100yearsevent.jpg');
+        @endphp
 
-                        <article class="royal-card group overflow-hidden rounded-[2rem]">
-                            <div class="relative overflow-hidden bg-slate-100">
-                                <img
-                                    src="{{ $bannerUrl }}"
-                                    alt="{{ $event->title }}"
-                                    class="h-[280px] w-full object-cover transition duration-700 group-hover:scale-105"
-                                >
+        <article class="royal-card group flex h-full flex-col overflow-hidden rounded-[1rem]">
+            {{-- IMAGE --}}
+            <div class="relative overflow-hidden bg-slate-100">
+                <img
+                    src="{{ $bannerUrl }}"
+                    alt="{{ $event->title }}"
+                    class="h-[280px] w-full object-cover transition duration-700 group-hover:scale-105"
+                >
 
-                                <div class="absolute inset-0 event-image-overlay"></div>
+                <div class="absolute inset-0 event-image-overlay"></div>
 
-                                <div class="absolute left-4 top-4">
-                                    <span class="inline-flex items-center rounded-full bg-white px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#153e75]">
-                                        Upcoming Event
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="p-6 sm:p-7">
-                                <p class="text-[11px] font-extrabold uppercase tracking-[0.26em] text-[#1E3A8A]">
-                                    {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
-                                    · {{ \Carbon\Carbon::parse($event->event_date)->format('g:i A') }}
-                                </p>
-
-                                <h2 class="mt-3 font-display text-[1.75rem] leading-[1.12] text-[#091852]">
-                                    <a href="{{ route('events.show', $event) }}" class="transition hover:text-[#153e75]">
-                                        {{ $event->title }}
-                                    </a>
-                                </h2>
-
-                                <p class="mt-4 text-[14px] leading-7 text-slate-600">
-                                    {{ \Illuminate\Support\Str::limit($event->description, 170) }}
-                                </p>
-
-                                <div class="mt-5 grid gap-3 sm:grid-cols-2">
-                                    <div class="soft-panel rounded-2xl p-4">
-                                        <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">
-                                            Date
-                                        </div>
-                                        <div class="mt-2 text-sm font-semibold text-slate-900">
-                                            {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
-                                        </div>
-                                    </div>
-
-                                    <div class="soft-panel rounded-2xl p-4">
-                                        <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">
-                                            Venue
-                                        </div>
-                                        <div class="mt-2 text-sm font-semibold text-slate-900">
-                                            {{ $event->venue ?: 'Venue to be announced' }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="mt-6 flex flex-col gap-3 sm:flex-row">
-                                    <a
-                                        href="{{ route('events.show', $event) }}"
-                                        class="inline-flex flex-1 items-center justify-center rounded-full bg-[#153e75] px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#0f2f5c]"
-                                    >
-                                        View Event
-                                    </a>
-
-                                    @if (Route::has('register'))
-                                        <a
-                                            href="{{ route('register') }}"
-                                            class="inline-flex flex-1 items-center justify-center rounded-full border border-[#153e75]/15 bg-white px-5 py-3 text-sm font-semibold text-[#153e75] transition hover:bg-[#eef4ff]"
-                                        >
-                                            Join HSST Portal
-                                        </a>
-                                    @endif
-                                </div>
-                            </div>
-                        </article>
-                    @endforeach
+                <div class="absolute left-4 top-4">
+                    <span class="inline-flex items-center rounded bg-white px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#153e75]">
+                        Upcoming Event
+                    </span>
                 </div>
+            </div>
+
+            {{-- CONTENT --}}
+            <div class="flex flex-1 flex-col p-6 sm:p-7">
+                
+                {{-- DATE --}}
+                <p class="text-[11px] font-extrabold uppercase tracking-[0.26em] text-[#1E3A8A]">
+                    {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
+                    · {{ \Carbon\Carbon::parse($event->event_date)->format('g:i A') }}
+                </p>
+
+                {{-- TITLE --}}
+                <h2 class="mt-3 font-display text-[1.75rem] leading-[1.12] text-[#091852]">
+                    <a href="{{ route('events.show', $event) }}" class="transition hover:text-[#153e75]">
+                        {{ $event->title }}
+                    </a>
+                </h2>
+
+                {{-- DESCRIPTION --}}
+                <p class="mt-4 text-[14px] leading-7 text-slate-600">
+                    {{ \Illuminate\Support\Str::limit($event->description, 170) }}
+                </p>
+
+                {{-- DETAILS --}}
+                <div class="mt-5 grid gap-3 sm:grid-cols-2">
+                    <div class="soft-panel rounded-2xl p-4 text-center">
+                        <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">
+                            Date
+                        </div>
+                        <div class="mt-2 text-sm font-semibold text-slate-900">
+                            {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
+                        </div>
+                    </div>
+
+                    <div class="soft-panel rounded-2xl p-4 text-center">
+                        <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">
+                            Venue
+                        </div>
+                        <div class="mt-2 text-sm font-semibold text-slate-900">
+                            {{ $event->venue ?: 'Venue to be announced' }}
+                        </div>
+                    </div>
+                </div>
+
+                {{-- BUTTON (BOTTOM LOCKED) --}}
+                <div class="mt-auto pt-6">
+                    <a
+                        href="{{ route('events.show', $event) }}"
+                        class="inline-flex w-full items-center justify-center rounded bg-[#153e75] px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#0f2f5c]"
+                    >
+                        READ MORE →
+                    </a>
+                </div>
+
+            </div>
+        </article>
+    @endforeach
+</div>
 
                 <div class="mt-10">
                     {{ $events->links() }}

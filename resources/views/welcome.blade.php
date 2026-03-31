@@ -768,89 +768,91 @@
       </div>
 
       <a
-        href="{{ route('events.index') }}"
-        class="text-royal text-xs font-bold font-sans hover:underline reveal d2 uppercase tracking-widest self-start md:self-auto"
+    href="{{ route('events.index') }}"
+    class="reveal d2 inline-flex items-center justify-center self-start rounded bg-[#153e75] px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#0f2f5c] md:self-auto"
       >
-        View All →
+          View All
       </a>
     </div>
 
     @if ($events->isNotEmpty())
-      <div class="grid md:grid-cols-3 gap-6">
-        @foreach ($events as $event)
-          @php
+     <div class="grid gap-6 md:grid-cols-3">
+    @foreach ($events as $event)
+        @php
             $eventDate = \Carbon\Carbon::parse($event->event_date);
             $isFeatured = $loop->first;
 
             $bannerUrl = $event->banner_image
                 ? \Illuminate\Support\Facades\Storage::disk('s3')->url($event->banner_image)
                 : asset('images/100yearsevent.jpg');
-          @endphp
+        @endphp
 
-          <article class="card reveal d{{ $loop->iteration }} overflow-hidden group bg-white border border-royal/10">
+        <article class="card reveal d{{ $loop->iteration }} group flex h-full flex-col overflow-hidden border border-royal/10 bg-white">
             <div class="relative h-56 overflow-hidden">
-              <img
-                src="{{ $bannerUrl }}"
-                alt="{{ $event->title }}"
-                class="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-              >
-
-              <div class="absolute inset-0 {{ $isFeatured
-                  ? 'bg-[linear-gradient(180deg,rgba(9,24,82,0.10)_0%,rgba(9,24,82,0.72)_100%)]'
-                  : 'bg-[linear-gradient(180deg,rgba(9,24,82,0.04)_0%,rgba(9,24,82,0.58)_100%)]' }}"></div>
-
-              <div class="absolute top-4 left-4">
-                <div class="w-14 h-14 rounded-2xl flex flex-col items-center justify-center bg-white/15 backdrop-blur-sm border border-white/20">
-                  <span class="font-serif font-bold text-white text-xl leading-none">
-                    {{ $eventDate->format('d') }}
-                  </span>
-                  <span class="text-white/70 text-[.6rem] font-sans uppercase tracking-wide">
-                    {{ $eventDate->format('M') }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="absolute top-4 right-4">
-                @if ($isFeatured)
-                  <span class="bg-spirit text-white text-[.65rem] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
-                    Featured
-                  </span>
-                @else
-                  <span class="bg-white/85 text-royal text-[.65rem] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-white/70">
-                    Upcoming
-                  </span>
-                @endif
-              </div>
-            </div>
-
-            <div class="p-7">
-              <h3 class="font-serif text-royal-deeper text-lg font-bold mb-2 group-hover:text-royal transition-colors">
-                {{ $event->title }}
-              </h3>
-
-              <p class="text-royal/50 text-xs font-sans leading-relaxed mb-4">
-                {{ \Illuminate\Support\Str::limit($event->description ?: 'Stay tuned for more details about this upcoming alumni event.', 120) }}
-              </p>
-
-              <div class="flex items-center gap-2 text-royal/40 text-xs font-sans mb-5">
-                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                </svg>
-                <span>{{ $event->venue ?: 'Venue to be announced' }}</span>
-              </div>
-
-              @if (Route::has('events.show'))
-                <a
-                  href="{{ route('events.show', $event->slug) }}"
-                  class="inline-flex items-center text-royal text-xs font-bold uppercase tracking-[0.16em] hover:text-royal-dark transition-colors"
+                <img
+                    src="{{ $bannerUrl }}"
+                    alt="{{ $event->title }}"
+                    class="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 >
-                  View Event →
-                </a>
-              @endif
+
+                <div class="absolute inset-0 {{ $isFeatured
+                    ? 'bg-[linear-gradient(180deg,rgba(9,24,82,0.10)_0%,rgba(9,24,82,0.72)_100%)]'
+                    : 'bg-[linear-gradient(180deg,rgba(9,24,82,0.04)_0%,rgba(9,24,82,0.58)_100%)]' }}"></div>
+
+                <div class="absolute left-4 top-4">
+                  <div class="flex h-14 w-14 flex-col items-center justify-center rounded-2xl border border-gray-200/80 bg-white/95 shadow-[0_8px_24px_rgba(15,42,107,0.10)]">
+                      <span class="font-serif text-xl font-bold leading-none text-royal">
+                          {{ $eventDate->format('d') }}
+                      </span>
+                      <span class="font-sans text-[.6rem] uppercase tracking-wide text-gray-500">
+                          {{ $eventDate->format('M') }}
+                      </span>
+                  </div>
+              </div>
+
+                <div class="absolute right-4 top-4">
+                    @if ($isFeatured)
+                        <span class="rounded-full bg-spirit px-3 py-1 text-[.65rem] font-bold uppercase tracking-wider text-white shadow-md">
+                            Featured
+                        </span>
+                    @else
+                        <span class="rounded-full border border-white/70 bg-white/85 px-3 py-1 text-[.65rem] font-bold uppercase tracking-wider text-royal">
+                            Upcoming
+                        </span>
+                    @endif
+                </div>
             </div>
-          </article>
-        @endforeach
-      </div>
+
+            <div class="flex flex-1 flex-col p-7 text-center">
+                <h3 class="mb-2 font-serif text-lg font-bold text-royal-deeper transition-colors group-hover:text-royal">
+                    {{ $event->title }}
+                </h3>
+
+                <p class="mb-4 text-sm leading-relaxed text-gray-600">
+                    {{ \Illuminate\Support\Str::limit($event->description ?: 'Stay tuned for more details about this upcoming alumni event.', 120) }}
+                </p>
+
+                <div class="mb-5 flex items-center justify-center gap-2 text-center text-xs text-gray-500">
+                    <svg class="h-3.5 w-3.5 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    </svg>
+                    <span>{{ $event->venue ?: 'Venue to be announced' }}</span>
+                </div>
+
+                @if (Route::has('events.show'))
+                    <div class="mt-auto flex justify-center">
+                        <a
+                            href="{{ route('events.show', $event->slug) }}"
+                            class="inline-flex items-center justify-center rounded bg-[#153e75] px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#0f2f5c]"
+                        >
+                            READ MORE
+                        </a>
+                    </div>
+                @endif
+            </div>
+        </article>
+    @endforeach
+    </div>
     @else
       <div class="rounded-3xl border border-royal/10 bg-white p-10 text-center reveal">
         <p class="font-serif text-2xl text-royal-deeper mb-2">No upcoming events yet</p>
