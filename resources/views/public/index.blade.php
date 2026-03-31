@@ -112,7 +112,7 @@
     <header class="sticky inset-x-0 top-0 z-50 border-b border-white/10 bg-[rgba(9,24,82,0.92)] backdrop-blur-md">
         <div class="mx-auto flex h-[78px] max-w-[1380px] items-center justify-between px-4 sm:px-6 lg:px-8">
             <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-3 transition hover:opacity-95">
-                <div class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/18 bg-white p-1 shadow-sm">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded border border-white/18 bg-white p-1 shadow-sm">
                     <img
                         src="{{ asset('images/hsstlogo.jpg') }}"
                         alt="Holy Spirit School of Tagbilaran Logo"
@@ -131,19 +131,19 @@
             </a>
 
             <nav class="hidden items-center gap-2 lg:flex">
-                <a href="{{ route('home') }}" class="nav-link rounded-full px-4 py-2 text-sm font-semibold">
+                <a href="{{ route('home') }}" class="nav-link rounded px-4 py-2 text-sm font-semibold">
                     Home
                 </a>
-                <a href="{{ route('about-us') }}" class="nav-link rounded-full px-4 py-2 text-sm font-semibold">
+                <a href="{{ route('about-us') }}" class="nav-link rounded px-4 py-2 text-sm font-semibold">
                     About
                 </a>
-                <a href="{{ route('events.index') }}" class="nav-link-active rounded-full px-4 py-2 text-sm font-bold">
+                <a href="{{ route('events.index') }}" class="nav-link-active rounded px-4 py-2 text-sm font-bold">
                     Events
                 </a>
-                <a href="#event-calendar" class="nav-link rounded-full px-4 py-2 text-sm font-semibold">
+                <a href="#event-calendar" class="nav-link rounded px-4 py-2 text-sm font-semibold">
                     Calendar
                 </a>
-                <a href="#upcoming-events" class="nav-link rounded-full px-4 py-2 text-sm font-semibold">
+                <a href="#upcoming-events" class="nav-link rounded px-4 py-2 text-sm font-semibold">
                     Upcoming
                 </a>
             </nav>
@@ -151,16 +151,16 @@
             <div class="hidden items-center gap-3 lg:flex">
                 @if (Route::has('login'))
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-bold text-[#0F2A6B] transition hover:bg-[#f3f6ff]">
+                        <a href="{{ url('/dashboard') }}" class="inline-flex items-center justify-center rounded bg-white px-5 py-2.5 text-sm font-bold text-[#0F2A6B] transition hover:bg-[#f3f6ff]">
                             Dashboard
                         </a>
                     @else
-                        <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15">
+                        <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15">
                             Log in
                         </a>
 
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-bold text-[#0F2A6B] transition hover:bg-[#f3f6ff]">
+                            <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded bg-white px-5 py-2.5 text-sm font-bold text-[#0F2A6B] transition hover:bg-[#f3f6ff]">
                                 Register
                             </a>
                         @endif
@@ -171,7 +171,7 @@
             <button
                 @click="mobileOpen = !mobileOpen"
                 :class="mobileOpen ? 'hamburger-open' : ''"
-                class="flex flex-col gap-[4.5px] rounded-full border border-white/20 bg-white/10 p-3 lg:hidden"
+                class="flex flex-col gap-[4.5px] rounded border border-white/20 bg-white/10 p-3 lg:hidden"
                 aria-label="Toggle Menu"
             >
                 <span class="hamburger-line line-1 block h-[1.5px] w-[20px] rounded bg-white"></span>
@@ -202,7 +202,7 @@
                 <button
                     type="button"
                     @click="mobileOpen = false"
-                    class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white transition hover:bg-white/10"
+                    class="inline-flex h-11 w-11 items-center justify-center rounded border border-white/15 text-white transition hover:bg-white/10"
                 >
                     ✕
                 </button>
@@ -267,10 +267,10 @@
                     </p>
 
                     <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                        <a href="#upcoming-events" class="inline-flex items-center justify-center rounded-full bg-white px-7 py-3.5 text-sm font-bold uppercase tracking-[0.16em] text-[#0F2A6B] transition hover:bg-[#f3f6ff]">
+                        <a href="#upcoming-events" class="inline-flex items-center justify-center rounded bg-white px-7 py-3.5 text-sm font-bold uppercase tracking-[0.16em] text-[#0F2A6B] transition hover:bg-[#f3f6ff]">
                             Explore Events
                         </a>
-                        <a href="#event-calendar" class="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 py-3.5 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-white/15">
+                        <a href="#event-calendar" class="inline-flex items-center justify-center rounded border border-white/20 bg-white/10 px-7 py-3.5 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-white/15">
                             Browse Calendar
                         </a>
                     </div>
@@ -400,21 +400,21 @@
                         <div class="flex items-center gap-2">
                             <a
                                 href="{{ route('events.index', ['month' => $prevMonth, 'date' => $selectedDate]) }}#event-calendar"
-                                class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                                class="rounded border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                             >
                                 Prev
                             </a>
 
                             <a
                                 href="{{ route('events.index', ['month' => now()->format('Y-m'), 'date' => now()->toDateString()]) }}#event-calendar"
-                                class="rounded-full bg-[#153e75] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#0f2f5c]"
+                                class="rounded bg-[#153e75] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#0f2f5c]"
                             >
                                 Today
                             </a>
 
                             <a
                                 href="{{ route('events.index', ['month' => $nextMonth, 'date' => $selectedDate]) }}#event-calendar"
-                                class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                                class="rounded border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                             >
                                 Next
                             </a>
@@ -439,14 +439,14 @@
                             >
                                 <div class="flex items-start justify-between">
                                     <span class="
-                                        inline-flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold
+                                        inline-flex h-8 w-8 items-center justify-center rounded text-sm font-bold
                                         {{ $day['isToday'] ? 'bg-[#153e75] text-white' : 'text-slate-800' }}
                                     ">
                                         {{ $day['day'] }}
                                     </span>
 
                                     @if ($day['count'] > 0)
-                                        <span class="rounded-full border border-[#1E3A8A]/15 bg-[#eaf1ff] px-2 py-0.5 text-[11px] font-semibold text-[#153e75]">
+                                        <span class="rounded border border-[#1E3A8A]/15 bg-[#eaf1ff] px-2 py-0.5 text-[11px] font-semibold text-[#153e75]">
                                             {{ $day['count'] }}
                                         </span>
                                     @endif
@@ -508,7 +508,7 @@
                                 <div class="mt-4">
                                     <a
                                         href="{{ route('events.show', $event) }}"
-                                        class="inline-flex w-full items-center justify-center rounded-full bg-[#153e75] px-4 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#0f2f5c]"
+                                        class="inline-flex w-full items-center justify-center rounded bg-[#153e75] px-4 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#0f2f5c]"
                                     >
                                         View Details
                                     </a>
@@ -611,7 +611,7 @@
                 </div>
             @else
                 <div class="section-shell rounded-[2rem] py-12 text-center">
-                    <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#1E3A8A]/10 text-lg font-bold text-[#1E3A8A]">
+                    <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded bg-[#1E3A8A]/10 text-lg font-bold text-[#1E3A8A]">
                         HS
                     </div>
                     <h2 class="font-display text-[1.8rem] text-slate-900">
@@ -648,13 +648,13 @@
 
                     <div class="flex flex-col gap-3">
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="block rounded-full bg-white px-6 py-4 text-center text-sm font-bold uppercase tracking-[0.16em] text-[#153e75] transition hover:bg-[#f3f6ff]">
+                            <a href="{{ route('register') }}" class="block rounded bg-white px-6 py-4 text-center text-sm font-bold uppercase tracking-[0.16em] text-[#153e75] transition hover:bg-[#f3f6ff]">
                                 Create Account
                             </a>
                         @endif
 
                         @if (Route::has('login'))
-                            <a href="{{ route('login') }}" class="block rounded-full border border-white/20 bg-white/10 px-6 py-4 text-center text-sm font-semibold text-white transition hover:bg-white/15">
+                            <a href="{{ route('login') }}" class="block rounded border border-white/20 bg-white/10 px-6 py-4 text-center text-sm font-semibold text-white transition hover:bg-white/15">
                                 Log in to Existing Account
                             </a>
                         @endif
@@ -669,7 +669,7 @@
         <div class="mx-auto grid max-w-[1380px] gap-10 px-4 sm:px-6 lg:grid-cols-[1.2fr_0.8fr_0.8fr] lg:px-8">
             <div>
                 <div class="flex items-center gap-3">
-                    <div class="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-white/15 bg-white p-1 shadow-sm">
+                    <div class="flex h-11 w-11 items-center justify-center overflow-hidden rounded border border-white/15 bg-white p-1 shadow-sm">
                         <img src="{{ asset('images/hsstlogo.jpg') }}" alt="HSST Logo" class="h-full w-full object-contain">
                     </div>
                     <div>

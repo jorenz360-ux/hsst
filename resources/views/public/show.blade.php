@@ -436,83 +436,107 @@
                 </div>
 
                 {{-- ── Sidebar ── --}}
-                <aside class="space-y-4 lg:sticky lg:top-24 lg:self-start">
+                <aside class="space-y-3 lg:sticky lg:top-24 lg:self-start">
 
-                    {{-- Event info card --}}
-                    <div class="card overflow-hidden">
-                        <div class="px-5 py-4" style="border-bottom:0.5px solid var(--border)">
-                            <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-[#153e8a]">Event Information</p>
-                        </div>
+    {{-- Event info card --}}
+    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div class="border-b border-slate-200 px-4 py-3">
+            <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#153e8a]">
+                Event Information
+            </p>
+        </div>
 
-                        <div class="divide-y px-5" style="--tw-divide-opacity:1;border-color:var(--border-lt)">
-                            <div class="py-4">
-                                <p class="text-[9.5px] font-bold uppercase tracking-[0.16em] text-slate-400">Date</p>
-                                <p class="mt-1.5 text-[14.5px] font-semibold text-[#091852]">
-                                    {{ $eventDate ? $eventDate->format('l, F d, Y') : 'To be announced' }}
-                                </p>
-                            </div>
-                            <div class="py-4">
-                                <p class="text-[9.5px] font-bold uppercase tracking-[0.16em] text-slate-400">Venue</p>
-                                <p class="mt-1.5 text-[14.5px] font-semibold text-[#091852]">
-                                    {{ $event->venue ?: 'Venue to be announced' }}
-                                </p>
-                            </div>
-                            <div class="py-4">
-                                <p class="text-[9.5px] font-bold uppercase tracking-[0.16em] text-slate-400">Start Time</p>
-                                <p class="mt-1.5 text-[14.5px] font-semibold text-[#091852]">
-                                    {{ $eventDate ? $eventDate->format('g:i A') : 'To be announced' }}
-                                </p>
-                            </div>
-                            @if($event->dress_code)
-                                <div class="py-4">
-                                    <p class="text-[9.5px] font-bold uppercase tracking-[0.16em] text-slate-400">Dress Code</p>
-                                    <p class="mt-1.5 text-[14.5px] font-semibold text-[#091852]">{{ $event->dress_code }}</p>
-                                </div>
-                            @endif
-                            <div class="py-4">
-                                <p class="text-[9.5px] font-bold uppercase tracking-[0.16em] text-slate-400">Participation</p>
-                                <p class="mt-1.5 text-[14.5px] font-semibold text-[#091852]">
-                                    Open to HSST alumni, faculty, and invited guests
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+        <div class="grid grid-cols-1 gap-x-4 gap-y-3 px-4 py-4 sm:grid-cols-2">
+            <div>
+                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Date</p>
+                <p class="mt-1 text-[13.5px] font-semibold leading-5 text-[#091852]">
+                    {{ $eventDate ? $eventDate->format('M d, Y') : 'To be announced' }}
+                </p>
+            </div>
 
-                    {{-- Stay Connected card --}}
-                    <div class="card overflow-hidden">
-                        <div class="px-5 py-5" style="background:var(--blue-soft);border-bottom:0.5px solid var(--border)">
-                            <p class="eyebrow">Stay Connected</p>
-                            <div class="gold-rule" style="margin:10px 0 12px"></div>
-                            <h3 class="font-display text-[1.55rem] leading-[1.15] text-[#091852]">
-                                Join the official alumni portal
-                            </h3>
-                            <p class="mt-3 text-[13.5px] leading-[1.75] text-slate-600">
-                                Create your account to receive updates, reconnect with fellow alumni, and stay informed about upcoming events.
-                            </p>
-                        </div>
+            <div>
+                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Time</p>
+                <p class="mt-1 text-[13.5px] font-semibold leading-5 text-[#091852]">
+                    {{ $eventDate ? $eventDate->format('g:i A') : 'To be announced' }}
+                </p>
+            </div>
 
-                        <div class="space-y-2.5 p-5">
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="btn-primary w-full py-3">Create Account</a>
-                            @endif
-                            @if (Route::has('login'))
-                                <a href="{{ route('login') }}" class="btn-ghost w-full py-3">Log in</a>
-                            @endif
-                        </div>
-                    </div>
+            <div class="sm:col-span-2">
+                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Venue</p>
+                <p class="mt-1 text-[13.5px] font-semibold leading-5 text-[#091852]">
+                    {{ $event->venue ?: 'Venue to be announced' }}
+                </p>
+            </div>
 
-                    {{-- Notice --}}
-                    <div class="rounded-lg px-4 py-4" style="background:#fffbeb;border:0.5px solid #e9c84a">
-                        <div class="flex items-start gap-3">
-                            <svg class="mt-0.5 h-4 w-4 shrink-0 text-amber-600" viewBox="0 0 16 16" fill="currentColor">
-                                <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm0 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 5Zm0 7.25a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
-                            </svg>
-                            <p class="text-[13px] leading-[1.7] text-amber-900">
-                                Please revisit this page before the event for any changes in venue, schedule, or additional instructions.
-                            </p>
-                        </div>
-                    </div>
-                </aside>
+            @if($event->dress_code)
+                <div>
+                    <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Dress Code</p>
+                    <p class="mt-1 text-[13.5px] font-semibold leading-5 text-[#091852]">
+                        {{ $event->dress_code }}
+                    </p>
+                </div>
+            @endif
+
+            <div class="{{ $event->dress_code ? '' : 'sm:col-span-2' }}">
+                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Participation</p>
+                <p class="mt-1 text-[13.5px] font-semibold leading-5 text-[#091852]">
+                    Open to HSST alumni, faculty, and invited guests
+                </p>
+            </div>
+        </div>
+    </div>
+
+    {{-- Stay Connected card --}}
+    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-[#f8fbff] shadow-sm">
+        <div class="px-4 py-4">
+            <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#153e8a]">
+                Stay Connected
+            </p>
+
+            <h3 class="mt-2 text-[1.05rem] font-bold leading-[1.25] text-[#091852]">
+                Join the alumni portal
+            </h3>
+
+            <p class="mt-2 text-[13px] leading-6 text-slate-600">
+                Receive updates, reconnect with fellow alumni, and stay informed about upcoming events.
+            </p>
+
+            <div class="mt-4 grid gap-2">
+                @if (Route::has('register'))
+                    <a
+                        href="{{ route('register') }}"
+                        class="inline-flex w-full items-center justify-center rounded bg-[#153e75] px-4 py-2.5 text-sm font-bold uppercase tracking-[0.12em] text-white transition hover:bg-[#0f2f5c]"
+                    >
+                        Create Account
+                    </a>
+                @endif
+
+                @if (Route::has('login'))
+                    <a
+                        href="{{ route('login') }}"
+                        class="inline-flex w-full items-center justify-center rounded border border-[#153e75]/15 bg-white px-4 py-2.5 text-sm font-semibold text-[#153e75] transition hover:bg-[#eef4ff]"
+                    >
+                        Log in
+                    </a>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    {{-- Notice --}}
+    <div class="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
+        <div class="flex items-start gap-2.5">
+            <svg class="mt-0.5 h-4 w-4 shrink-0 text-amber-600" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm0 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 5Zm0 7.25a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+            </svg>
+
+            <p class="text-[12.5px] leading-6 text-amber-900">
+                Please revisit this page before the event for any changes in venue, schedule, or additional instructions.
+            </p>
+        </div>
+    </div>
+
+</aside>
 
             </div>
         </div>
