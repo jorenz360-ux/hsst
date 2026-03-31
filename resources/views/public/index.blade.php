@@ -591,27 +591,6 @@
                     {{ \Illuminate\Support\Str::limit($event->description, 170) }}
                 </p>
 
-                {{-- DETAILS --}}
-                <div class="mt-5 grid gap-3 sm:grid-cols-2">
-                    <div class="soft-panel rounded-2xl p-4 text-center">
-                        <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">
-                            Date
-                        </div>
-                        <div class="mt-2 text-sm font-semibold text-slate-900">
-                            {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
-                        </div>
-                    </div>
-
-                    <div class="soft-panel rounded-2xl p-4 text-center">
-                        <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">
-                            Venue
-                        </div>
-                        <div class="mt-2 text-sm font-semibold text-slate-900">
-                            {{ $event->venue ?: 'Venue to be announced' }}
-                        </div>
-                    </div>
-                </div>
-
                 {{-- BUTTON (BOTTOM LOCKED) --}}
                 <div class="mt-auto pt-6">
                     <a
