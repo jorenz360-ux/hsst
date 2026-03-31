@@ -164,7 +164,6 @@
 <header id="nav" class="fixed inset-x-0 top-0 z-50 py-4">
   <div class="max-w-6xl mx-auto px-6">
     <div class="flex items-center justify-between">
-
       <!-- Logo -->
       <a href="#" class="flex items-center gap-3 group">
         <div>
@@ -183,15 +182,14 @@
       <!-- Desktop nav -->
       <div class="hidden md:flex items-center gap-5">
         <nav class="flex items-center gap-8 text-xs font-bold tracking-wide text-white/70" id="nav-links">
-          <a href="#about"   class="text-white/70 hover:text-white transition-colors uppercase tracking-widest">About</a>
-          <a href="#events"  class="text-white/70 hover:text-white transition-colors uppercase tracking-widest">Events</a>
+          <a href="#about" class="text-white/70 hover:text-white transition-colors uppercase tracking-widest">About</a>
+          <a href="#events" class="text-white/70 hover:text-white transition-colors uppercase tracking-widest">Events</a>
           <a href="#crusade" class="text-white/70 hover:text-white transition-colors uppercase tracking-widest">CRUSADE</a>
           <a href="#stories" class="text-white/70 hover:text-white transition-colors uppercase tracking-widest">Stories</a>
-          <a href="#news"    class="text-white/70 hover:text-white transition-colors uppercase tracking-widest">News</a>
+          <a href="#news" class="text-white/70 hover:text-white transition-colors uppercase tracking-widest">News</a>
           <a href="#contact" class="text-white/70 hover:text-white transition-colors uppercase tracking-widest">Contact</a>
         </nav>
 
-        <!-- Desktop auth -->
         <div class="flex items-center gap-3" id="auth-links">
           <a
             id="login-btn"
@@ -234,181 +232,194 @@
         </svg>
       </button>
     </div>
-
-    <!-- Mobile menu -->
-    <div
-    id="mobile-menu"
-    class="fixed inset-0 z-[999] hidden md:hidden bg-[#153e75]"
->
-    <div class="flex h-full flex-col bg-[#153e75] text-white">
-        <div class="flex items-center justify-between border-b border-white/10 px-6 py-5">
-            <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.22em] text-white/70">
-                    Menu
-                </p>
-                <h2 class="mt-1 text-lg font-bold text-white">
-                    Navigation
-                </h2>
-            </div>
-
-            <button
-                type="button"
-                id="close-mobile-menu"
-                class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white transition hover:bg-white/10"
-            >
-                ✕
-            </button>
-        </div>
-
-        <div class="flex-1 overflow-y-auto px-6 py-6">
-            <nav class="flex flex-col">
-                <a href="#about"
-                   class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">
-                    About
-                </a>
-
-                <a href="#events"
-                   class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">
-                    Events
-                </a>
-
-                <a href="#crusade"
-                   class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">
-                    CRUSADE
-                </a>
-
-                <a href="#stories"
-                   class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">
-                    Stories
-                </a>
-
-                <a href="#news"
-                   class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">
-                    News
-                </a>
-
-                <a href="#contact"
-                   class="mobile-nav-link py-4 text-base font-semibold text-white/90 transition hover:text-white">
-                    Contact
-                </a>
-            </nav>
-        </div>
-
-        <div class="border-t border-white/10 px-6 py-6">
-            <div class="grid grid-cols-1 gap-3">
-                <a
-                    href="{{ route('login') }}"
-                    class="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:bg-white/10"
-                >
-                    Login
-                </a>
-
-                <a
-                    href="{{ route('register') }}"
-                    class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-bold uppercase tracking-[0.16em] text-[#153e75] transition hover:bg-[#f3f7ff]"
-                >
-                    Register
-                </a>
-
-                <a
-                    href="#crusade"
-                    class="inline-flex items-center justify-center rounded-xl bg-[#2563eb] px-4 py-3 text-sm font-bold text-white transition hover:bg-[#1d4ed8]"
-                >
-                    ✦ Donate Now
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
   </div>
 </header>
 
-<!-- ═══════ HERO ═══════ -->
-<section class="relative grain hero-bg wave-clip min-h-screen flex items-center pt-24 pb-40 overflow-hidden">
-
-  <div class="absolute inset-0">
-    <img
-      src="{{ asset('images/hsstherosect1.png') }}"
-      alt="Holy Spirit School of Tagbilaran"
-      class="absolute inset-0 h-full w-full object-cover object-center"
-    >
-
-    <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,24,68,0.96)_0%,rgba(14,36,98,0.88)_34%,rgba(20,52,140,0.62)_62%,rgba(20,52,140,0.28)_100%)]"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_78%_40%,rgba(255,255,255,0.16),transparent_24%)]"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_85%_50%,rgba(147,197,253,0.18),transparent_32%)]"></div>
-    <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#071633] to-transparent"></div>
-  </div>
-
-  <div class="absolute top-16 right-0 w-[480px] h-[480px] rounded-full opacity-10 animate-glow pointer-events-none" style="background:radial-gradient(circle,#2952d9,transparent 70%);"></div>
-  <div class="absolute -bottom-20 -left-16 w-96 h-96 rounded-full opacity-10 animate-glow pointer-events-none" style="animation-delay:2s;background:radial-gradient(circle,#94b0f8,transparent 70%);"></div>
-
-  <div class="absolute right-12 top-1/2 -translate-y-1/2 hidden xl:flex flex-col items-center gap-0 opacity-5 pointer-events-none animate-float" style="animation-delay:.5s;">
-    <div class="w-px h-32 bg-white"></div>
-    <div class="w-32 h-px bg-white -mt-px"></div>
-    <div class="w-px h-32 bg-white -mt-px"></div>
-  </div>
-
-  <div class="absolute right-20 top-1/2 -translate-y-1/2 hidden xl:block pointer-events-none opacity-8">
-    <svg width="360" height="360" viewBox="0 0 360 360" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="180" cy="180" r="170" stroke="white" stroke-width="1" stroke-dasharray="6 10" opacity=".12"/>
-      <circle cx="180" cy="180" r="130" stroke="white" stroke-width=".8" opacity=".08"/>
-      <text x="180" y="190" text-anchor="middle" font-size="36" font-family="serif" fill="white" opacity=".06" font-weight="bold">HSST</text>
-    </svg>
-  </div>
-
-  <div class="relative z-10 max-w-6xl mx-auto px-6 w-full">
-    <div class="max-w-3xl">
-      <div class="flex items-center gap-3 mb-6 animate-fade-up" style="animation-delay:.1s;">
-        <div class="w-8 h-px bg-spirit"></div>
-        <span class="eyebrow text-spirit">Holy Spirit School of Tagbilaran · Est. 1926</span>
+<!-- MOBILE MENU OUTSIDE HEADER -->
+<div
+  id="mobile-menu"
+  class="fixed inset-0 z-[9999] hidden md:hidden bg-[#153e75] text-white"
+>
+  <div class="flex h-dvh flex-col bg-[#153e75]">
+    <div class="flex items-center justify-between border-b border-white/10 px-6 py-5">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-white/70">
+          Menu
+        </p>
+        <h2 class="mt-1 text-lg font-bold text-white">
+          Navigation
+        </h2>
       </div>
 
-      <h1 class="font-serif text-white mb-6 animate-fade-up leading-[1.05]" style="font-size:clamp(3.2rem,7vw,6rem);animation-delay:.2s;">
-        Come home<br/>
-        <em class="text-royal-pale italic">to memory,</em><br/>
-        legacy, and<br/>
-        connection.
-      </h1>
+      <button
+        type="button"
+        id="close-mobile-menu"
+        class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white transition hover:bg-white/10"
+      >
+        ✕
+      </button>
+    </div>
 
-      <p class="text-white/70 font-sans text-base leading-relaxed max-w-xl mb-10 animate-fade-up" style="animation-delay:.32s;">
-        Welcome home, HSSTian. Join thousands of alumni united by faith, service, and the spirit of the Holy Cross - and help shape the next 100 years of Holy Spirit School.
-      </p>
+    <div class="flex-1 overflow-y-auto px-6 py-6">
+      <nav class="flex flex-col">
+        <a href="#about" class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">About</a>
+        <a href="#events" class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">Events</a>
+        <a href="#crusade" class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">CRUSADE</a>
+        <a href="#stories" class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">Stories</a>
+        <a href="#news" class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">News</a>
+        <a href="#contact" class="mobile-nav-link py-4 text-base font-semibold text-white/90 transition hover:text-white">Contact</a>
+      </nav>
+    </div>
 
-      <div class="flex flex-wrap gap-4 mb-14 animate-fade-up" style="animation-delay:.42s;">
-        <a href="#crusade" class="group relative overflow-hidden bg-spirit hover:bg-spirit-light text-white font-bold text-sm px-8 py-3.5 rounded-full flex items-center gap-2 shadow-xl transition-all duration-300">
-          <span>Join the CRUSADE</span>
-          <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-          </svg>
+    <div class="border-t border-white/10 px-6 py-6">
+      <div class="grid grid-cols-1 gap-3">
+        <a
+          href="{{ route('login') }}"
+          class="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:bg-white/10"
+        >
+          Login
         </a>
 
-        <a href="#about" class="text-white/80 hover:text-white border border-white/25 hover:border-white/50 font-semibold text-sm px-8 py-3.5 rounded-full transition-all duration-300">
-          Learn More
+        <a
+          href="{{ route('register') }}"
+          class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-bold uppercase tracking-[0.16em] text-[#153e75] transition hover:bg-[#f3f7ff]"
+        >
+          Register
         </a>
-      </div>
 
-      <div class="flex flex-wrap gap-8 animate-fade-up" style="animation-delay:.52s;">
-        <div>
-          <p class="font-serif text-3xl font-bold text-white">100<span class="text-spirit">+</span></p>
-          <p class="text-white/50 text-xs font-sans mt-0.5 uppercase tracking-wider">Years of Excellence</p>
-        </div>
-
-        <div class="w-px bg-white/10 self-stretch"></div>
-
-        <div>
-          <p class="font-serif text-3xl font-bold text-white">100K<span class="text-spirit">+</span></p>
-          <p class="text-white/50 text-xs font-sans mt-0.5 uppercase tracking-wider">Living Alumni</p>
-        </div>
-
-        <div class="w-px bg-white/10 self-stretch"></div>
-
-        <div>
-          <p class="font-serif text-3xl font-bold text-white">3</p>
-          <p class="text-white/50 text-xs font-sans mt-0.5 uppercase tracking-wider">CRUSADE Pillars</p>
-        </div>
+        <a
+          href="#crusade"
+          class="inline-flex items-center justify-center rounded-xl bg-[#2563eb] px-4 py-3 text-sm font-bold text-white transition hover:bg-[#1d4ed8]"
+        >
+          ✦ Donate Now
+        </a>
       </div>
     </div>
   </div>
+</div>
+
+<!-- ═══════ HERO ═══════ -->
+<section class="relative grain hero-bg wave-clip flex min-h-[88vh] items-center overflow-hidden pt-24 pb-24 sm:min-h-screen sm:pt-28 sm:pb-32 lg:pb-40">
+
+    {{-- Background --}}
+    <div class="absolute inset-0">
+        <img
+            src="{{ asset('images/hsstherosect1.png') }}"
+            alt="Holy Spirit School of Tagbilaran"
+            class="absolute inset-0 h-full w-full object-cover object-center"
+        >
+
+        <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,24,68,0.94)_0%,rgba(14,36,98,0.86)_34%,rgba(20,52,140,0.58)_62%,rgba(20,52,140,0.24)_100%)]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_78%_40%,rgba(255,255,255,0.12),transparent_24%)]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_85%_50%,rgba(147,197,253,0.14),transparent_32%)]"></div>
+        <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#071633] to-transparent sm:h-40"></div>
+    </div>
+
+    {{-- Ambient glow --}}
+    <div class="pointer-events-none absolute top-16 right-0 hidden h-[480px] w-[480px] rounded-full opacity-10 blur-sm lg:block animate-glow"
+         style="background:radial-gradient(circle,#2952d9,transparent 70%);"></div>
+
+    <div class="pointer-events-none absolute -bottom-20 -left-16 hidden h-96 w-96 rounded-full opacity-10 blur-sm lg:block animate-glow"
+         style="animation-delay:2s;background:radial-gradient(circle,#94b0f8,transparent 70%);"></div>
+
+    {{-- Decorative marks --}}
+    <div class="pointer-events-none absolute right-12 top-1/2 hidden -translate-y-1/2 xl:flex flex-col items-center gap-0 opacity-5 animate-float"
+         style="animation-delay:.5s;">
+        <div class="h-32 w-px bg-white"></div>
+        <div class="h-px w-32 -mt-px bg-white"></div>
+        <div class="h-32 w-px -mt-px bg-white"></div>
+    </div>
+
+    <div class="pointer-events-none absolute right-20 top-1/2 hidden -translate-y-1/2 xl:block opacity-[0.07]">
+        <svg width="360" height="360" viewBox="0 0 360 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="180" cy="180" r="170" stroke="white" stroke-width="1" stroke-dasharray="6 10" opacity=".12"/>
+            <circle cx="180" cy="180" r="130" stroke="white" stroke-width=".8" opacity=".08"/>
+            <text x="180" y="190" text-anchor="middle" font-size="36" font-family="serif" fill="white" opacity=".06" font-weight="bold">HSST</text>
+        </svg>
+    </div>
+
+    {{-- Content --}}
+    <div class="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <div class="max-w-3xl">
+
+            {{-- Eyebrow --}}
+            <div class="mb-5 flex items-center gap-3 animate-fade-up sm:mb-6" style="animation-delay:.1s;">
+                <div class="h-px w-8 bg-spirit"></div>
+                <span class="eyebrow text-spirit">Holy Spirit School of Tagbilaran · Est. 1926</span>
+            </div>
+
+            {{-- Headline --}}
+            <h1
+                class="mb-5 font-serif leading-[1.02] text-white animate-fade-up sm:mb-6"
+                style="font-size:clamp(2.7rem,7vw,5.9rem);animation-delay:.2s;"
+            >
+                Come home<br/>
+                <em class="text-royal-pale italic">to memory,</em><br class="hidden sm:block"/>
+                legacy, and connection.
+            </h1>
+
+            {{-- Supporting text --}}
+            <p
+                class="mb-8 max-w-xl font-sans text-[15px] leading-7 text-white/75 animate-fade-up sm:mb-10 sm:text-base sm:leading-relaxed"
+                style="animation-delay:.32s;"
+            >
+                Welcome home, HSSTian. Join thousands of alumni united by faith, service, and the spirit of the Holy Cross — and help shape the next 100 years of Holy Spirit School.
+            </p>
+
+            {{-- CTA --}}
+            <div class="mb-10 flex flex-col gap-3 animate-fade-up sm:mb-14 sm:flex-row sm:flex-wrap sm:gap-4" style="animation-delay:.42s;">
+                <a
+                    href="#crusade"
+                    class="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-spirit px-8 py-3.5 text-sm font-bold text-white shadow-xl transition-all duration-300 hover:bg-spirit-light"
+                >
+                    <span>Join the CRUSADE</span>
+                    <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+
+                <a
+                    href="#about"
+                    class="inline-flex items-center justify-center rounded-full border border-white/25 px-8 py-3.5 text-sm font-semibold text-white/80 transition-all duration-300 hover:border-white/50 hover:text-white"
+                >
+                    Learn More
+                </a>
+            </div>
+
+            {{-- Stats --}}
+            <div class="flex flex-wrap items-center gap-x-6 gap-y-5 animate-fade-up sm:gap-x-8" style="animation-delay:.52s;">
+                <div>
+                    <p class="font-serif text-3xl font-bold text-white sm:text-[2rem]">
+                        100<span class="text-spirit">+</span>
+                    </p>
+                    <p class="mt-0.5 text-[11px] uppercase tracking-wider text-white/50 sm:text-xs">
+                        Years of Excellence
+                    </p>
+                </div>
+
+                <div class="hidden self-stretch w-px bg-white/10 sm:block"></div>
+
+                <div>
+                    <p class="font-serif text-3xl font-bold text-white sm:text-[2rem]">
+                        100K<span class="text-spirit">+</span>
+                    </p>
+                    <p class="mt-0.5 text-[11px] uppercase tracking-wider text-white/50 sm:text-xs">
+                        Living Alumni
+                    </p>
+                </div>
+
+                <div class="hidden self-stretch w-px bg-white/10 sm:block"></div>
+
+                <div>
+                    <p class="font-serif text-3xl font-bold text-white sm:text-[2rem]">3</p>
+                    <p class="mt-0.5 text-[11px] uppercase tracking-wider text-white/50 sm:text-xs">
+                        CRUSADE Pillars
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </section>
 <section class="bg-white py-20">
   <div class="mx-auto max-w-5xl px-6 text-center">
@@ -624,245 +635,233 @@
     </div>
 </section>
 
-<section id="crusade" class="py-32 relative overflow-hidden">
-  <div class="absolute inset-0" style="background:linear-gradient(160deg,#091852 0%,#0f2580 50%,#1a3fc4 100%);"></div>
-  <div class="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none" style="background-image:radial-gradient(circle at 20% 30%,white 1px,transparent 1px),radial-gradient(circle at 80% 70%,white 1px,transparent 1px);background-size:48px 48px;"></div>
-  <div class="absolute right-0 top-1/2 -translate-y-1/2 w-96 h-96 rounded-full opacity-10 animate-glow pointer-events-none" style="background:radial-gradient(circle,#94b0f8,transparent 70%);"></div>
+<section id="crusade" class="relative overflow-hidden py-20 sm:py-24 lg:py-32">
+    <div class="absolute inset-0" style="background:linear-gradient(160deg,#091852 0%,#0f2580 50%,#1a3fc4 100%);"></div>
+    <div class="pointer-events-none absolute top-0 left-0 h-full w-full opacity-5" style="background-image:radial-gradient(circle at 20% 30%,white 1px,transparent 1px),radial-gradient(circle at 80% 70%,white 1px,transparent 1px);background-size:48px 48px;"></div>
+    <div class="pointer-events-none absolute right-0 top-1/2 hidden h-72 w-72 -translate-y-1/2 rounded-full opacity-10 lg:block lg:h-96 lg:w-96 animate-glow" style="background:radial-gradient(circle,#94b0f8,transparent 70%);"></div>
 
-  <div class="relative z-10 max-w-6xl mx-auto px-6">
-    <div class="text-center mb-16">
-      <span class="eyebrow text-spirit reveal">Centennial Giving Campaign</span>
-      <div class="flex justify-center my-4 reveal d1"><div class="gold-line"></div></div>
-      <h2 class="font-serif text-white reveal d1" style="font-size:clamp(2.5rem,5vw,4rem);line-height:1.1;">
-        Join the <em class="text-spirit">CRUSADE.</em>
-      </h2>
-      <p class="text-white/50 font-sans text-base max-w-2xl mx-auto mt-4 leading-relaxed reveal d2">
-        Be generous. Join us in shaping a brighter future for our students and community, where every gift - regardless of size - leaves a lasting impact.
-      </p>
-    </div>
-
-    <div class="bg-white/8 border border-white/12 rounded-3xl p-8 md:p-12 mb-10 reveal d2 backdrop-blur-sm">
-      <div class="grid md:grid-cols-2 gap-10 items-center">
-        <div>
-          <p class="text-spirit eyebrow mb-3">Your Legacy Gift</p>
-          <h3 class="font-serif text-white text-2xl md:text-3xl leading-snug mb-4">
-            Your generosity can leave an <em>enduring legacy.</em>
-          </h3>
-          <p class="text-white/55 font-sans text-sm leading-relaxed mb-6">
-            Although <strong class="text-spirit font-bold">PhP 100,000 per batch</strong> is recommended, every gift - no matter the amount - is invaluable and will be cherished deeply.
-          </p>
-          <p class="text-white/55 font-sans text-sm leading-relaxed mb-8">
-            Your support will fuel our Centennial Celebrations, enhancing campus life, expanding financial aid, and driving academic and Scholarship excellence.
-          </p>
-
-          {{-- <div class="mb-2 flex justify-between items-center">
-            <span class="text-white/50 text-xs font-sans font-semibold">Campaign Progress</span>
-            <span class="text-spirit text-xs font-bold font-sans">62% funded</span>
-          </div>
-          <div class="progress-track mb-3">
-            <div class="progress-fill" style="width:62%;background:linear-gradient(90deg,#1a3fc4,#94b0f8);"></div>
-          </div>
-          <div class="flex justify-between text-xs font-sans text-white/35">
-            <span>₱2,320,000 raised</span>
-            <span>Goal: ₱3,750,000</span>
-          </div> --}}
+    <div class="relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
+        <div class="mb-12 text-center sm:mb-16">
+            <span class="eyebrow text-spirit reveal">Centennial Giving Campaign</span>
+            <div class="reveal d1 my-4 flex justify-center"><div class="gold-line"></div></div>
+            <h2 class="font-serif text-white reveal d1" style="font-size:clamp(2rem,6vw,4rem);line-height:1.1;">
+                Join the <em class="text-spirit">CRUSADE.</em>
+            </h2>
+            <p class="mx-auto mt-4 max-w-2xl font-sans text-sm leading-7 text-white/60 reveal d2 sm:text-base">
+                Be generous. Join us in shaping a brighter future for our students and community, where every gift - regardless of size - leaves a lasting impact.
+            </p>
         </div>
 
-        <div class="bg-white rounded-2xl p-8 shadow-2xl">
-          <p class="font-serif text-royal-deeper font-bold text-lg mb-1">Make Your Gift Today</p>
-          <p class="text-royal/50 text-xs font-sans mb-6">Choose an amount or enter your own</p>
+        <div class="reveal d2 mb-10 rounded-[1.75rem] border border-white/12 bg-white/8 p-5 backdrop-blur-sm sm:rounded-3xl sm:p-8 md:p-12">
+            <div class="grid items-center gap-8 md:grid-cols-2 md:gap-10">
+                <div>
+                    <p class="eyebrow mb-3 text-spirit">Your Legacy Gift</p>
+                    <h3 class="font-serif text-[1.65rem] leading-snug text-white sm:text-3xl">
+                        Your generosity can leave an <em>enduring legacy.</em>
+                    </h3>
+                    <p class="mt-4 font-sans text-sm leading-7 text-white/60">
+                        Although <strong class="font-bold text-spirit">PhP 100,000 per batch</strong> is recommended, every gift - no matter the amount - is invaluable and will be cherished deeply.
+                    </p>
+                    <p class="mt-4 font-sans text-sm leading-7 text-white/60">
+                        Your support will fuel our Centennial Celebrations, enhancing campus life, expanding financial aid, and driving academic and Scholarship excellence.
+                    </p>
+                </div>
 
-          <div class="grid grid-cols-3 gap-2 mb-4" id="amount-grid">
-            <button onclick="selectAmt(this,'500')" class="amt-btn bg-royal-frost border border-royal/15 text-royal font-bold text-sm py-2.5 rounded-xl hover:bg-royal hover:text-white transition-all">₱500</button>
-            <button onclick="selectAmt(this,'1000')" class="amt-btn bg-royal-frost border border-royal/15 text-royal font-bold text-sm py-2.5 rounded-xl hover:bg-royal hover:text-white transition-all">₱1,000</button>
-            <button onclick="selectAmt(this,'5000')" class="amt-btn bg-royal-frost border border-royal/15 text-royal font-bold text-sm py-2.5 rounded-xl hover:bg-royal hover:text-white transition-all">₱5,000</button>
-            <button onclick="selectAmt(this,'10000')" class="amt-btn bg-royal-frost border border-royal/15 text-royal font-bold text-sm py-2.5 rounded-xl hover:bg-royal hover:text-white transition-all">₱10,000</button>
-            <button onclick="selectAmt(this,'50000')" class="amt-btn bg-royal-frost border border-royal/15 text-royal font-bold text-sm py-2.5 rounded-xl hover:bg-royal hover:text-white transition-all">₱50,000</button>
-            <button onclick="selectAmt(this,'100000')" class="amt-btn bg-spirit text-white font-bold text-xs py-2.5 rounded-xl hover:bg-spirit-light transition-all border border-spirit">₱100,000 ✦</button>
-          </div>
+                <div class="rounded-[1.5rem] bg-white p-5 shadow-2xl sm:rounded-2xl sm:p-8">
+                    <p class="mb-1 font-serif text-lg font-bold text-royal-deeper">Make Your Gift Today</p>
+                    <p class="mb-5 font-sans text-xs text-royal/50 sm:mb-6">Choose an amount or enter your own</p>
 
-          <div class="mb-4">
-            <label class="text-royal/60 text-xs font-sans font-semibold block mb-1.5">Or enter custom amount (PhP)</label>
-            <div class="flex items-center border-2 border-royal/15 focus-within:border-royal rounded-xl overflow-hidden transition-colors">
-              <span class="px-3 text-royal/50 font-bold font-sans text-sm">₱</span>
-              <input id="custom-amt" type="number" placeholder="Enter amount" class="flex-1 py-2.5 pr-4 text-sm font-sans font-semibold text-royal-deeper outline-none" oninput="clearSelected()"/>
+                    <div class="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3" id="amount-grid">
+                        <button onclick="selectAmt(this,'500')" class="amt-btn rounded-xl border border-royal/15 bg-royal-frost py-2.5 text-sm font-bold text-royal transition-all hover:bg-royal hover:text-white">₱500</button>
+                        <button onclick="selectAmt(this,'1000')" class="amt-btn rounded-xl border border-royal/15 bg-royal-frost py-2.5 text-sm font-bold text-royal transition-all hover:bg-royal hover:text-white">₱1,000</button>
+                        <button onclick="selectAmt(this,'5000')" class="amt-btn rounded-xl border border-royal/15 bg-royal-frost py-2.5 text-sm font-bold text-royal transition-all hover:bg-royal hover:text-white">₱5,000</button>
+                        <button onclick="selectAmt(this,'10000')" class="amt-btn rounded-xl border border-royal/15 bg-royal-frost py-2.5 text-sm font-bold text-royal transition-all hover:bg-royal hover:text-white">₱10,000</button>
+                        <button onclick="selectAmt(this,'50000')" class="amt-btn rounded-xl border border-royal/15 bg-royal-frost py-2.5 text-sm font-bold text-royal transition-all hover:bg-royal hover:text-white">₱50,000</button>
+                        <button onclick="selectAmt(this,'100000')" class="amt-btn rounded-xl border border-spirit bg-spirit py-2.5 text-xs font-bold text-white transition-all hover:bg-spirit-light">₱100,000 ✦</button>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="mb-1.5 block text-xs font-semibold text-royal/60">Or enter custom amount (PhP)</label>
+                        <div class="flex items-center overflow-hidden rounded-xl border-2 border-royal/15 transition-colors focus-within:border-royal">
+                            <span class="px-3 text-sm font-bold text-royal/50">₱</span>
+                            <input id="custom-amt" type="number" placeholder="Enter amount" class="flex-1 py-3 pr-4 text-sm font-semibold text-royal-deeper outline-none" oninput="clearSelected()"/>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="mb-1.5 block text-xs font-semibold text-royal/60">Full Name</label>
+                        <input type="text" placeholder="Juan dela Cruz" class="w-full rounded-xl border-2 border-royal/15 px-4 py-3 text-sm text-royal-deeper outline-none transition-colors focus:border-royal"/>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="mb-1.5 block text-xs font-semibold text-royal/60">Batch Year</label>
+                        <input type="text" placeholder="e.g. 1998, 2005, 2012" class="w-full rounded-xl border-2 border-royal/15 px-4 py-3 text-sm text-royal-deeper outline-none transition-colors focus:border-royal"/>
+                    </div>
+
+                    <button class="donate-btn flex w-full items-center justify-center gap-2 rounded-xl bg-royal py-3.5 text-sm font-bold text-white transition-all duration-300 hover:bg-royal-dark hover:shadow-xl hover:shadow-royal/30">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        Give Now - Fueled by Compassion
+                    </button>
+                    <p class="mt-3 text-center font-sans text-xs text-royal/30">All donations are acknowledged & deeply cherished</p>
+                </div>
             </div>
-          </div>
-
-          <div class="mb-4">
-            <label class="text-royal/60 text-xs font-sans font-semibold block mb-1.5">Full Name</label>
-            <input type="text" placeholder="Juan dela Cruz" class="w-full border-2 border-royal/15 focus:border-royal rounded-xl px-4 py-2.5 text-sm font-sans text-royal-deeper outline-none transition-colors"/>
-          </div>
-
-          <div class="mb-6">
-            <label class="text-royal/60 text-xs font-sans font-semibold block mb-1.5">Batch Year</label>
-            <input type="text" placeholder="e.g. 1998, 2005, 2012" class="w-full border-2 border-royal/15 focus:border-royal rounded-xl px-4 py-2.5 text-sm font-sans text-royal-deeper outline-none transition-colors"/>
-          </div>
-
-          <button class="donate-btn w-full bg-royal hover:bg-royal-dark text-white font-bold text-sm py-3.5 rounded-xl transition-all duration-300 hover:shadow-xl hover:shadow-royal/30 flex items-center justify-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-            </svg>
-            Give Now - Fueled by Compassion
-          </button>
-          <p class="text-center text-royal/30 text-xs font-sans mt-3">All donations are acknowledged & deeply cherished</p>
         </div>
-      </div>
+
+        <div class="reveal mb-8 text-center">
+            <p class="eyebrow text-white/40">CRUSADE focuses on three key areas</p>
+        </div>
+
+        <div class="grid gap-4 sm:gap-5 md:grid-cols-3">
+            <div class="card reveal d1 border border-white/12 bg-white/8 p-6 backdrop-blur-sm transition-colors hover:bg-white/12 sm:p-8">
+                <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-spirit/20">
+                    <svg class="h-6 w-6 text-spirit" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                </div>
+                <p class="eyebrow mb-2 text-spirit">Pillar One</p>
+                <h4 class="mb-3 font-serif text-xl font-bold text-white">Elevating Campus Experience</h4>
+                <p class="font-sans text-xs leading-6 text-white/50 sm:text-[13px] sm:leading-relaxed">
+                    Transformative upgrades to learning spaces, facilities, and technology - ensuring every student thrives in an environment worthy of their potential.
+                </p>
+            </div>
+
+            <div class="card reveal d2 border border-royal-light/40 bg-royal p-6 sm:p-8">
+                <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-white/15">
+                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                </div>
+                <p class="eyebrow mb-2 text-white/55">Pillar Two</p>
+                <h4 class="mb-3 font-serif text-xl font-bold text-white">Faculty Development</h4>
+                <p class="font-sans text-xs leading-6 text-white/70 sm:text-[13px] sm:leading-relaxed">
+                    Investing in the dedicated educators who shape future Crusaders - through training, scholarships, and professional growth programs.
+                </p>
+            </div>
+
+            <div class="card reveal d3 border border-white/12 bg-white/8 p-6 backdrop-blur-sm transition-colors hover:bg-white/12 sm:p-8">
+                <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-spirit/20">
+                    <svg class="h-6 w-6 text-spirit" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                    </svg>
+                </div>
+                <p class="eyebrow mb-2 text-spirit">Pillar Three</p>
+                <h4 class="mb-3 font-serif text-xl font-bold text-white">Crusaders Scholarship Fund</h4>
+                <p class="font-sans text-xs leading-6 text-white/50 sm:text-[13px] sm:leading-relaxed">
+                    Empowering student-athletes to reach new heights - funding equipment, training, and competitions that build character through sportsmanship.
+                </p>
+            </div>
+        </div>
     </div>
-
-    <div class="text-center mb-8 reveal">
-      <p class="text-white/40 eyebrow">CRUSADE focuses on three key areas</p>
-    </div>
-
-    <div class="grid md:grid-cols-3 gap-5">
-      <div class="card reveal d1 bg-white/8 border border-white/12 p-8 backdrop-blur-sm hover:bg-white/12 transition-colors">
-        <div class="w-12 h-12 rounded-xl bg-spirit/20 flex items-center justify-center mb-5">
-          <svg class="w-6 h-6 text-spirit" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-          </svg>
-        </div>
-        <p class="eyebrow text-spirit mb-2">Pillar One</p>
-        <h4 class="font-serif text-white text-xl font-bold mb-3">Elevating Campus Experience</h4>
-        <p class="text-white/45 font-sans text-xs leading-relaxed">
-          Transformative upgrades to learning spaces, facilities, and technology - ensuring every student thrives in an environment worthy of their potential.
-        </p>
-      </div>
-
-      <div class="card reveal d2 bg-royal border border-royal-light/40 p-8">
-        <div class="w-12 h-12 rounded-xl bg-white/15 flex items-center justify-center mb-5">
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-          </svg>
-        </div>
-        <p class="eyebrow text-white/50 mb-2">Pillar Two</p>
-        <h4 class="font-serif text-white text-xl font-bold mb-3">Faculty Development</h4>
-        <p class="text-white/60 font-sans text-xs leading-relaxed">
-          Investing in the dedicated educators who shape future Crusaders - through training, scholarships, and professional growth programs.
-        </p>
-      </div>
-
-      <div class="card reveal d3 bg-white/8 border border-white/12 p-8 backdrop-blur-sm hover:bg-white/12 transition-colors">
-        <div class="w-12 h-12 rounded-xl bg-spirit/20 flex items-center justify-center mb-5">
-          <svg class="w-6 h-6 text-spirit" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
-          </svg>
-        </div>
-        <p class="eyebrow text-spirit mb-2">Pillar Three</p>
-        <h4 class="font-serif text-white text-xl font-bold mb-3">Crusaders Scholarship Fund</h4>
-        <p class="text-white/45 font-sans text-xs leading-relaxed">
-          Empowering student-athletes to reach new heights - funding equipment, training, and competitions that build character through sportsmanship.
-        </p>
-      </div>
-    </div>
-  </div>
 </section>
 
-<section id="events" class="py-28 bg-royal-frost">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
-      <div>
-        <span class="eyebrow text-royal reveal">Upcoming</span>
-        <div class="gold-line my-3 reveal d1"></div>
-        <h2 class="font-serif text-royal-deeper reveal d1" style="font-size:clamp(2rem,3.5vw,2.8rem);line-height:1.15;">
-          Alumni Events
-        </h2>
-      </div>
-
-      <a
-    href="{{ route('events.index') }}"
-    class="reveal d2 inline-flex items-center justify-center self-start rounded bg-[#153e75] px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#0f2f5c] md:self-auto"
-      >
-          View All
-      </a>
-    </div>
-
-    @if ($events->isNotEmpty())
-     <div class="grid gap-6 md:grid-cols-3">
-    @foreach ($events as $event)
-        @php
-            $eventDate = \Carbon\Carbon::parse($event->event_date);
-            $isFeatured = $loop->first;
-
-            $bannerUrl = $event->banner_image
-                ? \Illuminate\Support\Facades\Storage::disk('s3')->url($event->banner_image)
-                : asset('images/100yearsevent.jpg');
-        @endphp
-
-        <article class="card reveal d{{ $loop->iteration }} group flex h-full flex-col overflow-hidden border border-royal/10 bg-white">
-            <div class="relative h-56 overflow-hidden">
-                <img
-                    src="{{ $bannerUrl }}"
-                    alt="{{ $event->title }}"
-                    class="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                >
-
-                <div class="absolute inset-0 {{ $isFeatured
-                    ? 'bg-[linear-gradient(180deg,rgba(9,24,82,0.10)_0%,rgba(9,24,82,0.72)_100%)]'
-                    : 'bg-[linear-gradient(180deg,rgba(9,24,82,0.04)_0%,rgba(9,24,82,0.58)_100%)]' }}"></div>
-
-                <div class="absolute left-4 top-4">
-                  <div class="flex h-14 w-14 flex-col items-center justify-center rounded-2xl border border-gray-200/80 bg-white/95 shadow-[0_8px_24px_rgba(15,42,107,0.10)]">
-                      <span class="font-serif text-xl font-bold leading-none text-royal">
-                          {{ $eventDate->format('d') }}
-                      </span>
-                      <span class="font-sans text-[.6rem] uppercase tracking-wide text-gray-500">
-                          {{ $eventDate->format('M') }}
-                      </span>
-                  </div>
-              </div>
-
-                <div class="absolute right-4 top-4">
-                    @if ($isFeatured)
-                        <span class="rounded-full bg-spirit px-3 py-1 text-[.65rem] font-bold uppercase tracking-wider text-white shadow-md">
-                            Featured
-                        </span>
-                    @else
-                        <span class="rounded-full border border-white/70 bg-white/85 px-3 py-1 text-[.65rem] font-bold uppercase tracking-wider text-royal">
-                            Upcoming
-                        </span>
-                    @endif
-                </div>
+<section id="events" class="bg-royal-frost py-20 sm:py-24 lg:py-28">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <div class="mb-12 flex flex-col gap-4 md:mb-14 md:flex-row md:items-end md:justify-between">
+            <div>
+                <span class="eyebrow text-royal reveal">Upcoming</span>
+                <div class="gold-line reveal d1 my-3"></div>
+                <h2 class="font-serif text-royal-deeper reveal d1" style="font-size:clamp(2rem,3.5vw,2.8rem);line-height:1.15;">
+                    Alumni Events
+                </h2>
             </div>
 
-            <div class="flex flex-1 flex-col p-7 text-center">
-                <h3 class="mb-2 font-serif text-lg font-bold text-royal-deeper transition-colors group-hover:text-royal">
-                    {{ $event->title }}
-                </h3>
+            <a
+                href="{{ route('events.index') }}"
+                class="reveal d2 inline-flex items-center justify-center self-start rounded bg-[#153e75] px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#0f2f5c] md:self-auto"
+            >
+                View All
+            </a>
+        </div>
 
-                <p class="mb-4 text-sm leading-relaxed text-gray-600">
-                    {{ \Illuminate\Support\Str::limit($event->description ?: 'Stay tuned for more details about this upcoming alumni event.', 120) }}
+        @if ($events->isNotEmpty())
+            <div class="grid gap-6 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
+                @foreach ($events as $event)
+                    @php
+                        $eventDate = \Carbon\Carbon::parse($event->event_date);
+                        $isFeatured = $loop->first;
+
+                        $bannerUrl = $event->banner_image
+                            ? \Illuminate\Support\Facades\Storage::disk('s3')->url($event->banner_image)
+                            : asset('images/100yearsevent.jpg');
+                    @endphp
+
+                    <article class="reveal d{{ $loop->iteration }} group flex h-full flex-col overflow-hidden rounded-none border-0 border-b border-royal/10 bg-transparent pb-6 shadow-none last:border-b-0 last:pb-0 sm:rounded-[1.5rem] sm:border sm:border-royal/10 sm:bg-white sm:pb-0">
+                        <div class="relative h-52 overflow-hidden sm:h-56">
+                            <img
+                                src="{{ $bannerUrl }}"
+                                alt="{{ $event->title }}"
+                                class="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                            >
+
+                            <div class="absolute inset-0 {{ $isFeatured
+                                ? 'bg-[linear-gradient(180deg,rgba(9,24,82,0.10)_0%,rgba(9,24,82,0.72)_100%)]'
+                                : 'bg-[linear-gradient(180deg,rgba(9,24,82,0.04)_0%,rgba(9,24,82,0.58)_100%)]' }}"></div>
+
+                            <div class="absolute left-3 top-3 sm:left-4 sm:top-4">
+                                <div class="flex h-12 w-12 flex-col items-center justify-center rounded-2xl border border-gray-200/80 bg-white/95 shadow-[0_8px_24px_rgba(15,42,107,0.10)] sm:h-14 sm:w-14">
+                                    <span class="font-serif text-lg font-bold leading-none text-royal sm:text-xl">
+                                        {{ $eventDate->format('d') }}
+                                    </span>
+                                    <span class="font-sans text-[.58rem] uppercase tracking-wide text-gray-500 sm:text-[.6rem]">
+                                        {{ $eventDate->format('M') }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="absolute right-3 top-3 sm:right-4 sm:top-4">
+                                @if ($isFeatured)
+                                    <span class="rounded-full bg-spirit px-3 py-1 text-[.62rem] font-bold uppercase tracking-wider text-white shadow-md">
+                                        Featured
+                                    </span>
+                                @else
+                                    <span class="rounded-full border border-white/70 bg-white/85 px-3 py-1 text-[.62rem] font-bold uppercase tracking-wider text-royal">
+                                        Upcoming
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="flex flex-1 flex-col px-0 pt-5 pb-0 text-center sm:p-7">
+                            <h3 class="mb-2 font-serif text-lg font-bold text-royal-deeper transition-colors group-hover:text-royal">
+                                {{ $event->title }}
+                            </h3>
+
+                            <p class="mb-4 text-sm leading-7 text-gray-600">
+                                {{ \Illuminate\Support\Str::limit($event->description ?: 'Stay tuned for more details about this upcoming alumni event.', 120) }}
+                            </p>
+
+                            <div class="mb-5 flex items-center justify-center gap-2 text-center text-xs text-gray-500">
+                                <svg class="h-3.5 w-3.5 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                </svg>
+                                <span>{{ $event->venue ?: 'Venue to be announced' }}</span>
+                            </div>
+
+                            @if (Route::has('events.show'))
+                                <div class="mt-auto flex justify-center">
+                                    <a
+                                        href="{{ route('events.show', $event->slug) }}"
+                                        class="inline-flex items-center justify-center rounded bg-[#153e75] px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#0f2f5c]"
+                                    >
+                                        Read More
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+        @else
+            <div class="reveal rounded-none border-0 bg-transparent p-0 text-center sm:rounded-3xl sm:border sm:border-royal/10 sm:bg-white sm:p-10">
+                <p class="mb-2 font-serif text-2xl text-royal-deeper">No upcoming events yet</p>
+                <p class="font-sans text-sm text-royal/50">
+                    Please check back soon for the latest alumni gatherings and centennial activities.
                 </p>
-
-                <div class="mb-5 flex items-center justify-center gap-2 text-center text-xs text-gray-500">
-                    <svg class="h-3.5 w-3.5 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                    </svg>
-                    <span>{{ $event->venue ?: 'Venue to be announced' }}</span>
-                </div>
-
-                @if (Route::has('events.show'))
-                    <div class="mt-auto flex justify-center">
-                        <a
-                            href="{{ route('events.show', $event->slug) }}"
-                            class="inline-flex items-center justify-center rounded bg-[#153e75] px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#0f2f5c]"
-                        >
-                            READ MORE
-                        </a>
-                    </div>
-                @endif
             </div>
-        </article>
-    @endforeach
+        @endif
     </div>
-    @else
-      <div class="rounded-3xl border border-royal/10 bg-white p-10 text-center reveal">
-        <p class="font-serif text-2xl text-royal-deeper mb-2">No upcoming events yet</p>
-        <p class="text-royal/50 text-sm font-sans">
-          Please check back soon for the latest alumni gatherings and centennial activities.
-        </p>
-      </div>
-    @endif
-  </div>
 </section>
 
 <section id="stories" class="py-28 bg-white">
