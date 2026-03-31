@@ -102,7 +102,65 @@
                                 placeholder="0" />
                             @error('registration_fee') <p class="text-sm text-rose-500">{{ $message }}</p> @enderror
                         </div>
+                        <div class="space-y-1.5 md:col-span-2">
+                            <label class="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                                Event Banner
+                            </label>
 
+                            {{-- current banner --}}
+                            @if ($event->banner_image && !$new_banner_image && !$remove_banner_image)
+                                <div class="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-950">
+                                    <img
+                                        src="{{ Storage::disk('s3')->url($event->banner_image) }}"
+                                        alt="{{ $title ?: $event->title }}"
+                                        class="h-56 w-full object-cover"
+                                    >
+                                </div>
+                            @endif
+
+                            {{-- new uploaded preview --}}
+                            @if ($new_banner_image)
+                                <div class="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-950">
+                                    <img
+                                        src="{{ $new_banner_image->temporaryUrl() }}"
+                                        alt="New banner preview"
+                                        class="h-56 w-full object-cover"
+                                    >
+                                </div>
+                            @endif
+
+                            <input
+                                type="file"
+                                wire:model="new_banner_image"
+                                accept="image/png,image/jpeg,image/jpg,image/webp"
+                                class="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 shadow-sm outline-none transition file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-600 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-indigo-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+                            />
+
+                            <div wire:loading wire:target="new_banner_image" class="text-sm text-indigo-600">
+                                Uploading banner...
+                            </div>
+
+                            @error('new_banner_image')
+                                <p class="text-sm text-rose-500">{{ $message }}</p>
+                            @enderror
+
+                            @if ($event->banner_image)
+                                <label class="inline-flex items-center gap-3 pt-1">
+                                    <input
+                                        type="checkbox"
+                                        wire:model="remove_banner_image"
+                                        class="h-4 w-4 rounded border-zinc-300 text-rose-600 focus:ring-rose-500 dark:border-zinc-600 dark:bg-zinc-900"
+                                    >
+                                    <span class="text-sm text-zinc-700 dark:text-zinc-300">
+                                        Remove current banner
+                                    </span>
+                                </label>
+                            @endif
+
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400">
+                                Accepted: JPG, PNG, WEBP. Max: 2MB.
+                            </p>
+                        </div>
                         <div class="space-y-1.5 md:col-span-2">
                             <label class="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
                                 Description

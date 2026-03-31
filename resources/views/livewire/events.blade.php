@@ -351,7 +351,7 @@
                                         <th class="px-5 py-3 font-medium">Date</th>
                                         <th class="px-5 py-3 font-medium text-right">Fee</th>
                                         <th class="px-5 py-3 font-medium">Active</th>
-                                        <th class="px-5 py-3 font-medium">Created by</th>
+                                        <th class="px-5 py-3 font-medium">Event Banner</th>
                                         <th class="px-5 py-3 font-medium text-right">Actions</th>
                                     </tr>
                                 </thead>
@@ -394,8 +394,16 @@
                                                 @endif
                                             </td>
 
-                                            <td class="px-5 py-4 text-zinc-300">
-                                                {{ $event['creator'] ?? '—' }}
+                                            <td class="px-5 py-4">
+                                                @if (filled($event['banner_image']))
+                                                    <span class="inline-flex rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-medium text-emerald-400">
+                                                        Has banner
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex rounded-full bg-zinc-500/15 px-3 py-1 text-xs font-medium text-zinc-400">
+                                                        No event banner
+                                                    </span>
+                                                @endif
                                             </td>
 
                                             <td class="px-5 py-4">

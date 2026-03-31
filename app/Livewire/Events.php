@@ -107,169 +107,172 @@ class Events extends Component
         $this->selectedDate = $date;
     }
 
-    public function render()
-    {
-        $now = now();
+   public function render()
+{
+    $now = now();
 
-        $baseEventsQuery = Event::query()
-            ->select([
-                'id',
-                'title',
-                'slug',
-                'venue',
-                'event_date',
-                'registration_fee',
-                'is_active',
-                'created_by',
-                'created_at',
-            ])
-            ->with(['creator:id,username'])
-            ->when($this->search !== '', function (Builder $q) {
-                $term = '%' . $this->search . '%';
+    $baseEventsQuery = Event::query()
+        ->select([
+            'id',
+            'title',
+            'slug',
+            'venue',
+            'event_date',
+            'registration_fee',
+            'is_active',
+            'banner_image',
+            'created_by',
+            'created_at',
+        ])
+        ->with(['creator:id,username'])
+        ->when($this->search !== '', function (Builder $q) {
+            $term = '%' . $this->search . '%';
 
-                $q->where(function (Builder $qq) use ($term) {
-                    $qq->where('title', 'like', $term)
-                        ->orWhere('venue', 'like', $term);
-                });
-            })
-            ->when($this->active !== 'all', fn (Builder $q) =>
-                $q->where('is_active', $this->active === 'active')
-            )
-            ->when($this->status !== 'all', function (Builder $q) use ($now) {
-                if ($this->status === 'upcoming') {
-                    $q->where('event_date', '>=', $now);
-                } elseif ($this->status === 'past') {
-                    $q->where('event_date', '<', $now);
-                }
+            $q->where(function (Builder $qq) use ($term) {
+                $qq->where('title', 'like', $term)
+                    ->orWhere('venue', 'like', $term);
             });
+        })
+        ->when($this->active !== 'all', fn (Builder $q) =>
+            $q->where('is_active', $this->active === 'active')
+        )
+        ->when($this->status !== 'all', function (Builder $q) use ($now) {
+            if ($this->status === 'upcoming') {
+                $q->where('event_date', '>=', $now);
+            } elseif ($this->status === 'past') {
+                $q->where('event_date', '<', $now);
+            }
+        });
 
-        $events = (clone $baseEventsQuery)
-            ->orderBy('event_date', 'asc')
-            ->paginate($this->perPage);
+    $events = (clone $baseEventsQuery)
+        ->orderBy('event_date', 'asc')
+        ->paginate($this->perPage);
 
-       $events->getCollection()->transform(fn ($e) => [
+    $events->getCollection()->transform(fn ($e) => [
         'id' => $e->id,
         'slug' => $e->slug,
         'title' => $e->title,
         'venue' => $e->venue,
         'event_date' => $e->event_date,
-        'fee_pesos' => number_format(((int) $e->registration_fee)),
+        'fee_pesos' => number_format(((int) $e->registration_fee) / 100, 2),
         'is_active' => (bool) $e->is_active,
+        'banner_image' => $e->banner_image,
         'creator' => $e->creator?->username,
     ]);
 
-        $calendarStart = Carbon::createFromFormat('Y-m', $this->calendarMonth)->startOfMonth();
-        $calendarEnd = $calendarStart->copy()->endOfMonth();
+    $calendarStart = Carbon::createFromFormat('Y-m', $this->calendarMonth)->startOfMonth();
+    $calendarEnd = $calendarStart->copy()->endOfMonth();
 
-        $calendarEvents = (clone $baseEventsQuery)
-            ->whereBetween('event_date', [
-                $calendarStart->copy()->startOfMonth(),
-                $calendarEnd->copy()->endOfMonth(),
-            ])
-            ->orderBy('event_date', 'asc')
-            ->get()
-            ->map(fn ($e) => [
-                'id' => $e->id,
-                'title' => $e->title,
-                'venue' => $e->venue,
-                'event_date' => $e->event_date,
-                'time' => $e->event_date?->format('h:i A'),
-                'fee_pesos' => number_format(((int) $e->registration_fee) / 100, 2),
-                'is_active' => (bool) $e->is_active,
-                'creator' => $e->creator?->username,
-                'date_key' => $e->event_date?->toDateString(),
-            ]);
-
-        $eventsByDate = $calendarEvents
-            ->groupBy('date_key')
-            ->map(fn (Collection $items) => $items->values());
-
-        $monthGridStart = $calendarStart->copy()->startOfWeek(Carbon::SUNDAY);
-        $monthGridEnd = $calendarEnd->copy()->endOfWeek(Carbon::SATURDAY);
-
-        $calendarDays = collect();
-        $cursor = $monthGridStart->copy();
-
-        while ($cursor <= $monthGridEnd) {
-            $dateKey = $cursor->toDateString();
-            $dayEvents = $eventsByDate->get($dateKey, collect());
-
-            $calendarDays->push([
-                'date' => $dateKey,
-                'day' => $cursor->day,
-                'isCurrentMonth' => $cursor->month === $calendarStart->month,
-                'isToday' => $cursor->isToday(),
-                'isSelected' => $this->selectedDate === $dateKey,
-                'events' => $dayEvents,
-                'count' => $dayEvents->count(),
-            ]);
-
-            $cursor->addDay();
-        }
-
-        $selectedDayEvents = $eventsByDate->get(
-            $this->selectedDate ?? now()->toDateString(),
-            collect()
-        );
-
-        $statsQuery = Event::query();
-
-        $stats = [
-            'total' => (clone $statsQuery)->count(),
-            'upcoming' => (clone $statsQuery)->where('event_date', '>=', $now)->count(),
-            'past' => (clone $statsQuery)->where('event_date', '<', $now)->count(),
-            'active' => (clone $statsQuery)->where('is_active', true)->count(),
-        ];
-
-        $pendingPayments = Payment::query()
-            ->with([
-                'registration:id,event_id,alumni_id,status',
-                'registration.event:id,title',
-                'registration.alumni:id,fname,lname',
-                'registrationItem:id,name,event_id,event_schedule_id',
-                'registrationItem.schedule:id,title,schedule_time',
-            ])
-            ->where('status', 'pending')
-            ->when($this->paymentSearch !== '', function (Builder $q) {
-                $term = '%' . $this->paymentSearch . '%';
-
-                $q->where(function (Builder $qq) use ($term) {
-                    $qq->where('reference_number', 'like', $term)
-                        ->orWhere('remarks', 'like', $term)
-                        ->orWhereHas('registration.alumni', function (Builder $alumniQ) use ($term) {
-                            $alumniQ->where('fname', 'like', $term)
-                                ->orWhere('lname', 'like', $term);
-                        })
-                        ->orWhereHas('registration.event', function (Builder $eventQ) use ($term) {
-                            $eventQ->where('title', 'like', $term);
-                        })
-                        ->orWhereHas('registrationItem', function (Builder $itemQ) use ($term) {
-                            $itemQ->where('name', 'like', $term);
-                        });
-                });
-            })
-            ->when($this->paymentType !== 'all', function (Builder $q) {
-                if ($this->paymentType === 'registration') {
-                    $q->whereNull('event_registration_item_id');
-                }
-
-                if ($this->paymentType === 'item') {
-                    $q->whereNotNull('event_registration_item_id');
-                }
-            })
-            ->latest('id')
-            ->paginate($this->paymentPerPage, ['*'], 'paymentsPage');
-
-        return view('livewire.events', [
-            'events' => $events,
-            'pendingPayments' => $pendingPayments,
-            'calendarDays' => $calendarDays,
-            'selectedDayEvents' => $selectedDayEvents,
-            'calendarLabel' => $calendarStart->format('F Y'),
-            'selectedDateLabel' => Carbon::parse($this->selectedDate ?? now())->format('F d, Y'),
-            'stats' => $stats,
+    $calendarEvents = (clone $baseEventsQuery)
+        ->whereBetween('event_date', [
+            $calendarStart->copy()->startOfMonth(),
+            $calendarEnd->copy()->endOfMonth(),
+        ])
+        ->orderBy('event_date', 'asc')
+        ->get()
+        ->map(fn ($e) => [
+            'id' => $e->id,
+            'title' => $e->title,
+            'venue' => $e->venue,
+            'event_date' => $e->event_date,
+            'time' => $e->event_date?->format('h:i A'),
+            'fee_pesos' => number_format(((int) $e->registration_fee) / 100, 2),
+            'is_active' => (bool) $e->is_active,
+            'banner_image' => $e->banner_image,
+            'creator' => $e->creator?->username,
+            'date_key' => $e->event_date?->toDateString(),
         ]);
+
+    $eventsByDate = $calendarEvents
+        ->groupBy('date_key')
+        ->map(fn (Collection $items) => $items->values());
+
+    $monthGridStart = $calendarStart->copy()->startOfWeek(Carbon::SUNDAY);
+    $monthGridEnd = $calendarEnd->copy()->endOfWeek(Carbon::SATURDAY);
+
+    $calendarDays = collect();
+    $cursor = $monthGridStart->copy();
+
+    while ($cursor <= $monthGridEnd) {
+        $dateKey = $cursor->toDateString();
+        $dayEvents = $eventsByDate->get($dateKey, collect());
+
+        $calendarDays->push([
+            'date' => $dateKey,
+            'day' => $cursor->day,
+            'isCurrentMonth' => $cursor->month === $calendarStart->month,
+            'isToday' => $cursor->isToday(),
+            'isSelected' => $this->selectedDate === $dateKey,
+            'events' => $dayEvents,
+            'count' => $dayEvents->count(),
+        ]);
+
+        $cursor->addDay();
     }
+
+    $selectedDayEvents = $eventsByDate->get(
+        $this->selectedDate ?? now()->toDateString(),
+        collect()
+    );
+
+    $statsQuery = Event::query();
+
+    $stats = [
+        'total' => (clone $statsQuery)->count(),
+        'upcoming' => (clone $statsQuery)->where('event_date', '>=', $now)->count(),
+        'past' => (clone $statsQuery)->where('event_date', '<', $now)->count(),
+        'active' => (clone $statsQuery)->where('is_active', true)->count(),
+    ];
+
+    $pendingPayments = Payment::query()
+        ->with([
+            'registration:id,event_id,alumni_id,status',
+            'registration.event:id,title',
+            'registration.alumni:id,fname,lname',
+            'registrationItem:id,name,event_id,event_schedule_id',
+            'registrationItem.schedule:id,title,schedule_time',
+        ])
+        ->where('status', 'pending')
+        ->when($this->paymentSearch !== '', function (Builder $q) {
+            $term = '%' . $this->paymentSearch . '%';
+
+            $q->where(function (Builder $qq) use ($term) {
+                $qq->where('reference_number', 'like', $term)
+                    ->orWhere('remarks', 'like', $term)
+                    ->orWhereHas('registration.alumni', function (Builder $alumniQ) use ($term) {
+                        $alumniQ->where('fname', 'like', $term)
+                            ->orWhere('lname', 'like', $term);
+                    })
+                    ->orWhereHas('registration.event', function (Builder $eventQ) use ($term) {
+                        $eventQ->where('title', 'like', $term);
+                    })
+                    ->orWhereHas('registrationItem', function (Builder $itemQ) use ($term) {
+                        $itemQ->where('name', 'like', $term);
+                    });
+            });
+        })
+        ->when($this->paymentType !== 'all', function (Builder $q) {
+            if ($this->paymentType === 'registration') {
+                $q->whereNull('event_registration_item_id');
+            }
+
+            if ($this->paymentType === 'item') {
+                $q->whereNotNull('event_registration_item_id');
+            }
+        })
+        ->latest('id')
+        ->paginate($this->paymentPerPage, ['*'], 'paymentsPage');
+
+    return view('livewire.events', [
+        'events' => $events,
+        'pendingPayments' => $pendingPayments,
+        'calendarDays' => $calendarDays,
+        'selectedDayEvents' => $selectedDayEvents,
+        'calendarLabel' => $calendarStart->format('F Y'),
+        'selectedDateLabel' => Carbon::parse($this->selectedDate ?? now())->format('F d, Y'),
+        'stats' => $stats,
+    ]);
+}
 
     public function toggleActive(int $eventId): void
     {

@@ -6,10 +6,16 @@ use App\Models\Event;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Storage;
 
-#[Title('Edit Event')]
+#[Title('Admin | Edit Event')]
 class EditEvent extends Component
 {
+    use WithFileUploads;
+
+public $new_banner_image = null;
+public bool $remove_banner_image = false;
     public array $itemRows = [];
     public Event $event;
 
@@ -99,30 +105,53 @@ class EditEvent extends Component
 
         session()->flash('status', 'Registration items saved.');
     }
-    public function update(): void
-    {
-        $validated = $this->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'dress_code' => ['required', 'string', 'max:150'],
-            'venue' => ['required', 'string', 'max:255'],
-            'event_date' => ['required', 'date'],
-            'registration_fee' => ['required', 'integer', 'min:0'],
-            'description' => ['nullable', 'string', 'max:5000'],
-            'is_active' => ['boolean'],
-        ]);
+public function update(): void
+{
+    $validated = $this->validate([
+        'title' => ['required', 'string', 'max:255'],
+        'dress_code' => ['required', 'string', 'max:150'],
+        'venue' => ['required', 'string', 'max:255'],
+        'event_date' => ['required', 'date'],
+        'registration_fee' => ['required', 'integer', 'min:0'],
+        'description' => ['nullable', 'string', 'max:5000'],
+        'is_active' => ['boolean'],
+        'new_banner_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+    ]);
 
-        $this->event->update([
-            'title' => $validated['title'],
-            'dress_code' => $validated['dress_code'],
-            'venue' => $validated['venue'],
-            'event_date' => Carbon::parse($validated['event_date']),
-            'registration_fee' => ((int) $validated['registration_fee']) * 100,
-            'description' => $validated['description'] ?? null,
-            'is_active' => (bool) $validated['is_active'],
-        ]);
+    $bannerPath = $this->event->banner_image;
 
-        session()->flash('status', 'Event updated.');
+    if ($this->remove_banner_image && !$this->new_banner_image && $this->event->banner_image) {
+        Storage::disk('s3')->delete($this->event->banner_image);
+        $bannerPath = null;
     }
+
+    if ($this->new_banner_image) {
+        if ($this->event->banner_image) {
+            Storage::disk('s3')->delete($this->event->banner_image);
+        }
+
+        // use same method as save()
+        $bannerPath = $this->new_banner_image->storePublicly('event-banners', 's3');
+    }
+
+    $this->event->update([
+        'title' => trim($validated['title']),
+        'dress_code' => trim($validated['dress_code']),
+        'venue' => trim($validated['venue']),
+        'event_date' => Carbon::parse($validated['event_date']),
+        'registration_fee' => ((int) $validated['registration_fee']) * 100,
+        'description' => filled($validated['description'] ?? null)
+            ? trim($validated['description'])
+            : null,
+        'is_active' => (bool) $validated['is_active'],
+        'banner_image' => $bannerPath,
+    ]);
+
+    $this->event->refresh();
+    $this->reset('new_banner_image', 'remove_banner_image');
+
+    session()->flash('status', 'Event updated.');
+}
 
     public function addScheduleRow(): void
     {
