@@ -46,7 +46,7 @@ class DashboardCard extends Component
     }
 
     $donations = Donation::query()
-        ->where('alumni_id', $alumniId) // ✅ always filter
+        ->where('alumni_id', $alumniId) //  always filter
         ->when($this->search !== '', function ($q) {
             $s = '%' . $this->search . '%';
             $q->where(function ($qq) use ($s) {

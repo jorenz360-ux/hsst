@@ -69,6 +69,8 @@ class CreateNewUser implements CreatesNewUsers
             'mname' => ['nullable', 'string', 'max:255'],
             'lname' => ['required', 'string', 'max:255'],
 
+            'occupation' => ['nullable', 'string', 'max:255'],
+
             'yeargrad' => ['required', 'integer', 'min:1900', 'max:' . now()->year],
 
             'address_line_1' => ['required', 'string', 'max:255'],
@@ -104,6 +106,8 @@ class CreateNewUser implements CreatesNewUsers
             'lname' => $validated['lname'],
             'batch_id' => $batch->id,
             'is_batch_rep' => false,
+
+            'occupation' => $validated['occupation'] ?? null,
 
             'address_line_1' => $validated['address_line_1'],
             'address_line_2' => $validated['address_line_2'] ?? null,
@@ -156,6 +160,9 @@ class CreateNewUser implements CreatesNewUsers
             'fname',
             'mname',
             'lname',
+            
+            'occupation',
+
             'address_line_1',
             'address_line_2',
             'city',

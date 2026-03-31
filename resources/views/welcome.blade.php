@@ -453,7 +453,7 @@
     <span class="mx-3 text-spirit">✦</span>
     <span class="mx-8">CRUSADE Campaign - Target: PhP 100,000 per Batch</span>
     <span class="mx-3 text-spirit">✦</span>
-    <span class="mx-8">Crusaders Athletic Fund Now Open</span>
+    <span class="mx-8">Crusaders Scholarship Fund Now Open</span>
     <span class="mx-3 text-spirit">✦</span>
     <span class="mx-8">Every Gift Leaves a Lasting Impact</span>
     <span class="mx-3 text-spirit">✦</span>
@@ -465,7 +465,7 @@
     <span class="mx-3 text-spirit">✦</span>
     <span class="mx-8">CRUSADE Campaign - Target: PhP 100,000 per Batch</span>
     <span class="mx-3 text-spirit">✦</span>
-    <span class="mx-8">Crusaders Athletic Fund Now Open</span>
+    <span class="mx-8">Crusaders Scholarship Fund Now Open</span>
     <span class="mx-3 text-spirit">✦</span>
     <span class="mx-8">Every Gift Leaves a Lasting Impact</span>
     <span class="mx-3 text-spirit">✦</span>
@@ -476,151 +476,152 @@
   </div>
 </div>
 
-<section id="about" class="py-28 bg-white">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="grid lg:grid-cols-2 gap-20 items-center">
+<section id="about" class="bg-white py-20 sm:py-24 lg:py-28">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <div class="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
 
-      <div class="reveal relative">
-        <div
-          x-data="{
-            current: 0,
-            slides: [
-              '{{ asset('images/image1.jpg') }}',
-              '{{ asset('images/image2.jpg') }}',
-              '{{ asset('images/image3.jpg') }}',
-              '{{ asset('images/image4.jpg') }}'
-            ],
-            interval: null,
-            start() {
-              this.stop();
-              this.interval = setInterval(() => {
-                this.current = (this.current + 1) % this.slides.length;
-              }, 4000);
-            },
-            stop() {
-              if (this.interval) clearInterval(this.interval);
-            },
-            next() {
-              this.current = (this.current + 1) % this.slides.length;
-            },
-            prev() {
-              this.current = (this.current - 1 + this.slides.length) % this.slides.length;
-            }
-          }"
-          x-init="start()"
-          @mouseenter="stop()"
-          @mouseleave="start()"
-          class="relative overflow-hidden rounded-[2rem] border border-royal/10 bg-white shadow-[0_24px_60px_rgba(9,24,82,0.10)]"
-        >
-          <div class="relative bg-[#eef4ff]">
-            <div class="relative h-[360px] md:h-[400px] w-full overflow-hidden">
-              <template x-for="(slide, index) in slides" :key="index">
+            <div class="reveal relative">
                 <div
-                  x-show="current === index"
-                  x-transition:enter="transition ease-out duration-500"
-                  x-transition:enter-start="opacity-0"
-                  x-transition:enter-end="opacity-100"
-                  x-transition:leave="transition ease-in duration-400"
-                  x-transition:leave-start="opacity-100"
-                  x-transition:leave-end="opacity-0"
-                  class="absolute inset-0 flex items-center justify-center bg-[#eef4ff]"
+                    x-data="{
+                        current: 0,
+                        slides: [
+                            '{{ asset('images/image1.jpg') }}',
+                            '{{ asset('images/image2.jpg') }}',
+                            '{{ asset('images/image3.jpg') }}',
+                            '{{ asset('images/image4.jpg') }}'
+                        ],
+                        interval: null,
+                        start() {
+                            this.stop();
+                            this.interval = setInterval(() => {
+                                this.current = (this.current + 1) % this.slides.length;
+                            }, 4000);
+                        },
+                        stop() {
+                            if (this.interval) clearInterval(this.interval);
+                        },
+                        next() {
+                            this.current = (this.current + 1) % this.slides.length;
+                        },
+                        prev() {
+                            this.current = (this.current - 1 + this.slides.length) % this.slides.length;
+                        }
+                    }"
+                    x-init="start()"
+                    @mouseenter="stop()"
+                    @mouseleave="start()"
+                    class="relative overflow-hidden rounded-none border-0 bg-transparent shadow-none sm:rounded-[2rem] sm:border sm:border-royal/10 sm:bg-white sm:shadow-[0_24px_60px_rgba(9,24,82,0.10)]"
                 >
-                  <img
-                    :src="slide"
-                    alt="HSST 100 Years Anniversary"
-                    class="max-h-full max-w-full object-contain"
-                  >
+                    <div class="relative bg-[#eef4ff] sm:bg-[#eef4ff]">
+                        <div class="relative h-[280px] w-full overflow-hidden sm:h-[340px] md:h-[400px]">
+                            <template x-for="(slide, index) in slides" :key="index">
+                                <div
+                                    x-show="current === index"
+                                    x-transition:enter="transition ease-out duration-500"
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100"
+                                    x-transition:leave="transition ease-in duration-400"
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                    class="absolute inset-0 flex items-center justify-center bg-[#eef4ff]"
+                                >
+                                    <img
+                                        :src="slide"
+                                        alt="HSST 100 Years Anniversary"
+                                        class="h-full w-full object-contain"
+                                    >
+                                </div>
+                            </template>
+
+                            <div class="pointer-events-none absolute inset-0 hidden ring-1 ring-inset ring-royal/10 sm:block"></div>
+
+                            <div class="absolute left-3 top-3 rounded-full bg-[#0b1d57] px-3 py-1.5 shadow-lg sm:left-4 sm:top-4 sm:px-4 sm:py-2">
+                                <span class="text-[10px] font-semibold uppercase tracking-[0.22em] text-white sm:text-[11px]">
+                                    HSST Centennial
+                                </span>
+                            </div>
+
+                            <button
+                                type="button"
+                                @click="prev()"
+                                class="absolute left-4 top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/85 text-[#091852] shadow-md transition hover:bg-white sm:flex"
+                            >
+                                &#10094;
+                            </button>
+
+                            <button
+                                type="button"
+                                @click="next()"
+                                class="absolute right-4 top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/85 text-[#091852] shadow-md transition hover:bg-white sm:flex"
+                            >
+                                &#10095;
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="border-t-0 bg-white px-4 py-4 sm:border-t sm:border-royal/10 sm:px-6 sm:py-5">
+                        <div class="grid grid-cols-3 text-center">
+                            <div>
+                                <p class="font-serif text-xl font-bold text-[#091852] sm:text-2xl">1926</p>
+                                <p class="mt-1 text-[10px] uppercase tracking-[0.18em] text-slate-500 sm:text-[11px]">Founded</p>
+                            </div>
+
+                            <div class="border-x border-royal/10 px-2">
+                                <p class="font-serif text-xl font-bold text-[#091852] sm:text-2xl">Tagbilaran</p>
+                                <p class="mt-1 text-[10px] uppercase tracking-[0.18em] text-slate-500 sm:text-[11px]">Bohol, Philippines</p>
+                            </div>
+
+                            <div>
+                                <p class="font-serif text-xl font-bold text-[#091852] sm:text-2xl">
+                                    100<span class="text-[#d4af37]">yrs</span>
+                                </p>
+                                <p class="mt-1 text-[10px] uppercase tracking-[0.18em] text-slate-500 sm:text-[11px]">Centennial</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 flex justify-center gap-2 sm:mt-5">
+                            <template x-for="(slide, index) in slides" :key="'dot-' + index">
+                                <button
+                                    type="button"
+                                    @click="current = index"
+                                    class="h-2.5 rounded-full transition-all duration-300"
+                                    :class="current === index ? 'w-7 bg-[#1a3fc4]' : 'w-2.5 bg-slate-300 hover:bg-slate-400'"
+                                ></button>
+                            </template>
+                        </div>
+                    </div>
                 </div>
-              </template>
 
-              <div class="pointer-events-none absolute inset-0 ring-1 ring-inset ring-royal/10"></div>
-
-              <div class="absolute left-4 top-4 rounded-full bg-[#0b1d57] px-4 py-2 shadow-lg">
-                <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-white">
-                  HSST Centennial
-                </span>
-              </div>
-
-              <button
-                type="button"
-                @click="prev()"
-                class="absolute left-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/85 text-[#091852] shadow-md transition hover:bg-white"
-              >
-                &#10094;
-              </button>
-
-              <button
-                type="button"
-                @click="next()"
-                class="absolute right-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/85 text-[#091852] shadow-md transition hover:bg-white"
-              >
-                &#10095;
-              </button>
+                <div class="absolute -bottom-4 -right-1 hidden rounded-2xl bg-spirit p-4 shadow-xl animate-float sm:block sm:-bottom-6 sm:-right-6 sm:p-5">
+                    <p class="font-serif text-2xl font-bold text-white">100K+</p>
+                    <p class="mt-0.5 text-xs text-white/80">Living Alumni</p>
+                </div>
             </div>
-          </div>
 
-          <div class="border-t border-royal/10 bg-white px-6 py-5">
-            <div class="grid grid-cols-3 text-center">
-              <div>
-                <p class="font-serif text-2xl font-bold text-[#091852]">1926</p>
-                <p class="mt-1 text-[11px] uppercase tracking-[0.2em] text-slate-500">Founded</p>
-              </div>
-
-              <div class="border-x border-royal/10 px-2">
-                <p class="font-serif text-2xl font-bold text-[#091852]">Tagbilaran</p>
-                <p class="mt-1 text-[11px] uppercase tracking-[0.2em] text-slate-500">Bohol, Philippines</p>
-              </div>
-
-              <div>
-                <p class="font-serif text-2xl font-bold text-[#091852]">
-                  100<span class="text-[#d4af37]">yrs</span>
+            <div>
+                <span class="eyebrow text-royal reveal">About the Association</span>
+                <div class="gold-line my-4 reveal d1"></div>
+                <h2 class="font-serif text-royal-deeper reveal d1" style="font-size:clamp(2rem,3.5vw,2.8rem);line-height:1.15;">
+                    Rooted in Faith.<br/>
+                    Driven by Service.<br/>
+                    <em class="text-royal">United as One.</em>
+                </h2>
+                <p class="mt-5 mb-4 font-sans text-sm leading-relaxed text-royal-deeper/60 reveal d2">
+                    The HSSTian Alumni Association is the official organization of graduates of Holy Spirit School of Tagbilaran - the Crusaders. For generations, we have carried the school's mission of truth, love, and excellence far beyond the campus gates.
                 </p>
-                <p class="mt-1 text-[11px] uppercase tracking-[0.2em] text-slate-500">Centennial</p>
-              </div>
+                <p class="mb-8 font-sans text-sm leading-relaxed text-royal-deeper/60 reveal d2">
+                    As we approach our Centennial, we are called once again to give back - to the school that shaped our character, deepened our faith, and ignited our purpose. The HSSTian Alumni Association is the bridge between the legacy of the past and the promise of the future.
+                </p>
+                <div class="flex flex-wrap gap-3 reveal d3">
+                    <span class="rounded-full border border-royal/10 bg-royal-frost px-4 py-2 text-xs font-bold text-royal">Faith-Based Community</span>
+                    <span class="rounded-full border border-royal/10 bg-royal-frost px-4 py-2 text-xs font-bold text-royal">Scholarship Programs</span>
+                    <span class="rounded-full border border-royal/10 bg-royal-frost px-4 py-2 text-xs font-bold text-royal">Scholarship Excellence</span>
+                    <span class="rounded-full border border-royal/10 bg-royal-frost px-4 py-2 text-xs font-bold text-royal">Campus Development</span>
+                </div>
             </div>
 
-            <div class="mt-5 flex justify-center gap-2">
-              <template x-for="(slide, index) in slides" :key="'dot-' + index">
-                <button
-                  type="button"
-                  @click="current = index"
-                  class="h-2.5 rounded-full transition-all duration-300"
-                  :class="current === index ? 'w-8 bg-[#1a3fc4]' : 'w-2.5 bg-slate-300 hover:bg-slate-400'"
-                ></button>
-              </template>
-            </div>
-          </div>
         </div>
-
-        <div class="absolute -bottom-6 -right-6 bg-spirit rounded-2xl p-5 shadow-xl animate-float">
-          <p class="text-white font-serif font-bold text-2xl">100K+</p>
-          <p class="text-white/80 text-xs font-sans mt-0.5">Living Alumni</p>
-        </div>
-      </div>
-
-      <div>
-        <span class="eyebrow text-royal reveal">About the Association</span>
-        <div class="gold-line my-4 reveal d1"></div>
-        <h2 class="font-serif text-royal-deeper reveal d1" style="font-size:clamp(2rem,3.5vw,2.8rem);line-height:1.15;">
-          Rooted in Faith.<br/>
-          Driven by Service.<br/>
-          <em class="text-royal">United as One.</em>
-        </h2>
-        <p class="text-royal-deeper/60 font-sans text-sm leading-relaxed mt-5 mb-4 reveal d2">
-          The HSSTian Alumni Association is the official organization of graduates of Holy Spirit School of Tagbilaran - the Crusaders. For generations, we have carried the school's mission of truth, love, and excellence far beyond the campus gates.
-        </p>
-        <p class="text-royal-deeper/60 font-sans text-sm leading-relaxed mb-8 reveal d2">
-          As we approach our Centennial, we are called once again to give back - to the school that shaped our character, deepened our faith, and ignited our purpose. The HSSTian Alumni Association is the bridge between the legacy of the past and the promise of the future.
-        </p>
-        <div class="flex flex-wrap gap-3 reveal d3">
-          <span class="bg-royal-frost text-royal text-xs font-bold px-4 py-2 rounded-full border border-royal/10">Faith-Based Community</span>
-          <span class="bg-royal-frost text-royal text-xs font-bold px-4 py-2 rounded-full border border-royal/10">Scholarship Programs</span>
-          <span class="bg-royal-frost text-royal text-xs font-bold px-4 py-2 rounded-full border border-royal/10">Athletic Excellence</span>
-          <span class="bg-royal-frost text-royal text-xs font-bold px-4 py-2 rounded-full border border-royal/10">Campus Development</span>
-        </div>
-      </div>
     </div>
-  </div>
 </section>
 
 <section id="crusade" class="py-32 relative overflow-hidden">
@@ -651,7 +652,7 @@
             Although <strong class="text-spirit font-bold">PhP 100,000 per batch</strong> is recommended, every gift - no matter the amount - is invaluable and will be cherished deeply.
           </p>
           <p class="text-white/55 font-sans text-sm leading-relaxed mb-8">
-            Your support will fuel our Centennial Celebrations, enhancing campus life, expanding financial aid, and driving academic and athletic excellence.
+            Your support will fuel our Centennial Celebrations, enhancing campus life, expanding financial aid, and driving academic and Scholarship excellence.
           </p>
 
           {{-- <div class="mb-2 flex justify-between items-center">
@@ -700,11 +701,11 @@
 
           <button class="donate-btn w-full bg-royal hover:bg-royal-dark text-white font-bold text-sm py-3.5 rounded-xl transition-all duration-300 hover:shadow-xl hover:shadow-royal/30 flex items-center justify-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
             </svg>
             Give Now - Fueled by Compassion
           </button>
-          <p class="text-center text-royal/30 text-xs font-sans mt-3">All donations are acknowledged & deeply cherished 🙏</p>
+          <p class="text-center text-royal/30 text-xs font-sans mt-3">All donations are acknowledged & deeply cherished</p>
         </div>
       </div>
     </div>
@@ -747,7 +748,7 @@
           </svg>
         </div>
         <p class="eyebrow text-spirit mb-2">Pillar Three</p>
-        <h4 class="font-serif text-white text-xl font-bold mb-3">Crusaders Athletic Fund</h4>
+        <h4 class="font-serif text-white text-xl font-bold mb-3">Crusaders Scholarship Fund</h4>
         <p class="text-white/45 font-sans text-xs leading-relaxed">
           Empowering student-athletes to reach new heights - funding equipment, training, and competitions that build character through sportsmanship.
         </p>
@@ -878,13 +879,13 @@
       <div class="card reveal d1 bg-royal-frost border border-royal/10 p-8">
         <span class="open-quote">"</span>
         <blockquote class="font-serif italic text-royal-deeper text-base leading-relaxed mb-6 -mt-4">
-          Holy Spirit didn't just teach me lessons. It taught me values. The CRUSADE is our chance to give that same gift to the next generation of Crusaders.
+         As Holy Spirit School Tagbilaran celebrates 100 years of inspiring young minds and souls, I'm filled with pride and purpose, eager to join its historic celebration. My own journey was shaped by HSST's values and teachings, and now it's our chance to pay it forward. Together, with just PhP1,000 from 100 of us, we can empower the next generation and create lasting change. Let's come together to invest in the future through our beloved Alma Mater.
         </blockquote>
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full flex items-center justify-center font-sans font-bold text-white text-xs" style="background:linear-gradient(135deg,#0f2580,#1a3fc4);">MC</div>
+          <div class="w-10 h-10 rounded-full flex items-center justify-center font-sans font-bold text-white text-xs" style="background:linear-gradient(135deg,#0f2580,#1a3fc4);">SS</div>
           <div>
-            <p class="font-sans font-bold text-royal-deeper text-sm">Maria Corazon Reyes</p>
-            <p class="text-royal/40 text-xs font-sans">Batch 1998 · Educator</p>
+            <p class="font-sans font-bold text-royal-deeper text-sm">Steven Sarigumba Suganob</p>
+            <p class="text-royal/40 text-xs font-sans">Elementary Batch 1987</p>
           </div>
         </div>
       </div>

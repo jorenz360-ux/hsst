@@ -16,7 +16,8 @@ protected $table = 'alumni';
         'batch_id',
         'is_batch_rep',
 
-       
+        'occupation',
+
         'address_line_1',
         'address_line_2',
         'city',

@@ -278,7 +278,7 @@
                                                     value="{{ old('yeargrad') }}"
                                                     placeholder="e.g. 2015"
                                                     min="1950"
-                                                    max="2026"
+                                                    max="{{ now()->year }}"
                                                     class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
                                                 >
                                                 <p class="mt-2 text-xs leading-5 text-slate-400">
@@ -286,6 +286,27 @@
                                                 </p>
                                                 <p id="err-yeargrad" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
                                                     @error('yeargrad'){{ $message }}@enderror
+                                                </p>
+                                            </div>
+
+                                            <div class="md:col-span-2">
+                                                <label for="occupation" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Occupation <span class="font-normal text-slate-400">(optional)</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="occupation"
+                                                    name="occupation"
+                                                    value="{{ old('occupation') }}"
+                                                    placeholder="e.g. Teacher, Engineer, Nurse, Business Owner"
+                                                    autocomplete="organization-title"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                                <p class="mt-2 text-xs leading-5 text-slate-400">
+                                                    Enter your current occupation or profession.
+                                                </p>
+                                                <p id="err-occupation" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                    @error('occupation'){{ $message }}@enderror
                                                 </p>
                                             </div>
                                         </div>

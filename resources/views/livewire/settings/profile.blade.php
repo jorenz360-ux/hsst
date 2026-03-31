@@ -21,6 +21,8 @@ new class extends Component {
     public string $middle_name = '';
     public string $last_name = '';
 
+    public string $occupation = '';
+
     public string $schoolyear = '';
     public string $yeargrad = '';
     public array $yeargradOptions = [];
@@ -63,6 +65,8 @@ new class extends Component {
         $this->first_name  = (string) ($alumni->fname ?? '');
         $this->middle_name = (string) ($alumni->mname ?? '');
         $this->last_name   = (string) ($alumni->lname ?? '');
+
+        $this->occupation = (string) ($alumni->occupation ?? '');
 
         $this->yeargrad   = (string) ($alumni->batch?->yeargrad ?? '');
         $this->schoolyear = $this->yeargrad !== ''
@@ -115,6 +119,7 @@ new class extends Component {
             'first_name'  => ['required', 'string', 'max:255'],
             'middle_name' => ['nullable', 'string', 'max:255'],
             'last_name'   => ['required', 'string', 'max:255'],
+            'occupation' => ['nullable' , 'string', 'max:255'],
 
             'email' => [
                 'required',
@@ -133,7 +138,7 @@ new class extends Component {
             'postal_code'    => ['nullable', 'string', 'max:30'],
             'country'        => ['required', 'string', 'max:100'],
 
-            // ✅ nullable so unchecked (false) values are not stripped
+            //  nullable so unchecked (false) values are not stripped
             'wants_committee_member'  => ['nullable', 'boolean'],
             'is_priest_concelebrate'  => ['nullable', 'boolean'],
             'is_medical_practitioner' => ['nullable', 'boolean'],
@@ -173,6 +178,7 @@ new class extends Component {
                 'fname'    => trim($validated['first_name']),
                 'mname'    => filled($validated['middle_name'] ?? null) ? trim($validated['middle_name']) : null,
                 'lname'    => trim($validated['last_name']),
+                'occupation' => trim($validated['occupation'] ?? null) ? trim($validated['occupation']) : null,
                 'batch_id' => $batch->id,
                 'is_batch_rep' => $user->alumni?->is_batch_rep ?? false,
 
@@ -192,7 +198,7 @@ new class extends Component {
                 $user->forceFill(['alumni_id' => $alumni->id])->save();
             }
 
-            // ✅ Read directly from $this properties — $validated can drop
+            // Read directly from $this properties — $validated can drop
             //    unchecked boolean values, causing them to always save as false.
             $alumni->involvement()->updateOrCreate(
                 ['alumni_id' => $alumni->id],
@@ -335,244 +341,256 @@ new class extends Component {
 
                 <div class="px-5 py-5 sm:px-6 sm:py-6">
 
-                    {{-- ════════════ PROFILE TAB ════════════ --}}
-                    @if ($activeTab === 'profile')
-                        <div class="space-y-6">
-                            <div class="grid gap-4 md:grid-cols-2">
-                                <flux:input wire:model="first_name" :label="__('First Name')" type="text" required autocomplete="given-name" />
-                                <flux:input wire:model="last_name" :label="__('Last Name')" type="text" required autocomplete="family-name" />
-                            </div>
+    {{-- ════════════ PROFILE TAB ════════════ --}}
+    @if ($activeTab === 'profile')
+        <div class="space-y-6">
+            <div class="grid gap-4 md:grid-cols-2">
+                <flux:input wire:model="first_name" :label="__('First Name')" type="text" required autocomplete="given-name" />
+                <flux:input wire:model="last_name" :label="__('Last Name')" type="text" required autocomplete="family-name" />
+            </div>
 
-                            <div class="grid gap-4 md:grid-cols-2">
-                                <flux:input wire:model="middle_name" :label="__('Middle Name')" type="text" autocomplete="additional-name" />
-                                <flux:input wire:model="email" :label="__('Email Address')" type="email" required autocomplete="email" />
-                            </div>
+            <div class="grid gap-4 md:grid-cols-2">
+                <flux:input wire:model="middle_name" :label="__('Middle Name')" type="text" autocomplete="additional-name" />
+                <flux:input wire:model="email" :label="__('Email Address')" type="email" required autocomplete="email" />
+            </div>
 
-                            <div class="grid gap-4 md:grid-cols-2">
-                                <flux:select wire:model.live="yeargrad" :label="__('Year Graduated')" required>
-                                    <option value="">-- Select year --</option>
-                                    @foreach ($yeargradOptions as $year)
-                                        <option value="{{ $year }}">{{ $year }}</option>
-                                    @endforeach
-                                </flux:select>
+            <div class="grid gap-4 md:grid-cols-2">
+                <flux:select wire:model.live="yeargrad" :label="__('Year Graduated')" required>
+                    <option value="">-- Select year --</option>
+                    @foreach ($yeargradOptions as $year)
+                        <option value="{{ $year }}">{{ $year }}</option>
+                    @endforeach
+                </flux:select>
 
-                                <flux:input wire:model="schoolyear" :label="__('School Year')" type="text" readonly />
-                            </div>
+                <flux:input wire:model="schoolyear" :label="__('School Year')" type="text" readonly />
+            </div>
 
-                            @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! auth()->user()->hasVerifiedEmail())
-                                <div class="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-sm">
-                                    <flux:text class="text-zinc-200">
-                                        {{ __('Your email address is unverified.') }}
-                                        <flux:link class="cursor-pointer text-sm text-amber-300" wire:click.prevent="resendVerificationNotification">
-                                            {{ __('Click here to re-send the verification email.') }}
-                                        </flux:link>
-                                    </flux:text>
+            <div class="grid gap-4 md:grid-cols-2">
+                <flux:input
+                    wire:model="occupation"
+                    :label="__('Occupation')"
+                    type="text"
+                    placeholder="e.g. Teacher, Engineer, Nurse, Business Owner"
+                    autocomplete="organization-title"
+                />
 
-                                    @if (session('status') === 'verification-link-sent')
-                                        <flux:text class="mt-2 font-medium !text-green-600 dark:!text-green-400">
-                                            {{ __('A new verification link has been sent to your email address.') }}
-                                        </flux:text>
-                                    @endif
-                                </div>
-                            @endif
-                        </div>
+                <div></div>
+            </div>
+
+            @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! auth()->user()->hasVerifiedEmail())
+                <div class="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-sm">
+                    <flux:text class="text-zinc-200">
+                        {{ __('Your email address is unverified.') }}
+                        <flux:link class="cursor-pointer text-sm text-amber-300" wire:click.prevent="resendVerificationNotification">
+                            {{ __('Click here to re-send the verification email.') }}
+                        </flux:link>
+                    </flux:text>
+
+                    @if (session('status') === 'verification-link-sent')
+                        <flux:text class="mt-2 font-medium !text-green-600 dark:!text-green-400">
+                            {{ __('A new verification link has been sent to your email address.') }}
+                        </flux:text>
                     @endif
-
-                    {{-- ════════════ ADDRESS TAB ════════════ --}}
-                    @if ($activeTab === 'address')
-                        <div class="space-y-6">
-                            <div class="grid gap-4">
-                                <flux:textarea wire:model="address_line_1" :label="__('Address Line 1')" rows="3" required />
-                                <flux:input wire:model="address_line_2" :label="__('Address Line 2')" type="text" />
-                            </div>
-
-                            <div class="grid gap-4 md:grid-cols-2">
-                                <flux:input wire:model="city" :label="__('City / Municipality')" type="text" required />
-                                <flux:input wire:model="state_province" :label="__('Province / State / Region')" type="text" required />
-                            </div>
-
-                            <div class="grid gap-4 md:grid-cols-2">
-                                <flux:input wire:model="postal_code" :label="__('Postal / ZIP Code')" type="text" />
-                                <flux:input wire:model="country" :label="__('Country')" type="text" required />
-                            </div>
-                        </div>
-                    @endif
-
-                    {{-- ════════════ INVOLVEMENT TAB ════════════ --}}
-                    @if ($activeTab === 'involvement')
-                        <div id="volunteer-section" class="space-y-6">
-
-                            {{-- Intro banner --}}
-                            <div class="overflow-hidden rounded-2xl border border-indigo-400/15 bg-gradient-to-br from-slate-950 via-zinc-900 to-indigo-950/40">
-                                <div class="px-5 py-5 sm:px-6 sm:py-6">
-                                    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                                        <div>
-                                            <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-indigo-300">
-                                                Reunion Participation
-                                            </p>
-
-                                            <h3 class="mt-2 text-lg font-semibold text-white sm:text-xl">
-                                                Be Involved in the Celebration
-                                            </h3>
-
-                                            <p class="mt-3 max-w-2xl text-sm leading-6 text-zinc-400">
-                                                Let the organizing team know how you would like to participate in the reunion.
-                                                You may serve as a committee member, concelebrate in the Thanksgiving Mass,
-                                                or help in the Medical Mission.
-                                            </p>
-                                        </div>
-
-                                        <div class="shrink-0">
-                                            @if ($hasSavedInvolvement)
-                                                <span class="inline-flex items-center rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
-                                                    Preferences Saved
-                                                </span>
-                                            @else
-                                                <span class="inline-flex items-center rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-amber-300">
-                                                    No Selection Yet
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- Current involvement summary --}}
-                            @if ($hasSavedInvolvement)
-                                <div class="rounded-2xl border border-emerald-400/15 bg-emerald-500/[0.08] p-4 sm:p-5">
-                                    <p class="text-sm font-semibold text-emerald-300">Current Involvement</p>
-
-                                    <div class="mt-3 flex flex-wrap gap-2">
-                                        @if ($wants_committee_member)
-                                            <span class="inline-flex items-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-medium text-white">
-                                                Committee Member
-                                            </span>
-                                        @endif
-
-                                        @if ($is_priest_concelebrate)
-                                            <span class="inline-flex items-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-medium text-white">
-                                                Priest for Thanksgiving Mass
-                                            </span>
-                                        @endif
-
-                                        @if ($is_medical_practitioner)
-                                            <span class="inline-flex items-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-medium text-white">
-                                                Medical Mission Volunteer
-                                            </span>
-                                        @endif
-                                    </div>
-
-                                    @if ($is_medical_practitioner && filled($medical_specialty))
-                                        <p class="mt-3 text-sm text-zinc-300">
-                                            <span class="font-medium text-white">Specialty:</span>
-                                            {{ $medical_specialty }}
-                                        </p>
-                                    @endif
-                                </div>
-                            @endif
-
-                            {{-- Checkboxes --}}
-                            <div class="grid gap-4">
-
-                                {{-- Committee Member --}}
-                                <label class="group block cursor-pointer rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-indigo-400/20 hover:bg-indigo-400/10 has-[:checked]:border-indigo-400/30 has-[:checked]:bg-indigo-500/10">
-                                    <div class="flex items-start gap-3">
-                                        <input
-                                            type="checkbox"
-                                            wire:model.live="wants_committee_member"
-                                            class="mt-1 h-4 w-4 rounded border-white/20 bg-transparent text-indigo-500 focus:ring-indigo-400"
-                                        >
-                                        <div>
-                                            <p class="text-sm font-semibold text-white">
-                                                I want to volunteer as a Committee Member
-                                            </p>
-                                            <p class="mt-1 text-sm leading-6 text-zinc-400">
-                                                Help in planning, coordination, preparation, and reunion support activities.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </label>
-
-                                {{-- Priest --}}
-                                <label class="group block cursor-pointer rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-indigo-400/20 hover:bg-indigo-400/10 has-[:checked]:border-indigo-400/30 has-[:checked]:bg-indigo-500/10">
-                                    <div class="flex items-start gap-3">
-                                        <input
-                                            type="checkbox"
-                                            wire:model.live="is_priest_concelebrate"
-                                            class="mt-1 h-4 w-4 rounded border-white/20 bg-transparent text-indigo-500 focus:ring-indigo-400"
-                                        >
-                                        <div>
-                                            <p class="text-sm font-semibold text-white">
-                                                I am a Priest and I want to concelebrate in the Thanksgiving Mass
-                                            </p>
-                                            <p class="mt-1 text-sm leading-6 text-zinc-400">
-                                                Indicate your participation in the liturgical celebration during the reunion.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </label>
-
-                                {{-- Medical Practitioner --}}
-                                <label class="group block cursor-pointer rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-indigo-400/20 hover:bg-indigo-400/10 has-[:checked]:border-indigo-400/30 has-[:checked]:bg-indigo-500/10">
-                                    <div class="flex items-start gap-3">
-                                        <input
-                                            type="checkbox"
-                                            wire:model.live="is_medical_practitioner"
-                                            class="mt-1 h-4 w-4 rounded border-white/20 bg-transparent text-indigo-500 focus:ring-indigo-400"
-                                        >
-                                        <div class="w-full">
-                                            <p class="text-sm font-semibold text-white">
-                                                I am a Medical Practitioner and I want to help in the Medical Mission
-                                            </p>
-                                            <p class="mt-1 text-sm leading-6 text-zinc-400">
-                                                Offer your medical expertise and support during the medical mission activity.
-                                            </p>
-
-                                            @if ($is_medical_practitioner)
-                                                <div class="mt-4">
-                                                    <flux:input
-                                                        wire:model="medical_specialty"
-                                                        :label="__('Field of Specialty')"
-                                                        type="text"
-                                                        placeholder="e.g. Internal Medicine, Pediatrics, Dentistry"
-                                                    />
-                                                    @error('medical_specialty')
-                                                        <p class="mt-1 text-xs text-rose-400">{{ $message }}</p>
-                                                    @enderror
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </label>
-                            </div>
-
-                            {{-- None selected notice --}}
-                            @if (! $wants_committee_member && ! $is_priest_concelebrate && ! $is_medical_practitioner)
-                                <div class="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] p-4 text-sm text-zinc-400">
-                                    You have not selected any reunion involvement yet.
-                                </div>
-                            @endif
-
-                            {{-- Footer note --}}
-                            <div class="rounded-2xl border border-indigo-400/15 bg-indigo-500/10 p-4 sm:p-5">
-                                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                    <div>
-                                        <p class="text-sm font-semibold text-white">Your participation matters</p>
-                                        <p class="mt-1 text-sm text-zinc-300">
-                                            These details help the reunion organizers identify volunteers and plan activities more efficiently.
-                                        </p>
-                                    </div>
-
-                                    <div class="inline-flex shrink-0 items-center rounded-full border border-indigo-400/20 bg-indigo-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-indigo-200">
-                                        Holy Spirit School Alumni
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    @endif
-
                 </div>
+            @endif
+        </div>
+    @endif
+
+    {{-- ════════════ ADDRESS TAB ════════════ --}}
+    @if ($activeTab === 'address')
+        <div class="space-y-6">
+            <div class="grid gap-4">
+                <flux:textarea wire:model="address_line_1" :label="__('Address Line 1')" rows="3" required />
+                <flux:input wire:model="address_line_2" :label="__('Address Line 2')" type="text" />
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-2">
+                <flux:input wire:model="city" :label="__('City / Municipality')" type="text" required />
+                <flux:input wire:model="state_province" :label="__('Province / State / Region')" type="text" required />
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-2">
+                <flux:input wire:model="postal_code" :label="__('Postal / ZIP Code')" type="text" />
+                <flux:input wire:model="country" :label="__('Country')" type="text" required />
+            </div>
+        </div>
+    @endif
+
+    {{-- ════════════ INVOLVEMENT TAB ════════════ --}}
+    @if ($activeTab === 'involvement')
+        <div id="volunteer-section" class="space-y-6">
+
+            {{-- Intro banner --}}
+            <div class="overflow-hidden rounded-2xl border border-indigo-400/15 bg-gradient-to-br from-slate-950 via-zinc-900 to-indigo-950/40">
+                <div class="px-5 py-5 sm:px-6 sm:py-6">
+                    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                            <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-indigo-300">
+                                Reunion Participation
+                            </p>
+
+                            <h3 class="mt-2 text-lg font-semibold text-white sm:text-xl">
+                                Be Involved in the Celebration
+                            </h3>
+
+                            <p class="mt-3 max-w-2xl text-sm leading-6 text-zinc-400">
+                                Let the organizing team know how you would like to participate in the reunion.
+                                You may serve as a committee member, concelebrate in the Thanksgiving Mass,
+                                or help in the Medical Mission.
+                            </p>
+                        </div>
+
+                        <div class="shrink-0">
+                            @if ($hasSavedInvolvement)
+                                <span class="inline-flex items-center rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
+                                    Preferences Saved
+                                </span>
+                            @else
+                                <span class="inline-flex items-center rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-amber-300">
+                                    No Selection Yet
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Current involvement summary --}}
+            @if ($hasSavedInvolvement)
+                <div class="rounded-2xl border border-emerald-400/15 bg-emerald-500/[0.08] p-4 sm:p-5">
+                    <p class="text-sm font-semibold text-emerald-300">Current Involvement</p>
+
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        @if ($wants_committee_member)
+                            <span class="inline-flex items-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-medium text-white">
+                                Committee Member
+                            </span>
+                        @endif
+
+                        @if ($is_priest_concelebrate)
+                            <span class="inline-flex items-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-medium text-white">
+                                Priest for Thanksgiving Mass
+                            </span>
+                        @endif
+
+                        @if ($is_medical_practitioner)
+                            <span class="inline-flex items-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-medium text-white">
+                                Medical Mission Volunteer
+                            </span>
+                        @endif
+                    </div>
+
+                    @if ($is_medical_practitioner && filled($medical_specialty))
+                        <p class="mt-3 text-sm text-zinc-300">
+                            <span class="font-medium text-white">Specialty:</span>
+                            {{ $medical_specialty }}
+                        </p>
+                    @endif
+                </div>
+            @endif
+
+            {{-- Checkboxes --}}
+            <div class="grid gap-4">
+
+                {{-- Committee Member --}}
+                <label class="group block cursor-pointer rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-indigo-400/20 hover:bg-indigo-400/10 has-[:checked]:border-indigo-400/30 has-[:checked]:bg-indigo-500/10">
+                    <div class="flex items-start gap-3">
+                        <input
+                            type="checkbox"
+                            wire:model.live="wants_committee_member"
+                            class="mt-1 h-4 w-4 rounded border-white/20 bg-transparent text-indigo-500 focus:ring-indigo-400"
+                        >
+                        <div>
+                            <p class="text-sm font-semibold text-white">
+                                I want to volunteer as a Committee Member
+                            </p>
+                            <p class="mt-1 text-sm leading-6 text-zinc-400">
+                                Help in planning, coordination, preparation, and reunion support activities.
+                            </p>
+                        </div>
+                    </div>
+                </label>
+
+                {{-- Priest --}}
+                <label class="group block cursor-pointer rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-indigo-400/20 hover:bg-indigo-400/10 has-[:checked]:border-indigo-400/30 has-[:checked]:bg-indigo-500/10">
+                    <div class="flex items-start gap-3">
+                        <input
+                            type="checkbox"
+                            wire:model.live="is_priest_concelebrate"
+                            class="mt-1 h-4 w-4 rounded border-white/20 bg-transparent text-indigo-500 focus:ring-indigo-400"
+                        >
+                        <div>
+                            <p class="text-sm font-semibold text-white">
+                                I am a Priest and I want to concelebrate in the Thanksgiving Mass
+                            </p>
+                            <p class="mt-1 text-sm leading-6 text-zinc-400">
+                                Indicate your participation in the liturgical celebration during the reunion.
+                            </p>
+                        </div>
+                    </div>
+                </label>
+
+                {{-- Medical Practitioner --}}
+                <label class="group block cursor-pointer rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-indigo-400/20 hover:bg-indigo-400/10 has-[:checked]:border-indigo-400/30 has-[:checked]:bg-indigo-500/10">
+                    <div class="flex items-start gap-3">
+                        <input
+                            type="checkbox"
+                            wire:model.live="is_medical_practitioner"
+                            class="mt-1 h-4 w-4 rounded border-white/20 bg-transparent text-indigo-500 focus:ring-indigo-400"
+                        >
+                        <div class="w-full">
+                            <p class="text-sm font-semibold text-white">
+                                I am a Medical Practitioner and I want to help in the Medical Mission
+                            </p>
+                            <p class="mt-1 text-sm leading-6 text-zinc-400">
+                                Offer your medical expertise and support during the medical mission activity.
+                            </p>
+
+                            @if ($is_medical_practitioner)
+                                <div class="mt-4">
+                                    <flux:input
+                                        wire:model="medical_specialty"
+                                        :label="__('Field of Specialty')"
+                                        type="text"
+                                        placeholder="e.g. Internal Medicine, Pediatrics, Dentistry"
+                                    />
+                                    @error('medical_specialty')
+                                        <p class="mt-1 text-xs text-rose-400">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </label>
+            </div>
+
+            {{-- None selected notice --}}
+            @if (! $wants_committee_member && ! $is_priest_concelebrate && ! $is_medical_practitioner)
+                <div class="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] p-4 text-sm text-zinc-400">
+                    You have not selected any reunion involvement yet.
+                </div>
+            @endif
+
+            {{-- Footer note --}}
+            <div class="rounded-2xl border border-indigo-400/15 bg-indigo-500/10 p-4 sm:p-5">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm font-semibold text-white">Your participation matters</p>
+                        <p class="mt-1 text-sm text-zinc-300">
+                            These details help the reunion organizers identify volunteers and plan activities more efficiently.
+                        </p>
+                    </div>
+
+                    <div class="inline-flex shrink-0 items-center rounded-full border border-indigo-400/20 bg-indigo-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-indigo-200">
+                        Holy Spirit School Alumni
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    @endif
+
+</div>
             </div>
 
             {{-- ── Save Bar ── --}}
