@@ -237,43 +237,89 @@
 
     <!-- Mobile menu -->
     <div
-      id="mobile-menu"
-      class="md:hidden hidden mt-4 overflow-hidden rounded-[1.5rem] border border-black/10 bg-[rgba(10,10,10,0.96)] shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
-    >
-      <div class="px-5 py-5 space-y-1">
-        <a href="#about"   class="mobile-nav-link flex items-center rounded-xl px-4 py-3 text-sm font-semibold text-white/85 hover:bg-white/10 hover:text-white transition">About</a>
-        <a href="#events"  class="mobile-nav-link flex items-center rounded-xl px-4 py-3 text-sm font-semibold text-white/85 hover:bg-white/10 hover:text-white transition">Events</a>
-        <a href="#crusade" class="mobile-nav-link flex items-center rounded-xl px-4 py-3 text-sm font-semibold text-white/85 hover:bg-white/10 hover:text-white transition">CRUSADE</a>
-        <a href="#stories" class="mobile-nav-link flex items-center rounded-xl px-4 py-3 text-sm font-semibold text-white/85 hover:bg-white/10 hover:text-white transition">Stories</a>
-        <a href="#news"    class="mobile-nav-link flex items-center rounded-xl px-4 py-3 text-sm font-semibold text-white/85 hover:bg-white/10 hover:text-white transition">News</a>
-        <a href="#contact" class="mobile-nav-link flex items-center rounded-xl px-4 py-3 text-sm font-semibold text-white/85 hover:bg-white/10 hover:text-white transition">Contact</a>
-      </div>
+    id="mobile-menu"
+    class="fixed inset-0 z-[999] hidden md:hidden bg-[#153e75]"
+>
+    <div class="flex h-full flex-col bg-[#153e75] text-white">
+        <div class="flex items-center justify-between border-b border-white/10 px-6 py-5">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.22em] text-white/70">
+                    Menu
+                </p>
+                <h2 class="mt-1 text-lg font-bold text-white">
+                    Navigation
+                </h2>
+            </div>
 
-      <div class="border-t border-white/10 px-5 py-5">
-        <div class="grid grid-cols-1 gap-3">
-          <a
-            href="{{ route('login') }}"
-            class="inline-flex items-center justify-center rounded-xl border border-white/15 px-4 py-3 text-sm font-bold uppercase tracking-[0.16em] text-white/85 transition hover:bg-white/10 hover:text-white"
-          >
-            Login
-          </a>
-
-          <a
-            href="{{ route('register') }}"
-            class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-bold uppercase tracking-[0.16em] text-[#091852] transition hover:bg-[#f3f6ff]"
-          >
-            Register
-          </a>
-
-          <a
-            href="#crusade"
-            class="inline-flex items-center justify-center rounded-xl bg-spirit px-4 py-3 text-sm font-bold text-white transition hover:bg-spirit-light"
-          >
-            ✦ Donate Now
-          </a>
+            <button
+                type="button"
+                id="close-mobile-menu"
+                class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white transition hover:bg-white/10"
+            >
+                ✕
+            </button>
         </div>
-      </div>
+
+        <div class="flex-1 overflow-y-auto px-6 py-6">
+            <nav class="flex flex-col">
+                <a href="#about"
+                   class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">
+                    About
+                </a>
+
+                <a href="#events"
+                   class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">
+                    Events
+                </a>
+
+                <a href="#crusade"
+                   class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">
+                    CRUSADE
+                </a>
+
+                <a href="#stories"
+                   class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">
+                    Stories
+                </a>
+
+                <a href="#news"
+                   class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">
+                    News
+                </a>
+
+                <a href="#contact"
+                   class="mobile-nav-link py-4 text-base font-semibold text-white/90 transition hover:text-white">
+                    Contact
+                </a>
+            </nav>
+        </div>
+
+        <div class="border-t border-white/10 px-6 py-6">
+            <div class="grid grid-cols-1 gap-3">
+                <a
+                    href="{{ route('login') }}"
+                    class="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:bg-white/10"
+                >
+                    Login
+                </a>
+
+                <a
+                    href="{{ route('register') }}"
+                    class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-bold uppercase tracking-[0.16em] text-[#153e75] transition hover:bg-[#f3f7ff]"
+                >
+                    Register
+                </a>
+
+                <a
+                    href="#crusade"
+                    class="inline-flex items-center justify-center rounded-xl bg-[#2563eb] px-4 py-3 text-sm font-bold text-white transition hover:bg-[#1d4ed8]"
+                >
+                    ✦ Donate Now
+                </a>
+            </div>
+        </div>
     </div>
+</div>
   </div>
 </header>
 
@@ -608,7 +654,7 @@
             Your support will fuel our Centennial Celebrations, enhancing campus life, expanding financial aid, and driving academic and athletic excellence.
           </p>
 
-          <div class="mb-2 flex justify-between items-center">
+          {{-- <div class="mb-2 flex justify-between items-center">
             <span class="text-white/50 text-xs font-sans font-semibold">Campaign Progress</span>
             <span class="text-spirit text-xs font-bold font-sans">62% funded</span>
           </div>
@@ -618,7 +664,7 @@
           <div class="flex justify-between text-xs font-sans text-white/35">
             <span>₱2,320,000 raised</span>
             <span>Goal: ₱3,750,000</span>
-          </div>
+          </div> --}}
         </div>
 
         <div class="bg-white rounded-2xl p-8 shadow-2xl">
@@ -1116,19 +1162,44 @@
 </footer>
 
 <script>
-  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const menuOpenIcon = document.getElementById('menu-open-icon');
-  const menuCloseIcon = document.getElementById('menu-close-icon');
+  
+ const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+const menuOpenIcon = document.getElementById('menu-open-icon');
+const menuCloseIcon = document.getElementById('menu-close-icon');
+const closeMobileMenuBtn = document.getElementById('close-mobile-menu');
 
-  mobileMenuBtn?.addEventListener('click', () => {
-    const isHidden = mobileMenu.classList.contains('hidden');
+function openMobileMenu() {
+  mobileMenu.classList.remove('hidden');
+  menuOpenIcon.classList.add('hidden');
+  menuCloseIcon.classList.remove('hidden');
+  mobileMenuBtn.setAttribute('aria-expanded', 'true');
+  document.body.classList.add('overflow-hidden');
+}
 
-    mobileMenu.classList.toggle('hidden');
-    menuOpenIcon.classList.toggle('hidden');
-    menuCloseIcon.classList.toggle('hidden');
-    mobileMenuBtn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
-  });
+function closeMobileMenu() {
+  mobileMenu.classList.add('hidden');
+  menuOpenIcon.classList.remove('hidden');
+  menuCloseIcon.classList.add('hidden');
+  mobileMenuBtn.setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('overflow-hidden');
+}
+
+mobileMenuBtn?.addEventListener('click', () => {
+  const isHidden = mobileMenu.classList.contains('hidden');
+
+  if (isHidden) {
+    openMobileMenu();
+  } else {
+    closeMobileMenu();
+  }
+});
+
+closeMobileMenuBtn?.addEventListener('click', closeMobileMenu);
+
+document.querySelectorAll('.mobile-nav-link').forEach(link => {
+  link.addEventListener('click', closeMobileMenu);
+});
 
   document.querySelectorAll('.mobile-nav-link').forEach(link => {
     link.addEventListener('click', () => {

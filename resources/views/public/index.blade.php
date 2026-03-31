@@ -21,16 +21,98 @@
         .hamburger-open .line-1 { transform: translateY(6px) rotate(45deg); }
         .hamburger-open .line-2 { opacity: 0; }
         .hamburger-open .line-3 { transform: translateY(-6px) rotate(-45deg); }
+
+        .eyebrow {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.24em;
+        }
+
+        .gold-line {
+            width: 52px;
+            height: 3px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #c4960a, #e8b80f);
+        }
+
+        .section-shell {
+            border: 1px solid rgba(30, 58, 138, 0.10);
+            background: #ffffff;
+            box-shadow: 0 18px 48px rgba(15, 42, 107, 0.08);
+        }
+
+        .soft-panel {
+            border: 1px solid rgba(30, 58, 138, 0.10);
+            background: #f8fbff;
+        }
+
+        .royal-card {
+            border: 1px solid rgba(30, 58, 138, 0.10);
+            background: #ffffff;
+            transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+        }
+
+        .royal-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(15, 42, 107, 0.10);
+            border-color: rgba(30, 58, 138, 0.18);
+        }
+
+        .hero-glow::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 82% 18%, rgba(255,255,255,0.16), transparent 22%),
+                radial-gradient(circle at 78% 30%, rgba(147,197,253,0.18), transparent 28%);
+            pointer-events: none;
+        }
+
+        .event-image-overlay {
+            background: linear-gradient(
+                180deg,
+                rgba(9,24,82,0.06) 0%,
+                rgba(9,24,82,0.18) 40%,
+                rgba(9,24,82,0.76) 100%
+            );
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,.78);
+            transition: color .2s ease, background .2s ease;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255,255,255,.08);
+        }
+
+        .nav-link-active {
+            background: #fff;
+            color: #0F2A6B;
+        }
+
+        .hero-pattern {
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 20% 25%, rgba(255,255,255,.08) 1px, transparent 1px),
+                radial-gradient(circle at 80% 70%, rgba(255,255,255,.07) 1px, transparent 1px);
+            background-size: 42px 42px, 52px 52px;
+            opacity: .35;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="overflow-x-hidden bg-white font-body text-slate-800 antialiased">
 <div x-data="{ mobileOpen:false }" class="min-h-screen">
 
     {{-- HEADER --}}
-    <header class="sticky inset-x-0 top-0 z-50 border-b border-white/10 bg-[#0F2A6B]/95 px-4 backdrop-blur-md sm:px-6 lg:px-8">
-        <div class="mx-auto flex h-[76px] max-w-[1380px] items-center justify-between">
-            <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-3 transition hover:opacity-90">
-                <div class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden border border-white/20 bg-white p-1 shadow-sm">
+    <header class="sticky inset-x-0 top-0 z-50 border-b border-white/10 bg-[rgba(9,24,82,0.92)] backdrop-blur-md">
+        <div class="mx-auto flex h-[78px] max-w-[1380px] items-center justify-between px-4 sm:px-6 lg:px-8">
+            <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-3 transition hover:opacity-95">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/18 bg-white p-1 shadow-sm">
                     <img
                         src="{{ asset('images/hsstlogo.jpg') }}"
                         alt="Holy Spirit School of Tagbilaran Logo"
@@ -39,7 +121,7 @@
                 </div>
 
                 <div class="min-w-0">
-                    <p class="text-[9px] font-extrabold uppercase tracking-[0.28em] text-white/75">
+                    <p class="text-[9px] font-extrabold uppercase tracking-[0.28em] text-white/70">
                         Official Alumni Portal
                     </p>
                     <h1 class="truncate text-[13px] font-bold text-white">
@@ -48,20 +130,20 @@
                 </div>
             </a>
 
-            <nav class="hidden items-center gap-1 lg:flex">
-                <a href="{{ route('home') }}" class="px-4 py-2 text-sm font-semibold text-white/85 transition hover:bg-white/10 hover:text-white">
+            <nav class="hidden items-center gap-2 lg:flex">
+                <a href="{{ route('home') }}" class="nav-link rounded-full px-4 py-2 text-sm font-semibold">
                     Home
                 </a>
-                <a href="{{ route('about-us') }}" class="px-4 py-2 text-sm font-semibold text-white/85 transition hover:bg-white/10 hover:text-white">
+                <a href="{{ route('about-us') }}" class="nav-link rounded-full px-4 py-2 text-sm font-semibold">
                     About
                 </a>
-                <a href="{{ route('events.index') }}" class="bg-white px-4 py-2 text-sm font-bold text-[#0F2A6B]">
+                <a href="{{ route('events.index') }}" class="nav-link-active rounded-full px-4 py-2 text-sm font-bold">
                     Events
                 </a>
-                <a href="#event-calendar" class="px-4 py-2 text-sm font-semibold text-white/85 transition hover:bg-white/10 hover:text-white">
+                <a href="#event-calendar" class="nav-link rounded-full px-4 py-2 text-sm font-semibold">
                     Calendar
                 </a>
-                <a href="#upcoming-events" class="px-4 py-2 text-sm font-semibold text-white/85 transition hover:bg-white/10 hover:text-white">
+                <a href="#upcoming-events" class="nav-link rounded-full px-4 py-2 text-sm font-semibold">
                     Upcoming
                 </a>
             </nav>
@@ -69,16 +151,16 @@
             <div class="hidden items-center gap-3 lg:flex">
                 @if (Route::has('login'))
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="inline-flex items-center justify-center bg-white px-5 py-2.5 text-sm font-bold text-[#0F2A6B] transition hover:bg-slate-100">
+                        <a href="{{ url('/dashboard') }}" class="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-bold text-[#0F2A6B] transition hover:bg-[#f3f6ff]">
                             Dashboard
                         </a>
                     @else
-                        <a href="{{ route('login') }}" class="inline-flex items-center justify-center border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15">
+                        <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15">
                             Log in
                         </a>
 
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="inline-flex items-center justify-center bg-white px-5 py-2.5 text-sm font-bold text-[#0F2A6B] transition hover:bg-slate-100">
+                            <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-bold text-[#0F2A6B] transition hover:bg-[#f3f6ff]">
                                 Register
                             </a>
                         @endif
@@ -89,7 +171,7 @@
             <button
                 @click="mobileOpen = !mobileOpen"
                 :class="mobileOpen ? 'hamburger-open' : ''"
-                class="flex flex-col gap-[4.5px] border border-white/20 bg-white/10 p-3 lg:hidden"
+                class="flex flex-col gap-[4.5px] rounded-full border border-white/20 bg-white/10 p-3 lg:hidden"
                 aria-label="Toggle Menu"
             >
                 <span class="hamburger-line line-1 block h-[1.5px] w-[20px] rounded bg-white"></span>
@@ -103,153 +185,199 @@
     <div
         x-cloak
         x-show="mobileOpen"
-        x-transition.opacity.duration.200ms
-        class="fixed inset-x-0 top-[76px] z-40 border-t border-white/10 bg-[#0F2A6B] px-4 py-5 shadow-2xl lg:hidden"
+        x-transition.opacity.duration.250ms
+        class="fixed inset-0 z-[60] bg-[#153e75] lg:hidden"
     >
-        <div class="mx-auto max-w-[1380px]">
-            <div class="flex flex-col">
-                <a @click="mobileOpen=false" href="{{ route('home') }}" class="border-b border-white/10 px-2 py-4 text-base font-semibold text-white/90">Home</a>
-                <a @click="mobileOpen=false" href="{{ route('about-us') }}" class="border-b border-white/10 px-2 py-4 text-base font-semibold text-white/90">About</a>
-                <a @click="mobileOpen=false" href="{{ route('events.index') }}" class="border-b border-white/10 px-2 py-4 text-base font-semibold text-white/90">Events</a>
-                <a @click="mobileOpen=false" href="#event-calendar" class="border-b border-white/10 px-2 py-4 text-base font-semibold text-white/90">Calendar</a>
-                <a @click="mobileOpen=false" href="#upcoming-events" class="px-2 py-4 text-base font-semibold text-white/90">Upcoming</a>
+        <div class="flex h-full flex-col text-white">
+            <div class="flex items-center justify-between border-b border-white/10 px-6 py-5">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-white/70">
+                        Menu
+                    </p>
+                    <h2 class="mt-1 text-lg font-bold text-white">
+                        HSST Events
+                    </h2>
+                </div>
+
+                <button
+                    type="button"
+                    @click="mobileOpen = false"
+                    class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white transition hover:bg-white/10"
+                >
+                    ✕
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto px-6 py-6">
+                <nav class="flex flex-col">
+                    <a @click="mobileOpen=false" href="{{ route('home') }}" class="border-b border-white/10 py-4 text-base font-semibold text-white/90">Home</a>
+                    <a @click="mobileOpen=false" href="{{ route('about-us') }}" class="border-b border-white/10 py-4 text-base font-semibold text-white/90">About</a>
+                    <a @click="mobileOpen=false" href="{{ route('events.index') }}" class="border-b border-white/10 py-4 text-base font-semibold text-white">Events</a>
+                    <a @click="mobileOpen=false" href="#event-calendar" class="border-b border-white/10 py-4 text-base font-semibold text-white/90">Calendar</a>
+                    <a @click="mobileOpen=false" href="#upcoming-events" class="py-4 text-base font-semibold text-white/90">Upcoming</a>
+                </nav>
             </div>
 
             @if (Route::has('login'))
-                <div class="mt-5 grid gap-3">
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="block bg-white px-4 py-4 text-center text-base font-bold text-[#0F2A6B]">
-                            Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="block border border-white/20 bg-white/10 px-4 py-4 text-center text-base font-semibold text-white">
-                            Log in
-                        </a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="block bg-white px-4 py-4 text-center text-base font-bold text-[#0F2A6B]">
-                                Register
+                <div class="border-t border-white/10 px-6 py-6">
+                    <div class="grid gap-3">
+                        @auth
+                            <a href="{{ url('/dashboard') }}" class="block rounded-xl bg-white px-4 py-4 text-center text-base font-bold text-[#153e75]">
+                                Dashboard
                             </a>
-                        @endif
-                    @endauth
+                        @else
+                            <a href="{{ route('login') }}" class="block rounded-xl border border-white/20 bg-white/10 px-4 py-4 text-center text-base font-semibold text-white">
+                                Log in
+                            </a>
+
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}" class="block rounded-xl bg-white px-4 py-4 text-center text-base font-bold text-[#153e75]">
+                                    Register
+                                </a>
+                            @endif
+                        @endauth
+                    </div>
                 </div>
             @endif
         </div>
     </div>
 
     {{-- HERO --}}
-    <section class="relative overflow-hidden">
-        <div class="absolute inset-0">
-            <div class="h-full w-full bg-[linear-gradient(120deg,#0F2A6B_0%,#1E3A8A_45%,#dbeafe_100%)]"></div>
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.14),transparent_28%)]"></div>
-        </div>
+    <section class="relative overflow-hidden bg-[linear-gradient(150deg,#091852_0%,#0f2580_42%,#1a3fc4_82%,#2952d9_100%)] hero-glow">
+        <div class="hero-pattern"></div>
+        <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,24,82,0.76)_0%,rgba(9,24,82,0.56)_45%,rgba(9,24,82,0.18)_100%)]"></div>
 
-        <div class="relative z-10 mx-auto max-w-[1380px] px-4 py-14 sm:px-6 md:py-20 lg:px-8 lg:py-24">
+        <div class="relative z-10 mx-auto max-w-[1380px] px-4 py-16 sm:px-6 md:py-24 lg:px-8 lg:py-28">
             <div class="grid items-center gap-10 lg:grid-cols-[1.05fr_.95fr]">
                 <div>
-                    <p class="text-[11px] font-extrabold uppercase tracking-[0.28em] text-white/80">
+                    <p class="eyebrow text-[#dbeafe]">
                         HSST Events & Gatherings
                     </p>
 
-                    <h1 class="mt-5 font-display text-[2.6rem] leading-[1.02] tracking-[-0.02em] text-white sm:text-[3.4rem] lg:text-[4.4rem]">
+                    <div class="gold-line mt-4"></div>
+
+                    <h1 class="mt-6 font-display text-[2.7rem] leading-[1.02] tracking-[-0.02em] text-white sm:text-[3.5rem] lg:text-[4.6rem]">
                         A calendar of return,
                         celebration, and
                         community.
                     </h1>
 
-                    <p class="mt-6 max-w-2xl text-[15px] leading-8 text-white/90 sm:text-base">
+                    <p class="mt-6 max-w-2xl text-[15px] leading-8 text-white/85 sm:text-base">
                         Explore reunions, school celebrations, alumni programs, and community gatherings through one official public events experience for the HSST community.
                     </p>
 
                     <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                        <a href="#upcoming-events" class="inline-flex items-center justify-center bg-white px-6 py-3.5 text-sm font-bold uppercase tracking-[0.16em] text-[#0F2A6B] transition hover:bg-slate-100">
+                        <a href="#upcoming-events" class="inline-flex items-center justify-center rounded-full bg-white px-7 py-3.5 text-sm font-bold uppercase tracking-[0.16em] text-[#0F2A6B] transition hover:bg-[#f3f6ff]">
                             Explore Events
                         </a>
-                        <a href="#event-calendar" class="inline-flex items-center justify-center border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-white/15">
+                        <a href="#event-calendar" class="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 py-3.5 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-white/15">
                             Browse Calendar
                         </a>
                     </div>
                 </div>
-
                 @if ($featuredEvent)
-                    <div class="border border-white/20 bg-white/10 backdrop-blur-sm">
-                        <div class="relative h-[300px] overflow-hidden">
-                            <img
-                                src="{{ asset('images/100yearsevent.jpg') }}"
-                                alt="{{ $featuredEvent->title }}"
-                                class="h-full w-full object-cover"
-                            >
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#0F2A6B]/85 via-[#0F2A6B]/20 to-transparent"></div>
+    @php
+        $featuredBanner = $featuredEvent->banner_image
+            ? \Illuminate\Support\Facades\Storage::disk('s3')->url($featuredEvent->banner_image)
+            : asset('images/100yearsevent.jpg');
+    @endphp
 
-                            <div class="absolute left-5 top-5">
-                                <span class="inline-flex bg-white px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#0F2A6B]">
-                                    Featured Event
-                                </span>
-                            </div>
+    <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
 
-                            <div class="absolute inset-x-0 bottom-0 p-5">
-                                <h2 class="font-display text-[1.5rem] leading-[1.1] text-white sm:text-[1.9rem]">
-                                    {{ $featuredEvent->title }}
-                                </h2>
-                            </div>
-                        </div>
+        {{-- Banner --}}
+        <div class="relative h-64 overflow-hidden">
+            <img
+                src="{{ $featuredBanner }}"
+                alt="{{ $featuredEvent->title }}"
+                class="h-full w-full object-cover"
+            >
 
-                        <div class="bg-white p-6">
-                            <p class="text-[14px] leading-7 text-slate-600">
-                                {{ \Illuminate\Support\Str::limit($featuredEvent->description, 180) }}
-                            </p>
+            {{-- Gradient overlay — always co-located with the image, never in a separate CSS file --}}
+            <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/75"></div>
 
-                            <div class="mt-5 grid gap-3 sm:grid-cols-2">
-                                <div class="border border-slate-200 bg-slate-50 p-4">
-                                    <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">Date</div>
-                                    <div class="mt-2 text-sm font-semibold text-slate-900">
-                                        {{ \Carbon\Carbon::parse($featuredEvent->event_date)->format('F d, Y') }}
-                                    </div>
-                                </div>
+            {{-- Featured badge --}}
+            <div class="absolute left-4 top-4">
+                <span class="inline-flex items-center rounded-sm bg-white px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-[#0F2A6B]">
+                    Featured Event
+                </span>
+            </div>
 
-                                <div class="border border-slate-200 bg-slate-50 p-4">
-                                    <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">Time</div>
-                                    <div class="mt-2 text-sm font-semibold text-slate-900">
-                                        @if ($featuredEvent->schedules->first()?->schedule_time)
-                                            {{ \Carbon\Carbon::parse($featuredEvent->schedules->first()->schedule_time)->format('g:i A') }}
-                                        @else
-                                            To be announced
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
+            {{-- Title sits at the bottom of the banner --}}
+            <div class="absolute inset-x-0 bottom-0 p-5">
+                <h2 class="font-display text-xl font-medium leading-snug text-white sm:text-2xl">
+                    {{ $featuredEvent->title }}
+                </h2>
+            </div>
+        </div>
 
-                            <div class="mt-3 border border-slate-200 bg-slate-50 p-4">
-                                <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">Venue</div>
-                                <div class="mt-2 text-sm font-semibold text-slate-900">
-                                    {{ $featuredEvent->venue ?: 'Venue to be announced' }}
-                                </div>
-                            </div>
+        {{-- Body --}}
+        <div class="p-5">
 
-                            <div class="mt-6">
-                                <a
-                                    href="{{ route('events.show', $featuredEvent) }}"
-                                    class="inline-flex w-full items-center justify-center bg-[#1E3A8A] px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#1E40AF]"
-                                >
-                                    View Featured Event
-                                </a>
-                            </div>
-                        </div>
+            {{-- Description --}}
+            <p class="mb-4 text-sm leading-relaxed text-slate-500">
+                {{ \Illuminate\Support\Str::limit($featuredEvent->description, 180) }}
+            </p>
+
+            {{-- Meta block: Date + Time --}}
+            <div class="mb-1 overflow-hidden rounded-lg border border-slate-200">
+                <div class="grid grid-cols-2 divide-x divide-slate-200">
+                    <div class="bg-slate-50 px-4 py-3">
+                        <p class="text-[9px] font-bold uppercase tracking-widest text-blue-700">Date</p>
+                        <p class="mt-1 text-sm font-medium text-slate-800">
+                            {{ \Carbon\Carbon::parse($featuredEvent->event_date)->format('F d, Y') }}
+                        </p>
                     </div>
-                @endif
+                    <div class="bg-slate-50 px-4 py-3">
+                        <p class="text-[9px] font-bold uppercase tracking-widest text-blue-700">Time</p>
+                        <p class="mt-1 text-sm font-medium text-slate-800">
+                            {{ \Carbon\Carbon::parse($featuredEvent->event_date)->format('g:i A') }}
+                        </p>
+                    </div>
+                </div>
+
+                {{-- Venue row — part of the same meta block --}}
+                <div class="flex items-center gap-2.5 border-t border-slate-200 bg-slate-50 px-4 py-3">
+                    {{-- Pin icon --}}
+                    <svg class="h-3.5 w-3.5 shrink-0 text-slate-400" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                        <path d="M8 1.5A4.5 4.5 0 0 0 3.5 6c0 3 4.5 8.5 4.5 8.5S12.5 9 12.5 6A4.5 4.5 0 0 0 8 1.5Zm0 6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z"/>
+                    </svg>
+                    <div>
+                        <p class="text-[9px] font-bold uppercase tracking-widest text-blue-700">Venue</p>
+                        <p class="mt-0.5 text-sm font-medium text-slate-800">
+                            {{ $featuredEvent->venue ?: 'Venue to be announced' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- CTA --}}
+            <div class="mt-4">
+                <a
+                    href="{{ route('events.show', $featuredEvent) }}"
+                    class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#153e75] px-5 py-3 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-[#0f2f5c] active:scale-[0.98]"
+                >
+                    View featured event
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M3 8h10M9 4l4 4-4 4"/>
+                    </svg>
+                </a>
+            </div>
+
+        </div>
+    </div>
+@endif
             </div>
         </div>
     </section>
 
     {{-- CALENDAR --}}
-    <section id="event-calendar" class="bg-white py-14 md:py-20 lg:py-24">
+    <section id="event-calendar" class="bg-[#eef4ff] py-16 md:py-20 lg:py-24">
         <div class="mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
             <div class="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                    <div class="mb-3 inline-flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#1E3A8A] before:h-px before:w-6 before:bg-[#1E3A8A]/40 before:content-['']">
-                        Event Calendar
-                    </div>
-                    <h2 class="font-display text-[2rem] leading-[1.05] tracking-[-0.02em] text-slate-900 sm:text-[2.45rem]">
+                    <div class="eyebrow text-[#1E3A8A]">Event Calendar</div>
+                    <div class="gold-line my-4"></div>
+                    <h2 class="font-display text-[2rem] leading-[1.05] tracking-[-0.02em] text-[#091852] sm:text-[2.6rem]">
                         Browse events by date
                     </h2>
                 </div>
@@ -260,10 +388,10 @@
             </div>
 
             <div class="grid gap-8 xl:grid-cols-[1.2fr_.8fr]">
-                <div class="border border-slate-200 bg-white">
-                    <div class="flex flex-col gap-4 border-b border-slate-200 px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
+                <div class="section-shell overflow-hidden rounded-[2rem]">
+                    <div class="flex flex-col gap-4 border-b border-[#d9e5ff] px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <h3 class="text-lg font-bold text-slate-900">{{ $calendarLabel }}</h3>
+                            <h3 class="text-lg font-bold text-[#091852]">{{ $calendarLabel }}</h3>
                             <p class="mt-1 text-sm text-slate-500">
                                 Dates with events show a count.
                             </p>
@@ -272,28 +400,28 @@
                         <div class="flex items-center gap-2">
                             <a
                                 href="{{ route('events.index', ['month' => $prevMonth, 'date' => $selectedDate]) }}#event-calendar"
-                                class="border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                                class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                             >
                                 Prev
                             </a>
 
                             <a
                                 href="{{ route('events.index', ['month' => now()->format('Y-m'), 'date' => now()->toDateString()]) }}#event-calendar"
-                                class="bg-[#1E3A8A] px-3 py-2 text-sm font-bold text-white transition hover:bg-[#1E40AF]"
+                                class="rounded-full bg-[#153e75] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#0f2f5c]"
                             >
                                 Today
                             </a>
 
                             <a
                                 href="{{ route('events.index', ['month' => $nextMonth, 'date' => $selectedDate]) }}#event-calendar"
-                                class="border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                                class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                             >
                                 Next
                             </a>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-7 border-b border-slate-200 bg-slate-50 text-center text-[11px] font-extrabold uppercase tracking-wide text-slate-500">
+                    <div class="grid grid-cols-7 border-b border-[#d9e5ff] bg-[#f8fbff] text-center text-[11px] font-extrabold uppercase tracking-wide text-slate-500">
                         @foreach (['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $dayName)
                             <div class="px-2 py-3">{{ $dayName }}</div>
                         @endforeach
@@ -304,29 +432,29 @@
                             <a
                                 href="{{ route('events.index', ['month' => $currentMonth, 'date' => $day['date']]) }}#event-calendar"
                                 class="
-                                    min-h-[110px] border-b border-r border-slate-200 p-2 transition
-                                    {{ $day['isCurrentMonth'] ? 'bg-white hover:bg-slate-50' : 'bg-slate-50 text-slate-400' }}
-                                    {{ $day['isSelected'] ? 'ring-1 ring-inset ring-[#1E3A8A]' : '' }}
+                                    min-h-[118px] border-b border-r border-[#d9e5ff] p-3 transition
+                                    {{ $day['isCurrentMonth'] ? 'bg-white hover:bg-[#f8fbff]' : 'bg-[#f3f7ff] text-slate-400' }}
+                                    {{ $day['isSelected'] ? 'ring-2 ring-inset ring-[#153e75]' : '' }}
                                 "
                             >
                                 <div class="flex items-start justify-between">
                                     <span class="
                                         inline-flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold
-                                        {{ $day['isToday'] ? 'bg-[#1E3A8A] text-white' : 'text-slate-800' }}
+                                        {{ $day['isToday'] ? 'bg-[#153e75] text-white' : 'text-slate-800' }}
                                     ">
                                         {{ $day['day'] }}
                                     </span>
 
                                     @if ($day['count'] > 0)
-                                        <span class="border border-[#1E3A8A]/15 bg-[#1E3A8A]/10 px-2 py-0.5 text-[11px] font-semibold text-[#1E3A8A]">
+                                        <span class="rounded-full border border-[#1E3A8A]/15 bg-[#eaf1ff] px-2 py-0.5 text-[11px] font-semibold text-[#153e75]">
                                             {{ $day['count'] }}
                                         </span>
                                     @endif
                                 </div>
 
-                                <div class="mt-3 space-y-1">
+                                <div class="mt-3 space-y-1.5">
                                     @foreach (collect($day['events'])->take(2) as $event)
-                                        <div class="truncate border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] text-slate-700">
+                                        <div class="truncate rounded-lg border border-[#dbe7ff] bg-[#f8fbff] px-2 py-1 text-[11px] font-medium text-[#153e75]">
                                             {{ $event->title }}
                                         </div>
                                     @endforeach
@@ -342,9 +470,9 @@
                     </div>
                 </div>
 
-                <div class="border border-slate-200 bg-slate-50">
-                    <div class="border-b border-slate-200 bg-white px-5 py-5">
-                        <h3 class="text-lg font-bold text-slate-900">{{ $selectedDateLabel }}</h3>
+                <div class="section-shell overflow-hidden rounded-[2rem] bg-[#f8fbff]">
+                    <div class="border-b border-[#d9e5ff] bg-white px-5 py-5">
+                        <h3 class="text-lg font-bold text-[#091852]">{{ $selectedDateLabel }}</h3>
                         <p class="mt-1 text-sm text-slate-500">
                             Events scheduled on the selected date.
                         </p>
@@ -352,7 +480,7 @@
 
                     <div class="p-5">
                         @forelse ($selectedDayEvents as $event)
-                            <article class="mb-4 border border-slate-200 bg-white p-4 last:mb-0">
+                            <article class="mb-4 rounded-[1.5rem] border border-[#dbe7ff] bg-white p-4 last:mb-0">
                                 <h4 class="font-bold text-slate-900">
                                     {{ $event->title }}
                                 </h4>
@@ -362,21 +490,17 @@
                                 </p>
 
                                 <div class="mt-4 grid gap-3">
-                                    <div class="border border-slate-200 bg-slate-50 p-3">
+                                    <div class="soft-panel rounded-2xl p-3">
                                         <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">Venue</div>
                                         <div class="mt-1 text-sm font-semibold text-slate-900">
                                             {{ $event->venue ?: 'Venue to be announced' }}
                                         </div>
                                     </div>
 
-                                    <div class="border border-slate-200 bg-slate-50 p-3">
+                                    <div class="soft-panel rounded-2xl p-3">
                                         <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">Time</div>
                                         <div class="mt-1 text-sm font-semibold text-slate-900">
-                                            @if ($event->schedules->first()?->schedule_time)
-                                                {{ \Carbon\Carbon::parse($event->schedules->first()->schedule_time)->format('g:i A') }}
-                                            @else
-                                                To be announced
-                                            @endif
+                                            {{ \Carbon\Carbon::parse($event->event_date)->format('g:i A') }}
                                         </div>
                                     </div>
                                 </div>
@@ -384,14 +508,14 @@
                                 <div class="mt-4">
                                     <a
                                         href="{{ route('events.show', $event) }}"
-                                        class="inline-flex w-full items-center justify-center bg-[#1E3A8A] px-4 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#1E40AF]"
+                                        class="inline-flex w-full items-center justify-center rounded-full bg-[#153e75] px-4 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#0f2f5c]"
                                     >
                                         View Details
                                     </a>
                                 </div>
                             </article>
                         @empty
-                            <div class="border border-dashed border-slate-300 bg-white p-6 text-center">
+                            <div class="rounded-[1.5rem] border border-dashed border-[#c7d8ff] bg-white p-6 text-center">
                                 <p class="text-sm font-semibold text-slate-700">No events scheduled on this date.</p>
                                 <p class="mt-2 text-sm text-slate-500">Try another date or browse the upcoming events below.</p>
                             </div>
@@ -403,14 +527,13 @@
     </section>
 
     {{-- UPCOMING EVENTS --}}
-    <section id="upcoming-events" class="bg-slate-50 py-14 md:py-20 lg:py-24">
+    <section id="upcoming-events" class="bg-white py-16 md:py-20 lg:py-24">
         <div class="mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
             <div class="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                    <div class="mb-3 inline-flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#1E3A8A] before:h-px before:w-6 before:bg-[#1E3A8A]/40 before:content-['']">
-                        Upcoming Events
-                    </div>
-                    <h2 class="font-display text-[2rem] leading-[1.05] tracking-[-0.02em] text-slate-900 sm:text-[2.45rem]">
+                    <div class="eyebrow text-[#1E3A8A]">Upcoming Events</div>
+                    <div class="gold-line my-4"></div>
+                    <h2 class="font-display text-[2rem] leading-[1.05] tracking-[-0.02em] text-[#091852] sm:text-[2.6rem]">
                         All upcoming gatherings
                     </h2>
                 </div>
@@ -421,7 +544,7 @@
             </div>
 
             @if ($events->count())
-                <div class="grid gap-10 md:grid-cols-2 xl:grid-cols-2">
+                <div class="grid gap-8 md:grid-cols-2 xl:grid-cols-2">
                     @foreach ($events as $event)
                         @php
                             $bannerUrl = $event->banner_image
@@ -429,33 +552,31 @@
                                 : asset('images/100yearsevent.jpg');
                         @endphp
 
-                        <article class="group border-b border-slate-200 pb-8">
+                        <article class="royal-card group overflow-hidden rounded-[2rem]">
                             <div class="relative overflow-hidden bg-slate-100">
                                 <img
                                     src="{{ $bannerUrl }}"
                                     alt="{{ $event->title }}"
-                                    class="h-[260px] w-full object-cover transition duration-700 group-hover:scale-105"
+                                    class="h-[280px] w-full object-cover transition duration-700 group-hover:scale-105"
                                 >
 
-                                <div class="absolute inset-0 bg-gradient-to-t from-[#0F2A6B]/45 via-transparent to-transparent"></div>
+                                <div class="absolute inset-0 event-image-overlay"></div>
 
                                 <div class="absolute left-4 top-4">
-                                    <span class="inline-flex items-center bg-[#1E3A8A] px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.2em] text-white">
+                                    <span class="inline-flex items-center rounded-full bg-white px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#153e75]">
                                         Upcoming Event
                                     </span>
                                 </div>
                             </div>
 
-                            <div class="pt-5">
+                            <div class="p-6 sm:p-7">
                                 <p class="text-[11px] font-extrabold uppercase tracking-[0.26em] text-[#1E3A8A]">
                                     {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
-                                    @if ($event->schedules->first()?->schedule_time)
-                                        · {{ \Carbon\Carbon::parse($event->schedules->first()->schedule_time)->format('g:i A') }}
-                                    @endif
+                                    · {{ \Carbon\Carbon::parse($event->event_date)->format('g:i A') }}
                                 </p>
 
-                                <h2 class="mt-3 font-display text-[1.6rem] leading-[1.15] text-slate-900">
-                                    <a href="{{ route('events.show', $event) }}" class="transition hover:text-[#1E3A8A]">
+                                <h2 class="mt-3 font-display text-[1.75rem] leading-[1.12] text-[#091852]">
+                                    <a href="{{ route('events.show', $event) }}" class="transition hover:text-[#153e75]">
                                         {{ $event->title }}
                                     </a>
                                 </h2>
@@ -465,7 +586,7 @@
                                 </p>
 
                                 <div class="mt-5 grid gap-3 sm:grid-cols-2">
-                                    <div class="border border-slate-200 bg-white p-4">
+                                    <div class="soft-panel rounded-2xl p-4">
                                         <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">
                                             Date
                                         </div>
@@ -474,7 +595,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="border border-slate-200 bg-white p-4">
+                                    <div class="soft-panel rounded-2xl p-4">
                                         <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">
                                             Venue
                                         </div>
@@ -487,7 +608,7 @@
                                 <div class="mt-6 flex flex-col gap-3 sm:flex-row">
                                     <a
                                         href="{{ route('events.show', $event) }}"
-                                        class="inline-flex flex-1 items-center justify-center bg-[#1E3A8A] px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#1E40AF]"
+                                        class="inline-flex flex-1 items-center justify-center rounded-full bg-[#153e75] px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#0f2f5c]"
                                     >
                                         View Event
                                     </a>
@@ -495,7 +616,7 @@
                                     @if (Route::has('register'))
                                         <a
                                             href="{{ route('register') }}"
-                                            class="inline-flex flex-1 items-center justify-center border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-[#1E3A8A] transition hover:bg-slate-50"
+                                            class="inline-flex flex-1 items-center justify-center rounded-full border border-[#153e75]/15 bg-white px-5 py-3 text-sm font-semibold text-[#153e75] transition hover:bg-[#eef4ff]"
                                         >
                                             Join HSST Portal
                                         </a>
@@ -510,11 +631,11 @@
                     {{ $events->links() }}
                 </div>
             @else
-                <div class="border-y border-slate-200 py-12 text-center">
-                    <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center bg-[#1E3A8A]/10 text-lg font-bold text-[#1E3A8A]">
+                <div class="section-shell rounded-[2rem] py-12 text-center">
+                    <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#1E3A8A]/10 text-lg font-bold text-[#1E3A8A]">
                         HS
                     </div>
-                    <h2 class="font-display text-[1.7rem] text-slate-900">
+                    <h2 class="font-display text-[1.8rem] text-slate-900">
                         No upcoming events available
                     </h2>
                     <p class="mx-auto mt-3 max-w-xl text-[14px] leading-7 text-slate-600">
@@ -526,33 +647,35 @@
     </section>
 
     {{-- CTA --}}
-    <section class="bg-[#1E3A8A] py-14 md:py-20">
+    <section class="bg-[linear-gradient(150deg,#091852,#1a3fc4)] py-16 md:py-20">
         <div class="mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
-            <div class="bg-white/10 p-8 backdrop-blur-sm sm:p-10 lg:p-14">
+            <div class="overflow-hidden rounded-[2rem] border border-white/12 bg-white/10 p-8 backdrop-blur-sm sm:p-10 lg:p-14">
                 <div class="grid items-center gap-8 lg:grid-cols-[1.2fr_.8fr]">
                     <div>
-                        <div class="mb-3 text-[11px] font-extrabold uppercase tracking-[0.20em] text-white/80">
+                        <div class="eyebrow text-white/75">
                             Be part of the next HSST gathering
                         </div>
 
-                        <h2 class="font-display text-[2rem] leading-[1.06] tracking-[-0.02em] text-white sm:text-[2.4rem] lg:text-[2.9rem]">
+                        <div class="gold-line my-4"></div>
+
+                        <h2 class="font-display text-[2rem] leading-[1.06] tracking-[-0.02em] text-white sm:text-[2.4rem] lg:text-[3rem]">
                             Ready to reconnect with the HSST community?
                         </h2>
 
-                        <p class="mt-4 max-w-2xl text-[15px] leading-8 text-white/90">
+                        <p class="mt-4 max-w-2xl text-[15px] leading-8 text-white/85">
                             Create your account to stay updated on alumni events, school programs, and upcoming celebrations through one secure official portal.
                         </p>
                     </div>
 
                     <div class="flex flex-col gap-3">
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="block bg-white px-6 py-4 text-center text-sm font-bold uppercase tracking-[0.16em] text-[#1E3A8A] transition hover:bg-slate-100">
+                            <a href="{{ route('register') }}" class="block rounded-full bg-white px-6 py-4 text-center text-sm font-bold uppercase tracking-[0.16em] text-[#153e75] transition hover:bg-[#f3f6ff]">
                                 Create Account
                             </a>
                         @endif
 
                         @if (Route::has('login'))
-                            <a href="{{ route('login') }}" class="block border border-white/20 bg-white/10 px-6 py-4 text-center text-sm font-semibold text-white transition hover:bg-white/15">
+                            <a href="{{ route('login') }}" class="block rounded-full border border-white/20 bg-white/10 px-6 py-4 text-center text-sm font-semibold text-white transition hover:bg-white/15">
                                 Log in to Existing Account
                             </a>
                         @endif
@@ -563,53 +686,53 @@
     </section>
 
     {{-- FOOTER --}}
-    <footer id="contact" class="bg-white">
-        <div class="mx-auto grid max-w-[1380px] gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.2fr_0.8fr_0.8fr] lg:px-8">
+    <footer id="contact" class="bg-[#091852] pt-16 pb-8">
+        <div class="mx-auto grid max-w-[1380px] gap-10 px-4 sm:px-6 lg:grid-cols-[1.2fr_0.8fr_0.8fr] lg:px-8">
             <div>
                 <div class="flex items-center gap-3">
-                    <div class="flex h-11 w-11 items-center justify-center overflow-hidden border border-slate-200 bg-white p-1 shadow-sm">
+                    <div class="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-white/15 bg-white p-1 shadow-sm">
                         <img src="{{ asset('images/hsstlogo.jpg') }}" alt="HSST Logo" class="h-full w-full object-contain">
                     </div>
                     <div>
-                        <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-[#1E3A8A]">Official Alumni Portal</p>
-                        <p class="text-base font-bold text-slate-900">Holy Spirit School of Tagbilaran</p>
+                        <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-white/65">Official Alumni Portal</p>
+                        <p class="text-base font-bold text-white">Holy Spirit School of Tagbilaran</p>
                     </div>
                 </div>
 
-                <p class="mt-5 max-w-md text-sm leading-7 text-slate-600">
+                <p class="mt-5 max-w-md text-sm leading-7 text-white/55">
                     A digital home for official announcements, school events, alumni activities, and meaningful community connection at Holy Spirit School of Tagbilaran.
                 </p>
             </div>
 
             <div>
-                <h4 class="text-sm font-extrabold uppercase tracking-[0.2em] text-[#1E3A8A]">Quick links</h4>
-                <div class="mt-4 flex flex-col gap-3 text-sm text-slate-600">
-                    <a href="{{ route('home') }}" class="transition hover:text-[#1E3A8A]">Home</a>
-                    <a href="{{ route('about-us') }}" class="transition hover:text-[#1E3A8A]">About Us</a>
-                    <a href="{{ route('events.index') }}" class="transition hover:text-[#1E3A8A]">Events</a>
-                    <a href="#event-calendar" class="transition hover:text-[#1E3A8A]">Calendar</a>
-                    <a href="#upcoming-events" class="transition hover:text-[#1E3A8A]">Upcoming</a>
+                <h4 class="text-sm font-extrabold uppercase tracking-[0.2em] text-white/70">Quick links</h4>
+                <div class="mt-4 flex flex-col gap-3 text-sm text-white/55">
+                    <a href="{{ route('home') }}" class="transition hover:text-white">Home</a>
+                    {{-- <a href="{{ route('about-us') }}" class="transition hover:text-white">About Us</a> --}}
+                    <a href="{{ route('events.index') }}" class="transition hover:text-white">Events</a>
+                    <a href="#event-calendar" class="transition hover:text-white">Calendar</a>
+                    <a href="#upcoming-events" class="transition hover:text-white">Upcoming</a>
                 </div>
             </div>
 
             <div>
-                <h4 class="text-sm font-extrabold uppercase tracking-[0.2em] text-[#1E3A8A]">Account</h4>
-                <div class="mt-4 flex flex-col gap-3 text-sm text-slate-600">
+                <h4 class="text-sm font-extrabold uppercase tracking-[0.2em] text-white/70">Account</h4>
+                <div class="mt-4 flex flex-col gap-3 text-sm text-white/55">
                     @if (Route::has('login'))
-                        <a href="{{ route('login') }}" class="transition hover:text-[#1E3A8A]">Log in</a>
+                        <a href="{{ route('login') }}" class="transition hover:text-white">Log in</a>
                     @endif
                     @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="transition hover:text-[#1E3A8A]">Register</a>
+                        <a href="{{ route('register') }}" class="transition hover:text-white">Register</a>
                     @endif
-                    <a href="{{ url('/dashboard') }}" class="transition hover:text-[#1E3A8A]">Dashboard</a>
+                    <a href="{{ url('/dashboard') }}" class="transition hover:text-white">Dashboard</a>
                 </div>
             </div>
         </div>
 
-        <div class="border-t border-slate-200">
-            <div class="mx-auto flex max-w-[1380px] flex-col gap-3 px-4 py-6 text-sm text-slate-500 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-                <p>© 2026 Holy Spirit School of Tagbilaran. All rights reserved.</p>
-                <p>Truth in Love · Faith · Learning · Community</p>
+        <div class="mt-10 border-t border-white/10">
+            <div class="mx-auto flex max-w-[1380px] flex-col gap-3 px-4 py-6 text-sm text-white/40 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+                <p>© {{ now('Asia/Manila')->format('Y') }} Holy Spirit School of Tagbilaran. All rights reserved.</p>
+                <p class="text-[#d4af37]">Truth in Love · Faith · Learning · Community</p>
             </div>
         </div>
     </footer>
