@@ -243,134 +243,43 @@
     </div>
 
     {{-- HERO --}}
-    <section class="relative overflow-hidden bg-[linear-gradient(150deg,#091852_0%,#0f2580_42%,#1a3fc4_82%,#2952d9_100%)] hero-glow">
-        <div class="hero-pattern"></div>
-        <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,24,82,0.76)_0%,rgba(9,24,82,0.56)_45%,rgba(9,24,82,0.18)_100%)]"></div>
+<section class="relative overflow-hidden bg-[linear-gradient(150deg,#091852_0%,#0f2580_42%,#1a3fc4_82%,#2952d9_100%)] hero-glow">
+    <div class="hero-pattern"></div>
+    <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,24,82,0.76)_0%,rgba(9,24,82,0.56)_45%,rgba(9,24,82,0.18)_100%)]"></div>
 
-        <div class="relative z-10 mx-auto max-w-[1380px] px-4 py-16 sm:px-6 md:py-24 lg:px-8 lg:py-28">
-            <div class="grid items-center gap-10 lg:grid-cols-[1.05fr_.95fr]">
-                <div>
-                    <p class="eyebrow text-[#dbeafe]">
-                        HSST Events & Gatherings
-                    </p>
+    <div class="relative z-10 mx-auto max-w-[1380px] px-4 py-16 sm:px-6 md:py-24 lg:px-8 lg:py-28">
+        <div class="grid items-center gap-10 lg:grid-cols-[1.05fr_.95fr]">
+            <div>
+                <p class="eyebrow text-[#dbeafe]">
+                    HSST Events & Gatherings
+                </p>
 
-                    <div class="gold-line mt-4"></div>
+                <div class="gold-line mt-4"></div>
 
-                    <h1 class="mt-6 font-display text-[2.7rem] leading-[1.02] tracking-[-0.02em] text-white sm:text-[3.5rem] lg:text-[4.6rem]">
-                        A calendar of return,
-                        celebration, and
-                        community.
-                    </h1>
+                <h1 class="mt-6 font-display text-[2.7rem] leading-[1.02] tracking-[-0.02em] text-white sm:text-[3.5rem] lg:text-[4.6rem]">
+                    A calendar of return,
+                    celebration, and
+                    community.
+                </h1>
 
-                    <p class="mt-6 max-w-2xl text-[15px] leading-8 text-white/85 sm:text-base">
-                        Explore reunions, school celebrations, alumni programs, and community gatherings through one official public events experience for the HSST community.
-                    </p>
+                <p class="mt-6 max-w-2xl text-[15px] leading-8 text-white/85 sm:text-base">
+                    Explore reunions, school celebrations, alumni programs, and community gatherings through one official public events experience for the HSST community.
+                </p>
 
-                    <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                        <a href="#upcoming-events" class="inline-flex items-center justify-center rounded bg-white px-7 py-3.5 text-sm font-bold uppercase tracking-[0.16em] text-[#0F2A6B] transition hover:bg-[#f3f6ff]">
-                            Explore Events
-                        </a>
-                        <a href="#event-calendar" class="inline-flex items-center justify-center rounded border border-white/20 bg-white/10 px-7 py-3.5 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-white/15">
-                            Browse Calendar
-                        </a>
-                    </div>
-                </div>
-                @if ($featuredEvent)
-    @php
-        $featuredBanner = $featuredEvent->banner_image
-            ? \Illuminate\Support\Facades\Storage::disk('s3')->url($featuredEvent->banner_image)
-            : asset('images/100yearsevent.jpg');
-    @endphp
-
-    <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-
-        {{-- Banner --}}
-        <div class="relative h-64 overflow-hidden">
-            <img
-                src="{{ $featuredBanner }}"
-                alt="{{ $featuredEvent->title }}"
-                class="h-full w-full object-cover"
-            >
-
-            {{-- Gradient overlay — always co-located with the image, never in a separate CSS file --}}
-            <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/75"></div>
-
-            {{-- Featured badge --}}
-            <div class="absolute left-4 top-4">
-                <span class="inline-flex items-center rounded-sm bg-white px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-[#0F2A6B]">
-                    Featured Event
-                </span>
-            </div>
-
-            {{-- Title sits at the bottom of the banner --}}
-            <div class="absolute inset-x-0 bottom-0 p-5">
-                <h2 class="font-display text-xl font-medium leading-snug text-white sm:text-2xl">
-                    {{ $featuredEvent->title }}
-                </h2>
-            </div>
-        </div>
-
-        {{-- Body --}}
-        <div class="p-5">
-
-            {{-- Description --}}
-            <p class="mb-4 text-sm leading-relaxed text-slate-500">
-                {{ \Illuminate\Support\Str::limit($featuredEvent->description, 180) }}
-            </p>
-
-            {{-- Meta block: Date + Time --}}
-            <div class="mb-1 overflow-hidden rounded-lg border border-slate-200">
-                <div class="grid grid-cols-2 divide-x divide-slate-200">
-                    <div class="bg-slate-50 px-4 py-3">
-                        <p class="text-[9px] font-bold uppercase tracking-widest text-blue-700">Date</p>
-                        <p class="mt-1 text-sm font-medium text-slate-800">
-                            {{ \Carbon\Carbon::parse($featuredEvent->event_date)->format('F d, Y') }}
-                        </p>
-                    </div>
-                    <div class="bg-slate-50 px-4 py-3">
-                        <p class="text-[9px] font-bold uppercase tracking-widest text-blue-700">Time</p>
-                        <p class="mt-1 text-sm font-medium text-slate-800">
-                            {{ \Carbon\Carbon::parse($featuredEvent->event_date)->format('g:i A') }}
-                        </p>
-                    </div>
-                </div>
-
-                {{-- Venue row — part of the same meta block --}}
-                <div class="flex items-center gap-2.5 border-t border-slate-200 bg-slate-50 px-4 py-3">
-                    {{-- Pin icon --}}
-                    <svg class="h-3.5 w-3.5 shrink-0 text-slate-400" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                        <path d="M8 1.5A4.5 4.5 0 0 0 3.5 6c0 3 4.5 8.5 4.5 8.5S12.5 9 12.5 6A4.5 4.5 0 0 0 8 1.5Zm0 6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z"/>
-                    </svg>
-                    <div>
-                        <p class="text-[9px] font-bold uppercase tracking-widest text-blue-700">Venue</p>
-                        <p class="mt-0.5 text-sm font-medium text-slate-800">
-                            {{ $featuredEvent->venue ?: 'Venue to be announced' }}
-                        </p>
-                    </div>
+                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                    <a href="#upcoming-events" class="inline-flex items-center justify-center rounded bg-white px-7 py-3.5 text-sm font-bold uppercase tracking-[0.16em] text-[#0F2A6B] transition hover:bg-[#f3f6ff]">
+                        Explore Events
+                    </a>
+                    <a href="#event-calendar" class="inline-flex items-center justify-center rounded border border-white/20 bg-white/10 px-7 py-3.5 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-white/15">
+                        Browse Calendar
+                    </a>
                 </div>
             </div>
-
-            {{-- CTA --}}
-            <div class="mt-4">
-                <a
-                    href="{{ route('events.show', $featuredEvent) }}"
-                    class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#153e75] px-5 py-3 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-[#0f2f5c] active:scale-[0.98]"
-                >
-                    View featured event
-                    <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M3 8h10M9 4l4 4-4 4"/>
-                    </svg>
-                </a>
-            </div>
-
         </div>
     </div>
-@endif
-            </div>
-        </div>
-    </section>
+</section>
 
-    {{-- CALENDAR --}}
+   {{-- CALENDAR --}}
     <section id="event-calendar" class="bg-[#eef4ff] py-16 md:py-20 lg:py-24">
         <div class="mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
             <div class="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -388,99 +297,103 @@
             </div>
 
             <div class="grid gap-8 xl:grid-cols-[1.2fr_.8fr]">
-                <div class="section-shell overflow-hidden rounded-[2rem]">
-                    <div class="flex flex-col gap-4 border-b border-[#d9e5ff] px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
+                {{-- CALENDAR PANEL --}}
+                <div class="overflow-hidden rounded-none border-0 bg-transparent shadow-none sm:rounded-[2rem] sm:border sm:border-[#d9e5ff] sm:bg-white sm:shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
+                    <div class="flex flex-col gap-4 border-b border-[#d9e5ff] px-0 py-0 sm:px-5 sm:py-5 sm:flex-row sm:items-center sm:justify-between">
+                        <div class="px-0 pt-0 sm:px-0 sm:pt-0">
                             <h3 class="text-lg font-bold text-[#091852]">{{ $calendarLabel }}</h3>
                             <p class="mt-1 text-sm text-slate-500">
                                 Dates with events show a count.
                             </p>
                         </div>
 
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
                             <a
                                 href="{{ route('events.index', ['month' => $prevMonth, 'date' => $selectedDate]) }}#event-calendar"
-                                class="rounded border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                                class="shrink-0 rounded border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                             >
                                 Prev
                             </a>
 
                             <a
                                 href="{{ route('events.index', ['month' => now()->format('Y-m'), 'date' => now()->toDateString()]) }}#event-calendar"
-                                class="rounded bg-[#153e75] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#0f2f5c]"
+                                class="shrink-0 rounded bg-[#153e75] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#0f2f5c]"
                             >
                                 Today
                             </a>
 
                             <a
                                 href="{{ route('events.index', ['month' => $nextMonth, 'date' => $selectedDate]) }}#event-calendar"
-                                class="rounded border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                                class="shrink-0 rounded border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                             >
                                 Next
                             </a>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-7 border-b border-[#d9e5ff] bg-[#f8fbff] text-center text-[11px] font-extrabold uppercase tracking-wide text-slate-500">
-                        @foreach (['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $dayName)
-                            <div class="px-2 py-3">{{ $dayName }}</div>
-                        @endforeach
-                    </div>
+                    <div class="mt-5 sm:mt-0">
+                        <div class="grid grid-cols-7 border-y border-[#d9e5ff] bg-[#f8fbff] text-center text-[10px] font-extrabold uppercase tracking-wide text-slate-500 sm:text-[11px]">
+                            @foreach (['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $dayName)
+                                <div class="px-1 py-3 sm:px-2">{{ $dayName }}</div>
+                            @endforeach
+                        </div>
 
-                    <div class="grid grid-cols-7">
-                        @foreach ($calendarDays as $day)
-                            <a
-                                href="{{ route('events.index', ['month' => $currentMonth, 'date' => $day['date']]) }}#event-calendar"
-                                class="
-                                    min-h-[118px] border-b border-r border-[#d9e5ff] p-3 transition
-                                    {{ $day['isCurrentMonth'] ? 'bg-white hover:bg-[#f8fbff]' : 'bg-[#f3f7ff] text-slate-400' }}
-                                    {{ $day['isSelected'] ? 'ring-2 ring-inset ring-[#153e75]' : '' }}
-                                "
-                            >
-                                <div class="flex items-start justify-between">
-                                    <span class="
-                                        inline-flex h-8 w-8 items-center justify-center rounded text-sm font-bold
-                                        {{ $day['isToday'] ? 'bg-[#153e75] text-white' : 'text-slate-800' }}
-                                    ">
-                                        {{ $day['day'] }}
-                                    </span>
-
-                                    @if ($day['count'] > 0)
-                                        <span class="rounded border border-[#1E3A8A]/15 bg-[#eaf1ff] px-2 py-0.5 text-[11px] font-semibold text-[#153e75]">
-                                            {{ $day['count'] }}
+                        <div class="grid grid-cols-7">
+                            @foreach ($calendarDays as $day)
+                                <a
+                                    href="{{ route('events.index', ['month' => $currentMonth, 'date' => $day['date']]) }}#event-calendar"
+                                    class="
+                                        min-h-[88px] border-b border-r border-[#d9e5ff] p-2 transition sm:min-h-[118px] sm:p-3
+                                        {{ $day['isCurrentMonth'] ? 'bg-white hover:bg-[#f8fbff]' : 'bg-[#f3f7ff] text-slate-400' }}
+                                        {{ $day['isSelected'] ? 'ring-2 ring-inset ring-[#153e75]' : '' }}
+                                    "
+                                >
+                                    <div class="flex items-start justify-between gap-1">
+                                        <span class="
+                                            inline-flex h-7 w-7 items-center justify-center rounded text-xs font-bold sm:h-8 sm:w-8 sm:text-sm
+                                            {{ $day['isToday'] ? 'bg-[#153e75] text-white' : 'text-slate-800' }}
+                                        ">
+                                            {{ $day['day'] }}
                                         </span>
-                                    @endif
-                                </div>
 
-                                <div class="mt-3 space-y-1.5">
-                                    @foreach (collect($day['events'])->take(2) as $event)
-                                        <div class="truncate rounded-lg border border-[#dbe7ff] bg-[#f8fbff] px-2 py-1 text-[11px] font-medium text-[#153e75]">
-                                            {{ $event->title }}
-                                        </div>
-                                    @endforeach
+                                        @if ($day['count'] > 0)
+                                            <span class="rounded border border-[#1E3A8A]/15 bg-[#eaf1ff] px-1.5 py-0.5 text-[10px] font-semibold text-[#153e75] sm:px-2 sm:text-[11px]">
+                                                {{ $day['count'] }}
+                                            </span>
+                                        @endif
+                                    </div>
 
-                                    @if ($day['count'] > 2)
-                                        <div class="text-[11px] text-slate-400">
-                                            +{{ $day['count'] - 2 }} more
-                                        </div>
-                                    @endif
-                                </div>
-                            </a>
-                        @endforeach
+                                    <div class="mt-2 space-y-1 sm:mt-3 sm:space-y-1.5">
+                                        @foreach (collect($day['events'])->take(2) as $event)
+                                            <div class="truncate rounded-md border border-[#dbe7ff] bg-[#f8fbff] px-1.5 py-1 text-[10px] font-medium text-[#153e75] sm:rounded-lg sm:px-2 sm:text-[11px]">
+                                                {{ $event->title }}
+                                            </div>
+                                        @endforeach
+
+                                        @if ($day['count'] > 2)
+                                            <div class="text-[10px] text-slate-400 sm:text-[11px]">
+                                                +{{ $day['count'] - 2 }} more
+                                            </div>
+                                        @endif
+                                    </div>
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
 
-                <div class="section-shell overflow-hidden rounded-[2rem] bg-[#f8fbff]">
-                    <div class="border-b border-[#d9e5ff] bg-white px-5 py-5">
+                {{-- SELECTED DATE EVENTS PANEL --}}
+                <div class="overflow-hidden rounded-none border-0 bg-transparent shadow-none sm:rounded-[2rem] sm:border sm:border-[#d9e5ff] sm:bg-[#f8fbff] sm:shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
+                    <div class="border-b border-[#d9e5ff] bg-transparent px-0 py-0 sm:bg-white sm:px-5 sm:py-5">
                         <h3 class="text-lg font-bold text-[#091852]">{{ $selectedDateLabel }}</h3>
                         <p class="mt-1 text-sm text-slate-500">
                             Events scheduled on the selected date.
                         </p>
                     </div>
 
-                    <div class="p-5">
+                    <div class="px-0 py-5 sm:p-5">
                         @forelse ($selectedDayEvents as $event)
-                            <article class="mb-4 rounded-[1.5rem] border border-[#dbe7ff] bg-white p-4 last:mb-0">
+                            <article class="mb-5 rounded-none border-0 bg-transparent p-0 last:mb-0 sm:rounded-[1.5rem] sm:border sm:border-[#dbe7ff] sm:bg-white sm:p-4">
                                 <h4 class="font-bold text-slate-900">
                                     {{ $event->title }}
                                 </h4>
@@ -490,14 +403,14 @@
                                 </p>
 
                                 <div class="mt-4 grid gap-3">
-                                    <div class="soft-panel rounded-2xl p-3">
+                                    <div class="rounded-2xl bg-white/70 p-3 sm:border sm:border-[#dbe7ff] sm:bg-white">
                                         <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">Venue</div>
                                         <div class="mt-1 text-sm font-semibold text-slate-900">
                                             {{ $event->venue ?: 'Venue to be announced' }}
                                         </div>
                                     </div>
 
-                                    <div class="soft-panel rounded-2xl p-3">
+                                    <div class="rounded-2xl bg-white/70 p-3 sm:border sm:border-[#dbe7ff] sm:bg-white">
                                         <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">Time</div>
                                         <div class="mt-1 text-sm font-semibold text-slate-900">
                                             {{ \Carbon\Carbon::parse($event->event_date)->format('g:i A') }}
@@ -515,7 +428,7 @@
                                 </div>
                             </article>
                         @empty
-                            <div class="rounded-[1.5rem] border border-dashed border-[#c7d8ff] bg-white p-6 text-center">
+                            <div class="rounded-none border-0 bg-transparent p-0 text-center sm:rounded-[1.5rem] sm:border sm:border-dashed sm:border-[#c7d8ff] sm:bg-white sm:p-6">
                                 <p class="text-sm font-semibold text-slate-700">No events scheduled on this date.</p>
                                 <p class="mt-2 text-sm text-slate-500">Try another date or browse the upcoming events below.</p>
                             </div>
@@ -544,73 +457,73 @@
             </div>
 
             @if ($events->count())
-               <div class="grid gap-8 md:grid-cols-3 xl:grid-cols-3">
-    @foreach ($events as $event)
-        @php
-            $bannerUrl = $event->banner_image
-                ? \Illuminate\Support\Facades\Storage::disk('s3')->url($event->banner_image)
-                : asset('images/100yearsevent.jpg');
-        @endphp
+                <div class="grid gap-8 md:grid-cols-3 xl:grid-cols-3">
+                    @foreach ($events as $event)
+                        @php
+                            $bannerUrl = $event->banner_image
+                                ? \Illuminate\Support\Facades\Storage::disk('s3')->url($event->banner_image)
+                                : asset('images/100yearsevent.jpg');
+                        @endphp
 
-        <article class="royal-card group flex h-full flex-col overflow-hidden rounded-[1rem]">
-            {{-- IMAGE --}}
-            <div class="relative overflow-hidden bg-slate-100">
-                <img
-                    src="{{ $bannerUrl }}"
-                    alt="{{ $event->title }}"
-                    class="h-[280px] w-full object-cover transition duration-700 group-hover:scale-105"
-                >
+                        <article class="group flex h-full flex-col overflow-hidden rounded-none border-0 bg-transparent shadow-none sm:rounded-[1rem] sm:border sm:border-slate-200 sm:bg-white sm:shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
+                            {{-- IMAGE --}}
+                            <div class="relative overflow-hidden bg-slate-100">
+                                <img
+                                    src="{{ $bannerUrl }}"
+                                    alt="{{ $event->title }}"
+                                    class="h-[240px] w-full object-cover transition duration-700 group-hover:scale-105 sm:h-[280px]"
+                                >
 
-                <div class="absolute inset-0 event-image-overlay"></div>
+                                <div class="absolute inset-0 event-image-overlay"></div>
 
-                <div class="absolute left-4 top-4">
-                    <span class="inline-flex items-center rounded bg-white px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#153e75]">
-                        Upcoming Event
-                    </span>
+                                <div class="absolute left-4 top-4">
+                                    <span class="inline-flex items-center rounded bg-white px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#153e75] shadow-sm">
+                                        Upcoming Event
+                                    </span>
+                                </div>
+                            </div>
+
+                            {{-- CONTENT --}}
+                            <div class="flex flex-1 flex-col px-0 pb-0 pt-5 sm:p-6 sm:p-7">
+
+                                {{-- DATE --}}
+                                <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#1E3A8A] sm:tracking-[0.26em]">
+                                    {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
+                                    · {{ \Carbon\Carbon::parse($event->event_date)->format('g:i A') }}
+                                </p>
+
+                                {{-- TITLE --}}
+                                <h2 class="mt-3 font-display text-[1.45rem] leading-[1.15] text-[#091852] sm:text-[1.75rem] sm:leading-[1.12]">
+                                    <a href="{{ route('events.show', $event) }}" class="transition hover:text-[#153e75]">
+                                        {{ $event->title }}
+                                    </a>
+                                </h2>
+
+                                {{-- DESCRIPTION --}}
+                                <p class="mt-4 text-[14px] leading-7 text-slate-600">
+                                    {{ \Illuminate\Support\Str::limit($event->description, 170) }}
+                                </p>
+
+                                {{-- BUTTON --}}
+                                <div class="mt-auto pt-6">
+                                    <a
+                                        href="{{ route('events.show', $event) }}"
+                                        class="inline-flex w-full items-center justify-center rounded bg-[#153e75] px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#0f2f5c]"
+                                    >
+                                        READ MORE →
+                                    </a>
+                                </div>
+
+                            </div>
+                        </article>
+                    @endforeach
                 </div>
-            </div>
-
-            {{-- CONTENT --}}
-            <div class="flex flex-1 flex-col p-6 sm:p-7">
-                
-                {{-- DATE --}}
-                <p class="text-[11px] font-extrabold uppercase tracking-[0.26em] text-[#1E3A8A]">
-                    {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
-                    · {{ \Carbon\Carbon::parse($event->event_date)->format('g:i A') }}
-                </p>
-
-                {{-- TITLE --}}
-                <h2 class="mt-3 font-display text-[1.75rem] leading-[1.12] text-[#091852]">
-                    <a href="{{ route('events.show', $event) }}" class="transition hover:text-[#153e75]">
-                        {{ $event->title }}
-                    </a>
-                </h2>
-
-                {{-- DESCRIPTION --}}
-                <p class="mt-4 text-[14px] leading-7 text-slate-600">
-                    {{ \Illuminate\Support\Str::limit($event->description, 170) }}
-                </p>
-
-                {{-- BUTTON (BOTTOM LOCKED) --}}
-                <div class="mt-auto pt-6">
-                    <a
-                        href="{{ route('events.show', $event) }}"
-                        class="inline-flex w-full items-center justify-center rounded bg-[#153e75] px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#0f2f5c]"
-                    >
-                        READ MORE →
-                    </a>
-                </div>
-
-            </div>
-        </article>
-    @endforeach
-</div>
 
                 <div class="mt-10">
                     {{ $events->links() }}
                 </div>
             @else
-                <div class="section-shell rounded-[2rem] py-12 text-center">
+                <div class="py-12 text-center sm:rounded-[2rem] sm:border sm:border-slate-200 sm:bg-white sm:px-6 sm:shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
                     <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded bg-[#1E3A8A]/10 text-lg font-bold text-[#1E3A8A]">
                         HS
                     </div>

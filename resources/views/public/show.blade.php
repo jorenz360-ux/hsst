@@ -280,271 +280,268 @@
     </div>
 
     {{-- ══════════════════════════════════════════════
-         BREADCRUMB + HERO
-    ══════════════════════════════════════════════ --}}
-    <section class="bg-white" style="border-bottom:0.5px solid var(--border)">
-        <div class="mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
+     BREADCRUMB + HERO
+══════════════════════════════════════════════ --}}
+<section class="bg-white" style="border-bottom:0.5px solid var(--border)">
+    <div class="mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
 
-            {{-- Breadcrumb strip --}}
-            <div class="flex flex-wrap items-center gap-2.5 py-4" style="border-bottom:0.5px solid var(--border-lt)">
-                <a href="{{ route('events.index') }}"
-                   class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
-                   style="border:0.5px solid var(--border)">
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12L6 8l4-4"/></svg>
-                    All Events
-                </a>
-                <span class="badge-blue">Official Event</span>
-                @if($event->is_active)
-                    <span class="badge-green">
-                        <span class="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span>
-                        Active
-                    </span>
-                @endif
-                @if($event->dress_code)
-                    <span class="badge-amber">Dress Code: {{ $event->dress_code }}</span>
-                @endif
+        {{-- Breadcrumb strip --}}
+        <div class="flex flex-wrap items-center gap-2.5 py-4" style="border-bottom:0.5px solid var(--border-lt)">
+            <a href="{{ route('events.index') }}"
+               class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+               style="border:0.5px solid var(--border)">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12L6 8l4-4"/></svg>
+                All Events
+            </a>
+            <span class="badge-blue">Official Event</span>
+            @if($event->is_active)
+                <span class="badge-green">
+                    <span class="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                    Active
+                </span>
+            @endif
+            @if($event->dress_code)
+                <span class="badge-amber">Dress Code: {{ $event->dress_code }}</span>
+            @endif
+        </div>
+
+        {{-- Hero: two columns --}}
+        <div class="grid gap-8 py-10 lg:grid-cols-[1fr_480px] lg:gap-12 lg:py-14">
+
+            {{-- Left: text --}}
+            <div class="fade-up flex flex-col justify-center pr-0 lg:pr-4">
+                <p class="eyebrow">HSST Alumni Event</p>
+                <div class="gold-rule"></div>
+
+                <h1 class="font-display text-[clamp(2.2rem,4.5vw,4rem)] leading-[1.05] text-[#091852]">
+                    {{ $event->title }}
+                </h1>
+
+                <p class="mt-5 max-w-xl text-[15px] leading-[1.8] text-slate-600">
+                    {{ \Illuminate\Support\Str::limit(strip_tags($event->description ?? 'Stay connected with the HSST Alumni community through this official event page.'), 220) }}
+                </p>
+
+                {{-- Quick meta chips --}}
+                <div class="mt-7 grid gap-2.5 sm:grid-cols-3">
+                    <div class="rounded-xl bg-[#f8fbff] px-4 py-3.5 sm:soft-card">
+                        <p class="text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#153e8a]/60">Date</p>
+                        <p class="mt-1.5 text-sm font-semibold text-[#091852]">
+                            {{ $eventDate ? $eventDate->format('F d, Y') : 'To be announced' }}
+                        </p>
+                    </div>
+                    <div class="rounded-xl bg-[#f8fbff] px-4 py-3.5 sm:soft-card">
+                        <p class="text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#153e8a]/60">Time</p>
+                        <p class="mt-1.5 text-sm font-semibold text-[#091852]">
+                            {{ $eventDate ? $eventDate->format('g:i A') : 'TBA' }}
+                        </p>
+                    </div>
+                    <div class="rounded-xl bg-[#f8fbff] px-4 py-3.5 sm:soft-card">
+                        <p class="text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#153e8a]/60">Venue</p>
+                        <p class="mt-1.5 text-sm font-semibold text-[#091852]">
+                            {{ $event->venue ?: 'To be announced' }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-7 flex flex-wrap gap-3">
+                    <a href="#event-details" class="btn-primary">
+                        View Full Details
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l5 5-5 5M3 8h10"/></svg>
+                    </a>
+                    @if(Route::has('register'))
+                        <a href="{{ route('register') }}" class="btn-ghost">Join the Alumni Portal</a>
+                    @endif
+                </div>
             </div>
 
-            {{-- Hero: two columns --}}
-            <div class="grid gap-0 py-10 lg:grid-cols-[1fr_480px] lg:gap-12 lg:py-14">
+            {{-- Right: banner image --}}
+            <div class="fade-up-2 overflow-hidden rounded-none border-0 shadow-none sm:rounded-xl"
+                 style="border:0 solid transparent; sm:border:0.5px solid var(--border);">
+                <img
+                    src="{{ $bannerUrl }}"
+                    alt="{{ $event->title }}"
+                    class="h-full min-h-[260px] w-full object-cover object-center transition duration-500 hover:scale-[1.02] sm:min-h-[300px]"
+                >
+            </div>
+        </div>
+    </div>
+</section>
 
-                {{-- Left: text --}}
-                <div class="fade-up flex flex-col justify-center pr-0 lg:pr-4">
-                    <p class="eyebrow">HSST Alumni Event</p>
+{{-- ══════════════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════════════ --}}
+<section id="event-details" class="py-14 sm:py-16 lg:py-20" style="background:#fafbff">
+    <div class="mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
+        <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px] xl:gap-12">
+
+            {{-- ── Main column ── --}}
+            <div class="space-y-5">
+
+                {{-- Event Overview --}}
+                <div class="rounded-none border-0 bg-transparent px-0 py-0 shadow-none sm:card sm:px-7 sm:py-8 md:sm:px-9 sm:py-10">
+                    <p class="eyebrow">About the Event</p>
                     <div class="gold-rule"></div>
-
-                    <h1 class="font-display text-[clamp(2.2rem,4.5vw,4rem)] leading-[1.05] text-[#091852]">
-                        {{ $event->title }}
-                    </h1>
-
-                    <p class="mt-5 max-w-xl text-[15px] leading-[1.8] text-slate-600">
-                        {{ \Illuminate\Support\Str::limit(strip_tags($event->description ?? 'Stay connected with the HSST Alumni community through this official event page.'), 220) }}
-                    </p>
-
-                    {{-- Quick meta chips --}}
-                    <div class="mt-7 grid gap-2.5 sm:grid-cols-3">
-                        <div class="soft-card px-4 py-3.5">
-                            <p class="text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#153e8a]/60">Date</p>
-                            <p class="mt-1.5 text-sm font-semibold text-[#091852]">
-                                {{ $eventDate ? $eventDate->format('F d, Y') : 'To be announced' }}
-                            </p>
-                        </div>
-                        <div class="soft-card px-4 py-3.5">
-                            <p class="text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#153e8a]/60">Time</p>
-                            <p class="mt-1.5 text-sm font-semibold text-[#091852]">
-                                {{ $eventDate ? $eventDate->format('g:i A') : 'TBA' }}
-                            </p>
-                        </div>
-                        <div class="soft-card px-4 py-3.5">
-                            <p class="text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#153e8a]/60">Venue</p>
-                            <p class="mt-1.5 text-sm font-semibold text-[#091852]">
-                                {{ $event->venue ?: 'To be announced' }}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="mt-7 flex flex-wrap gap-3">
-                        <a href="#event-details" class="btn-primary">
-                            View Full Details
-                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l5 5-5 5M3 8h10"/></svg>
-                        </a>
-                        @if(Route::has('register'))
-                            <a href="{{ route('register') }}" class="btn-ghost">Join the Alumni Portal</a>
+                    <h2 class="font-display text-[clamp(1.8rem,3vw,2.8rem)] leading-[1.08] text-[#091852]">
+                        Event Overview
+                    </h2>
+                    <div class="mt-7 max-w-3xl space-y-5 text-[15px] leading-[1.9] text-slate-600">
+                        @if ($event->description)
+                            {!! nl2br(e($event->description)) !!}
+                        @else
+                            <p>No event description available yet. Please check back soon for updates.</p>
                         @endif
                     </div>
                 </div>
 
-                {{-- Right: banner image --}}
-                <div class="fade-up-2 overflow-hidden rounded-xl" style="border:0.5px solid var(--border)">
-                    <img
-                        src="{{ $bannerUrl }}"
-                        alt="{{ $event->title }}"
-                        class="h-full min-h-[300px] w-full object-cover object-center transition duration-500 hover:scale-[1.02]"
-                    >
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- ══════════════════════════════════════════════
-         MAIN CONTENT
-    ══════════════════════════════════════════════ --}}
-    <section id="event-details" class="py-14 sm:py-16 lg:py-20" style="background:#fafbff">
-        <div class="mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
-            <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px] xl:gap-12">
-
-                {{-- ── Main column ── --}}
-                <div class="space-y-5">
-
-                    {{-- Event Overview --}}
-                    <div class="card px-7 py-8 sm:px-9 sm:py-10">
-                        <p class="eyebrow">About the Event</p>
+                {{-- Schedule --}}
+                @if ($event->schedules->isNotEmpty())
+                    <div class="rounded-none border-0 bg-transparent px-0 py-0 shadow-none sm:card sm:px-7 sm:py-8 md:sm:px-9 sm:py-10">
+                        <p class="eyebrow">Program Flow</p>
                         <div class="gold-rule"></div>
                         <h2 class="font-display text-[clamp(1.8rem,3vw,2.8rem)] leading-[1.08] text-[#091852]">
-                            Event Overview
+                            Event Schedule
                         </h2>
-                        <div class="mt-7 max-w-3xl space-y-5 text-[15px] leading-[1.9] text-slate-600">
-                            @if ($event->description)
-                                {!! nl2br(e($event->description)) !!}
-                            @else
-                                <p>No event description available yet. Please check back soon for updates.</p>
+
+                        <div class="mt-8 space-y-5">
+                            @foreach ($event->schedules->sortBy('schedule_time') as $index => $schedule)
+                                <div class="schedule-item grid grid-cols-[28px_1fr] gap-5">
+                                    <div class="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#153e8a] text-[10px] font-bold text-white">
+                                        {{ $index + 1 }}
+                                    </div>
+
+                                    <div class="pb-1">
+                                        <p class="text-[10.5px] font-bold uppercase tracking-[0.18em] text-[#153e8a]">
+                                            {{ $schedule->schedule_time
+                                                ? \Carbon\Carbon::parse($schedule->schedule_time)->format('g:i A')
+                                                : 'TBA' }}
+                                        </p>
+
+                                        @if ($schedule->title)
+                                            <h3 class="mt-1.5 text-[17px] font-semibold text-[#091852]">
+                                                {{ $schedule->title }}
+                                            </h3>
+                                        @endif
+
+                                        @if ($schedule->description)
+                                            <p class="mt-2 text-[14.5px] leading-[1.8] text-slate-500">
+                                                {{ $schedule->description }}
+                                            </p>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            {{-- ── Sidebar ── --}}
+            <aside class="space-y-3 lg:sticky lg:top-24 lg:self-start">
+
+                {{-- Event info card --}}
+                <div class="overflow-hidden rounded-none border-0 bg-transparent shadow-none sm:rounded-2xl sm:border sm:border-slate-200 sm:bg-white sm:shadow-sm">
+                    <div class="border-b border-slate-200 px-0 py-3 sm:px-4">
+                        <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#153e8a]">
+                            Event Information
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-x-4 gap-y-3 px-0 py-4 sm:grid-cols-2 sm:px-4">
+                        <div>
+                            <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Date</p>
+                            <p class="mt-1 text-[13.5px] font-semibold leading-5 text-[#091852]">
+                                {{ $eventDate ? $eventDate->format('M d, Y') : 'To be announced' }}
+                            </p>
+                        </div>
+
+                        <div>
+                            <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Time</p>
+                            <p class="mt-1 text-[13.5px] font-semibold leading-5 text-[#091852]">
+                                {{ $eventDate ? $eventDate->format('g:i A') : 'To be announced' }}
+                            </p>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Venue</p>
+                            <p class="mt-1 text-[13.5px] font-semibold leading-5 text-[#091852]">
+                                {{ $event->venue ?: 'Venue to be announced' }}
+                            </p>
+                        </div>
+
+                        @if($event->dress_code)
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Dress Code</p>
+                                <p class="mt-1 text-[13.5px] font-semibold leading-5 text-[#091852]">
+                                    {{ $event->dress_code }}
+                                </p>
+                            </div>
+                        @endif
+
+                        <div class="{{ $event->dress_code ? '' : 'sm:col-span-2' }}">
+                            <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Participation</p>
+                            <p class="mt-1 text-[13.5px] font-semibold leading-5 text-[#091852]">
+                                Open to HSST alumni, faculty, and invited guests
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Stay Connected card --}}
+                <div class="overflow-hidden rounded-none border-0 bg-transparent shadow-none sm:rounded-2xl sm:border sm:border-slate-200 sm:bg-[#f8fbff] sm:shadow-sm">
+                    <div class="px-0 py-4 sm:px-4">
+                        <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#153e8a]">
+                            Stay Connected
+                        </p>
+
+                        <h3 class="mt-2 text-[1.05rem] font-bold leading-[1.25] text-[#091852]">
+                            Join the alumni portal
+                        </h3>
+
+                        <p class="mt-2 text-[13px] leading-6 text-slate-600">
+                            Receive updates, reconnect with fellow alumni, and stay informed about upcoming events.
+                        </p>
+
+                        <div class="mt-4 grid gap-2">
+                            @if (Route::has('register'))
+                                <a
+                                    href="{{ route('register') }}"
+                                    class="inline-flex w-full items-center justify-center rounded bg-[#153e75] px-4 py-2.5 text-sm font-bold uppercase tracking-[0.12em] text-white transition hover:bg-[#0f2f5c]"
+                                >
+                                    Create Account
+                                </a>
+                            @endif
+
+                            @if (Route::has('login'))
+                                <a
+                                    href="{{ route('login') }}"
+                                    class="inline-flex w-full items-center justify-center rounded border border-[#153e75]/15 bg-white px-4 py-2.5 text-sm font-semibold text-[#153e75] transition hover:bg-[#eef4ff]"
+                                >
+                                    Log in
+                                </a>
                             @endif
                         </div>
                     </div>
-
-                    {{-- Schedule --}}
-                    @if ($event->schedules->isNotEmpty())
-                        <div class="card px-7 py-8 sm:px-9 sm:py-10">
-                            <p class="eyebrow">Program Flow</p>
-                            <div class="gold-rule"></div>
-                            <h2 class="font-display text-[clamp(1.8rem,3vw,2.8rem)] leading-[1.08] text-[#091852]">
-                                Event Schedule
-                            </h2>
-
-                            <div class="mt-8 space-y-5">
-                                @foreach ($event->schedules->sortBy('schedule_time') as $index => $schedule)
-                                    <div class="schedule-item grid grid-cols-[28px_1fr] gap-5">
-                                        {{-- Step dot --}}
-                                        <div class="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#153e8a] text-[10px] font-bold text-white">
-                                            {{ $index + 1 }}
-                                        </div>
-
-                                        <div class="pb-1">
-                                            <p class="text-[10.5px] font-bold uppercase tracking-[0.18em] text-[#153e8a]">
-                                                {{ $schedule->schedule_time
-                                                    ? \Carbon\Carbon::parse($schedule->schedule_time)->format('g:i A')
-                                                    : 'TBA' }}
-                                            </p>
-
-                                            @if ($schedule->title)
-                                                <h3 class="mt-1.5 text-[17px] font-semibold text-[#091852]">
-                                                    {{ $schedule->title }}
-                                                </h3>
-                                            @endif
-
-                                            @if ($schedule->description)
-                                                <p class="mt-2 text-[14.5px] leading-[1.8] text-slate-500">
-                                                    {{ $schedule->description }}
-                                                </p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
                 </div>
 
-                {{-- ── Sidebar ── --}}
-                <aside class="space-y-3 lg:sticky lg:top-24 lg:self-start">
+                {{-- Notice --}}
+                <div class="rounded-xl bg-amber-50 px-4 py-3 sm:rounded-2xl sm:border sm:border-amber-200">
+                    <div class="flex items-start gap-2.5">
+                        <svg class="mt-0.5 h-4 w-4 shrink-0 text-amber-600" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm0 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 5Zm0 7.25a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+                        </svg>
 
-    {{-- Event info card --}}
-    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div class="border-b border-slate-200 px-4 py-3">
-            <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#153e8a]">
-                Event Information
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 gap-x-4 gap-y-3 px-4 py-4 sm:grid-cols-2">
-            <div>
-                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Date</p>
-                <p class="mt-1 text-[13.5px] font-semibold leading-5 text-[#091852]">
-                    {{ $eventDate ? $eventDate->format('M d, Y') : 'To be announced' }}
-                </p>
-            </div>
-
-            <div>
-                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Time</p>
-                <p class="mt-1 text-[13.5px] font-semibold leading-5 text-[#091852]">
-                    {{ $eventDate ? $eventDate->format('g:i A') : 'To be announced' }}
-                </p>
-            </div>
-
-            <div class="sm:col-span-2">
-                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Venue</p>
-                <p class="mt-1 text-[13.5px] font-semibold leading-5 text-[#091852]">
-                    {{ $event->venue ?: 'Venue to be announced' }}
-                </p>
-            </div>
-
-            @if($event->dress_code)
-                <div>
-                    <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Dress Code</p>
-                    <p class="mt-1 text-[13.5px] font-semibold leading-5 text-[#091852]">
-                        {{ $event->dress_code }}
-                    </p>
+                        <p class="text-[12.5px] leading-6 text-amber-900">
+                            Please revisit this page before the event for any changes in venue, schedule, or additional instructions.
+                        </p>
+                    </div>
                 </div>
-            @endif
 
-            <div class="{{ $event->dress_code ? '' : 'sm:col-span-2' }}">
-                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Participation</p>
-                <p class="mt-1 text-[13.5px] font-semibold leading-5 text-[#091852]">
-                    Open to HSST alumni, faculty, and invited guests
-                </p>
-            </div>
+            </aside>
+
         </div>
     </div>
+</section>
 
-    {{-- Stay Connected card --}}
-    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-[#f8fbff] shadow-sm">
-        <div class="px-4 py-4">
-            <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#153e8a]">
-                Stay Connected
-            </p>
-
-            <h3 class="mt-2 text-[1.05rem] font-bold leading-[1.25] text-[#091852]">
-                Join the alumni portal
-            </h3>
-
-            <p class="mt-2 text-[13px] leading-6 text-slate-600">
-                Receive updates, reconnect with fellow alumni, and stay informed about upcoming events.
-            </p>
-
-            <div class="mt-4 grid gap-2">
-                @if (Route::has('register'))
-                    <a
-                        href="{{ route('register') }}"
-                        class="inline-flex w-full items-center justify-center rounded bg-[#153e75] px-4 py-2.5 text-sm font-bold uppercase tracking-[0.12em] text-white transition hover:bg-[#0f2f5c]"
-                    >
-                        Create Account
-                    </a>
-                @endif
-
-                @if (Route::has('login'))
-                    <a
-                        href="{{ route('login') }}"
-                        class="inline-flex w-full items-center justify-center rounded border border-[#153e75]/15 bg-white px-4 py-2.5 text-sm font-semibold text-[#153e75] transition hover:bg-[#eef4ff]"
-                    >
-                        Log in
-                    </a>
-                @endif
-            </div>
-        </div>
-    </div>
-
-    {{-- Notice --}}
-    <div class="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
-        <div class="flex items-start gap-2.5">
-            <svg class="mt-0.5 h-4 w-4 shrink-0 text-amber-600" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm0 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 5Zm0 7.25a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
-            </svg>
-
-            <p class="text-[12.5px] leading-6 text-amber-900">
-                Please revisit this page before the event for any changes in venue, schedule, or additional instructions.
-            </p>
-        </div>
-    </div>
-
-</aside>
-
-            </div>
-        </div>
-    </section>
-
-    {{-- ══════════════════════════════════════════════
-         FOOTER
-    ══════════════════════════════════════════════ --}}
     <footer class="bg-[#071440] pt-14 pb-0">
         <div class="mx-auto grid max-w-[1380px] gap-10 px-4 sm:px-6 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-14 lg:px-8 pb-12">
 
