@@ -19,6 +19,10 @@ use App\Http\Controllers\PublicEventController;
 use App\Livewire\Donations;
 use App\Http\Controllers\Welcome;
 
+use App\Http\Controllers\HistoryController;
+
+Route::get('/history', [HistoryController::class, 'index'])->name('history');
+
 Route::get('/view-batch', Batch::class)
     ->middleware(['auth', 'role:batch-representative'])
     ->name('view-batch');

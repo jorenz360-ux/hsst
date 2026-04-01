@@ -183,6 +183,10 @@
       <div class="hidden md:flex items-center gap-5">
         <nav class="flex items-center gap-8 text-xs font-bold tracking-wide text-white/70" id="nav-links">
           <a href="#about" class="text-white/70 hover:text-white transition-colors uppercase tracking-widest">About</a>
+        
+            <a href="{{ route('history') }}" class="text-white/70 hover:text-white transition-colors uppercase tracking-widest">
+                History
+            </a>
           <a href="#events" class="text-white/70 hover:text-white transition-colors uppercase tracking-widest">Events</a>
           <a href="#crusade" class="text-white/70 hover:text-white transition-colors uppercase tracking-widest">CRUSADE</a>
           <a href="#stories" class="text-white/70 hover:text-white transition-colors uppercase tracking-widest">Stories</a>
@@ -266,6 +270,9 @@
         <a href="#events" class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">Events</a>
         <a href="#crusade" class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">CRUSADE</a>
         <a href="#stories" class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">Stories</a>
+          <a href="{{ route('history') }}" class="text-white/70 hover:text-white transition-colors uppercase tracking-widest">
+                History
+            </a>
         <a href="#news" class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">News</a>
         <a href="#contact" class="mobile-nav-link py-4 text-base font-semibold text-white/90 transition hover:text-white">Contact</a>
       </nav>
@@ -1111,6 +1118,11 @@
         <p class="text-white/50 text-xs font-bold uppercase tracking-widest mb-5 font-sans">Quick Links</p>
         <ul class="space-y-3 text-white/30 text-xs font-sans">
           <li><a href="#about" class="hover:text-white transition-colors">About Us</a></li>
+         <li>
+            <a href="{{ route('history') }}" class="hover:text-white transition-colors">
+                History
+            </a>
+        </li>
           <li><a href="#crusade" class="hover:text-white transition-colors">CRUSADE Donation</a></li>
           <li><a href="#events" class="hover:text-white transition-colors">Events</a></li>
           <li><a href="#stories" class="hover:text-white transition-colors">Alumni Stories</a></li>
