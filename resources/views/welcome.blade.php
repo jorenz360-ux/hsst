@@ -885,7 +885,7 @@
       <div class="card reveal d1 bg-royal-frost border border-royal/10 p-8">
         <span class="open-quote">"</span>
         <blockquote class="font-serif italic text-royal-deeper text-base leading-relaxed mb-6 -mt-4">
-         As Holy Spirit School Tagbilaran celebrates 100 years of inspiring young minds and souls, I'm filled with pride and purpose, eager to join its historic celebration. My own journey was shaped by HSST's values and teachings, and now it's our chance to pay it forward. Together, with just PhP1,000 from 100 of us, we can empower the next generation and create lasting change. Let's come together to invest in the future through our beloved Alma Mater.
+         As Holy Spirit School of Tagbilaran celebrates 100 years of inspiring young minds and souls, I'm filled with pride and purpose, eager to join its historic celebration. My own journey was shaped by HSST's values and teachings, and now it's our chance to pay it forward. Together, with just PhP1,000 from 100 of us, we can empower the next generation and create lasting change. Let's come together to invest in the future through our beloved Alma Mater.
         </blockquote>
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-full flex items-center justify-center font-sans font-bold text-white text-xs" style="background:linear-gradient(135deg,#0f2580,#1a3fc4);">SS</div>
