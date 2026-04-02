@@ -270,7 +270,7 @@
         <a href="#events" class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">Events</a>
         <a href="#crusade" class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">CRUSADE</a>
         <a href="#stories" class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">Stories</a>
-          <a href="{{ route('history') }}" class="text-white/70 hover:text-white transition-colors uppercase tracking-widest">
+          <a href="{{ route('history') }}" class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">
                 History
             </a>
         <a href="#news" class="mobile-nav-link border-b border-white/10 py-4 text-base font-semibold text-white/90 transition hover:text-white">News</a>

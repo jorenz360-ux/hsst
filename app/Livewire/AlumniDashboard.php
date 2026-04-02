@@ -2,19 +2,19 @@
 
 namespace App\Livewire;
 
-use App\Models\Announcement;
 use App\Models\Donation;
 use App\Models\Event;
 use App\Models\EventRegistration;
-use App\Models\Payment;
-use Illuminate\Support\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class AlumniDashboard extends Component
 {
+    use WithPagination;
+
     public array $myEventRegs = [];
-    public array $myEventItemPayments = [];
 
     public int $paidTotal = 0;
     public ?string $lastPaidAt = null;
@@ -24,29 +24,20 @@ class AlumniDashboard extends Component
     public array $volunteerRoles = [];
     public ?string $volunteerSpecialty = null;
 
-    public Collection $latestAnnouncements;
-    public Collection $upcomingEvents;
+    public int $perPage = 4;
+
+    protected $queryString = [
+        'page' => ['except' => 1],
+    ];
 
     public function mount(): void
     {
-        $this->latestAnnouncements = collect();
-        $this->upcomingEvents = collect();
-
         $alumniId = $this->alumniId();
 
         if ($alumniId) {
             $this->loadDonationSummary($alumniId);
             $this->loadVolunteerInfo();
         }
-
-        $this->loadUpcomingEvents();
-
-        if ($alumniId && $this->upcomingEvents->isNotEmpty()) {
-            $this->loadMyEventRegistrations($alumniId);
-            $this->loadMyEventItemPayments($alumniId);
-        }
-
-        $this->loadLatestAnnouncements();
     }
 
     protected function alumniId(): ?int
@@ -54,41 +45,40 @@ class AlumniDashboard extends Component
         return Auth::user()?->alumni_id;
     }
 
-   protected function loadVolunteerInfo(): void
-{
-    $user = Auth::user()?->loadMissing('alumni.involvement');
+    protected function loadVolunteerInfo(): void
+    {
+        $user = Auth::user()?->loadMissing('alumni.involvement');
 
-    $involvement = $user?->alumni?->involvement;
+        $involvement = $user?->alumni?->involvement;
 
-    if (! $involvement) {
-        $this->hasVolunteerInfo = false;
-        $this->volunteerRoles = [];
-        $this->volunteerSpecialty = null;
-        return;
+        if (! $involvement) {
+            $this->hasVolunteerInfo = false;
+            $this->volunteerRoles = [];
+            $this->volunteerSpecialty = null;
+            return;
+        }
+
+        $roles = [];
+
+        if ((bool) $involvement->wants_committee_member) {
+            $roles[] = 'Committee Member';
+        }
+
+        if ((bool) $involvement->is_priest_concelebrate) {
+            $roles[] = 'Priest for Thanksgiving Mass';
+        }
+
+        if ((bool) $involvement->is_medical_practitioner) {
+            $roles[] = 'Medical Practitioner for Medical Mission';
+        }
+
+        $this->volunteerRoles = $roles;
+        $this->volunteerSpecialty = filled($involvement->medical_specialty)
+            ? $involvement->medical_specialty
+            : null;
+
+        $this->hasVolunteerInfo = ! empty($roles) || filled($this->volunteerSpecialty);
     }
-
-    $roles = [];
-
-    if ((bool) $involvement->wants_committee_member) {
-        $roles[] = 'Committee Member';
-    }
-
-    if ((bool) $involvement->is_priest_concelebrate) {
-        $roles[] = 'Priest for Thanksgiving Mass';
-    }
-
-    if ((bool) $involvement->is_medical_practitioner) {
-        $roles[] = 'Medical Practitioner for Medical Mission';
-    }
-
-    $this->volunteerRoles = $roles;
-    $this->volunteerSpecialty = filled($involvement->medical_specialty)
-        ? $involvement->medical_specialty
-        : null;
-
-    $this->hasVolunteerInfo =
-        ! empty($roles) || filled($this->volunteerSpecialty);
-}
 
     protected function loadDonationSummary(int $alumniId): void
     {
@@ -110,13 +100,9 @@ class AlumniDashboard extends Component
         $this->lastPaidAt = $lastPayment?->created_at?->format('M d, Y h:i A');
     }
 
-    protected function loadUpcomingEvents(): void
+    protected function getUpcomingEvents(): LengthAwarePaginator
     {
-        $this->upcomingEvents = Event::query()
-            ->with([
-                'registrationItems:id,event_id,event_schedule_id,name,description,price,is_required,is_active,sort_order',
-                'registrationItems.schedule:id,title,schedule_time',
-            ])
+        return Event::query()
             ->select([
                 'id',
                 'slug',
@@ -125,19 +111,17 @@ class AlumniDashboard extends Component
                 'event_date',
                 'registration_fee',
                 'dress_code',
+                'description',
                 'is_active',
             ])
             ->where('is_active', true)
             ->whereDate('event_date', '>=', now()->toDateString())
             ->orderBy('event_date')
-            ->limit(4)
-            ->get();
+            ->paginate($this->perPage);
     }
 
-    protected function loadMyEventRegistrations(int $alumniId): void
+    protected function loadMyEventRegistrations(int $alumniId, array $eventIds, $events): void
     {
-        $eventIds = $this->upcomingEvents->pluck('id')->all();
-
         if (empty($eventIds)) {
             $this->myEventRegs = [];
             return;
@@ -167,22 +151,21 @@ class AlumniDashboard extends Component
 
         $this->myEventRegs = $registrations
             ->keyBy('event_id')
-            ->map(function (EventRegistration $registration) {
-                $basePayment = $registration->payments
-                    ->firstWhere('event_registration_item_id', null);
+            ->map(function (EventRegistration $registration) use ($events) {
+                $basePayment = $registration->payments->firstWhere('event_registration_item_id', null);
 
                 return [
                     'id' => $registration->id,
                     'status' => $registration->status,
-                    'payment_status' => $this->mapBasePaymentStatus($registration, $basePayment),
+                    'payment_status' => $this->mapBasePaymentStatus($registration, $basePayment, $events),
                 ];
             })
             ->toArray();
     }
 
-    protected function mapBasePaymentStatus(EventRegistration $registration, $basePayment): string
+    protected function mapBasePaymentStatus(EventRegistration $registration, $basePayment, $events): string
     {
-        $event = $this->upcomingEvents->firstWhere('id', $registration->event_id);
+        $event = $events->getCollection()->firstWhere('id', $registration->event_id);
         $isPaidEvent = (int) ($event?->registration_fee ?? 0) > 0;
 
         if (! $isPaidEvent) {
@@ -201,98 +184,29 @@ class AlumniDashboard extends Component
         };
     }
 
-    protected function loadMyEventItemPayments(int $alumniId): void
+    public function updatingPage(): void
     {
-        $eventIds = $this->upcomingEvents->pluck('id')->all();
-
-        if (empty($eventIds)) {
-            $this->myEventItemPayments = [];
-            return;
-        }
-
-        $payments = Payment::query()
-            ->with([
-                'registration:id,event_id,alumni_id',
-            ])
-            ->select([
-                'id',
-                'registration_id',
-                'event_registration_item_id',
-                'status',
-                'created_at',
-            ])
-            ->whereNotNull('event_registration_item_id')
-            ->whereHas('registration', function ($query) use ($alumniId, $eventIds) {
-                $query->where('alumni_id', $alumniId)
-                    ->whereIn('event_id', $eventIds);
-            })
-            ->latest('id')
-            ->get();
-
-        $grouped = [];
-
-        foreach ($payments as $payment) {
-            $eventId = $payment->registration?->event_id;
-            $itemId = $payment->event_registration_item_id;
-
-            if (! $eventId || ! $itemId) {
-                continue;
-            }
-
-            if (! isset($grouped[$eventId][$itemId])) {
-                $grouped[$eventId][$itemId] = match ($payment->status) {
-                    'verified' => 'verified',
-                    'pending' => 'pending',
-                    'rejected' => 'rejected',
-                    default => 'unpaid',
-                };
-            }
-        }
-
-        $this->myEventItemPayments = $grouped;
-    }
-
-    protected function loadLatestAnnouncements(): void
-    {
-        $this->latestAnnouncements = Announcement::query()
-            ->select([
-                'id',
-                'title',
-                'body',
-                'created_at',
-                'published_at',
-                'pinned',
-            ])
-            ->where('is_published', true)
-            ->where(function ($query) {
-                $query->whereNull('published_at')
-                    ->orWhere('published_at', '<=', now());
-            })
-            ->where(function ($query) {
-                $query->whereNull('expires_at')
-                    ->orWhere('expires_at', '>', now());
-            })
-            ->latest('pinned')
-            ->latest('published_at')
-            ->latest('id')
-            ->limit(5)
-            ->get();
-    }
-
-    public function registerOrPay(int $eventId)
-    {
-        $alumniId = $this->alumniId();
-
-        abort_if(! $alumniId, 403);
-
-        $event = $this->upcomingEvents->firstWhere('id', $eventId)
-            ?? Event::query()->select(['id', 'slug'])->findOrFail($eventId);
-
-        return redirect()->route('alumni.events.show', ['event' => $event->slug]);
+        $this->myEventRegs = [];
     }
 
     public function render()
     {
-        return view('livewire.alumni-dashboard');
+        $user = Auth::user();
+        $alumniId = $this->alumniId();
+        $upcomingEvents = $this->getUpcomingEvents();
+
+        if ($alumniId) {
+            $this->loadMyEventRegistrations(
+                $alumniId,
+                $upcomingEvents->getCollection()->pluck('id')->all(),
+                $upcomingEvents
+            );
+        }
+
+        return view('livewire.alumni-dashboard', [
+            'user' => $user,
+            'alumni' => $user?->alumni,
+            'upcomingEvents' => $upcomingEvents,
+        ]);
     }
 }

@@ -29,10 +29,11 @@ class EventRegistrationPaymentPage extends Component
     public ?string $remarks = null;
 
     /**
-     * null = base registration fee
-     * int  = event_registration_items.id
+     * Allowed values:
+     * - "base"
+     * - "item_{id}"
      */
-    public ?int $selectedItemId = null;
+    public string $selectedItemId = 'base';
 
     public function mount(Event $event): void
     {
@@ -52,7 +53,6 @@ class EventRegistrationPaymentPage extends Component
                 ->orderBy('schedule_time'),
         ]);
 
-        // Registration must exist first
         $this->registration = EventRegistration::firstOrCreate(
             [
                 'event_id' => $this->event->id,
@@ -65,9 +65,7 @@ class EventRegistrationPaymentPage extends Component
         );
 
         $this->registrationItems = $this->event->registrationItems;
-
-        // Default selected target = base registration fee
-        $this->selectedItemId = null;
+        $this->selectedItemId = 'base';
 
         $this->refreshPaymentState();
     }
@@ -90,13 +88,28 @@ class EventRegistrationPaymentPage extends Component
         $this->remarks = null;
     }
 
-    public function getSelectedItemProperty()
+    protected function parsedItemId(): ?int
     {
-        if (! $this->selectedItemId) {
+        if ($this->selectedItemId === 'base') {
             return null;
         }
 
-        return $this->registrationItems->firstWhere('id', $this->selectedItemId);
+        if (str_starts_with($this->selectedItemId, 'item_')) {
+            return (int) str_replace('item_', '', $this->selectedItemId);
+        }
+
+        return null;
+    }
+
+    public function getSelectedItemProperty()
+    {
+        $itemId = $this->parsedItemId();
+
+        if (is_null($itemId)) {
+            return null;
+        }
+
+        return $this->registrationItems->firstWhere('id', $itemId);
     }
 
     public function getSelectedLabelProperty(): string
@@ -106,7 +119,9 @@ class EventRegistrationPaymentPage extends Component
 
     public function getAmountDueProperty(): int
     {
-        if ($this->selectedItemId) {
+        $itemId = $this->parsedItemId();
+
+        if ($itemId) {
             return (int) ($this->selectedItem?->price ?? 0);
         }
 
@@ -152,13 +167,15 @@ class EventRegistrationPaymentPage extends Component
 
     public function getPaymentStatusProperty(): string
     {
-        if (! $this->selectedItemId) {
+        $itemId = $this->parsedItemId();
+
+        if (is_null($itemId)) {
             return $this->basePaymentStatus;
         }
 
         $itemPayment = Payment::query()
             ->where('registration_id', $this->registration->id)
-            ->where('event_registration_item_id', $this->selectedItemId)
+            ->where('event_registration_item_id', $itemId)
             ->latest('id')
             ->first();
 
@@ -177,11 +194,13 @@ class EventRegistrationPaymentPage extends Component
 
     public function getCanSubmitProperty(): bool
     {
+        $itemId = $this->parsedItemId();
+
         if ($this->amountDue <= 0) {
             return false;
         }
 
-        if ($this->selectedItemId && ! $this->baseRegistrationSatisfied) {
+        if ($itemId && ! $this->baseRegistrationSatisfied) {
             return false;
         }
 
@@ -190,7 +209,8 @@ class EventRegistrationPaymentPage extends Component
 
     public function updatedSelectedItemId($value): void
     {
-        $this->selectedItemId = blank($value) ? null : (int) $value;
+        $this->selectedItemId = blank($value) ? 'base' : (string) $value;
+
         $this->resetValidation();
         $this->proof = null;
         $this->reference_number = null;
@@ -199,12 +219,14 @@ class EventRegistrationPaymentPage extends Component
 
     public function submitProof(): void
     {
+        $itemId = $this->parsedItemId();
+
         if ($this->amountDue <= 0) {
             session()->flash('error', 'The selected payment target does not require payment.');
             return;
         }
 
-        if ($this->selectedItemId && ! $this->baseRegistrationSatisfied) {
+        if ($itemId && ! $this->baseRegistrationSatisfied) {
             session()->flash('error', 'Please complete the event registration payment first before paying for add-on items.');
             return;
         }
@@ -215,19 +237,19 @@ class EventRegistrationPaymentPage extends Component
         }
 
         $validated = $this->validate([
-            'selectedItemId' => ['nullable', 'integer', 'exists:event_registration_items,id'],
+            'selectedItemId' => ['required', 'string'],
             'proof' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
             'reference_number' => ['nullable', 'string', 'max:100'],
             'remarks' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        DB::transaction(function () use ($validated) {
+        DB::transaction(function () use ($validated, $itemId) {
             $proofPath = $this->proof->storePublicly('event-payment-proofs', 's3');
 
             Payment::create([
                 'registration_id' => $this->registration->id,
                 'alumni_id' => $this->registration->alumni_id,
-                'event_registration_item_id' => $validated['selectedItemId'] ?? null,
+                'event_registration_item_id' => $itemId,
                 'amount' => $this->amountDue,
                 'mode' => 'manual',
                 'reference_number' => $validated['reference_number'] ?: null,
