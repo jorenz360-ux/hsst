@@ -698,13 +698,7 @@
 
     <script>
         const STEPS = [
-            {
-                short: "Account",
-                sub: "Username & email",
-                title: "Account setup",
-                desc: "Choose the login credentials for your alumni account.",
-            },
-            {
+             {
                 short: "Personal",
                 sub: "Name & graduation year",
                 title: "Personal info",
@@ -717,10 +711,16 @@
                 desc: "Provide your current mailing or residential address.",
             },
             {
-                short: "Security",
-                sub: "Password & volunteer interest",
-                title: "Security & involvement",
-                desc: "Set a secure password and optionally share your committee interest.",
+                short: "Interest",
+                sub: "volunteer interest",
+                title: "Involvement",
+                desc: "optionally share your committee interest",
+            },
+            {
+                short: "Account & Security",
+                sub: "Password",
+                title: "Security",
+                desc: "Set a secure password",
             },
         ];
 
