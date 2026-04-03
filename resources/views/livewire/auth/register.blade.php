@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create Account — HSST Alumni Portal</title>
+    <title>Create Account | HSST Alumni Portal</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -174,57 +174,10 @@
                             {{-- Body --}}
                             <div class="flex-1 px-4 py-6 sm:px-6 md:px-8 lg:px-12 xl:px-16 md:py-8 lg:py-10">
 
-                                {{-- PANEL 1 --}}
-                                <section id="panel-1" class="panel active">
-                                    <div class="mx-auto max-w-3xl rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
-                                        <div class="grid gap-5 md:grid-cols-2">
-                                            <div>
-                                                <label for="username" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    Username
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    id="username"
-                                                    name="username"
-                                                    value="{{ old('username') }}"
-                                                    placeholder="e.g. jdelacruz"
-                                                    autocomplete="username"
-                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                                                >
-                                                <p class="mt-2 text-xs leading-5 text-slate-400">
-                                                    This is what you'll use to sign in.
-                                                </p>
-                                                <p id="err-username" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
-                                                    @error('username'){{ $message }}@enderror
-                                                </p>
-                                            </div>
-
-                                            <div>
-                                                <label for="email" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    Email address
-                                                </label>
-                                                <input
-                                                    type="email"
-                                                    id="email"
-                                                    name="email"
-                                                    value="{{ old('email') }}"
-                                                    placeholder="you@example.com"
-                                                    autocomplete="email"
-                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                                                >
-                                                <p class="mt-2 text-xs leading-5 text-slate-400">
-                                                    For account notifications and recovery.
-                                                </p>
-                                                <p id="err-email" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
-                                                    @error('email'){{ $message }}@enderror
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
+                             
 
                                 {{-- PANEL 2 --}}
-                                <section id="panel-2" class="panel hidden">
+                                <section id="panel-1" class="panel active">
                                     <div class="mx-auto max-w-3xl rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
                                         <div class="grid gap-5 md:grid-cols-2">
                                             <div>
@@ -325,7 +278,7 @@
                                 </section>
 
                                 {{-- PANEL 3 --}}
-                                <section id="panel-3" class="panel hidden">
+                                <section id="panel-2" class="panel hidden">
                                     <div class="mx-auto max-w-3xl rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
                                         <div class="space-y-5">
                                             <div>
@@ -476,55 +429,9 @@
                                 </section>
 
                                 {{-- PANEL 4 --}}
-                                <section id="panel-4" class="panel hidden">
+                                <section id="panel-3" class="panel hidden">
                                     <div class="mx-auto max-w-3xl space-y-6 rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
 
-                                        <div class="grid gap-5 md:grid-cols-2">
-                                            <div>
-                                                <label for="password" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    Password
-                                                </label>
-                                                <input
-                                                    type="password"
-                                                    id="password"
-                                                    name="password"
-                                                    placeholder="Create a password"
-                                                    autocomplete="new-password"
-                                                    oninput="checkPasswordStrength(this.value)"
-                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                                                >
-
-                                                <div id="pwStrength" class="mt-3 flex gap-1">
-                                                    <div id="bar1" class="h-1 flex-1 rounded-full bg-slate-200"></div>
-                                                    <div id="bar2" class="h-1 flex-1 rounded-full bg-slate-200"></div>
-                                                    <div id="bar3" class="h-1 flex-1 rounded-full bg-slate-200"></div>
-                                                    <div id="bar4" class="h-1 flex-1 rounded-full bg-slate-200"></div>
-                                                </div>
-
-                                                <p id="pwLabel" class="mt-2 text-xs leading-5 text-slate-400">
-                                                    Use letters, numbers, and symbols for a stronger password.
-                                                </p>
-
-                                                <p id="err-password" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
-                                                    @error('password'){{ $message }}@enderror
-                                                </p>
-                                            </div>
-
-                                            <div>
-                                                <label for="password_confirmation" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    Confirm password
-                                                </label>
-                                                <input
-                                                    type="password"
-                                                    id="password_confirmation"
-                                                    name="password_confirmation"
-                                                    placeholder="Re-enter your password"
-                                                    autocomplete="new-password"
-                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                                                >
-                                                <p id="err-confirm" class="field-error mt-2 hidden text-xs leading-5 text-red-600"></p>
-                                            </div>
-                                        </div>
 
                                         {{-- Volunteer interest --}}
                                         <div class="rounded-[20px] border border-blue-100 bg-gradient-to-b from-blue-50 to-white p-5 sm:p-6">
@@ -648,6 +555,98 @@
 
                                         <div class="rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm leading-6 text-blue-900">
                                             By creating an account, you confirm that all information provided is accurate and that you are an alumnus or alumna of Holy Spirit School of Tagbilaran.
+                                        </div>
+                                    </div>
+                                </section>
+                                   {{-- PANEL 1 --}}
+                                <section id="panel-4" class="panel hidden">
+                                    <div class="mx-auto max-w-3xl rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
+                                        <div class="grid gap-5 md:grid-cols-2">
+                                            <div>
+                                                <label for="username" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Username
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="username"
+                                                    name="username"
+                                                    value="{{ old('username') }}"
+                                                    placeholder="e.g. jdelacruz"
+                                                    autocomplete="username"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                                <p class="mt-2 text-xs leading-5 text-slate-400">
+                                                    This is what you'll use to sign in.
+                                                </p>
+                                                <p id="err-username" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                    @error('username'){{ $message }}@enderror
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <label for="email" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Email address
+                                                </label>
+                                                <input
+                                                    type="email"
+                                                    id="email"
+                                                    name="email"
+                                                    value="{{ old('email') }}"
+                                                    placeholder="you@example.com"
+                                                    autocomplete="email"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                                <p class="mt-2 text-xs leading-5 text-slate-400">
+                                                    For account notifications and recovery.
+                                                </p>
+                                                <p id="err-email" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                    @error('email'){{ $message }}@enderror
+                                                </p>
+                                            </div>
+                                              <div>
+                                                <label for="password" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Password
+                                                </label>
+                                                <input
+                                                    type="password"
+                                                    id="password"
+                                                    name="password"
+                                                    placeholder="Create a password"
+                                                    autocomplete="new-password"
+                                                    oninput="checkPasswordStrength(this.value)"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+
+                                                <div id="pwStrength" class="mt-3 flex gap-1">
+                                                    <div id="bar1" class="h-1 flex-1 rounded-full bg-slate-200"></div>
+                                                    <div id="bar2" class="h-1 flex-1 rounded-full bg-slate-200"></div>
+                                                    <div id="bar3" class="h-1 flex-1 rounded-full bg-slate-200"></div>
+                                                    <div id="bar4" class="h-1 flex-1 rounded-full bg-slate-200"></div>
+                                                </div>
+
+                                                <p id="pwLabel" class="mt-2 text-xs leading-5 text-slate-400">
+                                                    Use letters, numbers, and symbols for a stronger password.
+                                                </p>
+
+                                                <p id="err-password" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                    @error('password'){{ $message }}@enderror
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <label for="password_confirmation" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Confirm password
+                                                </label>
+                                                <input
+                                                    type="password"
+                                                    id="password_confirmation"
+                                                    name="password_confirmation"
+                                                    placeholder="Re-enter your password"
+                                                    autocomplete="new-password"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                                <p id="err-confirm" class="field-error mt-2 hidden text-xs leading-5 text-red-600"></p>
+                                            </div>
                                         </div>
                                     </div>
                                 </section>
@@ -833,110 +832,110 @@
             }
         }
 
-        function validateStep(step) {
-            clearErrors();
-            let valid = true;
+      function validateStep(step) {
+    clearErrors();
+    let valid = true;
 
-            if (step === 1) {
-                const username = document.getElementById("username").value.trim();
-                const email = document.getElementById("email").value.trim();
+    if (step === 1) {
+        const fname = document.getElementById("fname").value.trim();
+        const lname = document.getElementById("lname").value.trim();
+        const yeargrad = document.getElementById("yeargrad").value.trim();
 
-                if (!username) {
-                    showError("username", "err-username", "Please enter a username.");
-                    valid = false;
-                }
-
-                if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                    showError("email", "err-email", "Please enter a valid email address.");
-                    valid = false;
-                }
-            }
-
-            if (step === 2) {
-                const fname = document.getElementById("fname").value.trim();
-                const lname = document.getElementById("lname").value.trim();
-                const yeargrad = document.getElementById("yeargrad").value.trim();
-
-                if (!fname) {
-                    showError("fname", "err-fname", "First name is required.");
-                    valid = false;
-                }
-
-                if (!lname) {
-                    showError("lname", "err-lname", "Last name is required.");
-                    valid = false;
-                }
-
-                if (!yeargrad || yeargrad < 1900 || yeargrad > new Date().getFullYear()) {
-                    showError(
-                        "yeargrad",
-                        "err-yeargrad",
-                        `Please enter a valid graduation year (1900–${new Date().getFullYear()}).`
-                    );
-                    valid = false;
-                }
-            }
-
-            if (step === 3) {
-                const addr1 = document.getElementById("address_line_1").value.trim();
-                const city = document.getElementById("city").value.trim();
-                const province = document.getElementById("state_province").value.trim();
-                const postal = document.getElementById("postal_code").value.trim();
-                const country = document.getElementById("country").value.trim();
-
-                if (!addr1) {
-                    showError("address_line_1", "err-addr1", "Street address is required.");
-                    valid = false;
-                }
-                if (!city) {
-                    showError("city", "err-city", "City / municipality is required.");
-                    valid = false;
-                }
-                if (!province) {
-                    showError("state_province", "err-province", "Province / state is required.");
-                    valid = false;
-                }
-                if (!postal) {
-                    showError("postal_code", "err-postal", "Postal / ZIP code is required.");
-                    valid = false;
-                }
-                if (!country) {
-                    showError("country", "err-country", "Country is required.");
-                    valid = false;
-                }
-            }
-
-            if (step === 4) {
-                const pw = document.getElementById("password").value;
-                const pw2 = document.getElementById("password_confirmation").value;
-                const volunteerInterest = document.querySelector('input[name="volunteer_interest"]:checked')?.value;
-                const selectedCommittees = document.querySelectorAll('input[name="committees[]"]:checked');
-
-                if (!pw) {
-                    showError("password", "err-password", "Password is required.");
-                    valid = false;
-                }
-
-                if (!pw2) {
-                    showError("password_confirmation", "err-confirm", "Please confirm your password.");
-                    valid = false;
-                } else if (pw !== pw2) {
-                    showError("password_confirmation", "err-confirm", "Passwords do not match.");
-                    valid = false;
-                }
-
-                if (volunteerInterest === "yes" && selectedCommittees.length === 0) {
-                    const err = document.getElementById("err-committees");
-                    if (err) {
-                        err.textContent = "Please choose at least one committee if you want to volunteer.";
-                        err.classList.remove("hidden");
-                    }
-                    valid = false;
-                }
-            }
-
-            return valid;
+        if (!fname) {
+            showError("fname", "err-fname", "First name is required.");
+            valid = false;
         }
+
+        if (!lname) {
+            showError("lname", "err-lname", "Last name is required.");
+            valid = false;
+        }
+
+        if (!yeargrad || yeargrad < 1900 || yeargrad > new Date().getFullYear()) {
+            showError(
+                "yeargrad",
+                "err-yeargrad",
+                `Please enter a valid graduation year (1900–${new Date().getFullYear()}).`
+            );
+            valid = false;
+        }
+    }
+
+    if (step === 2) {
+        const addr1 = document.getElementById("address_line_1").value.trim();
+        const city = document.getElementById("city").value.trim();
+        const province = document.getElementById("state_province").value.trim();
+        const postal = document.getElementById("postal_code").value.trim();
+        const country = document.getElementById("country").value.trim();
+
+        if (!addr1) {
+            showError("address_line_1", "err-addr1", "Street address is required.");
+            valid = false;
+        }
+        if (!city) {
+            showError("city", "err-city", "City / municipality is required.");
+            valid = false;
+        }
+        if (!province) {
+            showError("state_province", "err-province", "Province / state is required.");
+            valid = false;
+        }
+        if (!postal) {
+            showError("postal_code", "err-postal", "Postal / ZIP code is required.");
+            valid = false;
+        }
+        if (!country) {
+            showError("country", "err-country", "Country is required.");
+            valid = false;
+        }
+    }
+
+    if (step === 3) {
+        const volunteerInterest = document.querySelector('input[name="volunteer_interest"]:checked')?.value;
+        const selectedCommittees = document.querySelectorAll('input[name="committees[]"]:checked');
+
+        if (volunteerInterest === "yes" && selectedCommittees.length === 0) {
+            const err = document.getElementById("err-committees");
+            if (err) {
+                err.textContent = "Please choose at least one committee if you want to volunteer.";
+                err.classList.remove("hidden");
+            }
+            valid = false;
+        }
+    }
+
+    if (step === 4) {
+        const username = document.getElementById("username").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const pw = document.getElementById("password").value;
+        const pw2 = document.getElementById("password_confirmation").value;
+
+        if (!username) {
+            showError("username", "err-username", "Please enter a username.");
+            valid = false;
+        }
+
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showError("email", "err-email", "Please enter a valid email address.");
+            valid = false;
+        }
+
+        if (!pw) {
+            showError("password", "err-password", "Password is required.");
+            valid = false;
+        }
+
+        if (!pw2) {
+            showError("password_confirmation", "err-confirm", "Please confirm your password.");
+            valid = false;
+        } else if (pw !== pw2) {
+            showError("password_confirmation", "err-confirm", "Passwords do not match.");
+            valid = false;
+        }
+    }
+
+    return valid;
+}
 
         function nextStep() {
             if (isSubmitting) return;
