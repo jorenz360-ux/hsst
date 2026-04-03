@@ -15,7 +15,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-#[Title('Admin | Reports')]
+#[Title('Reports')]
 class Reports extends Component
 {
     use WithPagination;

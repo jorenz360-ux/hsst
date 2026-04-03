@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Throwable;
-
+use App\Models\Committee;
+use App\Models\VolunteerSignup;
 class CreateNewUser implements CreatesNewUsers
 {
     use PasswordValidationRules;
@@ -34,7 +35,7 @@ class CreateNewUser implements CreatesNewUsers
                 $user = $this->createUserAccount($validated, $alumni);
 
                 $user->assignRole('alumni');
-
+                $this->handleVolunteerSignup($validated, $user, $alumni);
                 return $user;
             }, 3);
         } catch (Throwable $e) {
@@ -42,7 +43,35 @@ class CreateNewUser implements CreatesNewUsers
             throw $e;
         }
     }
+protected function handleVolunteerSignup(array $validated, User $user, Alumni $alumni): void
+{
+    // If not interested → skip
+    if (($validated['volunteer_interest'] ?? 'later') !== 'yes') {
+        return;
+    }
 
+    // If no committees selected → skip
+    if (empty($validated['committees'])) {
+        return;
+    }
+
+   foreach ($validated['committees'] as $committeeId) {
+
+    $committee = Committee::find($committeeId);
+
+    if (!$committee) {
+        continue;
+    }
+
+    VolunteerSignup::create([
+        'user_id' => $user->id,
+        'alumni_id' => $alumni->id,
+        'committee_id' => $committee->id,
+        'notes' => $validated['volunteer_notes'] ?? null,
+        'status' => 'pending',
+    ]);
+}
+}
     /**
      * @param array<string, mixed> $input
      * @return array<string, mixed>
@@ -52,7 +81,7 @@ class CreateNewUser implements CreatesNewUsers
         return Validator::make($input, [
             'username' => [
                 'required',
-                'string',
+                'string', 
                 'max:255',
                 Rule::unique(User::class, 'username'),
             ],
@@ -84,6 +113,11 @@ class CreateNewUser implements CreatesNewUsers
             'place_id' => ['nullable', 'string', 'max:255'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+
+            'volunteer_interest' => ['nullable', 'in:yes,later'],
+            'committees' => ['nullable', 'array'],
+            'committees.*' => ['string', 'max:150'],
+            'volunteer_notes' => ['nullable', 'string', 'max:1000'],
         ])->validate();
     }
 

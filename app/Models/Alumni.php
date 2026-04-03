@@ -54,5 +54,15 @@ public function involvement()
 {
     return $this->hasOne(\App\Models\AlumniInvolvement::class);
 }
+public function rsvpEvents()
+{
+    return $this->belongsToMany(Event::class, 'event_rsvps')
+        ->withPivot(['status', 'guest_count', 'remarks'])
+        ->withTimestamps();
+}
+public function eventRsvps()
+{
+    return $this->hasMany(\App\Models\EventRsvp::class);
+}
 }
 

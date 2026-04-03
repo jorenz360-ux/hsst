@@ -35,6 +35,15 @@
     ::file-selector-button {
         border-color: var(--color-gray-200, currentColor);
     }
+
+    /* Senior-friendly base: larger text, better line height */
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        line-height: 1.6;
+    }
 }
 
 [data-flux-field]:not(ui-radio, ui-checkbox) {

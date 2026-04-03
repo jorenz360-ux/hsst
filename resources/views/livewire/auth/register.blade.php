@@ -26,6 +26,17 @@
     </style>
 </head>
 <body class="h-full bg-slate-100 text-slate-900 antialiased">
+  
+      @php
+    $committeeOptions = \App\Models\Committee::query()
+        ->where('is_active', true)
+        ->orderBy('name')
+        ->get();
+
+    $oldVolunteerInterest = old('volunteer_interest', 'later');
+    $oldCommittees = old('committees', []);
+    @endphp
+
     <div class="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.08),transparent_24%),linear-gradient(180deg,#f8fbff_0%,#eef3fb_100%)] px-0 sm:px-4 lg:px-0">
         <div class="mx-auto min-h-screen max-w-7xl">
             <div class="w-full overflow-hidden bg-white shadow-none sm:rounded-[28px] sm:border sm:border-slate-200/80 sm:shadow-[0_24px_60px_rgba(15,23,42,0.12)] lg:rounded-none lg:border-0 lg:shadow-none">
@@ -277,7 +288,7 @@
                                                     name="yeargrad"
                                                     value="{{ old('yeargrad') }}"
                                                     placeholder="e.g. 2015"
-                                                    min="1950"
+                                                    min="1900"
                                                     max="{{ now()->year }}"
                                                     class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
                                                 >
@@ -466,7 +477,8 @@
 
                                 {{-- PANEL 4 --}}
                                 <section id="panel-4" class="panel hidden">
-                                    <div class="mx-auto max-w-3xl rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
+                                    <div class="mx-auto max-w-3xl space-y-6 rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
+
                                         <div class="grid gap-5 md:grid-cols-2">
                                             <div>
                                                 <label for="password" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
@@ -514,7 +526,127 @@
                                             </div>
                                         </div>
 
-                                        <div class="mt-6 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm leading-6 text-blue-900">
+                                        {{-- Volunteer interest --}}
+                                        <div class="rounded-[20px] border border-blue-100 bg-gradient-to-b from-blue-50 to-white p-5 sm:p-6">
+                                            <div class="flex items-start gap-3">
+                                                <div class="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-blue-100 text-blue-700">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" />
+                                                    </svg>
+                                                </div>
+
+                                                <div class="min-w-0 flex-1">
+                                                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-700">
+                                                        Volunteer Committee Interest
+                                                    </p>
+                                                    <h3 class="mt-2 font-display text-[1.45rem] leading-tight text-slate-900">
+                                                        Would you like to volunteer?
+                                                    </h3>
+                                                    <p class="mt-2 max-w-2xl text-sm leading-7 text-slate-600">
+                                                        This part is optional. You may express interest now and update it again after logging in.
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-5 grid gap-3 sm:grid-cols-2">
+                                                <label class="cursor-pointer rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-blue-300 hover:bg-blue-50/50">
+                                                    <div class="flex items-start gap-3">
+                                                        <input
+                                                            type="radio"
+                                                            name="volunteer_interest"
+                                                            value="yes"
+                                                            class="mt-1 h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500"
+                                                            {{ $oldVolunteerInterest === 'yes' ? 'checked' : '' }}
+                                                            onchange="toggleVolunteerFields()"
+                                                        >
+                                                        <div>
+                                                            <p class="text-sm font-bold text-slate-900">Yes, I want to volunteer</p>
+                                                            <p class="mt-1 text-xs leading-5 text-slate-500">
+                                                                I’m interested in joining one or more committees.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </label>
+
+                                                <label class="cursor-pointer rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-slate-300 hover:bg-slate-50">
+                                                    <div class="flex items-start gap-3">
+                                                        <input
+                                                            type="radio"
+                                                            name="volunteer_interest"
+                                                            value="later"
+                                                            class="mt-1 h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500"
+                                                            {{ $oldVolunteerInterest !== 'yes' ? 'checked' : '' }}
+                                                            onchange="toggleVolunteerFields()"
+                                                        >
+                                                        <div>
+                                                            <p class="text-sm font-bold text-slate-900">Maybe later</p>
+                                                            <p class="mt-1 text-xs leading-5 text-slate-500">
+                                                                Create my account first. I can decide after logging in.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+
+                                            <p id="err-volunteer-interest" class="field-error mt-3 hidden text-xs leading-5 text-red-600">
+                                                @error('volunteer_interest'){{ $message }}@enderror
+                                            </p>
+
+                                            <div id="volunteerFields" class="{{ $oldVolunteerInterest === 'yes' ? '' : 'hidden' }} mt-6 space-y-5 border-t border-blue-100 pt-5">
+                                                <div>
+                                                    <label class="mb-3 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                        Select committee(s) you are interested in
+                                                    </label>
+
+                                                    <div class="grid gap-3 sm:grid-cols-2">
+                                                       @foreach ($committeeOptions as $committee)
+                                                            <label class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 transition hover:border-blue-300 hover:bg-blue-50/50">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    name="committees[]"
+                                                                    value="{{ $committee->id }}"
+                                                                    class="mt-1 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                                                    {{ in_array($committee->id, $oldCommittees) ? 'checked' : '' }}
+                                                                >
+                                                                <span class="text-sm leading-6 text-slate-700">
+                                                                    {{ $committee->name }}
+                                                                </span>
+                                                            </label>
+                                                        @endforeach
+                                                    </div>
+
+                                                    <p class="mt-2 text-xs leading-5 text-slate-400">
+                                                        You may choose more than one. Organizers can review and confirm assignments later.
+                                                    </p>
+
+                                                    <p id="err-committees" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                        @error('committees'){{ $message }}@enderror
+                                                        @error('committees.*'){{ $message }}@enderror
+                                                    </p>
+                                                </div>
+
+                                                <div>
+                                                    <label for="volunteer_notes" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                        Skills / notes <span class="font-normal text-slate-400">(optional)</span>
+                                                    </label>
+                                                    <textarea
+                                                        id="volunteer_notes"
+                                                        name="volunteer_notes"
+                                                        rows="4"
+                                                        placeholder="Example: I can help with logistics, hosting, design, documentation, sponsorships, medical support, or coordination."
+                                                        class="w-full rounded-[14px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+                                                    >{{ old('volunteer_notes') }}</textarea>
+                                                    <p class="mt-2 text-xs leading-5 text-slate-400">
+                                                        Share any skills, experience, or preferred role that may help the organizers.
+                                                    </p>
+                                                    <p id="err-volunteer-notes" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                        @error('volunteer_notes'){{ $message }}@enderror
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm leading-6 text-blue-900">
                                             By creating an account, you confirm that all information provided is accurate and that you are an alumnus or alumna of Holy Spirit School of Tagbilaran.
                                         </div>
                                     </div>
@@ -587,9 +719,9 @@
             },
             {
                 short: "Security",
-                sub: "Password & confirm",
-                title: "Security setup",
-                desc: "Set a secure password to complete your registration.",
+                sub: "Password & volunteer interest",
+                title: "Security & involvement",
+                desc: "Set a secure password and optionally share your committee interest.",
             },
         ];
 
@@ -688,6 +820,19 @@
             }
         }
 
+        function toggleVolunteerFields() {
+            const selected = document.querySelector('input[name="volunteer_interest"]:checked')?.value;
+            const wrap = document.getElementById("volunteerFields");
+
+            if (!wrap) return;
+
+            if (selected === "yes") {
+                wrap.classList.remove("hidden");
+            } else {
+                wrap.classList.add("hidden");
+            }
+        }
+
         function validateStep(step) {
             clearErrors();
             let valid = true;
@@ -722,14 +867,14 @@
                     valid = false;
                 }
 
-              if (!yeargrad || yeargrad < 1900 || yeargrad > new Date().getFullYear()) {
-                showError(
-                    "yeargrad",
-                    "err-yeargrad",
-                    `Please enter a valid graduation year (1900–${new Date().getFullYear()}).`
-                );
-                valid = false;
-            }
+                if (!yeargrad || yeargrad < 1900 || yeargrad > new Date().getFullYear()) {
+                    showError(
+                        "yeargrad",
+                        "err-yeargrad",
+                        `Please enter a valid graduation year (1900–${new Date().getFullYear()}).`
+                    );
+                    valid = false;
+                }
             }
 
             if (step === 3) {
@@ -764,6 +909,8 @@
             if (step === 4) {
                 const pw = document.getElementById("password").value;
                 const pw2 = document.getElementById("password_confirmation").value;
+                const volunteerInterest = document.querySelector('input[name="volunteer_interest"]:checked')?.value;
+                const selectedCommittees = document.querySelectorAll('input[name="committees[]"]:checked');
 
                 if (!pw) {
                     showError("password", "err-password", "Password is required.");
@@ -775,6 +922,15 @@
                     valid = false;
                 } else if (pw !== pw2) {
                     showError("password_confirmation", "err-confirm", "Passwords do not match.");
+                    valid = false;
+                }
+
+                if (volunteerInterest === "yes" && selectedCommittees.length === 0) {
+                    const err = document.getElementById("err-committees");
+                    if (err) {
+                        err.textContent = "Please choose at least one committee if you want to volunteer.";
+                        err.classList.remove("hidden");
+                    }
                     valid = false;
                 }
             }
@@ -805,6 +961,10 @@
                             initGoogleAddressAutocomplete();
                         }
                     }, 200);
+                }
+
+                if (currentStep === 4) {
+                    setTimeout(() => toggleVolunteerFields(), 50);
                 }
             } else {
                 const btn = document.getElementById("btnNext");
@@ -959,6 +1119,10 @@
                         document.getElementById("addr2wrap").classList.remove("hidden");
                     }
 
+                    if (step === 4) {
+                        toggleVolunteerFields();
+                    }
+
                     panel.querySelectorAll(".field-error").forEach((el) => {
                         if (el.textContent.trim() !== "") el.classList.remove("hidden");
                     });
@@ -971,6 +1135,7 @@
         buildNav();
         updateHeader();
         jumpToErrorStep();
+        toggleVolunteerFields();
     </script>
 
     @if(config('services.google_maps.api_key'))

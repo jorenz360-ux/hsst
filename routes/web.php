@@ -20,6 +20,17 @@ use App\Livewire\Donations;
 use App\Http\Controllers\Welcome;
 
 use App\Http\Controllers\HistoryController;
+use App\Livewire\BatchRepReports;
+use App\Livewire\EventParticipationPage;
+
+
+Route::get('/batch-reports', BatchRepReports::class)
+    ->middleware(['auth', 'role:batch-representative'])
+    ->name('reports.batch-rep');
+
+Route::get('/alumni/events/{event}', EventParticipationPage::class)
+    ->middleware(['auth'])
+    ->name('alumni.events.show');
 
 Route::get('/history', [HistoryController::class, 'index'])->name('history');
 
@@ -39,8 +50,8 @@ Route::get('/', [Welcome::class, 'index'])->name('home');
 
 
 
-Route::get('/alumni/events/{event}', EventRegistrationPaymentPage::class)
-    ->name('alumni.events.show');
+// Route::get('/alumni/events/{event}', EventRegistrationPaymentPage::class)
+//     ->name('alumni.events.show');
 
 Route::get('/about-us', function () {
     return view('public/about-us');

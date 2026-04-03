@@ -80,56 +80,108 @@
                             </span>
                         </div>
                     </div>
+<div class="p-4 sm:p-5">
+    @if ($isPastEvent)
+        <div class="rounded-xl border border-slate-500/20 bg-slate-500/10 px-4 py-4 text-sm text-slate-300 sm:rounded-2xl">
+            This event has already ended. RSVP is now closed.
+        </div>
+    @else
+        <div class="space-y-3">
+            <p class="text-sm font-medium text-white">Will you attend this event?</p>
 
-                    <div class="p-4 sm:p-5">
-                        @if ($isPastEvent)
-                            <div class="rounded-xl border border-slate-500/20 bg-slate-500/10 px-4 py-4 text-sm text-slate-300 sm:rounded-2xl">
-                                This event has already ended. RSVP is now closed.
-                            </div>
-                        @else
-                            <div class="grid gap-3 sm:grid-cols-3">
-                                <button
-                                    type="button"
-                                    wire:click="setRsvp('attending')"
-                                    class="inline-flex items-center justify-center rounded-xl border px-4 py-3 text-sm font-semibold transition sm:rounded-2xl
-                                        {{ $currentStatus === 'attending'
-                                            ? 'border-emerald-400/30 bg-emerald-500/15 text-emerald-300'
-                                            : 'border-white/10 bg-white/5 text-white hover:bg-white/10' }}">
-                                    Attend
-                                </button>
-
-                                <button
-                                    type="button"
-                                    wire:click="setRsvp('maybe')"
-                                    class="inline-flex items-center justify-center rounded-xl border px-4 py-3 text-sm font-semibold transition sm:rounded-2xl
-                                        {{ $currentStatus === 'maybe'
-                                            ? 'border-amber-400/30 bg-amber-500/15 text-amber-300'
-                                            : 'border-white/10 bg-white/5 text-white hover:bg-white/10' }}">
-                                    Maybe
-                                </button>
-
-                                <button
-                                    type="button"
-                                    wire:click="setRsvp('not_attending')"
-                                    class="inline-flex items-center justify-center rounded-xl border px-4 py-3 text-sm font-semibold transition sm:rounded-2xl
-                                        {{ $currentStatus === 'not_attending'
-                                            ? 'border-rose-400/30 bg-rose-500/15 text-rose-300'
-                                            : 'border-white/10 bg-white/5 text-white hover:bg-white/10' }}">
-                                    Not Attending
-                                </button>
-                            </div>
-
-                            <div class="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 sm:rounded-2xl">
-                                <p class="text-[11px] uppercase tracking-wide text-slate-500">Your Current Response</p>
-                                <p class="mt-2 text-sm font-medium text-white">
-                                    {{ $statusLabel }}
-                                </p>
-                                <p class="mt-2 text-sm text-slate-400">
-                                    You can still update your response anytime before the event schedule closes.
-                                </p>
-                            </div>
-                        @endif
+            <div class="grid gap-3 sm:grid-cols-3">
+                <label for="rsvp-attending"
+                    class="cursor-pointer rounded-xl border px-4 py-4 transition sm:rounded-2xl
+                    {{ $rsvpStatus === 'attending'
+                        ? 'border-emerald-400/30 bg-emerald-500/15 text-emerald-300'
+                        : 'border-white/10 bg-white/5 text-white hover:bg-white/10' }}">
+                    <div class="flex items-start gap-3">
+                        <input
+                            id="rsvp-attending"
+                            type="radio"
+                            wire:model.live="rsvpStatus"
+                            value="attending"
+                            class="mt-1 h-4 w-4 border-slate-500 bg-slate-900 text-emerald-500 focus:ring-emerald-500"
+                        >
+                        <div>
+                            <p class="text-sm font-semibold">Attend</p>
+                            <p class="mt-1 text-xs text-slate-400">
+                                I plan to join this event.
+                            </p>
+                        </div>
                     </div>
+                </label>
+
+                <label for="rsvp-maybe"
+                    class="cursor-pointer rounded-xl border px-4 py-4 transition sm:rounded-2xl
+                    {{ $rsvpStatus === 'maybe'
+                        ? 'border-amber-400/30 bg-amber-500/15 text-amber-300'
+                        : 'border-white/10 bg-white/5 text-white hover:bg-white/10' }}">
+                    <div class="flex items-start gap-3">
+                        <input
+                            id="rsvp-maybe"
+                            type="radio"
+                            wire:model.live="rsvpStatus"
+                            value="maybe"
+                            class="mt-1 h-4 w-4 border-slate-500 bg-slate-900 text-amber-500 focus:ring-amber-500"
+                        >
+                        <div>
+                            <p class="text-sm font-semibold">Maybe</p>
+                            <p class="mt-1 text-xs text-slate-400">
+                                I am still unsure for now.
+                            </p>
+                        </div>
+                    </div>
+                </label>
+
+                <label for="rsvp-not-attending"
+                    class="cursor-pointer rounded-xl border px-4 py-4 transition sm:rounded-2xl
+                    {{ $rsvpStatus === 'not_attending'
+                        ? 'border-rose-400/30 bg-rose-500/15 text-rose-300'
+                        : 'border-white/10 bg-white/5 text-white hover:bg-white/10' }}">
+                    <div class="flex items-start gap-3">
+                        <input
+                            id="rsvp-not-attending"
+                            type="radio"
+                            wire:model.live="rsvpStatus"
+                            value="not_attending"
+                            class="mt-1 h-4 w-4 border-slate-500 bg-slate-900 text-rose-500 focus:ring-rose-500"
+                        >
+                        <div>
+                            <p class="text-sm font-semibold">Not Attending</p>
+                            <p class="mt-1 text-xs text-slate-400">
+                                I will not be able to attend.
+                            </p>
+                        </div>
+                    </div>
+                </label>
+            </div>
+
+            <div class="flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-[11px] uppercase tracking-wide text-slate-500">Current Response</p>
+                    <p class="mt-1 text-sm font-medium text-white">
+                        {{ $statusLabel }}
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    wire:click="saveRsvp"
+                    class="inline-flex items-center justify-center rounded-xl bg-[#1E3A8A] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#2746c7] sm:rounded-2xl"
+                >
+                    Save RSVP
+                </button>
+            </div>
+
+            <div class="rounded-xl border border-white/10 bg-white/5 p-4 sm:rounded-2xl">
+                <p class="text-sm text-slate-400">
+                    You can still update your response anytime before the event schedule closes.
+                </p>
+            </div>
+        </div>
+    @endif
+</div>
                 </section>
 
                 {{-- Event Summary --}}

@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Models\Alumni;
 use App\Models\Announcement;
-use App\Models\Donation;
 use App\Models\Event;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
@@ -26,12 +25,6 @@ class BatchRepDashboard extends Component
         $batchAlumniQuery = Alumni::query()
             ->where('batch_id', $batchId);
 
-        $paidBatchDonationsQuery = Donation::query()
-            ->whereNotNull('paid_at')
-            ->whereHas('alumni', function ($query) use ($batchId) {
-                $query->where('batch_id', $batchId);
-            });
-
         $upcomingEventsQuery = Event::query()
             ->where('is_active', true)
             ->whereDate('event_date', '>=', $today);
@@ -44,15 +37,26 @@ class BatchRepDashboard extends Component
 
         $upcomingEventsCount = (clone $upcomingEventsQuery)->count();
 
-        $batchDonationTotal = (clone $paidBatchDonationsQuery)->sum('amount');
+        $respondedMembersCount = Alumni::query()
+            ->where('batch_id', $batchId)
+            ->whereHas('eventRsvps.event', function ($query) use ($today) {
+                $query->where('is_active', true)
+                    ->whereDate('event_date', '>=', $today);
+            })
+            ->count();
 
-        $batchDonationsThisMonth = (clone $paidBatchDonationsQuery)
-            ->whereYear('paid_at', $now->year)
-            ->whereMonth('paid_at', $now->month)
-            ->sum('amount');
+        $membersWithoutRsvpCount = Alumni::query()
+            ->where('batch_id', $batchId)
+            ->whereDoesntHave('eventRsvps.event', function ($query) use ($today) {
+                $query->where('is_active', true)
+                    ->whereDate('event_date', '>=', $today);
+            })
+            ->count();
 
         $batchMembers = (clone $batchAlumniQuery)
-            ->with('user:id,alumni_id,username,email')
+            ->with([
+                'user:id,alumni_id,username,email',
+            ])
             ->orderBy('lname')
             ->orderBy('fname')
             ->limit(10)
@@ -82,8 +86,8 @@ class BatchRepDashboard extends Component
             'batchAlumniCount' => $batchAlumniCount,
             'registeredUsersCount' => $registeredUsersCount,
             'upcomingEventsCount' => $upcomingEventsCount,
-            'batchDonationTotal' => $batchDonationTotal,
-            'batchDonationsThisMonth' => $batchDonationsThisMonth,
+            'respondedMembersCount' => $respondedMembersCount,
+            'membersWithoutRsvpCount' => $membersWithoutRsvpCount,
             'batchMembers' => $batchMembers,
             'upcomingEvents' => $upcomingEvents,
             'announcements' => $announcements,

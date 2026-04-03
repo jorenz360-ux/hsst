@@ -41,45 +41,53 @@
             </div>
         </section>
 
-        {{-- Tabs --}}
-        <div class="rounded-[24px] border border-white/10 bg-zinc-900/80 p-1.5 shadow-[0_10px_30px_rgba(0,0,0,0.25)] backdrop-blur">
-            <div class="grid grid-cols-1 gap-1.5 md:grid-cols-4">
-                <button
-                    wire:click="$set('tab', 'donations')"
-                    class="{{ $tab === 'donations'
-                        ? 'bg-amber-500 text-zinc-950 shadow-[0_8px_24px_rgba(245,158,11,0.28)]'
-                        : 'text-zinc-400 hover:bg-white/[0.04]' }} rounded-2xl px-4 py-3 text-sm font-semibold transition"
-                >
-                    Donation Report
-                </button>
-
-                <button
-                    wire:click="$set('tab', 'batches')"
-                    class="{{ $tab === 'batches'
-                        ? 'bg-violet-500 text-white shadow-[0_8px_24px_rgba(139,92,246,0.28)]'
-                        : 'text-zinc-400 hover:bg-white/[0.04]' }} rounded-2xl px-4 py-3 text-sm font-semibold transition"
-                >
-                    By Batch Report
-                </button>
-
-                <button
-                    wire:click="$set('tab', 'events')"
-                    class="{{ $tab === 'events'
-                        ? 'bg-emerald-500 text-zinc-950 shadow-[0_8px_24px_rgba(16,185,129,0.28)]'
-                        : 'text-zinc-400 hover:bg-white/[0.04]' }} rounded-2xl px-4 py-3 text-sm font-semibold transition"
-                >
-                    Event Registrations
-                </button>
-                <button
-                    wire:click="$set('tab', 'involvement')"
-                    class="{{ $tab === 'involvement'
-                        ? 'bg-orange-500 text-zinc-950 shadow-[0_8px_24px_rgba(249,115,22,0.28)]'
-                        : 'text-zinc-400 hover:bg-white/[0.04]' }} rounded-2xl px-4 py-3 text-sm font-semibold transition"
-                >
-                    Alumni Involvement
-                </button>
-            </div>
+       {{-- Report Selector --}}
+<section class="rounded-[24px] border border-white/10 bg-zinc-900/80 p-4 shadow-[0_10px_30px_rgba(0,0,0,0.25)] backdrop-blur">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div class="max-w-2xl">
+            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">
+                Report View
+            </p>
+            <h2 class="mt-2 text-lg font-semibold text-white">
+                Select a report module
+            </h2>
+            <p class="mt-1 text-sm text-zinc-400">
+                Switch between donation, batch, event, and involvement reports from one dropdown.
+            </p>
         </div>
+
+        <div class="w-full lg:max-w-sm">
+            <label class="mb-2 block text-sm font-medium text-zinc-300">
+                Report Type
+            </label>
+
+            <select
+                wire:model.live="tab"
+                class="w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20"
+            >
+                <option value="donations">Donation Report</option>
+                <option value="batches">By Batch Report</option>
+                <option value="events">Event Registrations</option>
+                <option value="involvement">Alumni Involvement</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="mt-4 flex flex-wrap gap-3">
+        <div class="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-2 text-xs uppercase tracking-[0.18em] text-zinc-400">
+            Current View:
+            <span class="ml-1 text-white">
+                {{ match($tab) {
+                    'donations' => 'Donation Report',
+                    'batches' => 'By Batch Report',
+                    'events' => 'Event Registrations',
+                    'involvement' => 'Alumni Involvement',
+                    default => 'Donation Report',
+                } }}
+            </span>
+        </div>
+    </div>
+</section>
 
         {{-- Global Batch Scope --}}
         <section class="rounded-[24px] border border-white/10 bg-zinc-900/70 p-6 shadow-[0_12px_32px_rgba(0,0,0,0.22)] backdrop-blur">

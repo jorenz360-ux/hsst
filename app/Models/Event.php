@@ -100,4 +100,12 @@ class Event extends Model
     {
         return 'slug';
     }
+    public function rsvps()
+{
+    return $this->hasMany(EventRsvp::class);
+}
+public function rsvpForAlumni($alumniId)
+{
+    return $this->rsvps()->where('alumni_id', $alumniId)->first();
+}
 }

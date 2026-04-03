@@ -7,7 +7,7 @@
                     Batch Representative Dashboard
                 </h1>
                 <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                    Monitor your batch members, donations, upcoming events, and announcements.
+                    Monitor your batch members, track attendance responses, review upcoming events, and stay updated with announcements.
                 </p>
             </div>
         </div>
@@ -21,6 +21,9 @@
                 <h2 class="mt-2 text-3xl font-bold text-zinc-900 dark:text-white">
                     {{ $batchAlumniCount }}
                 </h2>
+                <p class="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+                    All alumni currently listed under your batch.
+                </p>
             </div>
 
             <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
@@ -30,6 +33,9 @@
                 <h2 class="mt-2 text-3xl font-bold text-zinc-900 dark:text-white">
                     {{ $registeredUsersCount }}
                 </h2>
+                <p class="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+                    Batch members who already created an account in the system.
+                </p>
             </div>
 
             <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
@@ -39,15 +45,21 @@
                 <h2 class="mt-2 text-3xl font-bold text-zinc-900 dark:text-white">
                     {{ $upcomingEventsCount }}
                 </h2>
+                <p class="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+                    Active reunion events your batch may join.
+                </p>
             </div>
 
             <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
                 <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-                    Total Donations
+                    Attendance Coordination
                 </p>
                 <h2 class="mt-2 text-3xl font-bold text-zinc-900 dark:text-white">
-                    ₱{{ number_format($batchDonationTotal, 2) }}
+                    {{ $respondedMembersCount ?? 0 }}
                 </h2>
+                <p class="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+                    Batch members who already responded to at least one event.
+                </p>
             </div>
         </div>
 
@@ -55,13 +67,13 @@
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 lg:col-span-1">
                 <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-                    Donations This Month
+                    Pending Responses
                 </p>
                 <h2 class="mt-2 text-3xl font-bold text-zinc-900 dark:text-white">
-                    ₱{{ number_format($batchDonationsThisMonth, 2) }}
+                    {{ $membersWithoutRsvpCount ?? 0 }}
                 </h2>
                 <p class="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-                    Total paid donations recorded for your batch this month.
+                    Batch members who still need to confirm attendance for upcoming events.
                 </p>
             </div>
 
@@ -71,7 +83,7 @@
                         Upcoming Events
                     </h2>
                     <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                        Active events scheduled in the coming days.
+                        Review active events and coordinate attendance with your batch members.
                     </p>
                 </div>
 
@@ -84,6 +96,9 @@
                                 </p>
                                 <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                                     {{ $event->venue ?? 'No venue specified' }}
+                                </p>
+                                <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
+                                    Encourage your batch members to confirm attendance early.
                                 </p>
                             </div>
 
@@ -109,7 +124,7 @@
                         Batch Members
                     </h2>
                     <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                        Recent members from your assigned batch.
+                        Keep track of account availability and follow up with members for event attendance confirmation.
                     </p>
                 </div>
 
@@ -170,7 +185,7 @@
                         Announcements
                     </h2>
                     <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                        Latest published announcements.
+                        Latest reminders and updates relevant to your batch.
                     </p>
                 </div>
 
@@ -198,6 +213,16 @@
                     @endforelse
                 </div>
             </div>
+        </div>
+
+        {{-- Coordination Note --}}
+        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+            <h2 class="text-base font-semibold text-zinc-900 dark:text-white">
+                Batch Representative Reminder
+            </h2>
+            <p class="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+                Use this dashboard to coordinate attendance and monitor participation from your batch. Payment collection, if needed for certain events, may be coordinated outside the system and followed up manually with your batch members.
+            </p>
         </div>
     </div>
 </div>

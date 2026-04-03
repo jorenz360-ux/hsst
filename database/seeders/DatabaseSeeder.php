@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             AdminSeeder::class,
             BatchSeeder::class,
+            CommitteeSeeder::class,
         ]);
     }
 }
