@@ -64,5 +64,15 @@ public function eventRsvps()
 {
     return $this->hasMany(\App\Models\EventRsvp::class);
 }
+
+public function volunteerSignups()
+{
+    return $this->hasMany(\App\Models\VolunteerSignup::class);
+}
+
+public function latestVolunteerSignup()
+{
+    return $this->hasOne(\App\Models\VolunteerSignup::class)->latestOfMany();
+}
 }
 

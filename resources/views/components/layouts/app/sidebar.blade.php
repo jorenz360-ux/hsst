@@ -92,11 +92,23 @@
                 @endcan
 
                 @can('generate.report')
-                    @if ($reportRoute)
-                        <flux:sidebar.item icon="chart-pie" :href="$reportRoute" wire:navigate>
-                            {{ __('Reports') }}
-                        </flux:sidebar.item>
-                    @endif
+                  
+                       <flux:sidebar.nav>
+                        <flux:sidebar.group expandable heading="Management" class="grid">
+                              @if ($reportRoute)
+                            <flux:sidebar.item icon="chart-pie" :href="$reportRoute" wire:navigate>
+                                {{ __('Reports') }}
+                            </flux:sidebar.item>
+
+                                @endif
+                            <flux:sidebar.item icon="users" :href="route('reports.committe')" wire:navigate>
+                                {{ __('Committee') }}
+                            </flux:sidebar.item>
+                            <flux:sidebar.item icon="users" :href="route('reports.attendance')" wire:navigate>
+                                {{ __('Attendance') }}
+                            </flux:sidebar.item>
+                        </flux:sidebar.group>
+                    </flux:sidebar.nav>
                 @endcan
             </flux:sidebar.nav>
 

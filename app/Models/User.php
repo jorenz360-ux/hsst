@@ -79,4 +79,13 @@ class User extends Authenticatable
 {
     return $this->hasMany(\App\Models\Event::class, 'created_by');
 }
+public function volunteerSignups()
+{
+    return $this->hasMany(\App\Models\VolunteerSignup::class);
+}
+
+public function latestVolunteerSignup()
+{
+    return $this->hasOne(\App\Models\VolunteerSignup::class)->latestOfMany();
+}
 }

@@ -22,7 +22,16 @@ use App\Http\Controllers\Welcome;
 use App\Http\Controllers\HistoryController;
 use App\Livewire\BatchRepReports;
 use App\Livewire\EventParticipationPage;
+use App\Livewire\CommitteReport;
+use App\Livewire\AttendanceReport;
 
+Route::get('/attendace-reports', AttendanceReport::class)
+    ->middleware(['auth', 'role:reunion-coordinator'])
+    ->name('reports.attendance');
+
+Route::get('/committe-reports', CommitteReport::class)
+    ->middleware(['auth', 'role:reunion-coordinator'])
+    ->name('reports.committe');
 
 Route::get('/batch-reports', BatchRepReports::class)
     ->middleware(['auth', 'role:batch-representative'])
