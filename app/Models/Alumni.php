@@ -9,22 +9,33 @@ class Alumni extends Model
     use HasFactory;
 protected $table = 'alumni';
 
-    protected $fillable = [
-        'lname',
-        'fname',
-        'mname',
-        'batch_id',
-        'is_batch_rep',
+protected $fillable = [
+    'prefix',
+    'lname',
+    'fname',
+    'mname',
+    'suffix',
+    'batch_id',
+    'is_batch_rep',
 
-        'occupation',
+    'occupation',
+    'cellphone',
+    'educational_level',
+    'did_graduate',
+    'school_year_attended',
 
-        'address_line_1',
-        'address_line_2',
-        'city',
-        'state_province',
-        'postal_code',
-        'country',
-    ];
+    'address_line_1',
+    'address_line_2',
+    'city',
+    'state_province',
+    'postal_code',
+    'country',
+
+    'formatted_address',
+    'place_id',
+    'latitude',
+    'longitude',
+];
     public function batch()
     {
         return $this->belongsTo(Batch::class);

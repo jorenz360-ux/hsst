@@ -17,14 +17,21 @@ new class extends Component {
     public string $username = '';
     public string $email = '';
 
+    public string $prefix = '';
     public string $first_name = '';
     public string $middle_name = '';
     public string $last_name = '';
+    public string $suffix = '';
+
+    public string $cellphone = '';
+    public string $educational_level = '';
+    public string $did_graduate = '1';
 
     public string $occupation = '';
 
     public string $schoolyear = '';
     public string $yeargrad = '';
+    public string $school_year_attended = '';
     public array $yeargradOptions = [];
 
     public string $address_line_1 = '';
@@ -34,13 +41,37 @@ new class extends Component {
     public string $postal_code = '';
     public string $country = '';
 
-    // New committee interest fields
     public array $committeeOptions = [];
     public array $selectedCommitteeIds = [];
     public string $volunteer_notes = '';
 
     public bool $hasCommitteeInterest = false;
     public array $savedCommitteeItems = [];
+
+    public array $prefixOptions = [
+        'Mr.',
+        'Mrs.',
+        'Ms.',
+        'Dr.',
+        'Atty.',
+        'Engr.',
+        'Rev.',
+        'Hon.',
+    ];
+
+    public array $suffixOptions = [
+        'Jr.',
+        'Sr.',
+        'II',
+        'III',
+        'IV',
+    ];
+
+    public array $educationalLevelOptions = [
+        'elementary' => 'Elementary',
+        'high_school' => 'High School',
+        'college' => 'College',
+    ];
 
     public function mount(): void
     {
@@ -49,7 +80,7 @@ new class extends Component {
         ]);
 
         $this->username = (string) ($user->username ?? '');
-        $this->email    = (string) ($user->email ?? '');
+        $this->email = (string) ($user->email ?? '');
 
         $currentYear = (int) now()->year;
         $startYear = $currentYear - 126;
@@ -74,16 +105,24 @@ new class extends Component {
             return;
         }
 
-        $this->first_name  = (string) ($alumni->fname ?? '');
+        $this->prefix = (string) ($alumni->prefix ?? '');
+        $this->first_name = (string) ($alumni->fname ?? '');
         $this->middle_name = (string) ($alumni->mname ?? '');
-        $this->last_name   = (string) ($alumni->lname ?? '');
+        $this->last_name = (string) ($alumni->lname ?? '');
+        $this->suffix = (string) ($alumni->suffix ?? '');
+
+        $this->cellphone = (string) ($alumni->cellphone ?? '');
+        $this->educational_level = (string) ($alumni->educational_level ?? '');
+        $this->did_graduate = (string) ((int) ($alumni->did_graduate ?? true));
 
         $this->occupation = (string) ($alumni->occupation ?? '');
 
-        $this->yeargrad   = (string) ($alumni->batch?->yeargrad ?? '');
+        $this->yeargrad = (string) ($alumni->batch?->yeargrad ?? '');
         $this->schoolyear = $this->yeargrad !== ''
             ? ((int) $this->yeargrad - 1) . '-' . (int) $this->yeargrad
             : '';
+
+        $this->school_year_attended = (string) ($alumni->school_year_attended ?? '');
 
         $this->address_line_1 = (string) ($alumni->address_line_1 ?? '');
         $this->address_line_2 = (string) ($alumni->address_line_2 ?? '');
@@ -93,6 +132,7 @@ new class extends Component {
         $this->country = (string) ($alumni->country ?? 'Philippines');
 
         $this->refreshCommitteeState((int) $user->id);
+        $this->syncSchoolDisplay();
     }
 
     public function updatedYeargrad($value): void
@@ -106,15 +146,47 @@ new class extends Component {
         $this->schoolyear = ($year - 1) . '-' . $year;
     }
 
+    public function updatedDidGraduate($value): void
+    {
+        if ((string) $value === '1') {
+            $this->school_year_attended = '';
+        } else {
+            $this->yeargrad = '';
+            $this->schoolyear = '';
+        }
+
+        $this->syncSchoolDisplay();
+    }
+
+    protected function syncSchoolDisplay(): void
+    {
+        if ($this->did_graduate !== '1') {
+            $this->schoolyear = '';
+            return;
+        }
+
+        if ($this->yeargrad !== '') {
+            $year = (int) $this->yeargrad;
+            $this->schoolyear = ($year - 1) . '-' . $year;
+        }
+    }
+
     protected function rules(): array
     {
         $user = Auth::user();
 
         return [
-            'first_name'  => ['required', 'string', 'max:255'],
+            'prefix' => ['nullable', 'string', 'max:20'],
+            'first_name' => ['required', 'string', 'max:255'],
             'middle_name' => ['nullable', 'string', 'max:255'],
-            'last_name'   => ['required', 'string', 'max:255'],
-            'occupation'  => ['nullable', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'suffix' => ['nullable', 'string', 'max:20'],
+
+            'cellphone' => ['required', 'string', 'max:30'],
+            'educational_level' => ['required', Rule::in(['elementary', 'high_school', 'college'])],
+            'did_graduate' => ['required', Rule::in(['0', '1'])],
+
+            'occupation' => ['nullable', 'string', 'max:255'],
 
             'email' => [
                 'required',
@@ -124,18 +196,19 @@ new class extends Component {
                 Rule::unique(User::class, 'email')->ignore($user->id),
             ],
 
-            'yeargrad' => ['required', 'integer', 'min:1900', 'max:' . now()->year],
+            'yeargrad' => ['nullable', 'integer', 'min:1900', 'max:' . now()->year],
+            'school_year_attended' => ['nullable', 'string', 'max:50'],
 
             'address_line_1' => ['required', 'string', 'max:255'],
             'address_line_2' => ['nullable', 'string', 'max:255'],
-            'city'           => ['required', 'string', 'max:120'],
+            'city' => ['required', 'string', 'max:120'],
             'state_province' => ['required', 'string', 'max:120'],
-            'postal_code'    => ['nullable', 'string', 'max:30'],
-            'country'        => ['required', 'string', 'max:100'],
+            'postal_code' => ['nullable', 'string', 'max:30'],
+            'country' => ['required', 'string', 'max:100'],
 
-            'selectedCommitteeIds'   => ['nullable', 'array'],
+            'selectedCommitteeIds' => ['nullable', 'array'],
             'selectedCommitteeIds.*' => ['string', Rule::exists('committees', 'id')],
-            'volunteer_notes'        => ['nullable', 'string', 'max:1000'],
+            'volunteer_notes' => ['nullable', 'string', 'max:1000'],
         ];
     }
 
@@ -145,23 +218,47 @@ new class extends Component {
 
         $validated = $this->validate();
 
-        $yeargrad = (int) $validated['yeargrad'];
-        $schoolyear = ($yeargrad - 1) . '-' . $yeargrad;
+        if ($validated['did_graduate'] === '1' && blank($validated['yeargrad'])) {
+            $this->addError('yeargrad', 'Year graduated is required.');
+            return;
+        }
 
-        DB::transaction(function () use ($user, $validated, $yeargrad, $schoolyear) {
-            $batch = Batch::query()->firstOrCreate(
-                ['yeargrad' => $yeargrad],
-                ['schoolyear' => $schoolyear]
-            );
+        if ($validated['did_graduate'] === '0' && blank($validated['school_year_attended'])) {
+            $this->addError('school_year_attended', 'School year attended is required.');
+            return;
+        }
+
+        DB::transaction(function () use ($user, $validated) {
+            $batch = null;
+
+            if ($validated['did_graduate'] === '1') {
+                $yeargrad = (int) $validated['yeargrad'];
+                $schoolyear = ($yeargrad - 1) . '-' . $yeargrad;
+
+                $batch = Batch::query()->firstOrCreate(
+                    ['yeargrad' => $yeargrad],
+                    ['schoolyear' => $schoolyear]
+                );
+            }
 
             $occupation = isset($validated['occupation']) ? trim((string) $validated['occupation']) : '';
 
             $alumniData = [
+                'prefix' => filled($validated['prefix'] ?? null) ? trim($validated['prefix']) : null,
                 'fname' => trim($validated['first_name']),
                 'mname' => filled($validated['middle_name'] ?? null) ? trim($validated['middle_name']) : null,
                 'lname' => trim($validated['last_name']),
+                'suffix' => filled($validated['suffix'] ?? null) ? trim($validated['suffix']) : null,
+
+                'cellphone' => trim($validated['cellphone']),
+                'educational_level' => trim($validated['educational_level']),
+                'did_graduate' => $validated['did_graduate'] === '1',
+                'school_year_attended' => $validated['did_graduate'] === '0'
+                    ? trim($validated['school_year_attended'])
+                    : null,
+
                 'occupation' => $occupation !== '' ? $occupation : null,
-                'batch_id' => $batch->id,
+                'batch_id' => $batch?->id,
                 'is_batch_rep' => $user->alumni?->is_batch_rep ?? false,
 
                 'address_line_1' => trim($validated['address_line_1']),
@@ -191,6 +288,7 @@ new class extends Component {
         });
 
         $this->refreshCommitteeState((int) $user->id);
+        $this->syncSchoolDisplay();
 
         $this->dispatch('profile-updated');
     }
@@ -311,22 +409,17 @@ new class extends Component {
 };
 ?>
 
-<section class="w-full min-h-screen bg-[#f7f5f1] px-4 py-8 sm:px-6 lg:px-8">
-
-    {{-- @include('partials.settings-heading') --}}
-
+<section class="min-h-screen w-full bg-[#f7f5f1] px-4 py-8 sm:px-6 lg:px-8">
     <flux:heading class="sr-only">{{ __('Profile Settings') }}</flux:heading>
 
-    {{-- Page Header --}}
     <div class="mb-7">
-        <p class="text-[10px] font-semibold uppercase tracking-[.2em] text-[#b88a3d] mb-1">Account</p>
+        <p class="mb-1 text-[10px] font-semibold uppercase tracking-[.2em] text-[#b88a3d]">Account</p>
         <h1 class="font-serif text-[28px] font-normal leading-tight text-[#091852] sm:text-[32px]">Profile Settings</h1>
         <p class="mt-1 text-sm text-[#7a7060]">Manage your alumni information and reunion participation.</p>
     </div>
 
-    <form wire:submit="updateProfileInformation" class="w-full max-w-3xl space-y-5">
+    <form wire:submit="updateProfileInformation" class="w-full max-w-4xl space-y-5">
 
-        {{-- Tab Bar --}}
         <div class="flex gap-1 rounded-2xl bg-[#ede9e0] p-1.5">
             <button
                 type="button"
@@ -374,13 +467,8 @@ new class extends Component {
             </button>
         </div>
 
-        {{-- ───────────────────────────────────────────── --}}
-        {{-- PROFILE TAB                                   --}}
-        {{-- ───────────────────────────────────────────── --}}
         @if ($activeTab === 'profile')
             <div class="overflow-hidden rounded-[20px] border border-[#e8e2d6] bg-white">
-
-                {{-- Card Header --}}
                 <div class="flex items-center gap-3.5 border-b border-[#f0ebe1] px-5 py-4 sm:px-6">
                     <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-[#faf4e6]">
                         <svg class="h-4.5 w-4.5 text-[#b88a3d]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
@@ -389,14 +477,26 @@ new class extends Component {
                     </div>
                     <div>
                         <h3 class="text-[15px] font-medium text-[#1a1410]">Personal Information</h3>
-                        <p class="mt-0.5 text-xs text-[#9a9080]">Your alumni identity and graduation details</p>
+                        <p class="mt-0.5 text-xs text-[#9a9080]">Your alumni identity and school background</p>
                     </div>
                 </div>
 
                 <div class="space-y-4 px-5 py-5 sm:px-6">
+                    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                        <div>
+                            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Prefix</label>
+                            <select
+                                wire:model="prefix"
+                                class="w-full rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] px-3.5 py-2.5 text-sm text-[#1a1410] outline-none transition focus:border-[#d4b06a] focus:bg-white focus:ring-0"
+                            >
+                                <option value="">Select prefix</option>
+                                @foreach ($prefixOptions as $option)
+                                    <option value="{{ $option }}">{{ $option }}</option>
+                                @endforeach
+                            </select>
+                            @error('prefix') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
+                        </div>
 
-                    {{-- Name Row --}}
-                    <div class="grid gap-4 sm:grid-cols-2">
                         <div>
                             <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">First Name</label>
                             <input
@@ -408,6 +508,18 @@ new class extends Component {
                             />
                             @error('first_name') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
                         </div>
+
+                        <div>
+                            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Middle Name</label>
+                            <input
+                                wire:model="middle_name"
+                                type="text"
+                                autocomplete="additional-name"
+                                class="w-full rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] px-3.5 py-2.5 text-sm text-[#1a1410] outline-none transition focus:border-[#d4b06a] focus:bg-white focus:ring-0"
+                            />
+                            @error('middle_name') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
+                        </div>
+
                         <div>
                             <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Last Name</label>
                             <input
@@ -421,17 +533,48 @@ new class extends Component {
                         </div>
                     </div>
 
-                    {{-- Middle & Email --}}
-                    <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <div>
-                            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Middle Name</label>
-                            <input
-                                wire:model="middle_name"
-                                type="text"
-                                autocomplete="additional-name"
+                            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Suffix</label>
+                            <select
+                                wire:model="suffix"
                                 class="w-full rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] px-3.5 py-2.5 text-sm text-[#1a1410] outline-none transition focus:border-[#d4b06a] focus:bg-white focus:ring-0"
-                            />
+                            >
+                                <option value="">Select suffix</option>
+                                @foreach ($suffixOptions as $option)
+                                    <option value="{{ $option }}">{{ $option }}</option>
+                                @endforeach
+                            </select>
+                            @error('suffix') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
                         </div>
+
+                        <div>
+                            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Cellphone #</label>
+                            <input
+                                wire:model="cellphone"
+                                type="text"
+                                required
+                                autocomplete="tel"
+                                placeholder="e.g. 09171234567"
+                                class="w-full rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] px-3.5 py-2.5 text-sm text-[#1a1410] outline-none transition placeholder:text-[#c0bbb0] focus:border-[#d4b06a] focus:bg-white focus:ring-0"
+                            />
+                            @error('cellphone') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Educational Level</label>
+                            <select
+                                wire:model="educational_level"
+                                class="w-full rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] px-3.5 py-2.5 text-sm text-[#1a1410] outline-none transition focus:border-[#d4b06a] focus:bg-white focus:ring-0"
+                            >
+                                <option value="">Select level</option>
+                                @foreach ($educationalLevelOptions as $value => $label)
+                                    <option value="{{ $value }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                            @error('educational_level') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
+                        </div>
+
                         <div>
                             <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Email Address</label>
                             <input
@@ -447,34 +590,68 @@ new class extends Component {
 
                     <div class="border-t border-[#f0ebe1]"></div>
 
-                    {{-- Year Grad & School Year --}}
-                    <div class="grid gap-4 sm:grid-cols-2">
-                        <div>
-                            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Year Graduated</label>
-                            <select
-                                wire:model.live="yeargrad"
-                                required
-                                class="w-full rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] px-3.5 py-2.5 text-sm text-[#1a1410] outline-none transition focus:border-[#d4b06a] focus:bg-white focus:ring-0"
-                            >
-                                <option value="">-- Select year --</option>
-                                @foreach ($yeargradOptions as $year)
-                                    <option value="{{ $year }}" @selected($yeargrad == $year)>{{ $year }}</option>
-                                @endforeach
-                            </select>
-                            @error('yeargrad') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
+                    <div>
+                        <label class="mb-2 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Did you graduate from HSST?</label>
+                        <div class="grid gap-3 sm:grid-cols-2">
+                            <label class="flex items-start gap-3 rounded-[12px] border border-[#e0dbd0] bg-[#faf9f7] px-4 py-3">
+                                <input wire:model.live="did_graduate" type="radio" value="1" class="mt-1 h-4 w-4 border-slate-300 text-[#d4b06a] focus:ring-[#d4b06a]" />
+                                <div>
+                                    <p class="text-sm font-medium text-[#1a1410]">Yes</p>
+                                    <p class="mt-0.5 text-xs text-[#9a9080]">I completed my studies here.</p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 rounded-[12px] border border-[#e0dbd0] bg-[#faf9f7] px-4 py-3">
+                                <input wire:model.live="did_graduate" type="radio" value="0" class="mt-1 h-4 w-4 border-slate-300 text-[#d4b06a] focus:ring-[#d4b06a]" />
+                                <div>
+                                    <p class="text-sm font-medium text-[#1a1410]">No</p>
+                                    <p class="mt-0.5 text-xs text-[#9a9080]">I attended HSST but did not graduate here.</p>
+                                </div>
+                            </label>
                         </div>
-                        <div>
-                            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">School Year</label>
-                            <input
-                                wire:model="schoolyear"
-                                type="text"
-                                readonly
-                                class="w-full cursor-not-allowed rounded-[10px] border border-[#e0dbd0] bg-[#f5f3ef] px-3.5 py-2.5 text-sm text-[#9a9080] outline-none"
-                            />
-                        </div>
+                        @error('did_graduate') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
                     </div>
 
-                    {{-- Occupation --}}
+                    @if ($did_graduate === '1')
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            <div>
+                                <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Year Graduated</label>
+                                <select
+                                    wire:model.live="yeargrad"
+                                    class="w-full rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] px-3.5 py-2.5 text-sm text-[#1a1410] outline-none transition focus:border-[#d4b06a] focus:bg-white focus:ring-0"
+                                >
+                                    <option value="">-- Select year --</option>
+                                    @foreach ($yeargradOptions as $year)
+                                        <option value="{{ $year }}">{{ $year }}</option>
+                                    @endforeach
+                                </select>
+                                @error('yeargrad') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
+                            </div>
+
+                            <div>
+                                <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">School Year</label>
+                                <input
+                                    wire:model="schoolyear"
+                                    type="text"
+                                    readonly
+                                    class="w-full cursor-not-allowed rounded-[10px] border border-[#e0dbd0] bg-[#f5f3ef] px-3.5 py-2.5 text-sm text-[#9a9080] outline-none"
+                                />
+                            </div>
+                        </div>
+                    @else
+                        <div>
+                            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">School Year Attended</label>
+                            <input
+                                wire:model="school_year_attended"
+                                type="text"
+                                placeholder="e.g. 2012-2014"
+                                class="w-full rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] px-3.5 py-2.5 text-sm text-[#1a1410] outline-none transition placeholder:text-[#c0bbb0] focus:border-[#d4b06a] focus:bg-white focus:ring-0"
+                            />
+                            <p class="mt-1 text-xs text-[#9a9080]">Example: 2012-2014 or 2018-2019</p>
+                            @error('school_year_attended') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
+                        </div>
+                    @endif
+
                     <div>
                         <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Occupation</label>
                         <input
@@ -484,9 +661,9 @@ new class extends Component {
                             autocomplete="organization-title"
                             class="w-full rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] px-3.5 py-2.5 text-sm text-[#1a1410] outline-none transition placeholder:text-[#c0bbb0] focus:border-[#d4b06a] focus:bg-white focus:ring-0"
                         />
+                        @error('occupation') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
                     </div>
 
-                    {{-- Email verification notice --}}
                     @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! auth()->user()->hasVerifiedEmail())
                         <div class="rounded-xl border border-amber-200 bg-amber-50 p-4">
                             <p class="text-sm text-amber-800">
@@ -502,17 +679,12 @@ new class extends Component {
                             @endif
                         </div>
                     @endif
-
                 </div>
             </div>
         @endif
 
-        {{-- ───────────────────────────────────────────── --}}
-        {{-- ADDRESS TAB                                   --}}
-        {{-- ───────────────────────────────────────────── --}}
         @if ($activeTab === 'address')
             <div class="overflow-hidden rounded-[20px] border border-[#e8e2d6] bg-white">
-
                 <div class="flex items-center gap-3.5 border-b border-[#f0ebe1] px-5 py-4 sm:px-6">
                     <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-[#faf4e6]">
                         <svg class="h-4.5 w-4.5 text-[#b88a3d]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
@@ -526,7 +698,6 @@ new class extends Component {
                 </div>
 
                 <div class="space-y-4 px-5 py-5 sm:px-6">
-
                     <div>
                         <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Address Line 1</label>
                         <textarea
@@ -548,6 +719,7 @@ new class extends Component {
                             placeholder="Unit, floor, building name"
                             class="w-full rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] px-3.5 py-2.5 text-sm text-[#1a1410] outline-none transition placeholder:text-[#c0bbb0] focus:border-[#d4b06a] focus:bg-white focus:ring-0"
                         />
+                        @error('address_line_2') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="border-t border-[#f0ebe1]"></div>
@@ -563,6 +735,7 @@ new class extends Component {
                             />
                             @error('city') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
                         </div>
+
                         <div>
                             <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Province / State / Region</label>
                             <input
@@ -585,7 +758,9 @@ new class extends Component {
                                 type="text"
                                 class="w-full rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] px-3.5 py-2.5 text-sm text-[#1a1410] outline-none transition focus:border-[#d4b06a] focus:bg-white focus:ring-0"
                             />
+                            @error('postal_code') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
                         </div>
+
                         <div>
                             <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Country</label>
                             <input
@@ -597,17 +772,12 @@ new class extends Component {
                             @error('country') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
                         </div>
                     </div>
-
                 </div>
             </div>
         @endif
 
-        {{-- ───────────────────────────────────────────── --}}
-        {{-- COMMITTEE TAB                                 --}}
-        {{-- ───────────────────────────────────────────── --}}
         @if ($activeTab === 'committee')
             <div class="overflow-hidden rounded-[20px] border border-[#e8e2d6] bg-white">
-
                 <div class="flex items-center gap-3.5 border-b border-[#f0ebe1] px-5 py-4 sm:px-6">
                     <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-[#faf4e6]">
                         <svg class="h-4.5 w-4.5 text-[#b88a3d]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
@@ -618,7 +788,7 @@ new class extends Component {
                         <h3 class="text-[15px] font-medium text-[#1a1410]">Committee Interest</h3>
                         <p class="mt-0.5 text-xs text-[#9a9080]">Choose committees you want to support for the reunion</p>
                     </div>
-                    {{-- Overall status badge --}}
+
                     @if ($hasCommitteeInterest)
                         <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-800">
                             <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
@@ -633,8 +803,6 @@ new class extends Component {
                 </div>
 
                 <div class="space-y-5 px-5 py-5 sm:px-6">
-
-                    {{-- Saved committee interest summary --}}
                     @if (! empty($savedCommitteeItems))
                         <div class="rounded-[14px] border border-[#e0dbd0] bg-[#faf9f7] p-4">
                             <div class="mb-3 flex items-center justify-between">
@@ -646,6 +814,7 @@ new class extends Component {
                                     {{ count($savedCommitteeItems) }} selected
                                 </span>
                             </div>
+
                             <div class="flex flex-wrap gap-2">
                                 @foreach ($savedCommitteeItems as $item)
                                     <span @class([
@@ -661,13 +830,11 @@ new class extends Component {
                         </div>
                     @endif
 
-                    {{-- Section label --}}
                     <div>
                         <p class="text-sm font-medium text-[#1a1410]">Select committee(s)</p>
                         <p class="mt-0.5 text-xs text-[#9a9080]">You may choose more than one. Pending selections can still be updated later.</p>
                     </div>
 
-                    {{-- Committee grid --}}
                     <div class="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
                         @foreach ($committeeOptions as $committee)
                             <label @class([
@@ -683,7 +850,6 @@ new class extends Component {
                                 >
 
                                 <div class="flex items-start gap-3">
-                                    {{-- Custom checkbox --}}
                                     <div @class([
                                         'mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[6px] border transition-all duration-150',
                                         'border-[#d4b06a] bg-[#d4b06a]' => in_array($committee['id'], $selectedCommitteeIds ?? []),
@@ -702,11 +868,6 @@ new class extends Component {
                                         <p class="text-[13px] font-medium leading-5 text-[#1a1410]">
                                             {{ $committee['name'] }}
                                         </p>
-                                        @if (! empty($committee['description']))
-                                            <p class="mt-0.5 text-[11px] leading-4 text-[#9a9080]">
-                                                {{ $committee['description'] }}
-                                            </p>
-                                        @endif
                                     </div>
                                 </div>
                             </label>
@@ -720,7 +881,6 @@ new class extends Component {
                         <p class="text-sm text-rose-500">{{ $message }}</p>
                     @enderror
 
-                    {{-- Empty state --}}
                     @if (empty($selectedCommitteeIds))
                         <div class="rounded-[14px] border border-dashed border-[#d0c8bc] bg-[#faf9f7] px-5 py-6 text-center">
                             <div class="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-[#f0ebe1]">
@@ -735,7 +895,6 @@ new class extends Component {
 
                     <div class="border-t border-[#f0ebe1]"></div>
 
-                    {{-- Notes + Hint row --}}
                     <div class="grid gap-4 lg:grid-cols-[1fr_240px]">
                         <div>
                             <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Skills / Notes</label>
@@ -748,6 +907,7 @@ new class extends Component {
                             <p class="mt-2 text-xs text-[#9a9080]">
                                 e.g. documentation, logistics, hosting, design, registration, sponsorship, medical support, or program assistance.
                             </p>
+                            @error('volunteer_notes') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
                         </div>
 
                         <div class="rounded-[14px] border border-[#f0d496] bg-[#faf4e6] p-4">
@@ -757,14 +917,10 @@ new class extends Component {
                             </p>
                         </div>
                     </div>
-
                 </div>
             </div>
         @endif
 
-        {{-- ───────────────────────────────────────────── --}}
-        {{-- Save Bar                                      --}}
-        {{-- ───────────────────────────────────────────── --}}
         <div class="flex flex-col gap-3 rounded-[16px] border border-[#e8e2d6] bg-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <p class="text-xs text-[#9a9080]">
                 Keep your alumni information and committee interest updated before reunion activities begin.
@@ -787,9 +943,5 @@ new class extends Component {
                 </button>
             </div>
         </div>
-
     </form>
-
- 
-
 </section>

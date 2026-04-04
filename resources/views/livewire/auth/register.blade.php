@@ -176,10 +176,50 @@
 
                              
 
-                                {{-- PANEL 2 --}}
+                                {{-- PANEL 1--}}
                                 <section id="panel-1" class="panel active">
                                     <div class="mx-auto max-w-3xl rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
                                         <div class="grid gap-5 md:grid-cols-2">
+
+                                            <div>
+                                                <label for="prefix" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Prefix <span class="font-normal text-slate-400">(optional)</span>
+                                                </label>
+                                                <select
+                                                    id="prefix"
+                                                    name="prefix"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                                    <option value="">Select prefix</option>
+                                                    <option value="Mr." {{ old('prefix') === 'Mr.' ? 'selected' : '' }}>Mr.</option>
+                                                    <option value="Mrs." {{ old('prefix') === 'Mrs.' ? 'selected' : '' }}>Mrs.</option>
+                                                    <option value="Ms." {{ old('prefix') === 'Ms.' ? 'selected' : '' }}>Ms.</option>
+                                                    <option value="Dr." {{ old('prefix') === 'Dr.' ? 'selected' : '' }}>Dr.</option>
+                                                    <option value="Atty." {{ old('prefix') === 'Atty.' ? 'selected' : '' }}>Atty.</option>
+                                                    <option value="Engr." {{ old('prefix') === 'Engr.' ? 'selected' : '' }}>Engr.</option>
+                                                    <option value="Rev." {{ old('prefix') === 'Rev.' ? 'selected' : '' }}>Rev.</option>
+                                                    <option value="Hon." {{ old('prefix') === 'Hon.' ? 'selected' : '' }}>Hon.</option>
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <label for="suffix" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Suffix <span class="font-normal text-slate-400">(optional)</span>
+                                                </label>
+                                                <select
+                                                    id="suffix"
+                                                    name="suffix"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                                    <option value="">Select suffix</option>
+                                                    <option value="Jr." {{ old('suffix') === 'Jr.' ? 'selected' : '' }}>Jr.</option>
+                                                    <option value="Sr." {{ old('suffix') === 'Sr.' ? 'selected' : '' }}>Sr.</option>
+                                                    <option value="II" {{ old('suffix') === 'II' ? 'selected' : '' }}>II</option>
+                                                    <option value="III" {{ old('suffix') === 'III' ? 'selected' : '' }}>III</option>
+                                                    <option value="IV" {{ old('suffix') === 'IV' ? 'selected' : '' }}>IV</option>
+                                                </select>
+                                            </div>
+
                                             <div>
                                                 <label for="fname" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
                                                     First name
@@ -232,8 +272,98 @@
                                             </div>
 
                                             <div>
+                                                <label for="cellphone" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Cellphone #
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="cellphone"
+                                                    name="cellphone"
+                                                    value="{{ old('cellphone') }}"
+                                                    placeholder="e.g. 09171234567"
+                                                    autocomplete="tel"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                                <p id="err-cellphone" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                    @error('cellphone'){{ $message }}@enderror
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <label for="educational_level" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Educational Level
+                                                </label>
+                                                <select
+                                                    id="educational_level"
+                                                    name="educational_level"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                                    <option value="">Select level</option>
+                                                    <option value="elementary" {{ old('educational_level') === 'elementary' ? 'selected' : '' }}>Elementary</option>
+                                                    <option value="high_school" {{ old('educational_level') === 'high_school' ? 'selected' : '' }}>High School</option>
+                                                    <option value="college" {{ old('educational_level') === 'college' ? 'selected' : '' }}>College</option>
+                                                </select>
+                                                <p id="err-educational-level" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                    @error('educational_level'){{ $message }}@enderror
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <label for="occupation" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Occupation <span class="font-normal text-slate-400">(optional)</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="occupation"
+                                                    name="occupation"
+                                                    value="{{ old('occupation') }}"
+                                                    placeholder="e.g. Teacher, Engineer, Nurse"
+                                                    autocomplete="organization-title"
+                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                >
+                                            </div>
+
+                                            <div class="md:col-span-2">
+                                                <label class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    Did you graduate from HSST?
+                                                </label>
+
+                                                <div class="grid gap-3 sm:grid-cols-2">
+                                                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 transition hover:border-slate-300 hover:bg-white">
+                                                        <input
+                                                            type="radio"
+                                                            name="did_graduate"
+                                                            value="1"
+                                                            {{ old('did_graduate', '1') == '1' ? 'checked' : '' }}
+                                                            onchange="toggleSchoolYearFields()"
+                                                            class="mt-1 h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500"
+                                                        >
+                                                        <div>
+                                                            <p class="text-sm font-bold text-slate-900">Yes</p>
+                                                            <p class="mt-1 text-xs text-slate-500">I completed my studies here.</p>
+                                                        </div>
+                                                    </label>
+
+                                                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 transition hover:border-slate-300 hover:bg-white">
+                                                        <input
+                                                            type="radio"
+                                                            name="did_graduate"
+                                                            value="0"
+                                                            {{ old('did_graduate') === '0' ? 'checked' : '' }}
+                                                            onchange="toggleSchoolYearFields()"
+                                                            class="mt-1 h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500"
+                                                        >
+                                                        <div>
+                                                            <p class="text-sm font-bold text-slate-900">No</p>
+                                                            <p class="mt-1 text-xs text-slate-500">I attended HSST but did not graduate here.</p>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div id="yeargradWrap">
                                                 <label for="yeargrad" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    Year graduated
+                                                    Year Graduated
                                                 </label>
                                                 <input
                                                     type="number"
@@ -245,37 +375,34 @@
                                                     max="{{ now()->year }}"
                                                     class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
                                                 >
-                                                <p class="mt-2 text-xs leading-5 text-slate-400">
-                                                    Year you completed your studies at HSST.
-                                                </p>
                                                 <p id="err-yeargrad" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
                                                     @error('yeargrad'){{ $message }}@enderror
                                                 </p>
                                             </div>
 
-                                            <div class="md:col-span-2">
-                                                <label for="occupation" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    Occupation <span class="font-normal text-slate-400">(optional)</span>
+                                            <div id="schoolYearAttendedWrap" class="hidden">
+                                                <label for="school_year_attended" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                                    School Year Attended
                                                 </label>
                                                 <input
                                                     type="text"
-                                                    id="occupation"
-                                                    name="occupation"
-                                                    value="{{ old('occupation') }}"
-                                                    placeholder="e.g. Teacher, Engineer, Nurse, Business Owner"
-                                                    autocomplete="organization-title"
+                                                    id="school_year_attended"
+                                                    name="school_year_attended"
+                                                    value="{{ old('school_year_attended') }}"
+                                                    placeholder="e.g. 2012-2014"
                                                     class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
                                                 >
                                                 <p class="mt-2 text-xs leading-5 text-slate-400">
-                                                    Enter your current occupation or profession.
+                                                    Example: 2012-2014 or 2018-2019
                                                 </p>
-                                                <p id="err-occupation" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
-                                                    @error('occupation'){{ $message }}@enderror
+                                                <p id="err-school-year-attended" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                    @error('school_year_attended'){{ $message }}@enderror
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
                                 </section>
+    {{-- -panel 2 --}}
 
                                 {{-- PANEL 3 --}}
                                 <section id="panel-2" class="panel hidden">
@@ -803,6 +930,9 @@
             document.querySelectorAll("input, textarea").forEach((el) => {
                 el.classList.remove("border-red-500", "ring-4", "ring-red-100");
             });
+            document.querySelectorAll("input, textarea, select").forEach((el) => {
+                el.classList.remove("border-red-500", "ring-4", "ring-red-100");
+            });
         }
 
         function showError(fieldId, errId, message) {
@@ -834,33 +964,52 @@
 
       function validateStep(step) {
     clearErrors();
-    let valid = true;
+    let valid = true; 
 
-    if (step === 1) {
-        const fname = document.getElementById("fname").value.trim();
-        const lname = document.getElementById("lname").value.trim();
-        const yeargrad = document.getElementById("yeargrad").value.trim();
+ if (step === 1) {
+    const fname = document.getElementById("fname").value.trim();
+    const lname = document.getElementById("lname").value.trim();
+    const cellphone = document.getElementById("cellphone").value.trim();
+    const educationalLevel = document.getElementById("educational_level").value.trim();
+    const didGraduate = document.querySelector('input[name="did_graduate"]:checked')?.value;
+    const yeargrad = document.getElementById("yeargrad").value.trim();
+    const schoolYearAttended = document.getElementById("school_year_attended").value.trim();
+    const currentYear = new Date().getFullYear();
 
-        if (!fname) {
-            showError("fname", "err-fname", "First name is required.");
+    if (!fname) {
+        showError("fname", "err-fname", "First name is required.");
+        valid = false;
+    }
+
+    if (!lname) {
+        showError("lname", "err-lname", "Last name is required.");
+        valid = false;
+    }
+
+    if (!cellphone) {
+        showError("cellphone", "err-cellphone", "Cellphone number is required.");
+        valid = false;
+    }
+
+    if (!educationalLevel) {
+        showError("educational_level", "err-educational-level", "Please select educational level.");
+        valid = false;
+    }
+
+    if (didGraduate === undefined) {
+        valid = false;
+    } else if (didGraduate === "1") {
+        if (!yeargrad || yeargrad < 1900 || yeargrad > currentYear) {
+            showError("yeargrad", "err-yeargrad", `Please enter a valid graduation year (1900–${currentYear}).`);
             valid = false;
         }
-
-        if (!lname) {
-            showError("lname", "err-lname", "Last name is required.");
-            valid = false;
-        }
-
-        if (!yeargrad || yeargrad < 1900 || yeargrad > new Date().getFullYear()) {
-            showError(
-                "yeargrad",
-                "err-yeargrad",
-                `Please enter a valid graduation year (1900–${new Date().getFullYear()}).`
-            );
+    } else if (didGraduate === "0") {
+        if (!schoolYearAttended) {
+            showError("school_year_attended", "err-school-year-attended", "Please enter the school year attended.");
             valid = false;
         }
     }
-
+}
     if (step === 2) {
         const addr1 = document.getElementById("address_line_1").value.trim();
         const city = document.getElementById("city").value.trim();
@@ -1098,7 +1247,21 @@
             el.dispatchEvent(new Event("input", { bubbles: true }));
             el.dispatchEvent(new Event("change", { bubbles: true }));
         }
+        function toggleSchoolYearFields() {
+            const didGraduate = document.querySelector('input[name="did_graduate"]:checked')?.value;
+            const yeargradWrap = document.getElementById("yeargradWrap");
+            const schoolYearWrap = document.getElementById("schoolYearAttendedWrap");
 
+            if (!yeargradWrap || !schoolYearWrap) return;
+
+            if (didGraduate === "0") {
+                yeargradWrap.classList.add("hidden");
+                schoolYearWrap.classList.remove("hidden");
+            } else {
+                yeargradWrap.classList.remove("hidden");
+                schoolYearWrap.classList.add("hidden");
+            }
+        }
         function jumpToErrorStep() {
             for (let step = 1; step <= totalSteps; step++) {
                 const panel = document.getElementById(`panel-${step}`);
@@ -1135,6 +1298,8 @@
         updateHeader();
         jumpToErrorStep();
         toggleVolunteerFields();
+        toggleSchoolYearFields();
+    
     </script>
 
     @if(config('services.google_maps.api_key'))
