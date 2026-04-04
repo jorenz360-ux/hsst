@@ -5,7 +5,7 @@
                 <div class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
                     <div>
                         <h2 class="text-lg font-semibold text-white">
-                            Reunion Coordinator Report
+                           Admin Attendance | Report
                         </h2>
                         <p class="mt-1 text-sm text-zinc-400">
                             View all alumni attendees, RSVP responses, and payment records per event.
