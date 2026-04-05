@@ -1,634 +1,747 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HSST Events | Holy Spirit School of Tagbilaran</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Events · Holy Spirit School of Tagbilaran</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,700;1,900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <style>
-        [x-cloak] { display: none !important; }
-
-        .font-body { font-family: "Inter", system-ui, sans-serif; }
-        .font-display { font-family: "DM Serif Display", Georgia, serif; }
-
-        .hamburger-line { transition: all .22s ease; }
-        .hamburger-open .line-1 { transform: translateY(6px) rotate(45deg); }
-        .hamburger-open .line-2 { opacity: 0; }
-        .hamburger-open .line-3 { transform: translateY(-6px) rotate(-45deg); }
-
-        .eyebrow {
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.24em;
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink:    { DEFAULT:'#12100e', soft:'#3a3530', muted:'#6b6860' },
+            paper:  { DEFAULT:'#faf8f4', dark:'#f0ece3', darker:'#e4ddd0', rule:'#d4c9b8' },
+            royal:  { DEFAULT:'#1a3fc4', dark:'#0f2580', deeper:'#091852', light:'#2952d9', pale:'#94b0f8', frost:'#eef2ff' },
+            spirit: { DEFAULT:'#c4960a', light:'#e8b80f', pale:'#f5e4a0' },
+            crimson:{ DEFAULT:'#c41a2e', light:'#e8314a', pale:'#fde8eb' },
+            teal:   { DEFAULT:'#0a7c68', light:'#0f9980', pale:'#d4f0eb' },
+          },
+          fontFamily: {
+            display:  ['"Playfair Display"','Georgia','serif'],
+            garamond: ['"EB Garamond"','Georgia','serif'],
+            sans:     ['"Inter"','system-ui','sans-serif'],
+          },
+          keyframes: {
+            fadeUp: { from:{opacity:0,transform:'translateY(20px)'}, to:{opacity:1,transform:'translateY(0)'} },
+            fadeIn: { from:{opacity:0}, to:{opacity:1} },
+          },
+          animation: {
+            'fade-up': 'fadeUp .85s cubic-bezier(.22,1,.36,1) both',
+            'fade-in': 'fadeIn 1s ease both',
+          }
         }
+      }
+    }
+  </script>
 
-        .gold-line {
-            width: 52px;
-            height: 3px;
-            border-radius: 999px;
-            background: linear-gradient(90deg, #c4960a, #e8b80f);
-        }
+  <style>
+    :root {
+      --ink:    #12100e;
+      --paper:  #faf8f4;
+      --rule:   #d4c9b8;
+      --royal:  #1a3fc4;
+      --spirit: #c4960a;
+      --crimson:#c41a2e;
+      --teal:   #0a7c68;
+    }
 
-        .section-shell {
-            border: 1px solid rgba(30, 58, 138, 0.10);
-            background: #ffffff;
-            box-shadow: 0 18px 48px rgba(15, 42, 107, 0.08);
-        }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Inter',sans-serif; background:var(--paper); color:var(--ink); overflow-x:hidden; }
 
-        .soft-panel {
-            border: 1px solid rgba(30, 58, 138, 0.10);
-            background: #f8fbff;
-        }
+    ::-webkit-scrollbar { width:4px; }
+    ::-webkit-scrollbar-track { background:var(--paper); }
+    ::-webkit-scrollbar-thumb { background:var(--rule); border-radius:0; }
 
-        .royal-card {
-            border: 1px solid rgba(30, 58, 138, 0.10);
-            background: #ffffff;
-            transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
-        }
+    #pgbar {
+      position:fixed; top:0; left:0; height:2px;
+      background:var(--crimson);
+      z-index:9999; width:0; transition:width .1s linear;
+    }
 
-        .royal-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 50px rgba(15, 42, 107, 0.10);
-            border-color: rgba(30, 58, 138, 0.18);
-        }
+    /* Reveal */
+    .reveal { opacity:0; transform:translateY(18px); transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1); }
+    .reveal.on { opacity:1; transform:none; }
+    .d1{transition-delay:.1s;} .d2{transition-delay:.2s;} .d3{transition-delay:.3s;} .d4{transition-delay:.4s;}
 
-        .hero-glow::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(circle at 82% 18%, rgba(255,255,255,0.16), transparent 22%),
-                radial-gradient(circle at 78% 30%, rgba(147,197,253,0.18), transparent 28%);
-            pointer-events: none;
-        }
+    /* NAV */
+    #nav { transition:all .35s ease; }
+    #nav.scrolled {
+      background:rgba(250,248,244,.97);
+      border-bottom:1px solid var(--rule);
+      backdrop-filter:blur(10px);
+    }
 
-        .event-image-overlay {
-            background: linear-gradient(
-                180deg,
-                rgba(9,24,82,0.06) 0%,
-                rgba(9,24,82,0.18) 40%,
-                rgba(9,24,82,0.76) 100%
-            );
-        }
+    /* ── Editorial type ── */
+    .kicker {
+      font-family:'Inter',sans-serif;
+      font-size:.67rem; font-weight:700;
+      letter-spacing:.22em; text-transform:uppercase;
+    }
+    .display { font-family:'Playfair Display',serif; letter-spacing:-.015em; line-height:1.05; }
+    .garamond { font-family:'EB Garamond',serif; font-size:1.08rem; line-height:1.9; }
+    .caption-text {
+      font-family:'Inter',sans-serif;
+      font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:#6b6860;
+    }
+    .col-rule { border-top:1px solid var(--rule); }
+    .col-rule-thick { border-top:2px solid var(--ink); }
 
-        .nav-link {
-            color: rgba(255,255,255,.78);
-            transition: color .2s ease, background .2s ease;
-        }
+    /* Card hover */
+    .ed-card { transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s; }
+    .ed-card:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(18,16,14,.1); }
 
-        .nav-link:hover {
-            color: #fff;
-            background: rgba(255,255,255,.08);
-        }
+    /* Ornament */
+    .ornament { display:flex; align-items:center; gap:.75rem; }
+    .ornament::before,.ornament::after { content:''; flex:1; border-top:1px solid var(--rule); }
 
-        .nav-link-active {
-            background: #fff;
-            color: #0F2A6B;
-        }
+    /* Hero overlay */
+    .hero-gradient {
+      background:linear-gradient(
+        100deg,
+        rgba(9,24,52,.96) 0%,
+        rgba(14,38,90,.88) 35%,
+        rgba(20,52,140,.6) 62%,
+        rgba(20,52,140,.18) 100%
+      );
+    }
 
-        .hero-pattern {
-            position: absolute;
-            inset: 0;
-            background-image:
-                radial-gradient(circle at 20% 25%, rgba(255,255,255,.08) 1px, transparent 1px),
-                radial-gradient(circle at 80% 70%, rgba(255,255,255,.07) 1px, transparent 1px);
-            background-size: 42px 42px, 52px 52px;
-            opacity: .35;
-            pointer-events: none;
-        }
-    </style>
+    /* Calendar day cell */
+    .cal-day {
+      min-height:88px;
+      border-bottom:1px solid var(--rule);
+      border-right:1px solid var(--rule);
+      padding:.5rem;
+      transition:background .15s;
+    }
+    @media(min-width:640px){ .cal-day { min-height:110px; padding:.75rem; } }
+    .cal-day:hover { background:rgba(26,63,196,.04); }
+    .cal-day.selected { box-shadow:inset 0 0 0 2px var(--royal); }
+    .cal-day.other-month { opacity:.45; }
+    .cal-today-badge {
+      background:var(--royal); color:#fff;
+    }
+    .cal-count {
+      background:rgba(26,63,196,.08);
+      color:var(--royal);
+      border:1px solid rgba(26,63,196,.15);
+    }
+    .cal-event-pill {
+      background:rgba(26,63,196,.06);
+      border:1px solid rgba(26,63,196,.12);
+      color:var(--royal);
+    }
+
+    /* Article image overlay */
+    .event-overlay {
+      background:linear-gradient(180deg,rgba(9,24,52,.04) 0%,rgba(9,24,52,.16) 40%,rgba(9,24,52,.72) 100%);
+    }
+  </style>
 </head>
-<body class="overflow-x-hidden bg-white font-body text-slate-800 antialiased">
-<div x-data="{ mobileOpen:false }" class="min-h-screen">
+<body class="antialiased">
 
-    {{-- HEADER --}}
-    <header class="sticky inset-x-0 top-0 z-50 border-b border-white/10 bg-[rgba(9,24,82,0.92)] backdrop-blur-md">
-        <div class="mx-auto flex h-[78px] max-w-[1380px] items-center justify-between px-4 sm:px-6 lg:px-8">
-            <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-3 transition hover:opacity-95">
-                <div class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded border border-white/18 bg-white p-1 shadow-sm">
-                    <img
-                        src="{{ asset('images/hsstlogo.jpg') }}"
-                        alt="Holy Spirit School of Tagbilaran Logo"
-                        class="h-full w-full object-contain"
-                    >
-                </div>
+<div id="pgbar"></div>
 
-                <div class="min-w-0">
-                    <p class="text-[9px] font-extrabold uppercase tracking-[0.28em] text-white/70">
-                        Official Alumni Portal
-                    </p>
-                    <h1 class="truncate text-[13px] font-bold text-white">
-                        Holy Spirit School of Tagbilaran
-                    </h1>
-                </div>
-            </a>
+<!-- ════════════════════════════════════════
+     MASTHEAD TOP STRIP
+════════════════════════════════════════ -->
+<div class="bg-ink text-paper/50 border-b border-paper/10 hidden md:block">
+  <div class="max-w-7xl mx-auto px-6 py-1.5 flex items-center justify-between">
+    <span class="caption-text" style="color:rgba(250,248,244,.4);">{{ now('Asia/Manila')->format('l, F j, Y') }}</span>
+    <div class="flex items-center gap-3">
+      <span class="caption-text" style="color:rgba(250,248,244,.4);">Est. 1926</span>
+      <span class="caption-text" style="color:rgba(250,248,244,.4);">Tagbilaran, Bohol, Philippines</span>
+    </div>
+    <span class="caption-text" style="color:rgba(250,248,244,.4);">In Veritate et Caritate</span>
+  </div>
+</div>
 
-            <nav class="hidden items-center gap-2 lg:flex">
-                <a href="{{ route('home') }}" class="nav-link rounded px-4 py-2 text-sm font-semibold">
-                    Home
-                </a>
-                <a href="{{ route('about-us') }}" class="nav-link rounded px-4 py-2 text-sm font-semibold">
-                    About
-                </a>
-                <a href="{{ route('events.index') }}" class="nav-link-active rounded px-4 py-2 text-sm font-bold">
-                    Events
-                </a>
-                <a href="#event-calendar" class="nav-link rounded px-4 py-2 text-sm font-semibold">
-                    Calendar
-                </a>
-                <a href="#upcoming-events" class="nav-link rounded px-4 py-2 text-sm font-semibold">
-                    Upcoming
-                </a>
-            </nav>
+<!-- ════════════════════════════════════════
+     EDITORIAL NAV
+════════════════════════════════════════ -->
+<header id="nav" class="fixed inset-x-0 top-0 z-50 md:relative md:z-auto md:top-auto md:fixed">
+  <div class="max-w-7xl mx-auto px-6">
 
-            <div class="hidden items-center gap-3 lg:flex">
-                @if (Route::has('login'))
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="inline-flex items-center justify-center rounded bg-white px-5 py-2.5 text-sm font-bold text-[#0F2A6B] transition hover:bg-[#f3f6ff]">
-                            Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15">
-                            Log in
-                        </a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded bg-white px-5 py-2.5 text-sm font-bold text-[#0F2A6B] transition hover:bg-[#f3f6ff]">
-                                Register
-                            </a>
-                        @endif
-                    @endauth
-                @endif
-            </div>
-
-            <button
-                @click="mobileOpen = !mobileOpen"
-                :class="mobileOpen ? 'hamburger-open' : ''"
-                class="flex flex-col gap-[4.5px] rounded border border-white/20 bg-white/10 p-3 lg:hidden"
-                aria-label="Toggle Menu"
-            >
-                <span class="hamburger-line line-1 block h-[1.5px] w-[20px] rounded bg-white"></span>
-                <span class="hamburger-line line-2 block h-[1.5px] w-[20px] rounded bg-white"></span>
-                <span class="hamburger-line line-3 block h-[1.5px] w-[20px] rounded bg-white"></span>
-            </button>
+    <div class="flex items-center justify-between py-3 md:py-4">
+      <a href="{{ route('home') }}" class="flex items-center gap-3 group">
+        <img src="{{ asset('images/hsstlogo.jpg') }}" alt="HSST Logo" class="h-8 md:h-9 w-auto object-contain"/>
+        <div class="leading-tight">
+          <p class="font-display font-bold text-sm text-white md:text-ink transition-colors duration-300" id="logo-text" style="letter-spacing:-.01em;">HSSTian</p>
+          <p class="caption-text text-[.54rem] text-white/50 md:text-ink/40 transition-colors duration-300" id="logo-sub">Alumni Association</p>
         </div>
-    </header>
+      </a>
 
-    {{-- MOBILE MENU --}}
-    <div
-        x-cloak
-        x-show="mobileOpen"
-        x-transition.opacity.duration.250ms
-        class="fixed inset-0 z-[60] bg-[#153e75] lg:hidden"
-    >
-        <div class="flex h-full flex-col text-white">
-            <div class="flex items-center justify-between border-b border-white/10 px-6 py-5">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-white/70">
-                        Menu
-                    </p>
-                    <h2 class="mt-1 text-lg font-bold text-white">
-                        HSST Events
-                    </h2>
-                </div>
+      <nav class="hidden md:flex items-center gap-7" id="nav-links">
+        <a href="{{ route('home') }}" class="caption-text text-white/70 md:text-ink/60 hover:text-white md:hover:text-ink transition-colors">Home</a>
+        <a href="{{ route('history') }}" class="caption-text text-white/70 md:text-ink/60 hover:text-white md:hover:text-ink transition-colors">History</a>
+        <a href="{{ route('events.index') }}" class="caption-text text-ink font-bold md:text-ink border-b-2 pb-0.5 transition-colors" style="border-color:var(--royal);">Events</a>
+        <a href="{{ route('home') }}#crusade" class="caption-text text-white/70 md:text-ink/60 hover:text-white md:hover:text-ink transition-colors">CRUSADE</a>
+        <a href="{{ route('home') }}#contact" class="caption-text text-white/70 md:text-ink/60 hover:text-white md:hover:text-ink transition-colors">Contact</a>
+      </nav>
 
-                <button
-                    type="button"
-                    @click="mobileOpen = false"
-                    class="inline-flex h-11 w-11 items-center justify-center rounded border border-white/15 text-white transition hover:bg-white/10"
-                >
-                    ✕
-                </button>
-            </div>
-
-            <div class="flex-1 overflow-y-auto px-6 py-6">
-                <nav class="flex flex-col">
-                    <a @click="mobileOpen=false" href="{{ route('home') }}" class="border-b border-white/10 py-4 text-base font-semibold text-white/90">Home</a>
-                    <a @click="mobileOpen=false" href="{{ route('about-us') }}" class="border-b border-white/10 py-4 text-base font-semibold text-white/90">About</a>
-                    <a @click="mobileOpen=false" href="{{ route('events.index') }}" class="border-b border-white/10 py-4 text-base font-semibold text-white">Events</a>
-                    <a @click="mobileOpen=false" href="#event-calendar" class="border-b border-white/10 py-4 text-base font-semibold text-white/90">Calendar</a>
-                    <a @click="mobileOpen=false" href="#upcoming-events" class="py-4 text-base font-semibold text-white/90">Upcoming</a>
-                </nav>
-            </div>
-
-            @if (Route::has('login'))
-                <div class="border-t border-white/10 px-6 py-6">
-                    <div class="grid gap-3">
-                        @auth
-                            <a href="{{ url('/dashboard') }}" class="block rounded-xl bg-white px-4 py-4 text-center text-base font-bold text-[#153e75]">
-                                Dashboard
-                            </a>
-                        @else
-                            <a href="{{ route('login') }}" class="block rounded-xl border border-white/20 bg-white/10 px-4 py-4 text-center text-base font-semibold text-white">
-                                Log in
-                            </a>
-
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="block rounded-xl bg-white px-4 py-4 text-center text-base font-bold text-[#153e75]">
-                                    Register
-                                </a>
-                            @endif
-                        @endauth
-                    </div>
-                </div>
+      <div class="hidden md:flex items-center gap-3" id="auth-links">
+        @if (Route::has('login'))
+          @auth
+            <a href="{{ url('/dashboard') }}" class="caption-text bg-ink text-paper px-4 py-2 hover:opacity-80 transition-opacity">Dashboard</a>
+          @else
+            <a id="login-btn" href="{{ route('login') }}" class="caption-text border border-white/25 md:border-ink/20 text-white/80 md:text-ink/60 px-4 py-2 hover:border-white/60 md:hover:border-ink/50 hover:text-white md:hover:text-ink transition-all">Login</a>
+            @if (Route::has('register'))
+              <a href="{{ route('register') }}" class="caption-text bg-white md:bg-ink text-ink md:text-paper px-4 py-2 hover:opacity-80 transition-opacity">Register</a>
             @endif
-        </div>
+          @endauth
+        @endif
+      </div>
+
+      <button id="mobile-menu-btn" type="button" class="md:hidden text-white transition-colors" aria-label="Open menu" aria-expanded="false">
+        <svg id="menu-open-icon" class="w-6 h-6 block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg id="menu-close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
     </div>
 
-    {{-- HERO --}}
-<section class="relative overflow-hidden bg-[linear-gradient(150deg,#091852_0%,#0f2580_42%,#1a3fc4_82%,#2952d9_100%)] hero-glow">
-    <div class="hero-pattern"></div>
-    <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,24,82,0.76)_0%,rgba(9,24,82,0.56)_45%,rgba(9,24,82,0.18)_100%)]"></div>
-
-    <div class="relative z-10 mx-auto max-w-[1380px] px-4 py-16 sm:px-6 md:py-24 lg:px-8 lg:py-28">
-        <div class="grid items-center gap-10 lg:grid-cols-[1.05fr_.95fr]">
-            <div>
-                <p class="eyebrow text-[#dbeafe]">
-                    HSST Events & Gatherings
-                </p>
-
-                <div class="gold-line mt-4"></div>
-
-                <h1 class="mt-6 font-display text-[2.7rem] leading-[1.02] tracking-[-0.02em] text-white sm:text-[3.5rem] lg:text-[4.6rem]">
-                    A calendar of return,
-                    celebration, and
-                    community.
-                </h1>
-
-                <p class="mt-6 max-w-2xl text-[15px] leading-8 text-white/85 sm:text-base">
-                    Explore reunions, school celebrations, alumni programs, and community gatherings through one official public events experience for the HSST community.
-                </p>
-
-                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                    <a href="#upcoming-events" class="inline-flex items-center justify-center rounded bg-white px-7 py-3.5 text-sm font-bold uppercase tracking-[0.16em] text-[#0F2A6B] transition hover:bg-[#f3f6ff]">
-                        Explore Events
-                    </a>
-                    <a href="#event-calendar" class="inline-flex items-center justify-center rounded border border-white/20 bg-white/10 px-7 py-3.5 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-white/15">
-                        Browse Calendar
-                    </a>
-                </div>
-            </div>
-        </div>
+    <hr class="col-rule hidden md:block"/>
+    <div class="hidden md:flex items-center justify-center py-1.5">
+      <span class="caption-text text-ink/30 text-[.6rem]" style="letter-spacing:.3em;">HOLY SPIRIT SCHOOL OF TAGBILARAN · EVENTS & GATHERINGS</span>
     </div>
+    <hr class="col-rule hidden md:block"/>
+
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════
+     MOBILE MENU
+════════════════════════════════════════ -->
+<div id="mobile-menu" class="fixed inset-0 z-[9999] hidden md:hidden bg-ink text-paper">
+  <div class="flex h-dvh flex-col">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-paper/10">
+      <div>
+        <p class="caption-text text-paper/40 text-[.6rem]" style="letter-spacing:.25em;">THE HSST IAN</p>
+        <h2 class="font-display text-xl font-bold text-paper mt-0.5">Navigation</h2>
+      </div>
+      <button type="button" id="close-mobile-menu" class="w-10 h-10 flex items-center justify-center border border-paper/15 text-paper/60 hover:bg-paper/10 transition-colors text-sm">✕</button>
+    </div>
+    <nav class="flex-1 overflow-y-auto px-6 py-4 flex flex-col">
+      <a href="{{ route('home') }}" class="mobile-nav-link border-b border-paper/8 py-4 font-display text-lg text-paper/80 hover:text-paper transition-colors">Home</a>
+     <a href="{{ route('history') }}" class="mobile-nav-link border-b border-paper/8 py-4 font-display text-lg text-paper/80 hover:text-paper transition-colors">History</a>
+      <a href="{{ route('events.index') }}" class="mobile-nav-link border-b border-paper/8 py-4 font-display text-lg text-paper font-bold transition-colors">Events</a>
+      <a href="{{ route('home') }}#crusade" class="mobile-nav-link border-b border-paper/8 py-4 font-display text-lg text-paper/80 hover:text-paper transition-colors">CRUSADE</a>
+      <a href="{{ route('home') }}#contact" class="mobile-nav-link py-4 font-display text-lg text-paper/80 hover:text-paper transition-colors">Contact</a>
+    </nav>
+    <div class="border-t border-paper/10 px-6 py-5 flex flex-col gap-3">
+      @if (Route::has('login'))
+        @auth
+          <a href="{{ url('/dashboard') }}" class="flex items-center justify-center py-3 bg-paper caption-text text-ink hover:opacity-90 transition-opacity">Dashboard</a>
+        @else
+          <a href="{{ route('login') }}" class="flex items-center justify-center py-3 border border-paper/15 caption-text text-paper/70 hover:bg-paper/5 transition-colors">Login</a>
+          @if (Route::has('register'))
+            <a href="{{ route('register') }}" class="flex items-center justify-center py-3 bg-paper caption-text text-ink hover:opacity-90 transition-opacity">Register</a>
+          @endif
+        @endauth
+      @endif
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     HERO — MAGAZINE COVER
+════════════════════════════════════════ -->
+<section class="relative min-h-[65vh] md:min-h-[72vh] flex items-end overflow-hidden pt-24 md:pt-0">
+  <div class="absolute inset-0">
+    <img src="{{ asset('images/hsstherosect1.png') }}" alt="HSST Events" class="absolute inset-0 h-full w-full object-cover object-center"/>
+    <div class="absolute inset-0 hero-gradient"></div>
+    <div class="absolute inset-0 opacity-[.04]" style="background-image:url(data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E);"></div>
+  </div>
+
+  <div class="pointer-events-none absolute right-12 top-0 bottom-0 hidden xl:flex flex-col items-center justify-center opacity-10">
+    <div class="h-64 w-px bg-white"></div>
+    <div class="my-3 caption-text text-white" style="writing-mode:vertical-rl;letter-spacing:.3em;font-size:.6rem;">HOLY SPIRIT SCHOOL · EVENTS</div>
+    <div class="h-64 w-px bg-white"></div>
+  </div>
+
+  <div class="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 pb-16 sm:pb-20 md:pb-24">
+    <div class="max-w-3xl">
+
+      <div class="mb-6 flex items-center gap-3 animate-fade-up" style="animation-delay:.1s;">
+        <div class="h-px w-10" style="background:var(--spirit);"></div>
+        <span class="kicker" style="color:var(--spirit);letter-spacing:.25em;">HSST Events & Gatherings</span>
+      </div>
+
+      <h1 class="display text-white mb-6 animate-fade-up" style="font-size:clamp(3rem,8vw,6.5rem);animation-delay:.2s;">
+        A calendar of<br/>
+        <em style="color:var(--spirit);">return,</em> celebration<br class="hidden sm:block"/>
+        &amp; community.
+      </h1>
+
+      <p class="garamond text-white/70 mb-8 max-w-xl animate-fade-up" style="font-size:clamp(1rem,1.5vw,1.15rem);animation-delay:.32s;">
+        Explore reunions, school celebrations, alumni programs, and community gatherings
+        through one official public events experience for the HSST community.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-3 animate-fade-up" style="animation-delay:.42s;">
+        <a href="#upcoming-events" class="inline-flex items-center justify-center gap-2 bg-paper text-ink caption-text font-bold px-8 py-3.5 hover:opacity-90 transition-opacity">
+          Explore Events
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#event-calendar" class="inline-flex items-center justify-center border border-white/30 text-white/80 caption-text px-8 py-3.5 hover:border-white/60 hover:text-white transition-all">
+          Browse Calendar
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="absolute inset-x-0 bottom-0 h-20" style="background:linear-gradient(to top,var(--paper),transparent);"></div>
 </section>
 
-   {{-- CALENDAR --}}
-    <section id="event-calendar" class="bg-[#eef4ff] py-16 md:py-20 lg:py-24">
-        <div class="mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
-            <div class="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+<!-- ════════════════════════════════════════
+     EVENT CALENDAR
+════════════════════════════════════════ -->
+<section id="event-calendar" class="py-20 sm:py-28" style="background:var(--paper-dark,#f0ece3);">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- Section header -->
+    <div class="mb-12 reveal">
+      <hr class="col-rule-thick mb-3"/>
+      <div class="flex items-end justify-between flex-wrap gap-3">
+        <div>
+          <span class="kicker text-royal">Event Calendar</span>
+          <h2 class="display text-ink mt-2" style="font-size:clamp(2rem,3.5vw,3rem);">
+            Browse events <em style="color:var(--royal);">by date.</em>
+          </h2>
+        </div>
+        <div class="flex items-center gap-2 mb-1">
+          <a href="{{ route('events.index', ['month' => $prevMonth, 'date' => $selectedDate]) }}#event-calendar"
+             class="caption-text border border-ink/20 text-ink/60 px-4 py-2 hover:border-ink/50 hover:text-ink transition-all">
+            ← Prev
+          </a>
+          <a href="{{ route('events.index', ['month' => now()->format('Y-m'), 'date' => now()->toDateString()]) }}#event-calendar"
+             class="caption-text bg-ink text-paper px-4 py-2 hover:opacity-80 transition-opacity font-bold">
+            Today
+          </a>
+          <a href="{{ route('events.index', ['month' => $nextMonth, 'date' => $selectedDate]) }}#event-calendar"
+             class="caption-text border border-ink/20 text-ink/60 px-4 py-2 hover:border-ink/50 hover:text-ink transition-all">
+            Next →
+          </a>
+        </div>
+      </div>
+      <hr class="col-rule mt-3"/>
+    </div>
+
+    <div class="grid gap-8 xl:grid-cols-[1.3fr_.7fr] reveal">
+
+      <!-- Calendar grid -->
+      <div class="border border-ink/10" style="background:var(--paper);">
+
+        <!-- Month label -->
+        <div class="flex items-center justify-between px-5 py-4 border-b border-ink/10">
+          <h3 class="display text-ink font-bold" style="font-size:1.35rem;">{{ $calendarLabel }}</h3>
+          <span class="caption-text text-ink/35">Dates with events show a count</span>
+        </div>
+
+        <!-- Day-of-week header -->
+        <div class="grid grid-cols-7 border-b border-ink/10" style="background:var(--paper-dark,#f0ece3);">
+          @foreach (['Sun','Mon','Tue','Wed','Thu','Fri','Sat'] as $dayName)
+            <div class="py-3 text-center caption-text text-ink/40 text-[.6rem]">{{ $dayName }}</div>
+          @endforeach
+        </div>
+
+        <!-- Days -->
+        <div class="grid grid-cols-7">
+          @foreach ($calendarDays as $day)
+            <a href="{{ route('events.index', ['month' => $currentMonth, 'date' => $day['date']]) }}#event-calendar"
+               class="cal-day {{ !$day['isCurrentMonth'] ? 'other-month' : '' }} {{ $day['isSelected'] ? 'selected' : '' }}">
+              <div class="flex items-start justify-between gap-1">
+                <span class="inline-flex h-6 w-6 items-center justify-center text-xs font-bold sm:h-7 sm:w-7 sm:text-sm {{ $day['isToday'] ? 'cal-today-badge' : 'text-ink' }}">
+                  {{ $day['day'] }}
+                </span>
+                @if ($day['count'] > 0)
+                  <span class="cal-count rounded-sm px-1.5 py-0.5 text-[10px] font-bold">{{ $day['count'] }}</span>
+                @endif
+              </div>
+              <div class="mt-1.5 space-y-1">
+                @foreach (collect($day['events'])->take(2) as $event)
+                  <div class="cal-event-pill truncate rounded-sm px-1.5 py-0.5 text-[9px] font-medium sm:text-[10px]">
+                    {{ $event->title }}
+                  </div>
+                @endforeach
+                @if ($day['count'] > 2)
+                  <div class="caption-text text-ink/30 text-[9px]">+{{ $day['count'] - 2 }} more</div>
+                @endif
+              </div>
+            </a>
+          @endforeach
+        </div>
+
+      </div>
+
+      <!-- Selected date panel -->
+      <div class="border border-ink/10 flex flex-col" style="background:var(--paper);">
+
+        <div class="px-6 py-5 border-b border-ink/10">
+          <span class="kicker block mb-1" style="color:var(--royal);">Selected Date</span>
+          <h3 class="display text-ink font-bold" style="font-size:1.25rem;line-height:1.2;">{{ $selectedDateLabel }}</h3>
+          <p class="caption-text text-ink/35 mt-1" style="letter-spacing:.06em;text-transform:none;font-size:.7rem;">Events scheduled on this date</p>
+        </div>
+
+        <div class="flex-1 p-5 space-y-4 overflow-y-auto">
+          @forelse ($selectedDayEvents as $event)
+            <article class="border border-ink/8 p-5 ed-card" style="background:var(--paper-dark,#f0ece3);">
+              <span class="kicker block mb-2" style="color:var(--spirit);">
+                {{ \Carbon\Carbon::parse($event->event_date)->format('g:i A') }}
+              </span>
+              <h4 class="display text-ink font-bold mb-3" style="font-size:1.05rem;line-height:1.25;">
+                {{ $event->title }}
+              </h4>
+              <p class="garamond text-ink/60 mb-4" style="font-size:.9rem;line-height:1.7;">
+                {{ \Illuminate\Support\Str::limit($event->description, 120) }}
+              </p>
+              <hr class="col-rule mb-4"/>
+              <div class="grid grid-cols-2 gap-3 mb-4">
                 <div>
-                    <div class="eyebrow text-[#1E3A8A]">Event Calendar</div>
-                    <div class="gold-line my-4"></div>
-                    <h2 class="font-display text-[2rem] leading-[1.05] tracking-[-0.02em] text-[#091852] sm:text-[2.6rem]">
-                        Browse events by date
-                    </h2>
+                  <p class="caption-text text-ink/35 mb-1" style="font-size:.6rem;">Venue</p>
+                  <p class="caption-text text-ink font-bold" style="letter-spacing:.04em;text-transform:none;font-size:.7rem;">
+                    {{ $event->venue ?: 'TBA' }}
+                  </p>
                 </div>
-
-                <p class="max-w-[560px] text-[15px] leading-8 text-slate-600">
-                    Explore the monthly calendar, then choose a date to view scheduled events.
-                </p>
-            </div>
-
-            <div class="grid gap-8 xl:grid-cols-[1.2fr_.8fr]">
-                {{-- CALENDAR PANEL --}}
-                <div class="overflow-hidden rounded-none border-0 bg-transparent shadow-none sm:rounded-[2rem] sm:border sm:border-[#d9e5ff] sm:bg-white sm:shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
-                    <div class="flex flex-col gap-4 border-b border-[#d9e5ff] px-0 py-0 sm:px-5 sm:py-5 sm:flex-row sm:items-center sm:justify-between">
-                        <div class="px-0 pt-0 sm:px-0 sm:pt-0">
-                            <h3 class="text-lg font-bold text-[#091852]">{{ $calendarLabel }}</h3>
-                            <p class="mt-1 text-sm text-slate-500">
-                                Dates with events show a count.
-                            </p>
-                        </div>
-
-                        <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-                            <a
-                                href="{{ route('events.index', ['month' => $prevMonth, 'date' => $selectedDate]) }}#event-calendar"
-                                class="shrink-0 rounded border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                            >
-                                Prev
-                            </a>
-
-                            <a
-                                href="{{ route('events.index', ['month' => now()->format('Y-m'), 'date' => now()->toDateString()]) }}#event-calendar"
-                                class="shrink-0 rounded bg-[#153e75] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#0f2f5c]"
-                            >
-                                Today
-                            </a>
-
-                            <a
-                                href="{{ route('events.index', ['month' => $nextMonth, 'date' => $selectedDate]) }}#event-calendar"
-                                class="shrink-0 rounded border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                            >
-                                Next
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="mt-5 sm:mt-0">
-                        <div class="grid grid-cols-7 border-y border-[#d9e5ff] bg-[#f8fbff] text-center text-[10px] font-extrabold uppercase tracking-wide text-slate-500 sm:text-[11px]">
-                            @foreach (['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $dayName)
-                                <div class="px-1 py-3 sm:px-2">{{ $dayName }}</div>
-                            @endforeach
-                        </div>
-
-                        <div class="grid grid-cols-7">
-                            @foreach ($calendarDays as $day)
-                                <a
-                                    href="{{ route('events.index', ['month' => $currentMonth, 'date' => $day['date']]) }}#event-calendar"
-                                    class="
-                                        min-h-[88px] border-b border-r border-[#d9e5ff] p-2 transition sm:min-h-[118px] sm:p-3
-                                        {{ $day['isCurrentMonth'] ? 'bg-white hover:bg-[#f8fbff]' : 'bg-[#f3f7ff] text-slate-400' }}
-                                        {{ $day['isSelected'] ? 'ring-2 ring-inset ring-[#153e75]' : '' }}
-                                    "
-                                >
-                                    <div class="flex items-start justify-between gap-1">
-                                        <span class="
-                                            inline-flex h-7 w-7 items-center justify-center rounded text-xs font-bold sm:h-8 sm:w-8 sm:text-sm
-                                            {{ $day['isToday'] ? 'bg-[#153e75] text-white' : 'text-slate-800' }}
-                                        ">
-                                            {{ $day['day'] }}
-                                        </span>
-
-                                        @if ($day['count'] > 0)
-                                            <span class="rounded border border-[#1E3A8A]/15 bg-[#eaf1ff] px-1.5 py-0.5 text-[10px] font-semibold text-[#153e75] sm:px-2 sm:text-[11px]">
-                                                {{ $day['count'] }}
-                                            </span>
-                                        @endif
-                                    </div>
-
-                                    <div class="mt-2 space-y-1 sm:mt-3 sm:space-y-1.5">
-                                        @foreach (collect($day['events'])->take(2) as $event)
-                                            <div class="truncate rounded-md border border-[#dbe7ff] bg-[#f8fbff] px-1.5 py-1 text-[10px] font-medium text-[#153e75] sm:rounded-lg sm:px-2 sm:text-[11px]">
-                                                {{ $event->title }}
-                                            </div>
-                                        @endforeach
-
-                                        @if ($day['count'] > 2)
-                                            <div class="text-[10px] text-slate-400 sm:text-[11px]">
-                                                +{{ $day['count'] - 2 }} more
-                                            </div>
-                                        @endif
-                                    </div>
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-
-                {{-- SELECTED DATE EVENTS PANEL --}}
-                <div class="overflow-hidden rounded-none border-0 bg-transparent shadow-none sm:rounded-[2rem] sm:border sm:border-[#d9e5ff] sm:bg-[#f8fbff] sm:shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
-                    <div class="border-b border-[#d9e5ff] bg-transparent px-0 py-0 sm:bg-white sm:px-5 sm:py-5">
-                        <h3 class="text-lg font-bold text-[#091852]">{{ $selectedDateLabel }}</h3>
-                        <p class="mt-1 text-sm text-slate-500">
-                            Events scheduled on the selected date.
-                        </p>
-                    </div>
-
-                    <div class="px-0 py-5 sm:p-5">
-                        @forelse ($selectedDayEvents as $event)
-                            <article class="mb-5 rounded-none border-0 bg-transparent p-0 last:mb-0 sm:rounded-[1.5rem] sm:border sm:border-[#dbe7ff] sm:bg-white sm:p-4">
-                                <h4 class="font-bold text-slate-900">
-                                    {{ $event->title }}
-                                </h4>
-
-                                <p class="mt-2 text-sm leading-7 text-slate-600">
-                                    {{ \Illuminate\Support\Str::limit($event->description, 120) }}
-                                </p>
-
-                                <div class="mt-4 grid gap-3">
-                                    <div class="rounded-2xl bg-white/70 p-3 sm:border sm:border-[#dbe7ff] sm:bg-white">
-                                        <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">Venue</div>
-                                        <div class="mt-1 text-sm font-semibold text-slate-900">
-                                            {{ $event->venue ?: 'Venue to be announced' }}
-                                        </div>
-                                    </div>
-
-                                    <div class="rounded-2xl bg-white/70 p-3 sm:border sm:border-[#dbe7ff] sm:bg-white">
-                                        <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#1E3A8A]">Time</div>
-                                        <div class="mt-1 text-sm font-semibold text-slate-900">
-                                            {{ \Carbon\Carbon::parse($event->event_date)->format('g:i A') }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="mt-4">
-                                    <a
-                                        href="{{ route('events.show', $event) }}"
-                                        class="inline-flex w-full items-center justify-center rounded bg-[#153e75] px-4 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#0f2f5c]"
-                                    >
-                                        View Details
-                                    </a>
-                                </div>
-                            </article>
-                        @empty
-                            <div class="rounded-none border-0 bg-transparent p-0 text-center sm:rounded-[1.5rem] sm:border sm:border-dashed sm:border-[#c7d8ff] sm:bg-white sm:p-6">
-                                <p class="text-sm font-semibold text-slate-700">No events scheduled on this date.</p>
-                                <p class="mt-2 text-sm text-slate-500">Try another date or browse the upcoming events below.</p>
-                            </div>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- UPCOMING EVENTS --}}
-    <section id="upcoming-events" class="bg-white py-16 md:py-20 lg:py-24">
-        <div class="mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
-            <div class="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                    <div class="eyebrow text-[#1E3A8A]">Upcoming Events</div>
-                    <div class="gold-line my-4"></div>
-                    <h2 class="font-display text-[2rem] leading-[1.05] tracking-[-0.02em] text-[#091852] sm:text-[2.6rem]">
-                        All upcoming gatherings
-                    </h2>
+                  <p class="caption-text text-ink/35 mb-1" style="font-size:.6rem;">Date</p>
+                  <p class="caption-text text-ink font-bold" style="letter-spacing:.04em;text-transform:none;font-size:.7rem;">
+                    {{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y') }}
+                  </p>
                 </div>
-
-                <p class="max-w-[560px] text-[15px] leading-8 text-slate-600">
-                    Browse school-managed events, alumni activities, and celebrations prepared for the HSST community.
-                </p>
+              </div>
+              <a href="{{ route('events.show', $event) }}"
+                 class="w-full flex items-center justify-center py-2.5 caption-text font-bold text-paper hover:opacity-80 transition-opacity"
+                 style="background:var(--royal);">
+                View Details →
+              </a>
+            </article>
+          @empty
+            <div class="flex flex-col items-center justify-center h-full py-12 text-center">
+              <span class="display text-ink/20 font-bold" style="font-size:4rem;">—</span>
+              <p class="caption-text text-ink/40 mt-3 font-bold">No events on this date</p>
+              <p class="caption-text text-ink/25 mt-1" style="letter-spacing:.06em;text-transform:none;font-size:.7rem;">Try another date or browse upcoming events below</p>
             </div>
-
-            @if ($events->count())
-                <div class="grid gap-8 md:grid-cols-3 xl:grid-cols-3">
-                    @foreach ($events as $event)
-                        @php
-                            $bannerUrl = $event->banner_image
-                                ? \Illuminate\Support\Facades\Storage::disk('s3')->url($event->banner_image)
-                                : asset('images/100yearsevent.jpg');
-                        @endphp
-
-                        <article class="group flex h-full flex-col overflow-hidden rounded-none border-0 bg-transparent shadow-none sm:rounded-[1rem] sm:border sm:border-slate-200 sm:bg-white sm:shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
-                            {{-- IMAGE --}}
-                            <div class="relative overflow-hidden bg-slate-100">
-                                <img
-                                    src="{{ $bannerUrl }}"
-                                    alt="{{ $event->title }}"
-                                    class="h-[240px] w-full object-cover transition duration-700 group-hover:scale-105 sm:h-[280px]"
-                                >
-
-                                <div class="absolute inset-0 event-image-overlay"></div>
-
-                                <div class="absolute left-4 top-4">
-                                    <span class="inline-flex items-center rounded bg-white px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#153e75] shadow-sm">
-                                        Upcoming Event
-                                    </span>
-                                </div>
-                            </div>
-
-                            {{-- CONTENT --}}
-                            <div class="flex flex-1 flex-col px-0 pb-0 pt-5 sm:p-6 sm:p-7">
-
-                                {{-- DATE --}}
-                                <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#1E3A8A] sm:tracking-[0.26em]">
-                                    {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
-                                    · {{ \Carbon\Carbon::parse($event->event_date)->format('g:i A') }}
-                                </p>
-
-                                {{-- TITLE --}}
-                                <h2 class="mt-3 font-display text-[1.45rem] leading-[1.15] text-[#091852] sm:text-[1.75rem] sm:leading-[1.12]">
-                                    <a href="{{ route('events.show', $event) }}" class="transition hover:text-[#153e75]">
-                                        {{ $event->title }}
-                                    </a>
-                                </h2>
-
-                                {{-- DESCRIPTION --}}
-                                <p class="mt-4 text-[14px] leading-7 text-slate-600">
-                                    {{ \Illuminate\Support\Str::limit($event->description, 170) }}
-                                </p>
-
-                                {{-- BUTTON --}}
-                                <div class="mt-auto pt-6">
-                                    <a
-                                        href="{{ route('events.show', $event) }}"
-                                        class="inline-flex w-full items-center justify-center rounded bg-[#153e75] px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#0f2f5c]"
-                                    >
-                                        READ MORE →
-                                    </a>
-                                </div>
-
-                            </div>
-                        </article>
-                    @endforeach
-                </div>
-
-                <div class="mt-10">
-                    {{ $events->links() }}
-                </div>
-            @else
-                <div class="py-12 text-center sm:rounded-[2rem] sm:border sm:border-slate-200 sm:bg-white sm:px-6 sm:shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
-                    <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded bg-[#1E3A8A]/10 text-lg font-bold text-[#1E3A8A]">
-                        HS
-                    </div>
-                    <h2 class="font-display text-[1.8rem] text-slate-900">
-                        No upcoming events available
-                    </h2>
-                    <p class="mx-auto mt-3 max-w-xl text-[14px] leading-7 text-slate-600">
-                        Please check back soon for newly scheduled school events, alumni celebrations, and upcoming HSST activities.
-                    </p>
-                </div>
-            @endif
-        </div>
-    </section>
-
-    {{-- CTA --}}
-    <section class="bg-[linear-gradient(150deg,#091852,#1a3fc4)] py-16 md:py-20">
-        <div class="mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
-            <div class="overflow-hidden rounded-[2rem] border border-white/12 bg-white/10 p-8 backdrop-blur-sm sm:p-10 lg:p-14">
-                <div class="grid items-center gap-8 lg:grid-cols-[1.2fr_.8fr]">
-                    <div>
-                        <div class="eyebrow text-white/75">
-                            Be part of the next HSST gathering
-                        </div>
-
-                        <div class="gold-line my-4"></div>
-
-                        <h2 class="font-display text-[2rem] leading-[1.06] tracking-[-0.02em] text-white sm:text-[2.4rem] lg:text-[3rem]">
-                            Ready to reconnect with the HSST community?
-                        </h2>
-
-                        <p class="mt-4 max-w-2xl text-[15px] leading-8 text-white/85">
-                            Create your account to stay updated on alumni events, school programs, and upcoming celebrations through one secure official portal.
-                        </p>
-                    </div>
-
-                    <div class="flex flex-col gap-3">
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="block rounded bg-white px-6 py-4 text-center text-sm font-bold uppercase tracking-[0.16em] text-[#153e75] transition hover:bg-[#f3f6ff]">
-                                Create Account
-                            </a>
-                        @endif
-
-                        @if (Route::has('login'))
-                            <a href="{{ route('login') }}" class="block rounded border border-white/20 bg-white/10 px-6 py-4 text-center text-sm font-semibold text-white transition hover:bg-white/15">
-                                Log in to Existing Account
-                            </a>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- FOOTER --}}
-    <footer id="contact" class="bg-[#091852] pt-16 pb-8">
-        <div class="mx-auto grid max-w-[1380px] gap-10 px-4 sm:px-6 lg:grid-cols-[1.2fr_0.8fr_0.8fr] lg:px-8">
-            <div>
-                <div class="flex items-center gap-3">
-                    <div class="flex h-11 w-11 items-center justify-center overflow-hidden rounded border border-white/15 bg-white p-1 shadow-sm">
-                        <img src="{{ asset('images/hsstlogo.jpg') }}" alt="HSST Logo" class="h-full w-full object-contain">
-                    </div>
-                    <div>
-                        <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-white/65">Official Alumni Portal</p>
-                        <p class="text-base font-bold text-white">Holy Spirit School of Tagbilaran</p>
-                    </div>
-                </div>
-
-                <p class="mt-5 max-w-md text-sm leading-7 text-white/55">
-                    A digital home for official announcements, school events, alumni activities, and meaningful community connection at Holy Spirit School of Tagbilaran.
-                </p>
-            </div>
-
-            <div>
-                <h4 class="text-sm font-extrabold uppercase tracking-[0.2em] text-white/70">Quick links</h4>
-                <div class="mt-4 flex flex-col gap-3 text-sm text-white/55">
-                    <a href="{{ route('home') }}" class="transition hover:text-white">Home</a>
-                    {{-- <a href="{{ route('about-us') }}" class="transition hover:text-white">About Us</a> --}}
-                    <a href="{{ route('events.index') }}" class="transition hover:text-white">Events</a>
-                    <a href="#event-calendar" class="transition hover:text-white">Calendar</a>
-                    <a href="#upcoming-events" class="transition hover:text-white">Upcoming</a>
-                </div>
-            </div>
-
-            <div>
-                <h4 class="text-sm font-extrabold uppercase tracking-[0.2em] text-white/70">Account</h4>
-                <div class="mt-4 flex flex-col gap-3 text-sm text-white/55">
-                    @if (Route::has('login'))
-                        <a href="{{ route('login') }}" class="transition hover:text-white">Log in</a>
-                    @endif
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="transition hover:text-white">Register</a>
-                    @endif
-                    <a href="{{ url('/dashboard') }}" class="transition hover:text-white">Dashboard</a>
-                </div>
-            </div>
+          @endforelse
         </div>
 
-        <div class="mt-10 border-t border-white/10">
-            <div class="mx-auto flex max-w-[1380px] flex-col gap-3 px-4 py-6 text-sm text-white/40 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-                <p>© {{ now('Asia/Manila')->format('Y') }} Holy Spirit School of Tagbilaran. All rights reserved.</p>
-                <p class="text-[#d4af37]">Truth in Love · Faith · Learning · Community</p>
-            </div>
-        </div>
-    </footer>
+      </div>
 
-</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     UPCOMING EVENTS — NEWSPAPER GRID
+════════════════════════════════════════ -->
+<section id="upcoming-events" class="py-20 sm:py-28" style="background:var(--paper);">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- Section header -->
+    <div class="mb-12 reveal">
+      <hr class="col-rule-thick mb-3"/>
+      <div class="flex items-end justify-between">
+        <div>
+          <span class="kicker text-spirit">Schedule</span>
+          <h2 class="display text-ink mt-2" style="font-size:clamp(2rem,3.5vw,3rem);">
+            All Upcoming <em style="color:var(--spirit);">Gatherings.</em>
+          </h2>
+        </div>
+        <span class="caption-text text-ink/30 mb-1">HSST Community · {{ now('Asia/Manila')->format('Y') }}</span>
+      </div>
+      <hr class="col-rule mt-3"/>
+    </div>
+
+    @if ($events->count())
+
+      <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-0 border border-ink/8">
+        @foreach ($events as $i => $event)
+          @php
+            $bannerUrl = $event->banner_image
+              ? \Illuminate\Support\Facades\Storage::disk('s3')->url($event->banner_image)
+              : asset('images/100yearsevent.jpg');
+          @endphp
+
+          <article class="ed-card group border-b border-r border-ink/8 flex flex-col" style="background:var(--paper);">
+
+            <!-- Image -->
+            <div class="relative overflow-hidden" style="height:220px;">
+              <img src="{{ $bannerUrl }}" alt="{{ $event->title }}"
+                   class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"/>
+              <div class="absolute inset-0 event-overlay"></div>
+              <div class="absolute top-4 left-4">
+                <span class="caption-text font-bold px-3 py-1.5 text-paper" style="background:var(--royal);">Upcoming</span>
+              </div>
+              <div class="absolute bottom-4 left-4">
+                <span class="caption-text text-white/70" style="font-size:.62rem;letter-spacing:.15em;">
+                  {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div class="flex flex-col flex-1 p-7">
+
+              <div class="flex items-center justify-between mb-4">
+                <span class="kicker" style="color:var(--spirit);">
+                  {{ \Carbon\Carbon::parse($event->event_date)->format('g:i A') }}
+                </span>
+                <span class="caption-text text-ink/30" style="font-size:.6rem;">
+                  {{ \Carbon\Carbon::parse($event->event_date)->format('M Y') }}
+                </span>
+              </div>
+
+              <h2 class="display text-ink font-bold mb-4 group-hover:text-royal transition-colors" style="font-size:1.4rem;line-height:1.2;">
+                <a href="{{ route('events.show', $event) }}">{{ $event->title }}</a>
+              </h2>
+
+              <p class="garamond text-ink/60 flex-1 mb-5" style="font-size:.96rem;line-height:1.75;">
+                {{ \Illuminate\Support\Str::limit($event->description, 150) }}
+              </p>
+
+              <hr class="col-rule mb-5"/>
+
+              <div class="flex items-center justify-between">
+                @if($event->venue)
+                  <span class="caption-text text-ink/40" style="letter-spacing:.05em;text-transform:none;font-size:.68rem;">
+                    📍 {{ $event->venue }}
+                  </span>
+                @else
+                  <span></span>
+                @endif
+                <a href="{{ route('events.show', $event) }}"
+                   class="caption-text font-bold text-royal border-b border-royal/30 hover:border-royal pb-0.5 transition-all">
+                  Read More →
+                </a>
+              </div>
+
+            </div>
+          </article>
+        @endforeach
+      </div>
+
+      <!-- Pagination -->
+      @if ($events->hasPages())
+        <div class="mt-10 pt-8 border-t border-ink/10 reveal">
+          {{ $events->links() }}
+        </div>
+      @endif
+
+    @else
+
+      <div class="border border-ink/8 p-16 text-center reveal" style="background:var(--paper-dark,#f0ece3);">
+        <span class="open-quote display text-ink/15 font-black block" style="font-size:6rem;line-height:.7;">"</span>
+        <h3 class="display text-ink font-bold mt-2" style="font-size:1.8rem;">No upcoming events at this time.</h3>
+        <p class="garamond text-ink/50 mt-3 max-w-md mx-auto" style="font-size:.98rem;">
+          Please check back soon for newly scheduled school events, alumni celebrations, and upcoming HSST activities.
+        </p>
+        <div class="ornament mt-8">
+          <span class="caption-text text-ink/30" style="font-size:.6rem;letter-spacing:.25em;">IN VERITATE ET CARITATE</span>
+        </div>
+      </div>
+
+    @endif
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     CTA
+════════════════════════════════════════ -->
+<section class="py-24 sm:py-32 text-center" style="background:var(--ink);">
+  <div class="max-w-3xl mx-auto px-6">
+
+    <div class="flex items-center justify-center gap-4 mb-6 reveal">
+      <div class="h-px flex-1 max-w-24" style="background:rgba(250,248,244,.12);"></div>
+      <span class="caption-text font-bold" style="color:var(--spirit);letter-spacing:.3em;font-size:.62rem;">JOIN THE COMMUNITY</span>
+      <div class="h-px flex-1 max-w-24" style="background:rgba(250,248,244,.12);"></div>
+    </div>
+
+    <h2 class="display text-paper font-bold mb-5 reveal d1" style="font-size:clamp(2.2rem,5vw,4rem);">
+      Ready to <em style="color:var(--spirit);">reconnect?</em>
+    </h2>
+
+    <p class="garamond mb-10 reveal d2" style="color:rgba(250,248,244,.5);max-width:36rem;margin-left:auto;margin-right:auto;">
+      Create your account to stay updated on alumni events, school programs, and upcoming
+      celebrations through one secure official portal.
+    </p>
+
+    <div class="flex flex-wrap gap-4 justify-center reveal d2">
+      @if (Route::has('register'))
+        <a href="{{ route('register') }}" class="caption-text font-bold bg-paper text-ink px-10 py-4 hover:opacity-90 transition-opacity">
+          Create Account
+        </a>
+      @endif
+      @if (Route::has('login'))
+        <a href="{{ route('login') }}" class="caption-text font-bold border border-paper/25 text-paper/70 px-10 py-4 hover:border-paper/60 hover:text-paper transition-all">
+          Log in
+        </a>
+      @endif
+    </div>
+
+    <p class="caption-text mt-12 reveal d3" style="color:rgba(250,248,244,.15);letter-spacing:.25em;font-size:.62rem;">
+      IN VERITATE ET CARITATE · TRUTH AND LOVE · 1926–2026
+    </p>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     FOOTER — MASTHEAD COLOPHON
+════════════════════════════════════════ -->
+<footer id="contact" class="bg-ink pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="text-center pb-10 mb-10 border-b border-paper/8">
+      <p class="caption-text text-paper/25 mb-2" style="letter-spacing:.3em;">THE OFFICIAL JOURNAL OF</p>
+      <h2 class="display text-paper font-bold" style="font-size:clamp(1.8rem,4vw,3rem);">HSSTian Alumni Association</h2>
+      <p class="caption-text text-paper/30 mt-2" style="letter-spacing:.2em;">HOLY SPIRIT SCHOOL OF TAGBILARAN · BOHOL, PHILIPPINES</p>
+      <div class="flex items-center justify-center gap-4 mt-4">
+        <div class="h-px flex-1 max-w-32 bg-paper/10"></div>
+        <span class="caption-text font-bold" style="color:var(--spirit);letter-spacing:.22em;font-size:.65rem;">IN VERITATE ET CARITATE</span>
+        <div class="h-px flex-1 max-w-32 bg-paper/10"></div>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-4 gap-10 pb-12 border-b border-paper/8">
+
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-3 mb-4">
+          <img src="{{ asset('images/hsstlogo.jpg') }}" alt="HSST Logo" class="h-8 w-auto object-contain opacity-80"/>
+          <div>
+            <p class="display text-paper font-bold text-base">HSSTian</p>
+            <p class="caption-text text-paper/25 text-[.55rem]" style="letter-spacing:.22em;">Alumni Association</p>
+          </div>
+        </div>
+        <p class="garamond text-paper/30 max-w-xs mb-5" style="font-size:.9rem;line-height:1.7;">
+          United by faith. Driven by service. Forever Crusaders.
+          Tagbilaran City, Bohol, Philippines.
+        </p>
+        <p class="caption-text font-bold mb-1" style="color:var(--spirit);">In Veritate et Caritate</p>
+        <p class="caption-text text-paper/20 italic" style="letter-spacing:.06em;text-transform:none;font-size:.68rem;">In Truth and in Love</p>
+      </div>
+
+      <div>
+        <p class="caption-text font-bold text-paper/40 mb-5" style="letter-spacing:.2em;">Quick Links</p>
+        <ul class="space-y-3">
+          <li><a href="{{ route('home') }}" class="caption-text text-paper/25 hover:text-paper/70 transition-colors" style="letter-spacing:.08em;text-transform:none;font-size:.8rem;">Home</a></li>
+          <li><a href="{{ route('history') }}" class="caption-text text-paper/25 hover:text-paper/70 transition-colors" style="letter-spacing:.08em;text-transform:none;font-size:.8rem;">History</a></li>
+          <li><a href="{{ route('events.index') }}" class="caption-text text-paper/60 hover:text-paper/70 transition-colors" style="letter-spacing:.08em;text-transform:none;font-size:.8rem;">Events</a></li>
+          <li><a href="#event-calendar" class="caption-text text-paper/25 hover:text-paper/70 transition-colors" style="letter-spacing:.08em;text-transform:none;font-size:.8rem;">Calendar</a></li>
+          <li><a href="{{ route('home') }}#crusade" class="caption-text text-paper/25 hover:text-paper/70 transition-colors" style="letter-spacing:.08em;text-transform:none;font-size:.8rem;">CRUSADE Donation</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="caption-text font-bold text-paper/40 mb-5" style="letter-spacing:.2em;">Contact Us</p>
+        <ul class="space-y-4">
+          <li class="flex gap-2.5 items-start">
+            <svg class="w-3.5 h-3.5 text-paper/30 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            <span class="caption-text text-paper/25" style="letter-spacing:.04em;text-transform:none;font-size:.75rem;">alumni@hss-tagbilaran.edu.ph</span>
+          </li>
+          <li class="flex gap-2.5 items-start">
+            <svg class="w-3.5 h-3.5 text-paper/30 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            </svg>
+            <span class="caption-text text-paper/25" style="letter-spacing:.04em;text-transform:none;font-size:.75rem;">J.A. Clarin, Purok 3, Dao District, Tagbilaran City, Bohol 6300</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-3">
+      <p class="caption-text text-paper/15" style="letter-spacing:.08em;text-transform:none;font-size:.7rem;">
+        © {{ now('Asia/Manila')->format('Y') }} HSSTian Alumni Association · Holy Spirit School of Tagbilaran. All rights reserved.
+      </p>
+      <p class="caption-text font-bold" style="color:var(--spirit);opacity:.5;letter-spacing:.25em;font-size:.62rem;">
+        CRUSADERS FOREVER ✦
+      </p>
+    </div>
+
+  </div>
+</footer>
+
+<!-- ════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════ -->
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('pgbar').style.width = pct + '%';
+  });
+
+  // Mobile menu
+  const mobileMenuBtn      = document.getElementById('mobile-menu-btn');
+  const mobileMenu         = document.getElementById('mobile-menu');
+  const menuOpenIcon       = document.getElementById('menu-open-icon');
+  const menuCloseIcon      = document.getElementById('menu-close-icon');
+  const closeMobileMenuBtn = document.getElementById('close-mobile-menu');
+
+  function openMobileMenu() {
+    mobileMenu.classList.remove('hidden');
+    menuOpenIcon.classList.add('hidden');
+    menuCloseIcon.classList.remove('hidden');
+    mobileMenuBtn.setAttribute('aria-expanded','true');
+    document.body.classList.add('overflow-hidden');
+  }
+  function closeMobileMenu() {
+    mobileMenu.classList.add('hidden');
+    menuOpenIcon.classList.remove('hidden');
+    menuCloseIcon.classList.add('hidden');
+    mobileMenuBtn.setAttribute('aria-expanded','false');
+    document.body.classList.remove('overflow-hidden');
+  }
+  mobileMenuBtn?.addEventListener('click', () => mobileMenu.classList.contains('hidden') ? openMobileMenu() : closeMobileMenu());
+  closeMobileMenuBtn?.addEventListener('click', closeMobileMenu);
+  document.querySelectorAll('.mobile-nav-link').forEach(l => l.addEventListener('click', closeMobileMenu));
+
+  // Nav scroll state
+  const nav      = document.getElementById('nav');
+  const logoText = document.getElementById('logo-text');
+  const logoSub  = document.getElementById('logo-sub');
+  const navLinks = document.getElementById('nav-links');
+  const loginBtn = document.getElementById('login-btn');
+  const mobileMenuButton = document.getElementById('mobile-menu-btn');
+
+  function setScrolledNav() {
+    nav.classList.add('scrolled');
+    logoText?.classList.replace('text-white','text-ink');
+    logoSub?.classList.remove('text-white/50'); logoSub?.classList.add('text-ink/40');
+    navLinks?.querySelectorAll('a').forEach(a => { a.classList.remove('text-white/70','hover:text-white'); a.classList.add('text-ink/60','hover:text-ink'); });
+    loginBtn?.classList.remove('border-white/25','text-white/80','hover:border-white/60','hover:text-white');
+    loginBtn?.classList.add('border-ink/20','text-ink/60','hover:border-ink/50','hover:text-ink');
+    mobileMenuButton?.classList.replace('text-white','text-ink');
+  }
+  function setTopNav() {
+    nav.classList.remove('scrolled');
+    logoText?.classList.replace('text-ink','text-white');
+    logoSub?.classList.remove('text-ink/40'); logoSub?.classList.add('text-white/50');
+    navLinks?.querySelectorAll('a').forEach(a => { a.classList.remove('text-ink/60','hover:text-ink'); a.classList.add('text-white/70','hover:text-white'); });
+    loginBtn?.classList.remove('border-ink/20','text-ink/60','hover:border-ink/50','hover:text-ink');
+    loginBtn?.classList.add('border-white/25','text-white/80','hover:border-white/60','hover:text-white');
+    mobileMenuButton?.classList.replace('text-ink','text-white');
+  }
+  function handleNavScroll() { window.scrollY > 60 ? setScrolledNav() : setTopNav(); }
+  window.addEventListener('scroll', handleNavScroll);
+  handleNavScroll();
+
+  // Reveal on scroll
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); ro.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+</script>
 </body>
 </html>

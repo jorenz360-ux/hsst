@@ -1,566 +1,828 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HSST Events | Holy Spirit School of Tagbilaran</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>History · Holy Spirit School of Tagbilaran</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,700;1,900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <style>
-        [x-cloak] { display: none !important; }
-
-        .font-body { font-family: "Inter", system-ui, sans-serif; }
-        .font-display { font-family: "DM Serif Display", Georgia, serif; }
-
-        .hamburger-line { transition: all .22s ease; }
-        .hamburger-open .line-1 { transform: translateY(6px) rotate(45deg); }
-        .hamburger-open .line-2 { opacity: 0; }
-        .hamburger-open .line-3 { transform: translateY(-6px) rotate(-45deg); }
-
-        .eyebrow {
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.24em;
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink:    { DEFAULT:'#12100e', soft:'#3a3530', muted:'#6b6860' },
+            paper:  { DEFAULT:'#faf8f4', dark:'#f0ece3', darker:'#e4ddd0', rule:'#d4c9b8' },
+            royal:  { DEFAULT:'#1a3fc4', dark:'#0f2580', deeper:'#091852', light:'#2952d9', pale:'#94b0f8', frost:'#eef2ff' },
+            spirit: { DEFAULT:'#c4960a', light:'#e8b80f', pale:'#f5e4a0' },
+            crimson:{ DEFAULT:'#c41a2e', light:'#e8314a', pale:'#fde8eb' },
+            teal:   { DEFAULT:'#0a7c68', light:'#0f9980', pale:'#d4f0eb' },
+          },
+          fontFamily: {
+            display:  ['"Playfair Display"','Georgia','serif'],
+            garamond: ['"EB Garamond"','Georgia','serif'],
+            sans:     ['"Inter"','system-ui','sans-serif'],
+          },
+          keyframes: {
+            fadeUp: { from:{opacity:0,transform:'translateY(20px)'}, to:{opacity:1,transform:'translateY(0)'} },
+            fadeIn: { from:{opacity:0}, to:{opacity:1} },
+          },
+          animation: {
+            'fade-up': 'fadeUp .85s cubic-bezier(.22,1,.36,1) both',
+            'fade-in': 'fadeIn 1s ease both',
+          }
         }
+      }
+    }
+  </script>
 
-        .gold-line {
-            width: 52px;
-            height: 3px;
-            border-radius: 999px;
-            background: linear-gradient(90deg, #c4960a, #e8b80f);
-        }
+  <style>
+    :root {
+      --ink:    #12100e;
+      --paper:  #faf8f4;
+      --rule:   #d4c9b8;
+      --royal:  #1a3fc4;
+      --spirit: #c4960a;
+      --crimson:#c41a2e;
+      --teal:   #0a7c68;
+    }
 
-        .section-shell {
-            border: 1px solid rgba(30, 58, 138, 0.10);
-            background: #ffffff;
-            box-shadow: 0 18px 48px rgba(15, 42, 107, 0.08);
-        }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Inter',sans-serif; background:var(--paper); color:var(--ink); overflow-x:hidden; }
 
-        .soft-panel {
-            border: 1px solid rgba(30, 58, 138, 0.10);
-            background: #f8fbff;
-        }
+    ::-webkit-scrollbar { width:4px; }
+    ::-webkit-scrollbar-track { background:var(--paper); }
+    ::-webkit-scrollbar-thumb { background:var(--rule); border-radius:0; }
 
-        .royal-card {
-            border: 1px solid rgba(30, 58, 138, 0.10);
-            background: #ffffff;
-            transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
-        }
+    #pgbar {
+      position:fixed; top:0; left:0; height:2px;
+      background:var(--crimson);
+      z-index:9999; width:0; transition:width .1s linear;
+    }
 
-        .royal-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 50px rgba(15, 42, 107, 0.10);
-            border-color: rgba(30, 58, 138, 0.18);
-        }
+    /* Reveal */
+    .reveal { opacity:0; transform:translateY(18px); transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1); }
+    .reveal.on { opacity:1; transform:none; }
+    .d1{transition-delay:.1s;} .d2{transition-delay:.2s;} .d3{transition-delay:.3s;} .d4{transition-delay:.4s;}
 
-        .hero-glow::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(circle at 82% 18%, rgba(255,255,255,0.16), transparent 22%),
-                radial-gradient(circle at 78% 30%, rgba(147,197,253,0.18), transparent 28%);
-            pointer-events: none;
-        }
+    /* NAV */
+    #nav { transition:all .35s ease; }
+    #nav.scrolled {
+      background:rgba(250,248,244,.97);
+      border-bottom:1px solid var(--rule);
+      backdrop-filter:blur(10px);
+    }
 
-        .event-image-overlay {
-            background: linear-gradient(
-                180deg,
-                rgba(9,24,82,0.06) 0%,
-                rgba(9,24,82,0.18) 40%,
-                rgba(9,24,82,0.76) 100%
-            );
-        }
+    /* ── Editorial type ── */
+    .kicker {
+      font-family:'Inter',sans-serif;
+      font-size:.67rem; font-weight:700;
+      letter-spacing:.22em; text-transform:uppercase;
+    }
+    .display { font-family:'Playfair Display',serif; letter-spacing:-.015em; line-height:1.05; }
+    .garamond { font-family:'EB Garamond',serif; font-size:1.08rem; line-height:1.9; }
+    .caption-text {
+      font-family:'Inter',sans-serif;
+      font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:#6b6860;
+    }
+    .col-rule { border-top:1px solid var(--rule); }
+    .col-rule-thick { border-top:2px solid var(--ink); }
 
-        .nav-link {
-            color: rgba(255,255,255,.78);
-            transition: color .2s ease, background .2s ease;
-        }
+    /* Drop cap */
+    .drop-cap::first-letter {
+      float:left;
+      font-family:'Playfair Display',serif;
+      font-size:5rem; line-height:.82;
+      padding-right:.1em; padding-top:.04em;
+      color:var(--royal); font-weight:700;
+    }
 
-        .nav-link:hover {
-            color: #fff;
-            background: rgba(255,255,255,.08);
-        }
+    /* Two-column editorial text */
+    .two-col { column-count:2; column-gap:2.5rem; column-rule:1px solid var(--rule); }
+    @media(max-width:640px){ .two-col{ column-count:1; } }
 
-        .nav-link-active {
-            background: #fff;
-            color: #0F2A6B;
-        }
+    /* Pull quote */
+    .pull-quote {
+      font-family:'Playfair Display',serif;
+      font-style:italic;
+      font-size:clamp(1.35rem,2.5vw,1.9rem);
+      line-height:1.35; color:var(--ink);
+      border-left:3px solid var(--royal);
+      padding-left:1.25rem;
+    }
 
-        .hero-pattern {
-            position: absolute;
-            inset: 0;
-            background-image:
-                radial-gradient(circle at 20% 25%, rgba(255,255,255,.08) 1px, transparent 1px),
-                radial-gradient(circle at 80% 70%, rgba(255,255,255,.07) 1px, transparent 1px);
-            background-size: 42px 42px, 52px 52px;
-            opacity: .35;
-            pointer-events: none;
-        }
-    </style>
+    /* Big decorative open quote */
+    .open-quote {
+      font-family:'Playfair Display',serif;
+      font-size:7rem; line-height:.6;
+      opacity:.12; display:block;
+    }
+
+    /* Ornament */
+    .ornament { display:flex; align-items:center; gap:.75rem; }
+    .ornament::before,.ornament::after { content:''; flex:1; border-top:1px solid var(--rule); }
+
+    /* Hero overlay */
+    .hero-gradient {
+      background:linear-gradient(
+        100deg,
+        rgba(9,24,52,.96) 0%,
+        rgba(14,38,90,.88) 35%,
+        rgba(20,52,140,.6) 62%,
+        rgba(20,52,140,.18) 100%
+      );
+    }
+
+    /* Card hover */
+    .ed-card { transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s; }
+    .ed-card:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(18,16,14,.1); }
+
+    /* Timeline track line */
+    .timeline-track::before {
+      content:'';
+      position:absolute;
+      left:0; top:0; bottom:0;
+      width:2px;
+      background:linear-gradient(180deg, var(--royal) 0%, var(--spirit) 100%);
+    }
+  </style>
 </head>
-<body class="overflow-x-hidden bg-white font-body text-slate-800 antialiased">
-<div x-data="{ mobileOpen:false }" class="min-h-screen">
+<body class="antialiased">
 
-    {{-- HEADER --}}
-    <header class="sticky inset-x-0 top-0 z-50 border-b border-white/10 bg-[rgba(9,24,82,0.92)] backdrop-blur-md">
-        <div class="mx-auto flex h-[78px] max-w-[1380px] items-center justify-between px-4 sm:px-6 lg:px-8">
-            <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-3 transition hover:opacity-95">
-                <div class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded border border-white/18 bg-white p-1 shadow-sm">
-                    <img
-                        src="{{ asset('images/hsstlogo.jpg') }}"
-                        alt="Holy Spirit School of Tagbilaran Logo"
-                        class="h-full w-full object-contain"
-                    >
-                </div>
+<div id="pgbar"></div>
 
-                <div class="min-w-0">
-                    <p class="text-[9px] font-extrabold uppercase tracking-[0.28em] text-white/70">
-                        Official Alumni Portal
-                    </p>
-                    <h1 class="truncate text-[13px] font-bold text-white">
-                        Holy Spirit School of Tagbilaran
-                    </h1>
-                </div>
-            </a>
-
-            <nav class="hidden items-center gap-2 lg:flex">
-                <a href="{{ route('home') }}" class="nav-link rounded px-4 py-2 text-sm font-semibold">
-                    Home
-                </a>
-                <a href="{{ route('about-us') }}" class="nav-link rounded px-4 py-2 text-sm font-semibold">
-                    About
-                </a>
-                <a href="{{ route('events.index') }}" class="nav-link rounded px-4 py-2 text-sm font-bold">
-                    Events
-                </a>
-                 <a href="{{ route('history') }}" class="nav-link-active rounded px-4 py-2 text-sm font-bold">
-                History
-            </a>
-                <a href="#event-calendar" class="nav-link rounded px-4 py-2 text-sm font-semibold">
-                    Calendar
-                </a>
-                <a href="#upcoming-events" class="nav-link rounded px-4 py-2 text-sm font-semibold">
-                    Upcoming
-                </a>
-            </nav>
-
-            <div class="hidden items-center gap-3 lg:flex">
-                @if (Route::has('login'))
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="inline-flex items-center justify-center rounded bg-white px-5 py-2.5 text-sm font-bold text-[#0F2A6B] transition hover:bg-[#f3f6ff]">
-                            Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15">
-                            Log in
-                        </a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded bg-white px-5 py-2.5 text-sm font-bold text-[#0F2A6B] transition hover:bg-[#f3f6ff]">
-                                Register
-                            </a>
-                        @endif
-                    @endauth
-                @endif
-            </div>
-
-            <button
-                @click="mobileOpen = !mobileOpen"
-                :class="mobileOpen ? 'hamburger-open' : ''"
-                class="flex flex-col gap-[4.5px] rounded border border-white/20 bg-white/10 p-3 lg:hidden"
-                aria-label="Toggle Menu"
-            >
-                <span class="hamburger-line line-1 block h-[1.5px] w-[20px] rounded bg-white"></span>
-                <span class="hamburger-line line-2 block h-[1.5px] w-[20px] rounded bg-white"></span>
-                <span class="hamburger-line line-3 block h-[1.5px] w-[20px] rounded bg-white"></span>
-            </button>
-        </div>
-    </header>
-
-    {{-- MOBILE MENU --}}
-    <div
-        x-cloak
-        x-show="mobileOpen"
-        x-transition.opacity.duration.250ms
-        class="fixed inset-0 z-[60] bg-[#153e75] lg:hidden"
-    >
-        <div class="flex h-full flex-col text-white">
-            <div class="flex items-center justify-between border-b border-white/10 px-6 py-5">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-white/70">
-                        Menu
-                    </p>
-                    <h2 class="mt-1 text-lg font-bold text-white">
-                        HSST Events
-                    </h2>
-                </div>
-
-                <button
-                    type="button"
-                    @click="mobileOpen = false"
-                    class="inline-flex h-11 w-11 items-center justify-center rounded border border-white/15 text-white transition hover:bg-white/10"
-                >
-                    ✕
-                </button>
-            </div>
-
-            <div class="flex-1 overflow-y-auto px-6 py-6">
-                <nav class="flex flex-col">
-                    <a @click="mobileOpen=false" href="{{ route('home') }}" class="border-b border-white/10 py-4 text-base font-semibold text-white/90">Home</a>
-                    <a @click="mobileOpen=false" href="{{ route('about-us') }}" class="border-b border-white/10 py-4 text-base font-semibold text-white/90">About</a>
-                    <a @click="mobileOpen=false" href="{{ route('events.index') }}" class="border-b border-white/10 py-4 text-base font-semibold text-white">Events</a>
-                    <a @click="mobileOpen=false" href="#event-calendar" class="border-b border-white/10 py-4 text-base font-semibold text-white/90">Calendar</a>
-                     <a @click="mobileOpen=false" href="{{ route('history') }}" class="border-b border-white/10 py-4 text-base font-semibold text-white/90">
-                History
-            </a>
-                    <a @click="mobileOpen=false" href="#upcoming-events" class="py-4 text-base font-semibold text-white/90">Upcoming</a>
-                </nav>
-            </div>
-
-            @if (Route::has('login'))
-                <div class="border-t border-white/10 px-6 py-6">
-                    <div class="grid gap-3">
-                        @auth
-                            <a href="{{ url('/dashboard') }}" class="block rounded-xl bg-white px-4 py-4 text-center text-base font-bold text-[#153e75]">
-                                Dashboard
-                            </a>
-                        @else
-                            <a href="{{ route('login') }}" class="block rounded-xl border border-white/20 bg-white/10 px-4 py-4 text-center text-base font-semibold text-white">
-                                Log in
-                            </a>
-
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="block rounded-xl bg-white px-4 py-4 text-center text-base font-bold text-[#153e75]">
-                                    Register
-                                </a>
-                            @endif
-                        @endauth
-                    </div>
-                </div>
-            @endif
-        </div>
+<!-- ════════════════════════════════════════
+     MASTHEAD TOP STRIP
+════════════════════════════════════════ -->
+<div class="bg-ink text-paper/50 border-b border-paper/10 hidden md:block">
+  <div class="max-w-7xl mx-auto px-6 py-1.5 flex items-center justify-between">
+    <span class="caption-text" style="color:rgba(250,248,244,.4);">{{ now('Asia/Manila')->format('l, F j, Y') }}</span>
+    <div class="flex items-center gap-3">
+      <span class="caption-text" style="color:rgba(250,248,244,.4);">Est. 1926</span>
+      <span class="caption-text" style="color:rgba(250,248,244,.4);">Tagbilaran, Bohol, Philippines</span>
     </div>
-<div class="min-h-screen bg-[#f8fbff] text-[#10224f]">
+    <span class="caption-text" style="color:rgba(250,248,244,.4);">In Veritate et Caritate</span>
+  </div>
+</div>
 
+<!-- ════════════════════════════════════════
+     EDITORIAL NAV
+════════════════════════════════════════ -->
+<header id="nav" class="fixed inset-x-0 top-0 z-50 md:relative md:z-auto md:top-auto md:fixed">
+  <div class="max-w-7xl mx-auto px-6">
 
-<section class="relative overflow-hidden bg-[#0f2a6b] text-white
-                sm:mx-auto sm:mt-6 sm:max-w-5xl sm:rounded-[1.75rem] sm:shadow-[0_20px_50px_rgba(15,42,107,0.25)]">
-
-    <!-- background image -->
-    <div class="absolute inset-0 sm:rounded-[1.75rem] overflow-hidden">
+    <div class="flex items-center justify-between py-3 md:py-4">
+      <!-- Logo + Masthead -->
+      <a href="{{ route('home') }}" class="flex items-center gap-3 group">
         <img
-            src="{{ asset('images/hsstherosect.png') }}"
-            alt="Holy Spirit School of Tagbilaran"
-            class="h-full w-full object-cover object-center"
-        >
+          src="{{ asset('images/hsstlogo.jpg') }}"
+          alt="HSST Logo"
+          class="h-8 md:h-9 w-auto object-contain"
+        />
+        <div class="leading-tight">
+          <p class="font-display font-bold text-sm text-white md:text-ink transition-colors duration-300" id="logo-text"
+             style="letter-spacing:-.01em;">HSSTian</p>
+          <p class="caption-text text-[.54rem] text-white/50 md:text-ink/40 transition-colors duration-300" id="logo-sub">Alumni Association</p>
+        </div>
+      </a>
 
-        <div class="absolute inset-0 bg-[linear-gradient(135deg,rgba(9,24,82,0.88)_0%,rgba(21,62,117,0.76)_48%,rgba(31,79,196,0.68)_100%)]"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.10),transparent_28%)]"></div>
+      <!-- Desktop Links -->
+      <nav class="hidden md:flex items-center gap-7" id="nav-links">
+        <a href="{{ route('home') }}"
+           class="caption-text text-white/70 md:text-ink/60 hover:text-white md:hover:text-ink transition-colors">Home</a>
+        <a href="{{ route('history') }}"
+           class="caption-text text-ink font-bold md:text-ink border-b-2 pb-0.5 transition-colors" style="border-color:var(--royal);">History</a>
+        <a href="{{ route('events.index') }}"
+           class="caption-text text-white/70 md:text-ink/60 hover:text-white md:hover:text-ink transition-colors">Events</a>
+        <a href="{{ route('home') }}#crusade"
+           class="caption-text text-white/70 md:text-ink/60 hover:text-white md:hover:text-ink transition-colors">CRUSADE</a>
+        <a href="{{ route('home') }}#contact"
+           class="caption-text text-white/70 md:text-ink/60 hover:text-white md:hover:text-ink transition-colors">Contact</a>
+      </nav>
+
+      <!-- Desktop Auth -->
+      <div class="hidden md:flex items-center gap-3" id="auth-links">
+        @if (Route::has('login'))
+          @auth
+            <a href="{{ url('/dashboard') }}"
+               class="caption-text bg-ink text-paper px-4 py-2 hover:opacity-80 transition-opacity">
+              Dashboard
+            </a>
+          @else
+            <a id="login-btn" href="{{ route('login') }}"
+               class="caption-text border border-white/25 md:border-ink/20 text-white/80 md:text-ink/60 px-4 py-2 hover:border-white/60 md:hover:border-ink/50 hover:text-white md:hover:text-ink transition-all">
+              Login
+            </a>
+            @if (Route::has('register'))
+              <a href="{{ route('register') }}"
+                 class="caption-text bg-white md:bg-ink text-ink md:text-paper px-4 py-2 hover:opacity-80 transition-opacity">
+                Register
+              </a>
+            @endif
+          @endauth
+        @endif
+      </div>
+
+      <!-- Mobile hamburger -->
+      <button id="mobile-menu-btn" type="button"
+              class="md:hidden text-white transition-colors" aria-label="Open menu" aria-expanded="false">
+        <svg id="menu-open-icon" class="w-6 h-6 block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg id="menu-close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
     </div>
 
-    <!-- content -->
-    <div class="relative mx-auto max-w-5xl px-4 py-12 sm:px-8 sm:py-16 lg:py-20">
-        <div class="max-w-3xl">
-            <p class="text-[12px] font-bold uppercase tracking-[0.24em] text-[#d7b24a]">
-                Est. 1926
-            </p>
-
-            <h2 class="mt-3 font-serif text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
-                A century of faith,
-                learning, and service
-            </h2>
-
-            <p class="mt-5 max-w-2xl text-base leading-8 text-white/85 sm:text-lg sm:leading-9">
-                From a humble dormitory for girls in Tagbilaran to a thriving institution that continues
-                to shape lives, Holy Spirit School of Tagbilaran carries a legacy built on mission,
-                excellence, and love for community.
-            </p>
-        </div>
+    <hr class="col-rule hidden md:block" />
+    <div class="hidden md:flex items-center justify-center py-1.5">
+      <span class="caption-text text-ink/30 text-[.6rem]" style="letter-spacing:.3em;">
+        HOLY SPIRIT SCHOOL OF TAGBILARAN · INSTITUTION HISTORY
+      </span>
     </div>
-</section>
-{{-- Quick facts --}}
-<section class="border-b border-[#e4ecff] bg-white">
-    <div class="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
-        <div class="grid grid-cols-1 gap-0 sm:gap-4 sm:grid-cols-3">
-            <div class="border-b border-[#e4ecff] bg-white px-0 py-5 sm:rounded-2xl sm:border sm:border-[#dfe8ff] sm:bg-[#f8fbff] sm:p-5">
-                <p class="text-sm font-semibold uppercase tracking-[0.16em] text-[#3559c7]">Founded</p>
-                <p class="mt-2 text-2xl font-extrabold text-[#091852]">1926</p>
-            </div>
+    <hr class="col-rule hidden md:block" />
 
-            <div class="border-b border-[#e4ecff] bg-white px-0 py-5 sm:rounded-2xl sm:border sm:border-[#dfe8ff] sm:bg-[#f8fbff] sm:p-5">
-                <p class="text-sm font-semibold uppercase tracking-[0.16em] text-[#3559c7]">Location</p>
-                <p class="mt-2 text-xl font-extrabold text-[#091852]">Tagbilaran City, Bohol</p>
-            </div>
+  </div>
+</header>
 
-            <div class="bg-white px-0 py-5 sm:rounded-2xl sm:border sm:border-[#dfe8ff] sm:bg-[#f8fbff] sm:p-5">
-                <p class="text-sm font-semibold uppercase tracking-[0.16em] text-[#3559c7]">Current Name</p>
-                <p class="mt-2 text-xl font-extrabold text-[#091852]">HSST, Inc.</p>
-            </div>
-        </div>
+<!-- ════════════════════════════════════════
+     MOBILE MENU
+════════════════════════════════════════ -->
+<div id="mobile-menu" class="fixed inset-0 z-[9999] hidden md:hidden bg-ink text-paper">
+  <div class="flex h-dvh flex-col">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-paper/10">
+      <div>
+        <p class="caption-text text-paper/40 text-[.6rem]" style="letter-spacing:.25em;">THE HSST IAN</p>
+        <h2 class="font-display text-xl font-bold text-paper mt-0.5">Navigation</h2>
+      </div>
+      <button type="button" id="close-mobile-menu"
+              class="w-10 h-10 flex items-center justify-center border border-paper/15 text-paper/60 hover:bg-paper/10 transition-colors text-sm">
+        ✕
+      </button>
     </div>
-</section>
-
-{{-- Story content --}}
-<section class="bg-[#f8fbff]">
-    <div class="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14 lg:py-16">
-
-        <div class="border-0 bg-transparent p-0 shadow-none sm:rounded-[1.75rem] sm:border sm:border-[#dfe8ff] sm:bg-white sm:p-8 sm:shadow-[0_18px_45px_rgba(15,42,107,0.06)] lg:p-10">
-            <div class="mb-8">
-                <p class="text-sm font-bold uppercase tracking-[0.22em] text-[#3559c7]">
-                    Short History
-                </p>
-                <div class="mt-3 h-1 w-16 rounded-full bg-[#d7b24a]"></div>
-            </div>
-
-            <div class="space-y-6 text-[17px] leading-9 text-[#243a69] sm:text-[18px] sm:leading-10">
-                <p>
-                    “That old sleepy town” aptly describes Tagbilaran circa 1926. It was truly a small,
-                    nondescript town with only one main thoroughfare leading to Plaza Rizal with the
-                    Gobierno fronting it. Just a stone’s throw away was the old stone church where
-                    San Jose was venerated as its Patron Saint.
-                </p>
-
-                <p>
-                    Holy Spirit School of Tagbilaran is one link in the chain of educational institutions
-                    owned and operated by the Mission Congregation of the Servants of the Holy Spirit (SSpS)
-                    all over the world. It was founded in 1926 by the late Msgr. Gelacio Ramirez, a diocesan
-                    priest. It started as a dormitory to shelter girls who were studying in Bohol National
-                    High School. Like a mustard seed which grew into a tree, it developed until it reached
-                    the stature that it has today.
-                </p>
-
-                <p>
-                    On October 16, 1926, on the feast of Nuestra Señora del Pilar, the first three SSpS Sisters
-                    — Sr. Laeticia, Sr. Blasia, and Sr. Josaphata — arrived in Tagbilaran. This was in answer
-                    to the request made by Father Gelacio Ramirez for the SSpS Sisters to work in his parish
-                    in Tagbilaran, Bohol.
-                </p>
-
-                <p>
-                    Realizing the missionary zeal of the three pioneer Sisters, Father Ramirez helped them open
-                    a Kindergarten with 19 enrollees on November 1. This was the humble beginning of the
-                    elementary and high school which soon followed. The school was called Saint Joseph’s Academy
-                    in honor of the Patron of Tagbilaran. With a total of forty-nine learners, the school year
-                    began in 1927–1928.
-                </p>
-
-                <p>
-                    The following year, 1928–1929, brought in more than two hundred learners from Kindergarten
-                    to Grade Seven and First Year High School. Enrollment consistently increased every year until
-                    the outbreak of the war, when it reached five hundred sixty-six. Classes were temporarily
-                    suspended during the war years and resumed on June 4, 1945 after World War II.
-                </p>
-
-                <p>
-                    Post-World War II saw a big stride in the development of Saint Joseph’s Academy. A permit
-                    to offer a two-year course leading to the title of Elementary Teacher’s Certificate was
-                    obtained from the Bureau of Private Schools. Consequently, the school name changed from
-                    Saint Joseph’s Academy to Saint Joseph’s Junior College in July 1950.
-                </p>
-
-                <p>
-                    The early fifties witnessed the beginning of college courses in Music, Education, and
-                    Liberal Arts. Accordingly, the façade of the school got a new look with the signboard
-                    Saint Joseph’s College in July 1957, and later College of the Holy Spirit in July 1965.
-                </p>
-
-                <p>
-                    In 1974, the college department was phased out. Thus, in the next school year, the name
-                    of the school was changed to Holy Spirit School.
-                </p>
-
-                <p>
-                    The school celebrated its Golden Jubilee in October 1976 and its Diamond Jubilee in July 2001.
-                </p>
-
-                <p>
-                    In 2005–2006, Holy Spirit School fully bloomed in its gender advocacy in the province of
-                    Bohol. In 2007–2008, the HSS WINGS structure and program was elevated to the province level.
-                </p>
-
-                <p>
-                    In July 2013, the school name changed from Holy Spirit School to Holy Spirit School of
-                    Tagbilaran (HSST), Inc.
-                </p>
-
-                <p>
-                    Holy Spirit School of Tagbilaran, with separate Grade School and High School, underwent its
-                    first survey visit as an Integrated Basic Education Program in January 2015. This took place
-                    more than two and a half years after the expiration of its re-accreditation status in 2012,
-                    due to major problems involving ownership of the school corporation, the buildings and lot,
-                    as well as damage caused by the October 2013 earthquake.
-                </p>
-
-                <p>
-                    As part of its continuing mission to provide a conducive atmosphere for meaningful teaching
-                    and learning, Holy Spirit School of Tagbilaran acquired a new three-hectare site located
-                    at J.A. Clarin, Purok 3, Dao District, Tagbilaran City.
-                </p>
-
-                <p>
-                    The Nursery, Kindergarten 1, Kindergarten 2, and Grade School Department transferred to the
-                    new school site on January 11, 2016, while the Junior High School continued classes in the
-                    old campus on Remolador Street.
-                </p>
-
-                <p>
-                    During school year 2016–2017, the whole school population was fully transferred to the new
-                    school location with the completion of two school buildings.
-                </p>
-
-                <p>
-                    In the same school year, the new Senior High School as part of the basic education program
-                    was opened. The Academic Track offered Accountancy, Business and Management (ABM), General
-                    Academic Strand (GAS), and Science, Technology, Engineering, and Mathematics (STEM).
-                </p>
-
-                <p>
-                    In February 2018, the Junior and Senior High School building was completed, and the transfer
-                    of learners to the high school building took place in the first week of March 2018.
-                </p>
-            </div>
-        </div>
+    <nav class="flex-1 overflow-y-auto px-6 py-4 flex flex-col">
+      <a href="{{ route('home') }}" class="mobile-nav-link border-b border-paper/8 py-4 font-display text-lg text-paper/80 hover:text-paper transition-colors">Home</a>
+      <a href="{{ route('history') }}" class="mobile-nav-link border-b border-paper/8 py-4 font-display text-lg text-paper font-bold transition-colors">History</a>
+      <a href="{{ route('events.index') }}" class="mobile-nav-link border-b border-paper/8 py-4 font-display text-lg text-paper/80 hover:text-paper transition-colors">Events</a>
+      <a href="{{ route('home') }}#crusade" class="mobile-nav-link border-b border-paper/8 py-4 font-display text-lg text-paper/80 hover:text-paper transition-colors">CRUSADE</a>
+      <a href="{{ route('home') }}#contact" class="mobile-nav-link py-4 font-display text-lg text-paper/80 hover:text-paper transition-colors">Contact</a>
+    </nav>
+    <div class="border-t border-paper/10 px-6 py-5 flex flex-col gap-3">
+      @if (Route::has('login'))
+        @auth
+          <a href="{{ url('/dashboard') }}"
+             class="flex items-center justify-center py-3 bg-paper caption-text text-ink hover:opacity-90 transition-opacity">
+            Dashboard
+          </a>
+        @else
+          <a href="{{ route('login') }}"
+             class="flex items-center justify-center py-3 border border-paper/15 caption-text text-paper/70 hover:bg-paper/5 transition-colors">
+            Login
+          </a>
+          @if (Route::has('register'))
+            <a href="{{ route('register') }}"
+               class="flex items-center justify-center py-3 bg-paper caption-text text-ink hover:opacity-90 transition-opacity">
+              Register
+            </a>
+          @endif
+        @endauth
+      @endif
     </div>
-</section>
+  </div>
+</div>
 
-{{-- Timeline --}}
-<section class="bg-white">
-    <div class="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14 lg:py-16">
-        <div class="mb-8">
-            <p class="text-sm font-bold uppercase tracking-[0.22em] text-[#3559c7]">
-                Timeline of Names
-            </p>
-            <h3 class="mt-3 text-2xl font-extrabold text-[#091852] sm:text-3xl">
-                The institution through the years
-            </h3>
-        </div>
-
-        <div class="space-y-0 sm:space-y-4">
-            <div class="border-b border-[#e4ecff] bg-white px-0 py-5 sm:rounded-2xl sm:border sm:border-[#dfe8ff] sm:bg-[#f8fbff] sm:p-5">
-                <p class="text-sm font-bold uppercase tracking-[0.18em] text-[#3559c7]">1926</p>
-                <h4 class="mt-2 text-xl font-extrabold text-[#091852]">Saint Joseph’s Academy (S.J.A.)</h4>
-                <p class="mt-2 text-[16px] leading-8 text-[#344b78]">Grade School – 1926</p>
-                <p class="text-[16px] leading-8 text-[#344b78]">High School – 1928</p>
-            </div>
-
-            <div class="border-b border-[#e4ecff] bg-white px-0 py-5 sm:rounded-2xl sm:border sm:border-[#dfe8ff] sm:bg-[#f8fbff] sm:p-5">
-                <p class="text-sm font-bold uppercase tracking-[0.18em] text-[#3559c7]">July 1950</p>
-                <h4 class="mt-2 text-xl font-extrabold text-[#091852]">Saint Joseph’s Junior College (S.J.J.C.)</h4>
-            </div>
-
-            <div class="border-b border-[#e4ecff] bg-white px-0 py-5 sm:rounded-2xl sm:border sm:border-[#dfe8ff] sm:bg-[#f8fbff] sm:p-5">
-                <p class="text-sm font-bold uppercase tracking-[0.18em] text-[#3559c7]">July 1957</p>
-                <h4 class="mt-2 text-xl font-extrabold text-[#091852]">Saint Joseph’s College (S.J.C.)</h4>
-            </div>
-
-            <div class="border-b border-[#e4ecff] bg-white px-0 py-5 sm:rounded-2xl sm:border sm:border-[#dfe8ff] sm:bg-[#f8fbff] sm:p-5">
-                <p class="text-sm font-bold uppercase tracking-[0.18em] text-[#3559c7]">July 1965</p>
-                <h4 class="mt-2 text-xl font-extrabold text-[#091852]">College of the Holy Spirit (C.H.S.)</h4>
-            </div>
-
-            <div class="border-b border-[#e4ecff] bg-white px-0 py-5 sm:rounded-2xl sm:border sm:border-[#dfe8ff] sm:bg-[#f8fbff] sm:p-5">
-                <p class="text-sm font-bold uppercase tracking-[0.18em] text-[#3559c7]">July 1974</p>
-                <h4 class="mt-2 text-xl font-extrabold text-[#091852]">Holy Spirit School (H.S.S.)</h4>
-            </div>
-
-            <div class="bg-white px-0 py-5 sm:rounded-2xl sm:border sm:border-[#dfe8ff] sm:bg-[#f8fbff] sm:p-5">
-                <p class="text-sm font-bold uppercase tracking-[0.18em] text-[#3559c7]">July 2013</p>
-                <h4 class="mt-2 text-xl font-extrabold text-[#091852]">Holy Spirit School of Tagbilaran (H.S.S.T.) Inc.</h4>
-            </div>
-        </div>
+<!-- ════════════════════════════════════════
+     HERO — MAGAZINE COVER
+════════════════════════════════════════ -->
+<section class="relative min-h-[72vh] md:min-h-[80vh] flex items-end overflow-hidden pt-24 md:pt-0">
+  <div class="absolute inset-0">
+    <img
+      src="{{ asset('images/hsstherosect.png') }}"
+      alt="Holy Spirit School of Tagbilaran"
+      class="absolute inset-0 h-full w-full object-cover object-center"
+    />
+    <div class="absolute inset-0 hero-gradient"></div>
+    <div class="absolute inset-0 opacity-[.04]"
+         style="background-image:url(data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E);">
     </div>
+  </div>
+
+  <!-- Vertical rule decoration -->
+  <div class="pointer-events-none absolute right-12 top-0 bottom-0 hidden xl:flex flex-col items-center justify-center opacity-10">
+    <div class="h-64 w-px bg-white"></div>
+    <div class="my-3 caption-text text-white" style="writing-mode:vertical-rl;letter-spacing:.3em;font-size:.6rem;">HOLY SPIRIT SCHOOL · EST. 1926</div>
+    <div class="h-64 w-px bg-white"></div>
+  </div>
+
+  <div class="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 pb-16 sm:pb-20 md:pb-28">
+    <div class="max-w-3xl">
+
+      <div class="mb-6 flex items-center gap-3 animate-fade-up" style="animation-delay:.1s;">
+        <div class="h-px w-10" style="background:var(--spirit);"></div>
+        <span class="kicker" style="color:var(--spirit); letter-spacing:.25em;">
+          Centennial Archive · 1926–2026
+        </span>
+      </div>
+
+      <h1 class="display text-white mb-6 animate-fade-up"
+          style="font-size:clamp(3rem,8vw,6.5rem);animation-delay:.2s;">
+        A century of<br/>
+        <em style="color:var(--spirit);">faith, learning,</em><br class="hidden sm:block"/>
+        and service.
+      </h1>
+
+      <p class="garamond text-white/70 mb-8 max-w-xl animate-fade-up"
+         style="font-size:clamp(1rem,1.5vw,1.15rem);animation-delay:.32s;">
+        From a humble dormitory for girls in Tagbilaran to a thriving institution
+        that continues to shape lives — Holy Spirit School of Tagbilaran carries
+        a legacy built on mission, excellence, and love for community.
+      </p>
+
+      <div class="flex flex-wrap items-start gap-x-8 gap-y-4 animate-fade-up" style="animation-delay:.45s;">
+        <div class="border-l-2 pl-4" style="border-color:var(--spirit);">
+          <p class="display text-white font-bold" style="font-size:2.2rem;">1926</p>
+          <p class="caption-text text-white/40 mt-0.5">Year Founded</p>
+        </div>
+        <div class="border-l-2 pl-4" style="border-color:rgba(255,255,255,.15);">
+          <p class="display text-white font-bold" style="font-size:2.2rem;">100<span style="color:var(--spirit);">+</span></p>
+          <p class="caption-text text-white/40 mt-0.5">Years of Excellence</p>
+        </div>
+        <div class="border-l-2 pl-4" style="border-color:rgba(255,255,255,.15);">
+          <p class="display text-white font-bold" style="font-size:2.2rem;">6</p>
+          <p class="caption-text text-white/40 mt-0.5">Institutional Names</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="absolute inset-x-0 bottom-0 h-20" style="background:linear-gradient(to top,var(--paper),transparent);"></div>
 </section>
 
-{{-- Bottom CTA --}}
-<section class="bg-[#0f2a6b] text-white sm:mx-auto sm:mb-8 sm:max-w-5xl sm:rounded-[1.75rem] sm:shadow-[0_20px_50px_rgba(15,42,107,0.25)]">
-    <div class="mx-auto max-w-5xl px-4 py-10 text-center sm:px-6 sm:py-14">
-        <h3 class="text-2xl font-extrabold leading-tight text-white sm:text-3xl">
-            Once a Crusader, always a Crusader
-        </h3>
+<!-- ════════════════════════════════════════
+     QUICK FACTS — EDITORIAL DATA POINTS
+════════════════════════════════════════ -->
+<section style="background:var(--paper-dark,#f0ece3);">
+  <div class="max-w-7xl mx-auto px-6 py-10 sm:py-12">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-0 border border-ink/8">
 
-        <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-white/80 sm:text-lg">
-            Thank you for being part of the continuing story of Holy Spirit School of Tagbilaran.
+      <div class="p-8 border-b sm:border-b-0 sm:border-r border-ink/8 reveal">
+        <span class="kicker block mb-3" style="color:var(--royal);">Founded</span>
+        <p class="display text-ink font-bold" style="font-size:3rem;">1926</p>
+        <p class="caption-text text-ink/35 mt-2" style="letter-spacing:.08em;text-transform:none;">October 16, on the feast of Nuestra Señora del Pilar</p>
+      </div>
+
+      <div class="p-8 border-b sm:border-b-0 sm:border-r border-ink/8 reveal d1">
+        <span class="kicker block mb-3" style="color:var(--spirit);">Location</span>
+        <p class="display text-ink font-bold" style="font-size:1.9rem;line-height:1.15;">Tagbilaran City,<br/>Bohol</p>
+        <p class="caption-text text-ink/35 mt-2" style="letter-spacing:.08em;text-transform:none;">J.A. Clarin, Purok 3, Dao District (current site)</p>
+      </div>
+
+      <div class="p-8 reveal d2">
+        <span class="kicker block mb-3" style="color:var(--teal);">Current Name</span>
+        <p class="display text-ink font-bold" style="font-size:1.9rem;line-height:1.15;">HSST, Inc.</p>
+        <p class="caption-text text-ink/35 mt-2" style="letter-spacing:.08em;text-transform:none;">Holy Spirit School of Tagbilaran · Since July 2013</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SHORT HISTORY — FEATURE ARTICLE
+════════════════════════════════════════ -->
+<section class="py-20 sm:py-28" style="background:var(--paper);">
+  <div class="max-w-5xl mx-auto px-6">
+
+    <!-- Section header -->
+    <div class="mb-12 reveal">
+      <hr class="col-rule-thick mb-3"/>
+      <div class="flex items-center justify-between">
+        <span class="kicker text-royal">Short History</span>
+        <span class="caption-text text-ink/30">Centennial Issue · 1926–2026</span>
+      </div>
+      <h2 class="display text-ink mt-2" style="font-size:clamp(2rem,3.5vw,3rem);">
+        The Story of <em style="color:var(--royal);">Holy Spirit School.</em>
+      </h2>
+      <hr class="col-rule mt-3"/>
+    </div>
+
+    <div class="grid items-start gap-14 lg:grid-cols-5">
+
+      <!-- Main narrative (3 cols) -->
+      <div class="lg:col-span-3">
+
+        <p class="garamond text-ink/70 drop-cap reveal">
+          "That old sleepy town" aptly describes Tagbilaran circa 1926. It was truly a small,
+          nondescript town with only one main thoroughfare leading to Plaza Rizal with the
+          Gobierno fronting it. Just a stone's throw away was the old stone church where
+          San Jose was venerated as its Patron Saint.
         </p>
 
-        <div class="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a
-                href="{{ url('/') }}"
-                class="inline-flex items-center justify-center rounded-full bg-[#d7b24a] px-6 py-3 text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[#c29d35]"
-            >
-                Back to Home
-            </a>
+        <p class="garamond text-ink/70 mt-5 reveal d1">
+          Holy Spirit School of Tagbilaran is one link in the chain of educational institutions
+          owned and operated by the Mission Congregation of the Servants of the Holy Spirit (SSpS)
+          all over the world. It was founded in 1926 by the late Msgr. Gelacio Ramirez, a diocesan
+          priest. It started as a dormitory to shelter girls who were studying in Bohol National
+          High School. Like a mustard seed which grew into a tree, it developed until it reached
+          the stature that it has today.
+        </p>
 
-            <a
-                href="{{ route('register') }}"
-                class="inline-flex items-center justify-center rounded-full border border-white/20 px-6 py-3 text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:bg-white/10"
-            >
-                Join the Community
-            </a>
+        <!-- Pull quote -->
+        <div class="my-10 reveal d2">
+          <blockquote class="pull-quote">
+            "Like a mustard seed which grew into a tree, it developed until it reached
+            the stature that it has today."
+          </blockquote>
         </div>
+
+        <p class="garamond text-ink/70 reveal d2">
+          On October 16, 1926, on the feast of Nuestra Señora del Pilar, the first three SSpS Sisters
+          — Sr. Laeticia, Sr. Blasia, and Sr. Josaphata — arrived in Tagbilaran. This was in answer
+          to the request made by Father Gelacio Ramirez for the SSpS Sisters to work in his parish
+          in Tagbilaran, Bohol.
+        </p>
+
+        <p class="garamond text-ink/70 mt-5 reveal d2">
+          Realizing the missionary zeal of the three pioneer Sisters, Father Ramirez helped them open
+          a Kindergarten with 19 enrollees on November 1. This was the humble beginning of the
+          elementary and high school which soon followed. The school was called Saint Joseph's Academy
+          in honor of the Patron of Tagbilaran. With a total of forty-nine learners, the school year
+          began in 1927–1928.
+        </p>
+
+        <hr class="col-rule my-8 reveal"/>
+
+        <div class="two-col reveal d1">
+          <p class="garamond text-ink/70">
+            The following year, 1928–1929, brought in more than two hundred learners from Kindergarten
+            to Grade Seven and First Year High School. Enrollment consistently increased every year until
+            the outbreak of the war, when it reached five hundred sixty-six. Classes were temporarily
+            suspended during the war years and resumed on June 4, 1945 after World War II.
+          </p>
+          <p class="garamond text-ink/70 mt-4">
+            Post-World War II saw a big stride in the development of Saint Joseph's Academy. A permit
+            to offer a two-year course leading to the title of Elementary Teacher's Certificate was
+            obtained from the Bureau of Private Schools. Consequently, the school name changed from
+            Saint Joseph's Academy to Saint Joseph's Junior College in July 1950.
+          </p>
+          <p class="garamond text-ink/70 mt-4">
+            The early fifties witnessed the beginning of college courses in Music, Education, and
+            Liberal Arts. Accordingly, the façade of the school got a new look with the signboard
+            Saint Joseph's College in July 1957, and later College of the Holy Spirit in July 1965.
+          </p>
+          <p class="garamond text-ink/70 mt-4">
+            In 1974, the college department was phased out. Thus, in the next school year, the name
+            of the school was changed to Holy Spirit School.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Sidebar (2 cols) -->
+      <div class="lg:col-span-2 space-y-0 border border-ink/10 reveal d2">
+
+        <div class="p-7 border-b border-ink/10">
+          <span class="open-quote" style="color:var(--royal);">"</span>
+          <blockquote class="garamond italic text-ink/70 text-base leading-relaxed -mt-4">
+            The school celebrated its Golden Jubilee in October 1976 and its Diamond Jubilee
+            in July 2001.
+          </blockquote>
+        </div>
+
+        <div class="p-7 border-b border-ink/10">
+          <span class="kicker block mb-3" style="color:var(--spirit);">2005–2006</span>
+          <p class="garamond text-ink/65" style="font-size:.98rem;">
+            Holy Spirit School fully bloomed in its gender advocacy in the province of Bohol.
+            In 2007–2008, the HSS WINGS structure and program was elevated to the province level.
+          </p>
+        </div>
+
+        <div class="p-7 border-b border-ink/10" style="background:var(--paper-dark,#f0ece3);">
+          <span class="kicker block mb-3" style="color:var(--royal);">January 2015</span>
+          <p class="garamond text-ink/65" style="font-size:.98rem;">
+            HSST underwent its first survey visit as an Integrated Basic Education Program —
+            more than two and a half years after challenges involving ownership and damage
+            from the October 2013 earthquake.
+          </p>
+        </div>
+
+        <div class="p-7">
+          <span class="kicker block mb-3" style="color:var(--teal);">2016–Present</span>
+          <p class="garamond text-ink/65" style="font-size:.98rem;">
+            The school transferred fully to its new three-hectare site at J.A. Clarin, Purok 3,
+            Dao District, Tagbilaran City — and opened the new Senior High School offering ABM,
+            GAS, and STEM tracks.
+          </p>
+        </div>
+
+      </div>
+
     </div>
+
+    <!-- Continued narrative -->
+    <div class="mt-14 reveal">
+      <hr class="col-rule mb-8"/>
+      <div class="two-col">
+        <p class="garamond text-ink/70">
+          In July 2013, the school name changed from Holy Spirit School to Holy Spirit School of
+          Tagbilaran (HSST), Inc. Holy Spirit School of Tagbilaran, with separate Grade School and
+          High School, underwent its first survey visit as an Integrated Basic Education Program
+          in January 2015.
+        </p>
+        <p class="garamond text-ink/70 mt-4">
+          As part of its continuing mission to provide a conducive atmosphere for meaningful teaching
+          and learning, Holy Spirit School of Tagbilaran acquired a new three-hectare site located
+          at J.A. Clarin, Purok 3, Dao District, Tagbilaran City. The Nursery, Kindergarten 1,
+          Kindergarten 2, and Grade School Department transferred to the new school site on
+          January 11, 2016.
+        </p>
+        <p class="garamond text-ink/70 mt-4">
+          During school year 2016–2017, the whole school population was fully transferred to the new
+          school location with the completion of two school buildings. In the same school year, the
+          new Senior High School as part of the basic education program was opened. The Academic Track
+          offered Accountancy, Business and Management (ABM), General Academic Strand (GAS), and
+          Science, Technology, Engineering, and Mathematics (STEM).
+        </p>
+        <p class="garamond text-ink/70 mt-4">
+          In February 2018, the Junior and Senior High School building was completed, and the transfer
+          of learners to the high school building took place in the first week of March 2018.
+        </p>
+      </div>
+    </div>
+
+  </div>
 </section>
-  
-</div>
 
-    {{-- FOOTER --}}
-    <footer id="contact" class="bg-[#091852] pt-16 pb-8">
-        <div class="mx-auto grid max-w-[1380px] gap-10 px-4 sm:px-6 lg:grid-cols-[1.2fr_0.8fr_0.8fr] lg:px-8">
-            <div>
-                <div class="flex items-center gap-3">
-                    <div class="flex h-11 w-11 items-center justify-center overflow-hidden rounded border border-white/15 bg-white p-1 shadow-sm">
-                        <img src="{{ asset('images/hsstlogo.jpg') }}" alt="HSST Logo" class="h-full w-full object-contain">
-                    </div>
-                    <div>
-                        <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-white/65">Official Alumni Portal</p>
-                        <p class="text-base font-bold text-white">Holy Spirit School of Tagbilaran</p>
-                    </div>
-                </div>
+<!-- ════════════════════════════════════════
+     TIMELINE — NEWSPAPER COLUMN
+════════════════════════════════════════ -->
+<section class="py-20 sm:py-28" style="background:var(--paper-dark,#f0ece3);">
+  <div class="max-w-5xl mx-auto px-6">
 
-                <p class="mt-5 max-w-md text-sm leading-7 text-white/55">
-                    A digital home for official announcements, school events, alumni activities, and meaningful community connection at Holy Spirit School of Tagbilaran.
-                </p>
-            </div>
+    <div class="mb-12 reveal">
+      <hr class="col-rule-thick mb-3"/>
+      <div class="flex items-center justify-between">
+        <span class="kicker text-spirit">Record</span>
+        <span class="caption-text text-ink/30">From 1926 to Present</span>
+      </div>
+      <h2 class="display text-ink mt-2" style="font-size:clamp(2rem,3.5vw,3rem);">
+        Timeline of <em style="color:var(--spirit);">Institutional Names.</em>
+      </h2>
+      <hr class="col-rule mt-3"/>
+    </div>
 
-            <div>
-                <h4 class="text-sm font-extrabold uppercase tracking-[0.2em] text-white/70">Quick links</h4>
-                <div class="mt-4 flex flex-col gap-3 text-sm text-white/55">
-                    <a href="{{ route('home') }}" class="transition hover:text-white">Home</a>
-                    {{-- <a href="{{ route('about-us') }}" class="transition hover:text-white">About Us</a> --}}
-                    <a href="{{ route('events.index') }}" class="transition hover:text-white">Events</a>
-                    <a href="#event-calendar" class="transition hover:text-white">Calendar</a>
-                    <a href="#upcoming-events" class="transition hover:text-white">Upcoming</a>
-                </div>
-            </div>
+    <div class="relative pl-8 timeline-track space-y-0">
 
-            <div>
-                <h4 class="text-sm font-extrabold uppercase tracking-[0.2em] text-white/70">Account</h4>
-                <div class="mt-4 flex flex-col gap-3 text-sm text-white/55">
-                    @if (Route::has('login'))
-                        <a href="{{ route('login') }}" class="transition hover:text-white">Log in</a>
-                    @endif
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="transition hover:text-white">Register</a>
-                    @endif
-                    <a href="{{ url('/dashboard') }}" class="transition hover:text-white">Dashboard</a>
-                </div>
-            </div>
+      @php
+        $entries = [
+          ['year'=>'1926',      'name'=>'Saint Joseph\'s Academy (S.J.A.)',                    'note'=>'Grade School (1926) · High School (1928)',              'color'=>'var(--royal)'],
+          ['year'=>'July 1950', 'name'=>'Saint Joseph\'s Junior College (S.J.J.C.)',           'note'=>'Two-year Elementary Teacher\'s Certificate program',     'color'=>'var(--royal)'],
+          ['year'=>'July 1957', 'name'=>'Saint Joseph\'s College (S.J.C.)',                    'note'=>'College courses in Music, Education, and Liberal Arts',  'color'=>'var(--spirit)'],
+          ['year'=>'July 1965', 'name'=>'College of the Holy Spirit (C.H.S.)',                 'note'=>'Name reflects the SSpS congregation\'s mission',         'color'=>'var(--spirit)'],
+          ['year'=>'July 1974', 'name'=>'Holy Spirit School (H.S.S.)',                         'note'=>'College department phased out; return to basic education','color'=>'var(--teal)'],
+          ['year'=>'July 2013', 'name'=>'Holy Spirit School of Tagbilaran (H.S.S.T.) Inc.',   'note'=>'Current name; full Basic Education program',             'color'=>'var(--crimson)'],
+        ];
+      @endphp
+
+      @foreach($entries as $i => $entry)
+      <div class="relative pb-10 reveal {{ $i > 0 ? 'd'.min($i,4) : '' }}">
+        <!-- Dot -->
+        <div class="absolute -left-[1.6rem] top-1.5 w-3.5 h-3.5 rounded-full border-2 border-paper"
+             style="background:{{ $entry['color'] }};"></div>
+
+        <div class="border border-ink/8 p-7 ed-card" style="background:var(--paper);">
+          <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+            <span class="kicker" style="color:{{ $entry['color'] }};">{{ $entry['year'] }}</span>
+          </div>
+          <h3 class="display text-ink font-bold mb-2" style="font-size:1.45rem;line-height:1.2;">
+            {{ $entry['name'] }}
+          </h3>
+          <hr class="col-rule my-4"/>
+          <p class="caption-text text-ink/40" style="letter-spacing:.08em;text-transform:none;font-size:.72rem;">
+            {{ $entry['note'] }}
+          </p>
         </div>
+      </div>
+      @endforeach
 
-        <div class="mt-10 border-t border-white/10">
-            <div class="mx-auto flex max-w-[1380px] flex-col gap-3 px-4 py-6 text-sm text-white/40 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-                <p>© {{ now('Asia/Manila')->format('Y') }} Holy Spirit School of Tagbilaran. All rights reserved.</p>
-                <p class="text-[#d4af37]">Truth in Love · Faith · Learning · Community</p>
-            </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     CTA — CRUSADERS FOREVER
+════════════════════════════════════════ -->
+<section class="py-24 sm:py-32 text-center" style="background:var(--ink);">
+  <div class="max-w-3xl mx-auto px-6">
+
+    <div class="mb-8 reveal">
+      <div class="flex items-center justify-center gap-4 mb-6">
+        <div class="h-px flex-1 max-w-24" style="background:rgba(250,248,244,.12);"></div>
+        <span class="caption-text font-bold" style="color:var(--spirit);letter-spacing:.3em;font-size:.62rem;">ONCE A CRUSADER</span>
+        <div class="h-px flex-1 max-w-24" style="background:rgba(250,248,244,.12);"></div>
+      </div>
+      <h2 class="display text-paper font-bold reveal" style="font-size:clamp(2.2rem,5vw,4rem);">
+        Always a <em style="color:var(--spirit);">Crusader.</em>
+      </h2>
+    </div>
+
+    <p class="garamond mb-10 reveal d1" style="color:rgba(250,248,244,.5);max-width:36rem;margin-left:auto;margin-right:auto;">
+      Thank you for being part of the continuing story of Holy Spirit School of Tagbilaran.
+      Your heritage lives on in every learner who walks through these halls.
+    </p>
+
+    <div class="flex flex-wrap gap-4 justify-center reveal d2">
+      <a href="{{ route('home') }}"
+         class="caption-text font-bold bg-paper text-ink px-10 py-4 hover:opacity-90 transition-opacity">
+        Back to Home
+      </a>
+      @if (Route::has('register'))
+        <a href="{{ route('register') }}"
+           class="caption-text font-bold border border-paper/25 text-paper/70 px-10 py-4 hover:border-paper/60 hover:text-paper transition-all">
+          Join the Community
+        </a>
+      @endif
+    </div>
+
+    <p class="caption-text mt-12 reveal d3" style="color:rgba(250,248,244,.15);letter-spacing:.25em;font-size:.62rem;">
+      IN VERITATE ET CARITATE · TRUTH AND LOVE · 1926–2026
+    </p>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     FOOTER — MASTHEAD COLOPHON
+════════════════════════════════════════ -->
+<footer id="contact" class="bg-ink pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="text-center pb-10 mb-10 border-b border-paper/8">
+      <p class="caption-text text-paper/25 mb-2" style="letter-spacing:.3em;">THE OFFICIAL JOURNAL OF</p>
+      <h2 class="display text-paper font-bold" style="font-size:clamp(1.8rem,4vw,3rem);">HSSTian Alumni Association</h2>
+      <p class="caption-text text-paper/30 mt-2" style="letter-spacing:.2em;">HOLY SPIRIT SCHOOL OF TAGBILARAN · BOHOL, PHILIPPINES</p>
+      <div class="flex items-center justify-center gap-4 mt-4">
+        <div class="h-px flex-1 max-w-32 bg-paper/10"></div>
+        <span class="caption-text font-bold" style="color:var(--spirit);letter-spacing:.22em;font-size:.65rem;">IN VERITATE ET CARITATE</span>
+        <div class="h-px flex-1 max-w-32 bg-paper/10"></div>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-4 gap-10 pb-12 border-b border-paper/8">
+
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-3 mb-4">
+          <img src="{{ asset('images/hsstlogo.jpg') }}" alt="HSST Logo" class="h-8 w-auto object-contain opacity-80"/>
+          <div>
+            <p class="display text-paper font-bold text-base">HSSTian</p>
+            <p class="caption-text text-paper/25 text-[.55rem]" style="letter-spacing:.22em;">Alumni Association</p>
+          </div>
         </div>
-    </footer>
+        <p class="garamond text-paper/30 max-w-xs mb-5" style="font-size:.9rem;line-height:1.7;">
+          United by faith. Driven by service. Forever Crusaders.
+          Tagbilaran City, Bohol, Philippines.
+        </p>
+        <p class="caption-text font-bold mb-1" style="color:var(--spirit);">In Veritate et Caritate</p>
+        <p class="caption-text text-paper/20 italic" style="letter-spacing:.06em;text-transform:none;font-size:.68rem;">In Truth and in Love</p>
+      </div>
 
-</div>
+      <div>
+        <p class="caption-text font-bold text-paper/40 mb-5" style="letter-spacing:.2em;">Quick Links</p>
+        <ul class="space-y-3">
+          <li><a href="{{ route('home') }}" class="caption-text text-paper/25 hover:text-paper/70 transition-colors" style="letter-spacing:.08em;text-transform:none;font-size:.8rem;">Home</a></li>
+          <li><a href="{{ route('history') }}" class="caption-text text-paper/60 hover:text-paper/70 transition-colors" style="letter-spacing:.08em;text-transform:none;font-size:.8rem;">History</a></li>
+          <li><a href="{{ route('events.index') }}" class="caption-text text-paper/25 hover:text-paper/70 transition-colors" style="letter-spacing:.08em;text-transform:none;font-size:.8rem;">Events</a></li>
+          <li><a href="{{ route('home') }}#crusade" class="caption-text text-paper/25 hover:text-paper/70 transition-colors" style="letter-spacing:.08em;text-transform:none;font-size:.8rem;">CRUSADE Donation</a></li>
+          <li><a href="{{ route('home') }}#contact" class="caption-text text-paper/25 hover:text-paper/70 transition-colors" style="letter-spacing:.08em;text-transform:none;font-size:.8rem;">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="caption-text font-bold text-paper/40 mb-5" style="letter-spacing:.2em;">Contact Us</p>
+        <ul class="space-y-4">
+          <li class="flex gap-2.5 items-start">
+            <svg class="w-3.5 h-3.5 text-paper/30 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            <span class="caption-text text-paper/25" style="letter-spacing:.04em;text-transform:none;font-size:.75rem;">alumni@hss-tagbilaran.edu.ph</span>
+          </li>
+          <li class="flex gap-2.5 items-start">
+            <svg class="w-3.5 h-3.5 text-paper/30 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            </svg>
+            <span class="caption-text text-paper/25" style="letter-spacing:.04em;text-transform:none;font-size:.75rem;">J.A. Clarin, Purok 3, Dao District, Tagbilaran City, Bohol 6300</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-3">
+      <p class="caption-text text-paper/15" style="letter-spacing:.08em;text-transform:none;font-size:.7rem;">
+        © {{ now('Asia/Manila')->format('Y') }} HSSTian Alumni Association · Holy Spirit School of Tagbilaran. All rights reserved.
+      </p>
+      <p class="caption-text font-bold" style="color:var(--spirit);opacity:.5;letter-spacing:.25em;font-size:.62rem;">
+        CRUSADERS FOREVER ✦
+      </p>
+    </div>
+
+  </div>
+</footer>
+
+<!-- ════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════ -->
+<script>
+  // ── Progress Bar ─────────────────────────
+  window.addEventListener('scroll', () => {
+    const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('pgbar').style.width = pct + '%';
+  });
+
+  // ── Mobile Menu ──────────────────────────
+  const mobileMenuBtn      = document.getElementById('mobile-menu-btn');
+  const mobileMenu         = document.getElementById('mobile-menu');
+  const menuOpenIcon       = document.getElementById('menu-open-icon');
+  const menuCloseIcon      = document.getElementById('menu-close-icon');
+  const closeMobileMenuBtn = document.getElementById('close-mobile-menu');
+
+  function openMobileMenu() {
+    mobileMenu.classList.remove('hidden');
+    menuOpenIcon.classList.add('hidden');
+    menuCloseIcon.classList.remove('hidden');
+    mobileMenuBtn.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('overflow-hidden');
+  }
+  function closeMobileMenu() {
+    mobileMenu.classList.add('hidden');
+    menuOpenIcon.classList.remove('hidden');
+    menuCloseIcon.classList.add('hidden');
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  mobileMenuBtn?.addEventListener('click', () => {
+    mobileMenu.classList.contains('hidden') ? openMobileMenu() : closeMobileMenu();
+  });
+  closeMobileMenuBtn?.addEventListener('click', closeMobileMenu);
+  document.querySelectorAll('.mobile-nav-link').forEach(l => l.addEventListener('click', closeMobileMenu));
+
+  // ── Nav scroll state ─────────────────────
+  const nav      = document.getElementById('nav');
+  const logoText = document.getElementById('logo-text');
+  const logoSub  = document.getElementById('logo-sub');
+  const navLinks = document.getElementById('nav-links');
+  const loginBtn = document.getElementById('login-btn');
+  const mobileMenuButton = document.getElementById('mobile-menu-btn');
+
+  function setScrolledNav() {
+    nav.classList.add('scrolled');
+    logoText?.classList.replace('text-white','text-ink');
+    logoSub?.classList.remove('text-white/50');
+    logoSub?.classList.add('text-ink/40');
+    navLinks?.querySelectorAll('a').forEach(a => {
+      a.classList.remove('text-white/70','hover:text-white');
+      a.classList.add('text-ink/60','hover:text-ink');
+    });
+    loginBtn?.classList.remove('border-white/25','text-white/80','hover:border-white/60','hover:text-white');
+    loginBtn?.classList.add('border-ink/20','text-ink/60','hover:border-ink/50','hover:text-ink');
+    mobileMenuButton?.classList.replace('text-white','text-ink');
+  }
+
+  function setTopNav() {
+    nav.classList.remove('scrolled');
+    logoText?.classList.replace('text-ink','text-white');
+    logoSub?.classList.remove('text-ink/40');
+    logoSub?.classList.add('text-white/50');
+    navLinks?.querySelectorAll('a').forEach(a => {
+      a.classList.remove('text-ink/60','hover:text-ink');
+      a.classList.add('text-white/70','hover:text-white');
+    });
+    loginBtn?.classList.remove('border-ink/20','text-ink/60','hover:border-ink/50','hover:text-ink');
+    loginBtn?.classList.add('border-white/25','text-white/80','hover:border-white/60','hover:text-white');
+    mobileMenuButton?.classList.replace('text-ink','text-white');
+  }
+
+  function handleNavScroll() {
+    window.scrollY > 60 ? setScrolledNav() : setTopNav();
+  }
+
+  window.addEventListener('scroll', handleNavScroll);
+  handleNavScroll();
+
+  // ── Reveal on scroll ─────────────────────
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('on'); ro.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+</script>
 </body>
 </html>
