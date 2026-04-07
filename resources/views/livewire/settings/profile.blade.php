@@ -411,7 +411,17 @@ new class extends Component {
 
 <section class="min-h-screen w-full bg-[#f7f5f1] px-4 py-8 sm:px-6 lg:px-8">
     <flux:heading class="sr-only">{{ __('Profile Settings') }}</flux:heading>
-
+<a
+    href="{{ route('password-help.edit') }}"
+    wire:navigate
+    class="inline-flex items-center justify-center gap-2 rounded-[10px] border border-[#d4b06a] bg-[#faf4e6] px-4 py-2.5 text-sm font-medium text-[#091852] transition hover:bg-[#f5ecd7]"
+>
+    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+        <path d="M10 6V4a3 3 0 1 0-6 0v2"/>
+        <rect x="3" y="6" width="14" height="11" rx="2"/>
+    </svg>
+    Password Help
+</a>
     <div class="mb-7">
         <p class="mb-1 text-[10px] font-semibold uppercase tracking-[.2em] text-[#b88a3d]">Account</p>
         <h1 class="font-serif text-[28px] font-normal leading-tight text-[#091852] sm:text-[32px]">Profile Settings</h1>
@@ -921,20 +931,87 @@ new class extends Component {
             </div>
         @endif
 
-        <div class="flex flex-col gap-3 rounded-[16px] border border-[#e8e2d6] bg-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-            <p class="text-xs text-[#9a9080]">
-                Keep your alumni information and committee interest updated before reunion activities begin.
-            </p>
+      <div class="space-y-4">
+    <div class="grid gap-4 lg:grid-cols-[1.35fr_0.85fr]">
+        {{-- Account reminder + password shortcut --}}
+        <div class="overflow-hidden rounded-[20px] border border-[#e8e2d6] bg-white">
+            <div class="border-b border-[#f0ebe1] px-5 py-4 sm:px-6">
+                <p class="text-[11px] font-semibold uppercase tracking-[.18em] text-[#b88a3d]">
+                    Account & Security
+                </p>
+                <h3 class="mt-1 text-[17px] font-medium text-[#1a1410]">
+                    Keep your account updated
+                </h3>
+                <p class="mt-1 text-sm leading-6 text-[#7a7060]">
+                    Review your alumni details, committee interest, and password before reunion activities begin.
+                </p>
+            </div>
 
-            <div class="flex items-center gap-4">
-                <x-action-message class="text-xs font-medium text-emerald-600" on="profile-updated">
-                    {{ __('Changes saved.') }}
-                </x-action-message>
+            <div class="flex flex-col gap-4 px-5 py-5 sm:px-6">
+                <div class="flex items-start gap-3 rounded-[16px] border border-[#f0ebe1] bg-[#faf9f7] p-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-[#faf4e6]">
+                        <svg class="h-4.5 w-4.5 text-[#b88a3d]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+                            <path d="M10 6V4a3 3 0 1 0-6 0v2"/>
+                            <rect x="3" y="6" width="14" height="11" rx="2"/>
+                        </svg>
+                    </div>
+
+                    <div class="min-w-0 flex-1">
+                        <p class="text-sm font-medium text-[#1a1410]">Password & Security</p>
+                        <p class="mt-1 text-xs leading-5 text-[#9a9080]">
+                            Change your password anytime to keep your reunion account secure.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <p class="text-xs leading-5 text-[#9a9080]">
+                        Use a password that is easy for you to remember but hard for others to guess.
+                    </p>
+
+                    <a
+                        href="{{ route('user-password.edit') }}"
+                        wire:navigate
+                        class="inline-flex items-center justify-center gap-2 rounded-[10px] border border-[#d4b06a] bg-[#faf4e6] px-4 py-2.5 text-sm font-medium text-[#091852] transition hover:bg-[#f5ecd7]"
+                    >
+                        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+                            <path d="M4 13V16h3l9-9-3-3-9 9zM14.5 4.5l1 1"/>
+                        </svg>
+                        Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {{-- Save panel --}}
+        <div class="overflow-hidden rounded-[20px] border border-[#e8e2d6] bg-white">
+            <div class="border-b border-[#f0ebe1] px-5 py-4 sm:px-6">
+                <p class="text-[11px] font-semibold uppercase tracking-[.18em] text-[#b88a3d]">
+                    Save Updates
+                </p>
+                <h3 class="mt-1 text-[17px] font-medium text-[#1a1410]">
+                    Apply your changes
+                </h3>
+                <p class="mt-1 text-sm leading-6 text-[#7a7060]">
+                    Save any updates you made to your profile, address, or committee details.
+                </p>
+            </div>
+
+            <div class="flex h-full flex-col justify-between gap-5 px-5 py-5 sm:px-6">
+                <div class="rounded-[16px] border border-dashed border-[#ddd6c8] bg-[#faf9f7] px-4 py-4">
+                    <x-action-message class="text-sm font-medium text-emerald-600" on="profile-updated">
+                        {{ __('Changes saved successfully.') }}
+                    </x-action-message>
+
+                    <p class="text-xs leading-5 text-[#9a9080]">
+                        Make sure all information is correct before saving.
+                    </p>
+                </div>
 
                 <button
                     type="submit"
                     data-test="update-profile-button"
-                    class="inline-flex items-center gap-2 rounded-[10px] bg-[#d4b06a] px-5 py-2.5 text-sm font-medium text-[#091852] transition hover:bg-[#c9a458] active:scale-[.98]"
+                    class="inline-flex w-full items-center justify-center gap-2 rounded-[12px] bg-[#d4b06a] px-5 py-3 text-sm font-medium text-[#091852] transition hover:bg-[#c9a458] active:scale-[.98]"
                 >
                     <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
                         <path d="M4 13V16h3l9-9-3-3-9 9zM14.5 4.5l1 1"/>
@@ -943,5 +1020,7 @@ new class extends Component {
                 </button>
             </div>
         </div>
+    </div>
+</div>
     </form>
 </section>
