@@ -24,7 +24,7 @@ class AlumniDashboard extends Component
     public array $volunteerRoles = [];
     public ?string $volunteerSpecialty = null;
 
-    public int $perPage = 4;
+    public int $perPage = 6;
 
     protected $queryString = [
         'page' => ['except' => 1],
