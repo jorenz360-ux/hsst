@@ -2,11 +2,12 @@
 
 namespace App\Livewire;
 
+use App\Models\AlumniEducation;
 use App\Models\Donation;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Title;
 
 #[Title('Batch Donations')]
 class ManageDonations extends Component
@@ -19,6 +20,9 @@ class ManageDonations extends Component
     public int $perPage = 10;
 
     public ?int $scopeBatchId = null;
+    public ?int $scopeEducationId = null;
+
+    protected $paginationTheme = 'tailwind';
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -32,9 +36,12 @@ class ManageDonations extends Component
         $user = auth()->user();
 
         if ($user?->hasRole('batch-representative')) {
-            $this->scopeBatchId = $user->alumni?->batch_id;
+            $education = $this->representativeEducation();
 
-            abort_if(blank($this->scopeBatchId), 403);
+            abort_if(blank($education?->batch_id), 403, 'You are not assigned to any batch.');
+
+            $this->scopeEducationId = $education->id;
+            $this->scopeBatchId = (int) $education->batch_id;
         }
     }
 
@@ -56,6 +63,14 @@ class ManageDonations extends Component
     public function updatingPerPage(): void
     {
         $this->resetPage();
+    }
+
+    protected function representativeEducation(): ?AlumniEducation
+    {
+        return auth()->user()?->alumni?->educations()
+            ->with('batch')
+            ->where('is_batch_rep', true)
+            ->first();
     }
 
     protected function baseQuery(): Builder
@@ -80,16 +95,25 @@ class ManageDonations extends Component
                 'created_at',
             ])
             ->with([
-                'alumni:id,fname,mname,lname,batch_id',
-                'alumni.batch:id,yeargrad,schoolyear',
+                'alumni:id,fname,mname,lname',
+                'alumni.educations' => function ($query) {
+                    $query->select([
+                        'id',
+                        'alumni_id',
+                        'batch_id',
+                        'is_batch_rep',
+                    ])->with([
+                        'batch:id,level,yeargrad,schoolyear',
+                    ]);
+                },
             ])
             ->when($user?->hasRole('batch-representative'), function (Builder $q) {
-                $q->whereHas('alumni', function (Builder $aq) {
+                $q->whereHas('alumni.educations', function (Builder $aq) {
                     $aq->where('batch_id', $this->scopeBatchId);
                 });
             })
-            ->when($this->search !== '', function (Builder $q) {
-                $term = '%' . $this->search . '%';
+            ->when(trim($this->search) !== '', function (Builder $q) {
+                $term = '%' . trim($this->search) . '%';
 
                 $q->where(function (Builder $qq) use ($term) {
                     $qq->whereHas('alumni', function (Builder $aq) use ($term) {
@@ -140,6 +164,8 @@ class ManageDonations extends Component
             'verifiedPaidTotal' => $verifiedPaidTotal,
             'pendingCount' => $pendingCount,
             'scopeBatchId' => $this->scopeBatchId,
+            'scopeEducationId' => $this->scopeEducationId,
+            'currentEducation' => $this->representativeEducation(),
         ]);
     }
 }

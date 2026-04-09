@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Batch;
+use App\Models\Committee;
 use App\Models\VolunteerSignup;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -15,13 +16,19 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class CommitteReport extends Component
 {
     use WithPagination;
-public bool $showActionModal = false;
-public ?int $selectedSignupId = null;
-public ?string $selectedAction = null;
+
+    public bool $showActionModal = false;
+    public ?int $selectedSignupId = null;
+    public ?string $selectedAction = null;
+
+    public bool $showViewModal = false;
+    public ?int $viewSignupId = null;
+
     public const DEFAULT_ROLE = 'all';
     public const DEFAULT_BATCH = 'all';
     public const DEFAULT_YEAR_GRAD = 'all';
     public const DEFAULT_SCHOOL_YEAR = 'all';
+    public const DEFAULT_LEVEL = 'all';
     public const DEFAULT_BATCH_REP = 'all';
     public const DEFAULT_HAS_ALUMNI = 'all';
     public const DEFAULT_VOLUNTEER_STATUS = 'all';
@@ -33,6 +40,7 @@ public ?string $selectedAction = null;
     public string $batchId = self::DEFAULT_BATCH;
     public string $yearGrad = self::DEFAULT_YEAR_GRAD;
     public string $schoolyear = self::DEFAULT_SCHOOL_YEAR;
+    public string $level = self::DEFAULT_LEVEL;
     public string $isBatchRep = self::DEFAULT_BATCH_REP;
     public string $hasAlumni = self::DEFAULT_HAS_ALUMNI;
     public string $volunteerStatus = self::DEFAULT_VOLUNTEER_STATUS;
@@ -45,6 +53,7 @@ public ?string $selectedAction = null;
         'batchId' => ['except' => self::DEFAULT_BATCH],
         'yearGrad' => ['except' => self::DEFAULT_YEAR_GRAD],
         'schoolyear' => ['except' => self::DEFAULT_SCHOOL_YEAR],
+        'level' => ['except' => self::DEFAULT_LEVEL],
         'isBatchRep' => ['except' => self::DEFAULT_BATCH_REP],
         'hasAlumni' => ['except' => self::DEFAULT_HAS_ALUMNI],
         'volunteerStatus' => ['except' => self::DEFAULT_VOLUNTEER_STATUS],
@@ -52,32 +61,51 @@ public ?string $selectedAction = null;
         'perPage' => ['except' => self::DEFAULT_PER_PAGE],
         'page' => ['except' => 1],
     ];
-public function openActionModal(string $action, int $signupId): void
-{
-    $this->selectedAction = $action;
-    $this->selectedSignupId = $signupId;
-    $this->showActionModal = true;
-}
-public function closeActionModal(): void
-{
-    $this->reset(['showActionModal', 'selectedSignupId', 'selectedAction']);
-}
-public function confirmAction(): void
-{
-    if (!$this->selectedSignupId || !$this->selectedAction) {
-        return;
+
+    public function openActionModal(string $action, int $signupId): void
+    {
+        $this->selectedAction = $action;
+        $this->selectedSignupId = $signupId;
+        $this->showActionModal = true;
     }
 
-    if ($this->selectedAction === 'approve') {
-        $this->approveVolunteerSignup($this->selectedSignupId);
+    public function closeActionModal(): void
+    {
+        $this->reset(['showActionModal', 'selectedSignupId', 'selectedAction']);
     }
 
-    if ($this->selectedAction === 'reject') {
-        $this->rejectVolunteerSignup($this->selectedSignupId);
+    public function openViewModal(int $signupId): void
+    {
+        $this->viewSignupId = $signupId;
+        $this->showViewModal = true;
     }
 
-    $this->closeActionModal();
-}
+    public function closeViewModal(): void
+    {
+        $this->reset(['showViewModal', 'viewSignupId']);
+    }
+
+    public function confirmAction(): void
+    {
+        if (! $this->selectedSignupId || ! $this->selectedAction) {
+            return;
+        }
+
+        if ($this->selectedAction === 'approve') {
+            $this->approveVolunteerSignup($this->selectedSignupId);
+        }
+
+        if ($this->selectedAction === 'reject') {
+            $this->rejectVolunteerSignup($this->selectedSignupId);
+        }
+
+        if ($this->selectedAction === 'delete') {
+            $this->deleteVolunteerSignup($this->selectedSignupId);
+        }
+
+        $this->closeActionModal();
+    }
+
     public function updated(string $property): void
     {
         if (in_array($property, [
@@ -86,6 +114,7 @@ public function confirmAction(): void
             'batchId',
             'yearGrad',
             'schoolyear',
+            'level',
             'isBatchRep',
             'hasAlumni',
             'volunteerStatus',
@@ -105,6 +134,7 @@ public function confirmAction(): void
             'batchId',
             'yearGrad',
             'schoolyear',
+            'level',
             'isBatchRep',
             'hasAlumni',
             'volunteerStatus',
@@ -117,6 +147,7 @@ public function confirmAction(): void
         $this->batchId = self::DEFAULT_BATCH;
         $this->yearGrad = self::DEFAULT_YEAR_GRAD;
         $this->schoolyear = self::DEFAULT_SCHOOL_YEAR;
+        $this->level = self::DEFAULT_LEVEL;
         $this->isBatchRep = self::DEFAULT_BATCH_REP;
         $this->hasAlumni = self::DEFAULT_HAS_ALUMNI;
         $this->volunteerStatus = self::DEFAULT_VOLUNTEER_STATUS;
@@ -158,6 +189,15 @@ public function confirmAction(): void
         session()->flash('success', 'Committee submission rejected.');
     }
 
+    public function deleteVolunteerSignup(int $signupId): void
+    {
+        $signup = VolunteerSignup::query()->findOrFail($signupId);
+
+        $signup->delete();
+
+        session()->flash('success', 'Committee submission removed successfully.');
+    }
+
     protected function normalizePerPage(): void
     {
         $allowed = [10, 25, 50, 100];
@@ -188,6 +228,16 @@ public function confirmAction(): void
         ];
     }
 
+    protected function levelOptions(): array
+    {
+        return [
+            'all' => 'All levels',
+            'elementary' => 'Elementary',
+            'highschool' => 'High School',
+            'college' => 'College',
+        ];
+    }
+
     protected function signupsQuery(): Builder
     {
         $search = trim($this->search);
@@ -195,7 +245,7 @@ public function confirmAction(): void
         return VolunteerSignup::query()
             ->with([
                 'user.roles',
-                'alumni.batch',
+                'alumni.educations.batch',
                 'committee',
             ])
             ->when($search !== '', function (Builder $query) use ($search) {
@@ -214,12 +264,15 @@ public function confirmAction(): void
                             $alumniQuery->where('fname', 'like', $like)
                                 ->orWhere('lname', 'like', $like)
                                 ->orWhere('mname', 'like', $like)
+                                ->orWhere('cellphone', 'like', $like)
+                                ->orWhere('occupation', 'like', $like)
                                 ->orWhereRaw("CONCAT(fname, ' ', lname) LIKE ?", [$like])
                                 ->orWhereRaw("CONCAT(lname, ', ', fname) LIKE ?", [$like]);
                         })
-                        ->orWhereHas('alumni.batch', function (Builder $batchQuery) use ($like) {
+                        ->orWhereHas('alumni.educations.batch', function (Builder $batchQuery) use ($like) {
                             $batchQuery->where('schoolyear', 'like', $like)
-                                ->orWhere('yeargrad', 'like', $like);
+                                ->orWhere('yeargrad', 'like', $like)
+                                ->orWhere('level', 'like', $like);
                         });
                 });
             })
@@ -241,28 +294,33 @@ public function confirmAction(): void
                 $query->whereNull('alumni_id');
             })
             ->when($this->batchId !== self::DEFAULT_BATCH, function (Builder $query) {
-                $query->whereHas('alumni', function (Builder $alumniQuery) {
-                    $alumniQuery->where('batch_id', $this->batchId);
+                $query->whereHas('alumni.educations', function (Builder $educationQuery) {
+                    $educationQuery->where('batch_id', $this->batchId);
                 });
             })
             ->when($this->yearGrad !== self::DEFAULT_YEAR_GRAD, function (Builder $query) {
-                $query->whereHas('alumni.batch', function (Builder $batchQuery) {
+                $query->whereHas('alumni.educations.batch', function (Builder $batchQuery) {
                     $batchQuery->where('yeargrad', $this->yearGrad);
                 });
             })
             ->when($this->schoolyear !== self::DEFAULT_SCHOOL_YEAR, function (Builder $query) {
-                $query->whereHas('alumni.batch', function (Builder $batchQuery) {
+                $query->whereHas('alumni.educations.batch', function (Builder $batchQuery) {
                     $batchQuery->where('schoolyear', $this->schoolyear);
                 });
             })
+            ->when($this->level !== self::DEFAULT_LEVEL, function (Builder $query) {
+                $query->whereHas('alumni.educations.batch', function (Builder $batchQuery) {
+                    $batchQuery->where('level', $this->level);
+                });
+            })
             ->when($this->isBatchRep === 'yes', function (Builder $query) {
-                $query->whereHas('alumni', function (Builder $alumniQuery) {
-                    $alumniQuery->where('is_batch_rep', true);
+                $query->whereHas('alumni.educations', function (Builder $educationQuery) {
+                    $educationQuery->where('is_batch_rep', true);
                 });
             })
             ->when($this->isBatchRep === 'no', function (Builder $query) {
-                $query->whereHas('alumni', function (Builder $alumniQuery) {
-                    $alumniQuery->where('is_batch_rep', false);
+                $query->whereHas('alumni.educations', function (Builder $educationQuery) {
+                    $educationQuery->where('is_batch_rep', false);
                 });
             });
     }
@@ -270,9 +328,9 @@ public function confirmAction(): void
     protected function batchOptions(): Collection
     {
         return Batch::query()
+            ->orderByRaw("FIELD(level, 'elementary', 'highschool', 'college')")
             ->orderByDesc('yeargrad')
-            ->orderByDesc('schoolyear')
-            ->get(['id', 'schoolyear', 'yeargrad']);
+            ->get(['id', 'level', 'schoolyear', 'yeargrad']);
     }
 
     protected function yearGradOptions(): Collection
@@ -297,9 +355,43 @@ public function confirmAction(): void
 
     protected function committeeOptions(): Collection
     {
-        return \App\Models\Committee::query()
+        return Committee::query()
             ->orderBy('name')
             ->get(['id', 'name']);
+    }
+
+    protected function selectedSignup(): ?VolunteerSignup
+    {
+        if (! $this->viewSignupId) {
+            return null;
+        }
+
+        return VolunteerSignup::query()
+            ->with([
+                'user.roles',
+                'committee',
+                'alumni.educations.batch',
+            ])
+            ->find($this->viewSignupId);
+    }
+
+    protected function matchedEducation($signup)
+    {
+        if (! $signup?->alumni?->educations?->isNotEmpty()) {
+            return null;
+        }
+
+        if ($this->batchId !== self::DEFAULT_BATCH) {
+            return $signup->alumni->educations->firstWhere('batch_id', (int) $this->batchId)
+                ?? $signup->alumni->educations->first();
+        }
+
+        return $signup->alumni->educations->sortBy(fn ($edu) => match($edu->batch?->level) {
+            'elementary' => 1,
+            'highschool' => 2,
+            'college' => 3,
+            default => 99,
+        })->first();
     }
 
     public function downloadExcel(): StreamedResponse
@@ -314,16 +406,20 @@ public function confirmAction(): void
             $handle = fopen('php://output', 'w');
 
             fputcsv($handle, [
-             
                 'Full Name',
                 'Email',
+                'Level',
                 'Batch',
+                'School Year',
+                'Batch Representative',
                 'Committee',
                 'Status',
                 'Notes',
             ]);
 
             foreach ($signups as $signup) {
+                $education = $this->matchedEducation($signup);
+
                 $fullName = $signup->alumni
                     ? trim(collect([
                         $signup->alumni->fname,
@@ -333,10 +429,12 @@ public function confirmAction(): void
                     : 'N/A';
 
                 fputcsv($handle, [
-                    
-                    $fullName, 
+                    $fullName,
                     $signup->user?->email ?? 'N/A',
-                    $signup->alumni?->batch?->schoolyear ?? 'N/A',
+                    $education?->batch?->level ? str($education->batch->level)->headline()->toString() : 'N/A',
+                    $education?->batch?->yeargrad ?? 'N/A',
+                    $education?->batch?->schoolyear ?? 'N/A',
+                    $education?->is_batch_rep ? 'Yes' : 'No',
                     $signup->committee?->name ?? 'N/A',
                     $signup->status ?? 'None',
                     $signup->notes ?? '',
@@ -360,11 +458,13 @@ public function confirmAction(): void
         return view('livewire.committe-report', [
             'signups' => $signups,
             'roles' => $this->roleOptions(),
+            'levels' => $this->levelOptions(),
             'batches' => $this->batchOptions(),
             'yearGrads' => $this->yearGradOptions(),
             'schoolyears' => $this->schoolYearOptions(),
             'volunteerStatuses' => $this->volunteerStatusOptions(),
             'committees' => $this->committeeOptions(),
+            'selectedSignup' => $this->selectedSignup(),
         ]);
     }
 }

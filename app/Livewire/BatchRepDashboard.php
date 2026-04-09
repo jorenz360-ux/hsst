@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Alumni;
+use App\Models\AlumniEducation;
 use App\Models\Announcement;
 use App\Models\Event;
 use Illuminate\Support\Facades\Auth;
@@ -14,31 +15,62 @@ class BatchRepDashboard extends Component
 {
     public function render()
     {
-        $user = Auth::user();
-        $batchId = $user?->alumni?->batch_id;
+        $user = Auth::user()?->loadMissing([
+            'alumni.educations.batch',
+        ]);
 
-        abort_unless($batchId, 403);
+        $representativeEducation = $user?->alumni?->educations()
+            ->with('batch')
+            ->where('is_batch_rep', true)
+            ->first();
+
+        abort_unless($representativeEducation?->batch_id, 403);
+
+        $batchId = (int) $representativeEducation->batch_id;
+        $currentBatch = $representativeEducation->batch;
 
         $now = now();
         $today = $now->toDateString();
 
-        $batchAlumniQuery = Alumni::query()
-            ->where('batch_id', $batchId);
+        /*
+        |--------------------------------------------------------------------------
+        | Base batch member scope
+        |--------------------------------------------------------------------------
+        | We now scope through alumni_educations instead of alumni.batch_id.
+        */
+        $batchEducationQuery = AlumniEducation::query()
+            ->where('batch_id', $batchId)
+            ->with([
+                'batch:id,level,yeargrad,schoolyear',
+                'alumni.user:id,alumni_id,username,email',
+            ]);
 
+        /*
+        |--------------------------------------------------------------------------
+        | Upcoming events
+        |--------------------------------------------------------------------------
+        */
         $upcomingEventsQuery = Event::query()
             ->where('is_active', true)
             ->whereDate('event_date', '>=', $today);
 
-        $batchAlumniCount = (clone $batchAlumniQuery)->count();
+        /*
+        |--------------------------------------------------------------------------
+        | KPI counts
+        |--------------------------------------------------------------------------
+        */
+        $batchAlumniCount = (clone $batchEducationQuery)->count();
 
-        $registeredUsersCount = (clone $batchAlumniQuery)
-            ->whereHas('user')
+        $registeredUsersCount = (clone $batchEducationQuery)
+            ->whereHas('alumni.user')
             ->count();
 
         $upcomingEventsCount = (clone $upcomingEventsQuery)->count();
 
         $respondedMembersCount = Alumni::query()
-            ->where('batch_id', $batchId)
+            ->whereHas('educations', function ($query) use ($batchId) {
+                $query->where('batch_id', $batchId);
+            })
             ->whereHas('eventRsvps.event', function ($query) use ($today) {
                 $query->where('is_active', true)
                     ->whereDate('event_date', '>=', $today);
@@ -46,19 +78,33 @@ class BatchRepDashboard extends Component
             ->count();
 
         $membersWithoutRsvpCount = Alumni::query()
-            ->where('batch_id', $batchId)
+            ->whereHas('educations', function ($query) use ($batchId) {
+                $query->where('batch_id', $batchId);
+            })
             ->whereDoesntHave('eventRsvps.event', function ($query) use ($today) {
                 $query->where('is_active', true)
                     ->whereDate('event_date', '>=', $today);
             })
             ->count();
 
-        $batchMembers = (clone $batchAlumniQuery)
-            ->with([
-                'user:id,alumni_id,username,email',
-            ])
-            ->orderBy('lname')
-            ->orderBy('fname')
+        /*
+        |--------------------------------------------------------------------------
+        | Batch members list
+        |--------------------------------------------------------------------------
+        | We return AlumniEducation rows so we preserve the exact scoped batch.
+        */
+        $batchMembers = (clone $batchEducationQuery)
+            ->orderByDesc('is_batch_rep')
+            ->orderBy(
+                Alumni::select('lname')
+                    ->whereColumn('alumni.id', 'alumni_educations.alumni_id')
+                    ->limit(1)
+            )
+            ->orderBy(
+                Alumni::select('fname')
+                    ->whereColumn('alumni.id', 'alumni_educations.alumni_id')
+                    ->limit(1)
+            )
             ->limit(10)
             ->get();
 
@@ -77,17 +123,22 @@ class BatchRepDashboard extends Component
                 $query->whereNull('expires_at')
                     ->orWhere('expires_at', '>', $now);
             })
+            ->orderByDesc('pinned')
             ->orderByDesc('published_at')
             ->orderByDesc('created_at')
             ->limit(5)
             ->get();
 
         return view('livewire.batch-rep-dashboard', [
+            'currentBatch' => $currentBatch,
+            'representativeEducation' => $representativeEducation,
+
             'batchAlumniCount' => $batchAlumniCount,
             'registeredUsersCount' => $registeredUsersCount,
             'upcomingEventsCount' => $upcomingEventsCount,
             'respondedMembersCount' => $respondedMembersCount,
             'membersWithoutRsvpCount' => $membersWithoutRsvpCount,
+
             'batchMembers' => $batchMembers,
             'upcomingEvents' => $upcomingEvents,
             'announcements' => $announcements,

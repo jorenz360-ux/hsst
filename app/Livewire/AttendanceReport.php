@@ -3,10 +3,10 @@
 namespace App\Livewire;
 
 use App\Models\Alumni;
-use App\Models\Batch;
 use App\Models\Event;
 use App\Models\EventRegistration;
 use App\Models\EventRsvp;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -60,7 +60,7 @@ class AttendanceReport extends Component
 
     public function updatePaymentStatus(int $alumniId, string $status): void
     {
-        $allowedStatuses = ['unpaid', 'paid', 'waived'];
+        $allowedStatuses = ['unpaid', 'pending', 'paid', 'rejected'];
 
         if (! in_array($status, $allowedStatuses, true)) {
             session()->flash('error', 'Invalid payment status.');
@@ -78,8 +78,7 @@ class AttendanceReport extends Component
                 'alumni_id' => $alumniId,
             ],
             [
-                'status' => $status,
-                'fee_paid' => $status === 'paid' ? 1 : 0,
+                'payment_status' => $status,
             ]
         );
 
@@ -98,15 +97,17 @@ class AttendanceReport extends Component
 
         $participants = $this->reportQuery($selectedEvent->id)->get();
 
-        $filename = 'reunion-coordinator-report-event-' . $selectedEvent->id . '-' . now()->format('Y-m-d-His') . '.csv';
+        $filename = 'reunion-attendance-report-event-' . $selectedEvent->id . '-' . now()->format('Y-m-d-His') . '.csv';
 
         return response()->streamDownload(function () use ($participants, $selectedEvent) {
             $handle = fopen('php://output', 'w');
 
             fputcsv($handle, [
                 'Batch',
+                'Level',
                 'Alumni Name',
                 'RSVP Status',
+                'Guests',
                 'Event Fee',
                 'Payment Status',
                 'Updated At',
@@ -128,8 +129,16 @@ class AttendanceReport extends Component
 
                 $paymentStatus = match($participant->payment_status ?? 'unpaid') {
                     'paid' => 'Paid',
-                    'waived' => 'Waived',
+                    'pending' => 'Pending',
+                    'rejected' => 'Rejected',
                     default => 'Unpaid',
+                };
+
+                $batchLevel = match($participant->batch_level ?? '') {
+                    'elementary' => 'Elementary',
+                    'highschool' => 'High School',
+                    'college' => 'College',
+                    default => '—',
                 };
 
                 $eventFee = ($selectedEvent->registration_fee ?? 0) > 0
@@ -142,8 +151,10 @@ class AttendanceReport extends Component
 
                 fputcsv($handle, [
                     $participant->batch_label ?: '—',
+                    $batchLevel,
                     $fullName ?: '—',
                     $rsvpStatus,
+                    $participant->guest_count ?? 0,
                     $eventFee,
                     $paymentStatus,
                     $updatedAt,
@@ -178,17 +189,16 @@ class AttendanceReport extends Component
 
     protected function reportQuery(int $eventId)
     {
+        // Alumni no longer has batch_id directly; batches are linked via alumni_educations.
+        // Pick the education record with the highest batch_id per alumni as their primary batch.
+        $primaryBatch = DB::table('alumni_educations')
+            ->select(['alumni_id', DB::raw('MAX(batch_id) as batch_id')])
+            ->groupBy('alumni_id');
+
         $query = Alumni::query()
-            ->select([
-                'alumni.id',
-                'alumni.fname',
-                'alumni.lname',
-                'alumni.mname',
-                'alumni.batch_id',
-                'batches.schoolyear',
-                'batches.yeargrad',
-            ])
-            ->leftJoin('batches', 'batches.id', '=', 'alumni.batch_id')
+            ->select(['alumni.id', 'alumni.fname', 'alumni.lname', 'alumni.mname'])
+            ->leftJoinSub($primaryBatch, 'prim_edu', 'prim_edu.alumni_id', '=', 'alumni.id')
+            ->leftJoin('batches', 'batches.id', '=', 'prim_edu.batch_id')
             ->leftJoin('event_rsvps', function ($join) use ($eventId) {
                 $join->on('event_rsvps.alumni_id', '=', 'alumni.id')
                     ->where('event_rsvps.event_id', '=', $eventId);
@@ -198,11 +208,15 @@ class AttendanceReport extends Component
                     ->where('event_registrations.event_id', '=', $eventId);
             })
             ->addSelect([
+                'batches.schoolyear',
+                'batches.yeargrad',
+                'batches.level as batch_level',
                 'event_rsvps.id as rsvp_id',
                 'event_rsvps.status as rsvp_status',
+                'event_rsvps.guest_count',
                 'event_rsvps.updated_at as rsvp_updated_at',
                 'event_registrations.id as registration_id',
-                'event_registrations.status as payment_status',
+                'event_registrations.payment_status',
                 'event_registrations.updated_at as payment_updated_at',
             ])
             ->selectRaw("
@@ -225,7 +239,7 @@ class AttendanceReport extends Component
         }
 
         if ($this->paymentStatusFilter !== 'all') {
-            $query->where('event_registrations.status', $this->paymentStatusFilter);
+            $query->where('event_registrations.payment_status', $this->paymentStatusFilter);
         }
 
         if ($this->search !== '') {
@@ -253,10 +267,11 @@ class AttendanceReport extends Component
         $attendingParticipantsCount = 0;
         $maybeParticipantsCount = 0;
         $notAttendingParticipantsCount = 0;
+        $noResponseCount = 0;
         $paidParticipantsCount = 0;
         $unpaidParticipantsCount = 0;
-        $waivedParticipantsCount = 0;
-        $noResponseCount = 0;
+        $pendingParticipantsCount = 0;
+        $rejectedParticipantsCount = 0;
 
         if ($selectedEvent) {
             $participants = $this->reportQuery($selectedEvent->id)->paginate(10);
@@ -286,17 +301,22 @@ class AttendanceReport extends Component
 
             $paidParticipantsCount = EventRegistration::query()
                 ->where('event_id', $selectedEvent->id)
-                ->where('status', 'paid')
+                ->where('payment_status', 'paid')
                 ->count();
 
             $unpaidParticipantsCount = EventRegistration::query()
                 ->where('event_id', $selectedEvent->id)
-                ->where('status', 'unpaid')
+                ->where('payment_status', 'unpaid')
                 ->count();
 
-            $waivedParticipantsCount = EventRegistration::query()
+            $pendingParticipantsCount = EventRegistration::query()
                 ->where('event_id', $selectedEvent->id)
-                ->where('status', 'waived')
+                ->where('payment_status', 'pending')
+                ->count();
+
+            $rejectedParticipantsCount = EventRegistration::query()
+                ->where('event_id', $selectedEvent->id)
+                ->where('payment_status', 'rejected')
                 ->count();
         }
 
@@ -307,10 +327,11 @@ class AttendanceReport extends Component
             'attendingParticipantsCount' => $attendingParticipantsCount,
             'maybeParticipantsCount' => $maybeParticipantsCount,
             'notAttendingParticipantsCount' => $notAttendingParticipantsCount,
+            'noResponseCount' => $noResponseCount,
             'paidParticipantsCount' => $paidParticipantsCount,
             'unpaidParticipantsCount' => $unpaidParticipantsCount,
-            'waivedParticipantsCount' => $waivedParticipantsCount,
-            'noResponseCount' => $noResponseCount,
+            'pendingParticipantsCount' => $pendingParticipantsCount,
+            'rejectedParticipantsCount' => $rejectedParticipantsCount,
         ]);
     }
 }

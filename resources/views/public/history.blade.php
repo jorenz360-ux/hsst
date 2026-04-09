@@ -580,12 +580,12 @@
 
       @php
         $entries = [
-          ['year'=>'1926',      'name'=>'Saint Joseph\'s Academy (S.J.A.)',                    'note'=>'Grade School (1926) · High School (1928)',              'color'=>'var(--royal)'],
-          ['year'=>'July 1950', 'name'=>'Saint Joseph\'s Junior College (S.J.J.C.)',           'note'=>'Two-year Elementary Teacher\'s Certificate program',     'color'=>'var(--royal)'],
-          ['year'=>'July 1957', 'name'=>'Saint Joseph\'s College (S.J.C.)',                    'note'=>'College courses in Music, Education, and Liberal Arts',  'color'=>'var(--spirit)'],
-          ['year'=>'July 1965', 'name'=>'College of the Holy Spirit (C.H.S.)',                 'note'=>'Name reflects the SSpS congregation\'s mission',         'color'=>'var(--spirit)'],
-          ['year'=>'July 1974', 'name'=>'Holy Spirit School (H.S.S.)',                         'note'=>'College department phased out; return to basic education','color'=>'var(--teal)'],
-          ['year'=>'July 2013', 'name'=>'Holy Spirit School of Tagbilaran (H.S.S.T.) Inc.',   'note'=>'Current name; full Basic Education program',             'color'=>'var(--crimson)'],
+          ['year'=>'1926',      'name'=>'Saint Joseph\'s Academy (S.J.A.)',                  'note'=>'Grade School (1926) · High School (1928)',               'color'=>'var(--royal)',   'img'=>'SJA.jpeg'],
+          ['year'=>'July 1950', 'name'=>'Saint Joseph\'s Junior College (S.J.J.C.)',          'note'=>'Two-year Elementary Teacher\'s Certificate program',      'color'=>'var(--royal)',   'img'=>'SJJC.jpeg'],
+          ['year'=>'July 1957', 'name'=>'Saint Joseph\'s College (S.J.C.)',                   'note'=>'College courses in Music, Education, and Liberal Arts',   'color'=>'var(--spirit)',  'img'=>null],
+          ['year'=>'July 1965', 'name'=>'College of the Holy Spirit (C.H.S.)',                'note'=>'Name reflects the SSpS congregation\'s mission',          'color'=>'var(--spirit)',  'img'=>null],
+          ['year'=>'July 1974', 'name'=>'Holy Spirit School (H.S.S.)',                        'note'=>'College department phased out; return to basic education', 'color'=>'var(--teal)',    'img'=>'HSS1974.jpeg'],
+          ['year'=>'July 2013', 'name'=>'Holy Spirit School of Tagbilaran (H.S.S.T.) Inc.',   'note'=>'Current name; full Basic Education program',              'color'=>'var(--crimson)', 'img'=>'HSST.jpeg'],
         ];
       @endphp
 
@@ -595,17 +595,33 @@
         <div class="absolute -left-[1.6rem] top-1.5 w-3.5 h-3.5 rounded-full border-2 border-paper"
              style="background:{{ $entry['color'] }};"></div>
 
-        <div class="border border-ink/8 p-7 ed-card" style="background:var(--paper);">
-          <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
-            <span class="kicker" style="color:{{ $entry['color'] }};">{{ $entry['year'] }}</span>
+        <div class="border border-ink/8 ed-card overflow-hidden" style="background:var(--paper);">
+          <div class="flex flex-col sm:flex-row">
+
+            {{-- Text content --}}
+            <div class="flex-1 p-7">
+              <span class="kicker" style="color:{{ $entry['color'] }};">{{ $entry['year'] }}</span>
+              <h3 class="display text-ink font-bold mt-2 mb-2" style="font-size:1.45rem;line-height:1.2;">
+                {{ $entry['name'] }}
+              </h3>
+              <hr class="col-rule my-4"/>
+              <p class="caption-text text-ink/40" style="letter-spacing:.08em;text-transform:none;font-size:.72rem;">
+                {{ $entry['note'] }}
+              </p>
+            </div>
+
+            {{-- Image --}}
+            @if($entry['img'])
+              <div class="sm:w-48 sm:shrink-0 h-48 sm:h-auto overflow-hidden">
+                <img
+                  src="{{ asset('images/oldname/' . $entry['img']) }}"
+                  alt="{{ $entry['name'] }}"
+                  class="w-full h-full object-cover"
+                >
+              </div>
+            @endif
+
           </div>
-          <h3 class="display text-ink font-bold mb-2" style="font-size:1.45rem;line-height:1.2;">
-            {{ $entry['name'] }}
-          </h3>
-          <hr class="col-rule my-4"/>
-          <p class="caption-text text-ink/40" style="letter-spacing:.08em;text-transform:none;font-size:.72rem;">
-            {{ $entry['note'] }}
-          </p>
         </div>
       </div>
       @endforeach

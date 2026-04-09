@@ -2,8 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Models\Alumni;
-use App\Models\AlumniInvolvement;
+use App\Models\AlumniEducation;
 use App\Models\Batch;
 use App\Models\Donation;
 use App\Models\Event;
@@ -25,32 +24,21 @@ class Reports extends Component
     public ?string $donationStartDate = null;
     public ?string $donationEndDate = null;
 
-    /**
-     * Global batch filter applied to all tabs.
-     */
     public string $selectedBatch = 'all';
-
     public string $selectedEvent = 'all';
     public string $registrationStatus = 'all';
-
-    /**
-     * Alumni involvement filters
-     * all | involved
-     */
-    public string $involvementType = 'all'; // all | committee | priest | medical
 
     protected $queryString = [
         'tab' => ['except' => 'donations'],
         'selectedBatch' => ['except' => 'all'],
         'selectedEvent' => ['except' => 'all'],
         'registrationStatus' => ['except' => 'all'],
-        'involvementType' => ['except' => 'all'],
     ];
 
     public function mount(): void
     {
         if ($this->isBatchRepresentative()) {
-            $batchId = $this->getUserBatchId();
+            $batchId = $this->getUserRepresentativeBatchId();
 
             if ($batchId !== null) {
                 $this->selectedBatch = (string) $batchId;
@@ -88,16 +76,10 @@ class Reports extends Component
         $this->resetPage('eventRegistrationsPage');
     }
 
-    public function updatingInvolvementType(): void
-    {
-        $this->resetPage('involvementPage');
-    }
-
     public function updatedSelectedBatch($value): void
     {
         if ($this->isBatchRepresentative()) {
-            $this->selectedBatch = (string) ($this->getUserBatchId() ?? 'all');
-
+            $this->selectedBatch = (string) ($this->getUserRepresentativeBatchId() ?? 'all');
             return;
         }
 
@@ -120,16 +102,10 @@ class Reports extends Component
         $this->resetPage('eventRegistrationsPage');
     }
 
-    public function resetInvolvementFilters(): void
-    {
-        $this->involvementType = 'all';
-        $this->resetPage('involvementPage');
-    }
-
     public function resetBatchFilter(): void
     {
         if ($this->isBatchRepresentative()) {
-            $this->selectedBatch = (string) ($this->getUserBatchId() ?? 'all');
+            $this->selectedBatch = (string) ($this->getUserRepresentativeBatchId() ?? 'all');
         } else {
             $this->selectedBatch = 'all';
         }
@@ -142,7 +118,6 @@ class Reports extends Component
         $this->resetPage('donationsPage');
         $this->resetPage('batchMembersPage');
         $this->resetPage('eventRegistrationsPage');
-        $this->resetPage('involvementPage');
     }
 
     protected function user()
@@ -160,17 +135,17 @@ class Reports extends Component
         return $this->user()?->hasRole('batch-representative') ?? false;
     }
 
-    protected function getUserBatchId(): ?int
+    protected function getUserRepresentativeBatchId(): ?int
     {
-        $batchId = $this->user()?->alumni?->batch_id;
-
-        return $batchId ? (int) $batchId : null;
+        return $this->user()?->alumni?->educations()
+            ->where('is_batch_rep', true)
+            ->value('batch_id');
     }
 
     protected function resolvedBatchId(): ?int
     {
         if ($this->isBatchRepresentative()) {
-            return $this->getUserBatchId();
+            return $this->getUserRepresentativeBatchId();
         }
 
         if ($this->selectedBatch === 'all') {
@@ -188,7 +163,7 @@ class Reports extends Component
             return $query;
         }
 
-        return $query->whereHas($relation, function (Builder $q) use ($batchId) {
+        return $query->whereHas($relation . '.educations', function (Builder $q) use ($batchId) {
             $q->where('batch_id', $batchId);
         });
     }
@@ -197,8 +172,8 @@ class Reports extends Component
     {
         $query = Donation::query()
             ->with([
-                'alumni:id,fname,lname,mname,batch_id',
-                'alumni.batch:id,yeargrad,schoolyear',
+                'alumni:id,fname,lname,mname',
+                'alumni.educations.batch:id,level,yeargrad,schoolyear',
             ]);
 
         $query = $this->applyBatchScopeToAlumniRelation($query);
@@ -214,11 +189,12 @@ class Reports extends Component
         return $query;
     }
 
-    protected function baseBatchSummaryQuery(): Builder
+    protected function baseBatchSummaryQuery()
     {
         $query = Batch::query()
-            ->withCount('alumni')
-            ->orderBy('yeargrad', 'desc');
+            ->withCount('alumniEducations')
+            ->orderByRaw("FIELD(level, 'elementary', 'highschool', 'college')")
+            ->orderByDesc('yeargrad');
 
         $batchId = $this->resolvedBatchId();
 
@@ -231,19 +207,23 @@ class Reports extends Component
 
     protected function baseBatchMembersQuery(): Builder
     {
-        $query = Alumni::query()
+        $query = AlumniEducation::query()
             ->with([
-                'batch:id,yeargrad,schoolyear',
+                'batch:id,level,yeargrad,schoolyear',
+                'alumni:id,fname,lname,mname,occupation,address_line_1,address_line_2,city,state_province,postal_code,country,cellphone',
             ])
-            ->select([
-                'id',
-                'fname',
-                'lname',
-                'mname',
-                'batch_id',
-            ])
-            ->orderBy('lname')
-            ->orderBy('fname');
+            ->orderBy('batch_id')
+            ->orderByDesc('is_batch_rep')
+            ->orderBy(
+                \App\Models\Alumni::select('lname')
+                    ->whereColumn('alumni.id', 'alumni_educations.alumni_id')
+                    ->limit(1)
+            )
+            ->orderBy(
+                \App\Models\Alumni::select('fname')
+                    ->whereColumn('alumni.id', 'alumni_educations.alumni_id')
+                    ->limit(1)
+            );
 
         $batchId = $this->resolvedBatchId();
 
@@ -259,8 +239,8 @@ class Reports extends Component
         $query = EventRegistration::query()
             ->with([
                 'event:id,title,slug,event_date,venue',
-                'alumni:id,fname,lname,mname,batch_id',
-                'alumni.batch:id,yeargrad,schoolyear',
+                'alumni:id,fname,lname,mname',
+                'alumni.educations.batch:id,level,yeargrad,schoolyear',
             ]);
 
         if ($this->selectedEvent !== 'all') {
@@ -276,28 +256,10 @@ class Reports extends Component
         return $query;
     }
 
-    protected function baseInvolvementQuery(): Builder
-    {
-        $query = AlumniInvolvement::query()
-            ->with([
-                'alumni:id,fname,lname,mname,batch_id',
-                'alumni.batch:id,yeargrad,schoolyear',
-            ]);
-
-        $query = $this->applyBatchScopeToAlumniRelation($query);
-
-        return match ($this->involvementType) {
-            'committee' => $query->where('wants_committee_member', true),
-            'priest' => $query->where('is_priest_concelebrate', true),
-            'medical' => $query->where('is_medical_practitioner', true),
-            default => $query,
-        };
-    }
-
     protected function availableBatches()
     {
         if ($this->isBatchRepresentative()) {
-            $batchId = $this->getUserBatchId();
+            $batchId = $this->getUserRepresentativeBatchId();
 
             if (! $batchId) {
                 return collect();
@@ -305,13 +267,15 @@ class Reports extends Component
 
             return Batch::query()
                 ->where('id', $batchId)
-                ->orderBy('yeargrad', 'desc')
-                ->get(['id', 'yeargrad', 'schoolyear']);
+                ->orderByRaw("FIELD(level, 'elementary', 'highschool', 'college')")
+                ->orderByDesc('yeargrad')
+                ->get(['id', 'level', 'yeargrad', 'schoolyear']);
         }
 
         return Batch::query()
-            ->orderBy('yeargrad', 'desc')
-            ->get(['id', 'yeargrad', 'schoolyear']);
+            ->orderByRaw("FIELD(level, 'elementary', 'highschool', 'college')")
+            ->orderByDesc('yeargrad')
+            ->get(['id', 'level', 'yeargrad', 'schoolyear']);
     }
 
     protected function availableEvents()
@@ -331,23 +295,47 @@ class Reports extends Component
         }
 
         return Batch::query()
-            ->select(['id', 'yeargrad', 'schoolyear'])
+            ->select(['id', 'level', 'yeargrad', 'schoolyear'])
             ->find($batchId);
+    }
+
+    protected function matchedEducationForAlumni($alumni, ?int $batchId = null)
+    {
+        if (! $alumni) {
+            return null;
+        }
+
+        $educations = $alumni->educations ?? collect();
+
+        if ($batchId) {
+            return $educations->firstWhere('batch_id', $batchId)
+                ?? $educations->first();
+        }
+
+        return $educations->sortBy(fn ($edu) => match($edu->batch?->level) {
+            'elementary' => 1,
+            'highschool' => 2,
+            'college' => 3,
+            default => 99,
+        })->first();
     }
 
     public function downloadDonations(): StreamedResponse
     {
+        $batchId = $this->resolvedBatchId();
+
         $donations = $this->baseDonationQuery()
             ->latest()
             ->get();
 
         $filename = 'donation-report-' . now()->format('Y-m-d-His') . '.csv';
 
-        return response()->streamDownload(function () use ($donations) {
+        return response()->streamDownload(function () use ($donations, $batchId) {
             $handle = fopen('php://output', 'w');
 
             fputcsv($handle, [
                 'Donor Name',
+                'Level',
                 'Batch',
                 'School Year',
                 'Amount',
@@ -355,6 +343,8 @@ class Reports extends Component
             ]);
 
             foreach ($donations as $donation) {
+                $education = $this->matchedEducationForAlumni($donation->alumni, $batchId);
+
                 $donorName = $donation->alumni
                     ? trim(collect([
                         $donation->alumni->fname,
@@ -365,8 +355,9 @@ class Reports extends Component
 
                 fputcsv($handle, [
                     $donorName,
-                    $donation->alumni?->batch?->yeargrad ?? '—',
-                    $donation->alumni?->batch?->schoolyear ?? '—',
+                    $education?->batch?->level ? str($education->batch->level)->headline()->toString() : '—',
+                    $education?->batch?->yeargrad ?? '—',
+                    $education?->batch?->schoolyear ?? '—',
                     $donation->amount,
                     $donation->created_at?->format('Y-m-d h:i A') ?? '—',
                 ]);
@@ -388,16 +379,75 @@ class Reports extends Component
             $handle = fopen('php://output', 'w');
 
             fputcsv($handle, [
+                'Level',
                 'Year Graduated',
                 'School Year',
-                'Total Members',
+                'Total Membership Records',
             ]);
 
             foreach ($batches as $batch) {
                 fputcsv($handle, [
+                    str($batch->level)->headline()->toString(),
                     $batch->yeargrad,
                     $batch->schoolyear,
-                    $batch->alumni_count,
+                    $batch->alumni_educations_count,
+                ]);
+            }
+
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv',
+        ]);
+    }
+
+    public function downloadBatchMembers(): StreamedResponse
+    {
+        $members = $this->baseBatchMembersQuery()->get();
+
+        $filename = 'batch-members-report-' . now()->format('Y-m-d-His') . '.csv';
+
+        return response()->streamDownload(function () use ($members) {
+            $handle = fopen('php://output', 'w');
+
+            fputcsv($handle, [
+                'Full Name',
+                'Level',
+                'Batch',
+                'School Year',
+                'Did Graduate',
+                'Batch Representative',
+                'Occupation',
+                'Cellphone',
+                'Address Line 1',
+                'Address Line 2',
+                'City',
+                'State/Province',
+                'Postal Code',
+                'Country',
+            ]);
+
+            foreach ($members as $member) {
+                $fullName = trim(collect([
+                    $member->alumni?->fname,
+                    $member->alumni?->mname,
+                    $member->alumni?->lname,
+                ])->filter()->implode(' '));
+
+                fputcsv($handle, [
+                    $fullName ?: '—',
+                    $member->batch?->level ? str($member->batch->level)->headline()->toString() : '—',
+                    $member->batch?->yeargrad ?? '—',
+                    $member->batch?->schoolyear ?? '—',
+                    $member->did_graduate ? 'Yes' : 'No',
+                    $member->is_batch_rep ? 'Yes' : 'No',
+                    $member->alumni?->occupation ?? '—',
+                    $member->alumni?->cellphone ?? '—',
+                    $member->alumni?->address_line_1 ?? '—',
+                    $member->alumni?->address_line_2 ?? '—',
+                    $member->alumni?->city ?? '—',
+                    $member->alumni?->state_province ?? '—',
+                    $member->alumni?->postal_code ?? '—',
+                    $member->alumni?->country ?? '—',
                 ]);
             }
 
@@ -409,19 +459,22 @@ class Reports extends Component
 
     public function downloadEventRegistrations(): StreamedResponse
     {
+        $batchId = $this->resolvedBatchId();
+
         $registrations = $this->baseEventRegistrationQuery()
             ->latest()
             ->get();
 
         $filename = 'event-registrations-report-' . now()->format('Y-m-d-His') . '.csv';
 
-        return response()->streamDownload(function () use ($registrations) {
+        return response()->streamDownload(function () use ($registrations, $batchId) {
             $handle = fopen('php://output', 'w');
 
             fputcsv($handle, [
                 'Event',
                 'Event Date',
                 'Alumni Name',
+                'Level',
                 'Batch',
                 'School Year',
                 'Registration Status',
@@ -429,6 +482,8 @@ class Reports extends Component
             ]);
 
             foreach ($registrations as $registration) {
+                $education = $this->matchedEducationForAlumni($registration->alumni, $batchId);
+
                 $alumniName = $registration->alumni
                     ? trim(collect([
                         $registration->alumni->fname,
@@ -441,59 +496,11 @@ class Reports extends Component
                     $registration->event?->title ?? '—',
                     $registration->event?->event_date?->format('Y-m-d h:i A') ?? '—',
                     $alumniName,
-                    $registration->alumni?->batch?->yeargrad ?? '—',
-                    $registration->alumni?->batch?->schoolyear ?? '—',
+                    $education?->batch?->level ? str($education->batch->level)->headline()->toString() : '—',
+                    $education?->batch?->yeargrad ?? '—',
+                    $education?->batch?->schoolyear ?? '—',
                     $registration->status ?? '—',
                     $registration->created_at?->format('Y-m-d h:i A') ?? '—',
-                ]);
-            }
-
-            fclose($handle);
-        }, $filename, [
-            'Content-Type' => 'text/csv',
-        ]);
-    }
-
-    public function downloadInvolvementReport(): StreamedResponse
-    {
-        $involvements = $this->baseInvolvementQuery()
-            ->latest()
-            ->get();
-
-        $filename = 'alumni-involvement-report-' . now()->format('Y-m-d-His') . '.csv';
-
-        return response()->streamDownload(function () use ($involvements) {
-            $handle = fopen('php://output', 'w');
-
-            fputcsv($handle, [
-                'Alumni Name',
-                'Batch',
-                'School Year',
-                'Committee Member',
-                'Priest Concelebrate',
-                'Medical Practitioner',
-                'Medical Specialty',
-                'Submitted At',
-            ]);
-
-            foreach ($involvements as $involvement) {
-                $alumniName = $involvement->alumni
-                    ? trim(collect([
-                        $involvement->alumni->fname,
-                        $involvement->alumni->mname,
-                        $involvement->alumni->lname,
-                    ])->filter()->implode(' '))
-                    : '—';
-
-                fputcsv($handle, [
-                    $alumniName,
-                    $involvement->alumni?->batch?->yeargrad ?? '—',
-                    $involvement->alumni?->batch?->schoolyear ?? '—',
-                    $involvement->wants_committee_member ? 'Yes' : 'No',
-                    $involvement->is_priest_concelebrate ? 'Yes' : 'No',
-                    $involvement->is_medical_practitioner ? 'Yes' : 'No',
-                    $involvement->medical_specialty ?? '—',
-                    $involvement->created_at?->format('Y-m-d h:i A') ?? '—',
                 ]);
             }
 
@@ -532,35 +539,6 @@ class Reports extends Component
         $pendingEventRegistrations = (clone $eventRegistrationQuery)->where('status', 'pending')->count();
         $rejectedEventRegistrations = (clone $eventRegistrationQuery)->where('status', 'rejected')->count();
 
-        $involvementQuery = $this->baseInvolvementQuery();
-
-        $involvements = (clone $involvementQuery)
-            ->latest()
-            ->paginate(10, ['*'], 'involvementPage');
-
-        $totalInvolvements = (clone $involvementQuery)->count();
-
-        $committeeCount = AlumniInvolvement::query()
-            ->when($this->resolvedBatchId(), function ($query, $batchId) {
-                $query->whereHas('alumni', fn ($q) => $q->where('batch_id', $batchId));
-            })
-            ->where('wants_committee_member', true)
-            ->count();
-
-        $priestCount = AlumniInvolvement::query()
-            ->when($this->resolvedBatchId(), function ($query, $batchId) {
-                $query->whereHas('alumni', fn ($q) => $q->where('batch_id', $batchId));
-            })
-            ->where('is_priest_concelebrate', true)
-            ->count();
-
-        $medicalCount = AlumniInvolvement::query()
-            ->when($this->resolvedBatchId(), function ($query, $batchId) {
-                $query->whereHas('alumni', fn ($q) => $q->where('batch_id', $batchId));
-            })
-            ->where('is_medical_practitioner', true)
-            ->count();
-
         return view('livewire.reports', [
             'donations' => $donations,
             'totalDonationsAmount' => $totalDonationsAmount,
@@ -575,12 +553,6 @@ class Reports extends Component
             'paidEventRegistrations' => $paidEventRegistrations,
             'pendingEventRegistrations' => $pendingEventRegistrations,
             'rejectedEventRegistrations' => $rejectedEventRegistrations,
-
-            'involvements' => $involvements,
-            'totalInvolvements' => $totalInvolvements,
-            'committeeCount' => $committeeCount,
-            'priestCount' => $priestCount,
-            'medicalCount' => $medicalCount,
 
             'allBatches' => $this->availableBatches(),
             'allEvents' => $this->availableEvents(),

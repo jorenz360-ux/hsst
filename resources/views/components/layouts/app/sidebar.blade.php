@@ -14,7 +14,7 @@
             }
         }
     </style>
-
+{{-- bg-[#f7f5f1] --}}
     <body class="min-h-screen bg-[#f7f5f1]">
         <flux:sidebar
             sticky

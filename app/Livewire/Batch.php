@@ -2,10 +2,11 @@
 
 namespace App\Livewire;
 
+use App\Models\Alumni;
+use App\Models\AlumniEducation;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Alumni;
 
 class Batch extends Component
 {
@@ -23,37 +24,62 @@ class Batch extends Component
 
     public function render()
     {
-        $user = Auth::user();
+        $user = Auth::user()?->loadMissing([
+            'alumni.educations.batch',
+        ]);
 
         if (! $user || ! $user->alumni) {
             abort(403);
         }
 
-        // Optional: only allow batch reps
-        if (! $user->alumni->is_batch_rep) {
+        $representativeEducation = $user->alumni->educations()
+            ->with('batch')
+            ->where('is_batch_rep', true)
+            ->first();
+
+        if (! $representativeEducation) {
             abort(403);
         }
 
-        $batchId = $user->alumni->batch_id;
-        $this->batch = $user->alumni->batch;
+        $batchId = (int) $representativeEducation->batch_id;
+        $this->batch = $representativeEducation->batch;
 
-        $members = Alumni::with('user')
+        $members = AlumniEducation::query()
+            ->with([
+                'batch:id,level,yeargrad,schoolyear',
+                'alumni.user:id,alumni_id,username,email',
+            ])
             ->where('batch_id', $batchId)
-            ->where(function ($query) {
-                $query->where('fname', 'like', '%' . $this->search . '%')
-                    ->orWhere('mname', 'like', '%' . $this->search . '%')
-                    ->orWhere('lname', 'like', '%' . $this->search . '%')
-                    ->orWhereHas('user', function ($q) {
-                        $q->where('email', 'like', '%' . $this->search . '%');
-                    });
+            ->whereHas('alumni', function ($query) {
+                $query->where(function ($q) {
+                    $q->where('fname', 'like', '%' . $this->search . '%')
+                        ->orWhere('mname', 'like', '%' . $this->search . '%')
+                        ->orWhere('lname', 'like', '%' . $this->search . '%')
+                        ->orWhereRaw("CONCAT(fname, ' ', lname) LIKE ?", ['%' . $this->search . '%'])
+                        ->orWhereRaw("CONCAT(lname, ', ', fname) LIKE ?", ['%' . $this->search . '%'])
+                        ->orWhereHas('user', function ($userQuery) {
+                            $userQuery->where('email', 'like', '%' . $this->search . '%')
+                                ->orWhere('username', 'like', '%' . $this->search . '%');
+                        });
+                });
             })
-            ->orderBy('lname')
-            ->orderBy('fname')
+            ->orderByDesc('is_batch_rep')
+            ->orderBy(
+                Alumni::select('lname')
+                    ->whereColumn('alumni.id', 'alumni_educations.alumni_id')
+                    ->limit(1)
+            )
+            ->orderBy(
+                Alumni::select('fname')
+                    ->whereColumn('alumni.id', 'alumni_educations.alumni_id')
+                    ->limit(1)
+            )
             ->paginate(10);
 
         return view('livewire.batch', [
             'members' => $members,
             'batch' => $this->batch,
+            'representativeEducation' => $representativeEducation,
         ]);
     }
 }

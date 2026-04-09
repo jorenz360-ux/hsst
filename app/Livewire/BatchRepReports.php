@@ -3,9 +3,12 @@
 namespace App\Livewire;
 
 use App\Models\Alumni;
+use App\Models\AlumniEducation;
 use App\Models\Event;
 use App\Models\EventRegistration;
 use App\Models\EventRsvp;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
@@ -22,6 +25,8 @@ class BatchRepReports extends Component
     public string $rsvpStatusFilter = 'all';
     public string $paymentStatusFilter = 'all';
     public string $search = '';
+
+    protected $paginationTheme = 'tailwind';
 
     protected $queryString = [
         'selectedEvent' => ['except' => 'all'],
@@ -73,17 +78,19 @@ class BatchRepReports extends Component
             return;
         }
 
-        $batchId = $this->batchId();
+        $batchId = $this->representativeBatchId();
 
-        abort_unless($batchId, 403, 'You are not assigned to any batch.');
+        abort_unless($batchId, 403, 'You are not assigned to any batch representative role.');
 
         $alumni = Alumni::query()
             ->where('id', $alumniId)
-            ->where('batch_id', $batchId)
+            ->whereHas('educations', function ($query) use ($batchId) {
+                $query->where('batch_id', $batchId);
+            })
             ->first();
 
         if (! $alumni) {
-            session()->flash('error', 'Alumni record not found in your batch.');
+            session()->flash('error', 'Alumni record not found in your assigned batch.');
             return;
         }
 
@@ -107,15 +114,13 @@ class BatchRepReports extends Component
             abort(422, 'Please select an event first.');
         }
 
-        $batchId = $this->batchId();
-
-        abort_unless($batchId, 403, 'You are not assigned to any batch.');
+        $batchId = $this->representativeBatchId();
+        abort_unless($batchId, 403, 'You are not assigned to any batch representative role.');
 
         $selectedEvent = $this->selectedEventModel();
-
         abort_unless($selectedEvent, 404, 'Selected event not found.');
 
-        $participants = $this->exportQuery($selectedEvent->id, $batchId)->get();
+        $participants = $this->participantsQuery($selectedEvent->id, $batchId)->get();
 
         $filename = 'batch-participants-event-' . $selectedEvent->id . '-' . now()->format('Y-m-d-His') . '.csv';
 
@@ -124,6 +129,9 @@ class BatchRepReports extends Component
 
             fputcsv($handle, [
                 'Alumni Name',
+                'Level',
+                'Batch',
+                'School Year',
                 'RSVP Status',
                 'Event Fee',
                 'Payment Status',
@@ -137,14 +145,14 @@ class BatchRepReports extends Component
                     $participant->lname,
                 ])->filter()->implode(' '));
 
-                $rsvpStatus = match($participant->rsvp_status ?? 'no_response') {
+                $rsvpStatus = match ($participant->rsvp_status ?? 'no_response') {
                     'attending' => 'Attending',
                     'maybe' => 'Maybe',
                     'not_attending' => 'Not Attending',
                     default => 'No Response Yet',
                 };
 
-                $paymentStatus = match($participant->payment_status ?? 'unpaid') {
+                $paymentStatus = match ($participant->payment_status ?? 'unpaid') {
                     'paid' => 'Paid',
                     'waived' => 'Waived',
                     default => 'Unpaid',
@@ -160,6 +168,9 @@ class BatchRepReports extends Component
 
                 fputcsv($handle, [
                     $fullName ?: '—',
+                    $participant->level ? str($participant->level)->headline()->toString() : '—',
+                    $participant->yeargrad ?? '—',
+                    $participant->schoolyear ?? '—',
                     $rsvpStatus,
                     $eventFee,
                     $paymentStatus,
@@ -178,11 +189,19 @@ class BatchRepReports extends Component
         return Auth::user();
     }
 
-    protected function batchId(): ?int
+    protected function representativeEducation(): ?AlumniEducation
     {
-        $batchId = $this->user()?->alumni?->batch_id;
+        return $this->user()?->alumni?->educations()
+            ->with('batch')
+            ->where('is_batch_rep', true)
+            ->first();
+    }
 
-        return $batchId ? (int) $batchId : null;
+    protected function representativeBatchId(): ?int
+    {
+        return $this->representativeEducation()?->batch_id
+            ? (int) $this->representativeEducation()->batch_id
+            : null;
     }
 
     protected function selectedEventModel(): ?Event
@@ -205,7 +224,7 @@ class BatchRepReports extends Component
             ->get(['id', 'title', 'event_date', 'venue', 'registration_fee']);
     }
 
-    protected function exportQuery(int $eventId, int $batchId)
+    protected function participantsQuery(int $eventId, int $batchId)
     {
         $query = Alumni::query()
             ->select([
@@ -213,8 +232,16 @@ class BatchRepReports extends Component
                 'alumni.fname',
                 'alumni.lname',
                 'alumni.mname',
-                'alumni.batch_id',
+                'alumni_educations.batch_id',
+                'batches.level',
+                'batches.yeargrad',
+                'batches.schoolyear',
             ])
+            ->join('alumni_educations', function ($join) use ($batchId) {
+                $join->on('alumni_educations.alumni_id', '=', 'alumni.id')
+                    ->where('alumni_educations.batch_id', '=', $batchId);
+            })
+            ->join('batches', 'batches.id', '=', 'alumni_educations.batch_id')
             ->leftJoin('event_rsvps', function ($join) use ($eventId) {
                 $join->on('event_rsvps.alumni_id', '=', 'alumni.id')
                     ->where('event_rsvps.event_id', '=', $eventId);
@@ -223,7 +250,6 @@ class BatchRepReports extends Component
                 $join->on('event_registrations.alumni_id', '=', 'alumni.id')
                     ->where('event_registrations.event_id', '=', $eventId);
             })
-            ->where('alumni.batch_id', $batchId)
             ->addSelect([
                 'event_rsvps.id as rsvp_id',
                 'event_rsvps.status as rsvp_status',
@@ -244,10 +270,17 @@ class BatchRepReports extends Component
         }
 
         if ($this->paymentStatusFilter !== 'all') {
-            $query->where('event_registrations.status', $this->paymentStatusFilter);
+            if ($this->paymentStatusFilter === 'unpaid') {
+                $query->where(function ($q) {
+                    $q->whereNull('event_registrations.id')
+                        ->orWhere('event_registrations.status', 'unpaid');
+                });
+            } else {
+                $query->where('event_registrations.status', $this->paymentStatusFilter);
+            }
         }
 
-        if ($this->search !== '') {
+        if (trim($this->search) !== '') {
             $search = trim($this->search);
 
             $query->where(function ($q) use ($search) {
@@ -260,95 +293,109 @@ class BatchRepReports extends Component
         return $query;
     }
 
+    protected function emptyPaginator(): LengthAwarePaginator
+    {
+        return new Paginator(
+            items: collect(),
+            total: 0,
+            perPage: 10,
+            currentPage: $this->getPage(),
+            options: [
+                'path' => request()->url(),
+                'query' => request()->query(),
+            ]
+        );
+    }
+
+    protected function rsvpCounts(int $eventId, int $batchId): array
+    {
+        $baseQuery = Alumni::query()
+            ->join('alumni_educations', function ($join) use ($batchId) {
+                $join->on('alumni_educations.alumni_id', '=', 'alumni.id')
+                    ->where('alumni_educations.batch_id', '=', $batchId);
+            })
+            ->leftJoin('event_rsvps', function ($join) use ($eventId) {
+                $join->on('event_rsvps.alumni_id', '=', 'alumni.id')
+                    ->where('event_rsvps.event_id', '=', $eventId);
+            });
+
+        return [
+            'attendingParticipantsCount' => (clone $baseQuery)
+                ->where('event_rsvps.status', EventRsvp::STATUS_ATTENDING)
+                ->count(),
+
+            'maybeParticipantsCount' => (clone $baseQuery)
+                ->where('event_rsvps.status', EventRsvp::STATUS_MAYBE)
+                ->count(),
+
+            'notAttendingParticipantsCount' => (clone $baseQuery)
+                ->where('event_rsvps.status', EventRsvp::STATUS_NOT_ATTENDING)
+                ->count(),
+
+            'noResponseCount' => (clone $baseQuery)
+                ->whereNull('event_rsvps.id')
+                ->count(),
+        ];
+    }
+
+    protected function paymentCounts(int $eventId, int $batchId): array
+    {
+        $baseQuery = EventRegistration::query()
+            ->where('event_id', $eventId)
+            ->whereHas('alumni.educations', fn ($query) => $query->where('batch_id', $batchId));
+
+        return [
+            'paidParticipantsCount' => (clone $baseQuery)->where('status', 'paid')->count(),
+            'unpaidParticipantsCount' => (clone $baseQuery)->where('status', 'unpaid')->count(),
+            'waivedParticipantsCount' => (clone $baseQuery)->where('status', 'waived')->count(),
+        ];
+    }
+
     public function render()
     {
-        $batchId = $this->batchId();
+        $representativeEducation = $this->representativeEducation();
+        $batchId = $this->representativeBatchId();
 
-        abort_unless($batchId, 403, 'You are not assigned to any batch.');
+        abort_unless($batchId, 403, 'You are not assigned to any batch representative role.');
 
         $selectedEvent = $this->selectedEventModel();
         $allEvents = $this->availableEvents();
 
-        $participants = collect();
+        $participants = $this->emptyPaginator();
 
-        $attendingParticipantsCount = 0;
-        $maybeParticipantsCount = 0;
-        $notAttendingParticipantsCount = 0;
-        $paidParticipantsCount = 0;
-        $unpaidParticipantsCount = 0;
-        $waivedParticipantsCount = 0;
-        $noResponseCount = 0;
+        $stats = [
+            'attendingParticipantsCount' => 0,
+            'maybeParticipantsCount' => 0,
+            'notAttendingParticipantsCount' => 0,
+            'paidParticipantsCount' => 0,
+            'unpaidParticipantsCount' => 0,
+            'waivedParticipantsCount' => 0,
+            'noResponseCount' => 0,
+        ];
 
         if ($selectedEvent) {
-            $participants = $this->exportQuery($selectedEvent->id, $batchId)->paginate(10);
+            $participants = $this->participantsQuery($selectedEvent->id, $batchId)->paginate(10);
 
-            $attendingParticipantsCount = Alumni::query()
-                ->leftJoin('event_rsvps', function ($join) use ($selectedEvent) {
-                    $join->on('event_rsvps.alumni_id', '=', 'alumni.id')
-                        ->where('event_rsvps.event_id', '=', $selectedEvent->id);
-                })
-                ->where('alumni.batch_id', $batchId)
-                ->where('event_rsvps.status', EventRsvp::STATUS_ATTENDING)
-                ->count();
-
-            $maybeParticipantsCount = Alumni::query()
-                ->leftJoin('event_rsvps', function ($join) use ($selectedEvent) {
-                    $join->on('event_rsvps.alumni_id', '=', 'alumni.id')
-                        ->where('event_rsvps.event_id', '=', $selectedEvent->id);
-                })
-                ->where('alumni.batch_id', $batchId)
-                ->where('event_rsvps.status', EventRsvp::STATUS_MAYBE)
-                ->count();
-
-            $notAttendingParticipantsCount = Alumni::query()
-                ->leftJoin('event_rsvps', function ($join) use ($selectedEvent) {
-                    $join->on('event_rsvps.alumni_id', '=', 'alumni.id')
-                        ->where('event_rsvps.event_id', '=', $selectedEvent->id);
-                })
-                ->where('alumni.batch_id', $batchId)
-                ->where('event_rsvps.status', EventRsvp::STATUS_NOT_ATTENDING)
-                ->count();
-
-            $noResponseCount = Alumni::query()
-                ->leftJoin('event_rsvps', function ($join) use ($selectedEvent) {
-                    $join->on('event_rsvps.alumni_id', '=', 'alumni.id')
-                        ->where('event_rsvps.event_id', '=', $selectedEvent->id);
-                })
-                ->where('alumni.batch_id', $batchId)
-                ->whereNull('event_rsvps.id')
-                ->count();
-
-            $paidParticipantsCount = EventRegistration::query()
-                ->where('event_id', $selectedEvent->id)
-                ->where('status', 'paid')
-                ->whereHas('alumni', fn ($query) => $query->where('batch_id', $batchId))
-                ->count();
-
-            $unpaidParticipantsCount = EventRegistration::query()
-                ->where('event_id', $selectedEvent->id)
-                ->where('status', 'unpaid')
-                ->whereHas('alumni', fn ($query) => $query->where('batch_id', $batchId))
-                ->count();
-
-            $waivedParticipantsCount = EventRegistration::query()
-                ->where('event_id', $selectedEvent->id)
-                ->where('status', 'waived')
-                ->whereHas('alumni', fn ($query) => $query->where('batch_id', $batchId))
-                ->count();
+            $stats = array_merge(
+                $stats,
+                $this->rsvpCounts($selectedEvent->id, $batchId),
+                $this->paymentCounts($selectedEvent->id, $batchId),
+            );
         }
 
         return view('livewire.batch-rep-reports', [
             'allEvents' => $allEvents,
             'selectedEventModel' => $selectedEvent,
             'participants' => $participants,
+            'currentBatch' => $representativeEducation?->batch,
 
-            'attendingParticipantsCount' => $attendingParticipantsCount,
-            'maybeParticipantsCount' => $maybeParticipantsCount,
-            'notAttendingParticipantsCount' => $notAttendingParticipantsCount,
-            'paidParticipantsCount' => $paidParticipantsCount,
-            'unpaidParticipantsCount' => $unpaidParticipantsCount,
-            'waivedParticipantsCount' => $waivedParticipantsCount,
-            'noResponseCount' => $noResponseCount,
+            'attendingParticipantsCount' => $stats['attendingParticipantsCount'],
+            'maybeParticipantsCount' => $stats['maybeParticipantsCount'],
+            'notAttendingParticipantsCount' => $stats['notAttendingParticipantsCount'],
+            'paidParticipantsCount' => $stats['paidParticipantsCount'],
+            'unpaidParticipantsCount' => $stats['unpaidParticipantsCount'],
+            'waivedParticipantsCount' => $stats['waivedParticipantsCount'],
+            'noResponseCount' => $stats['noResponseCount'],
         ]);
     }
 }
