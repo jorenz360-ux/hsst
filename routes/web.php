@@ -24,7 +24,13 @@ use App\Livewire\BatchRepReports;
 use App\Livewire\EventParticipationPage;
 use App\Livewire\CommitteReport;
 use App\Livewire\AttendanceReport;
+use App\Livewire\Admin\PasswordResetRequests;
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/password-reset-requests', PasswordResetRequests::class)   
+        ->middleware(['auth', 'role:reunion-coordinator'])
+        ->name('admin.password-reset-requests');
+});
 Route::get('/attendace-reports', AttendanceReport::class)
     ->middleware(['auth', 'role:reunion-coordinator'])
     ->name('reports.attendance');

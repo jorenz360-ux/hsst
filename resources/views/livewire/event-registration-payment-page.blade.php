@@ -1,26 +1,27 @@
-<div class="min-h-screen bg-[#0b1120]">
+<div class="min-h-screen bg-[#f7f5f1]">
     <div class="mx-auto max-w-7xl space-y-4 px-3 py-4 sm:space-y-6 sm:px-6 sm:py-6 lg:px-8">
 
         {{-- Header --}}
-        <section class="overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#1e3a8a]/20 shadow-[0_20px_60px_rgba(0,0,0,0.45)] sm:rounded-3xl">
+        <section class="overflow-hidden border border-[#e8e2d6] bg-white">
+            <div class="h-1.5 w-full bg-gradient-to-r from-[#d4b06a] via-[#b88a3d] to-[#c9a458]"></div>
             <div class="flex flex-col gap-4 px-4 py-5 sm:px-6 sm:py-6 lg:flex-row lg:items-end lg:justify-between">
                 <div class="max-w-3xl">
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-400 sm:text-xs sm:tracking-[0.24em]">
+                    <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#b88a3d] sm:text-xs sm:tracking-[0.24em]">
                         Event Details
                     </p>
 
-                    <h1 class="mt-2 text-xl font-bold tracking-tight text-white sm:text-3xl">
+                    <h1 class="mt-2 font-serif text-xl font-bold tracking-tight text-[#091852] sm:text-3xl">
                         {{ $event->title }}
                     </h1>
 
-                    <p class="mt-3 text-sm leading-6 text-slate-400 sm:text-[15px]">
+                    <p class="mt-3 text-sm leading-6 text-[#7a7060] sm:text-[15px]">
                         Review the event details and let the organizers know whether you will attend.
                     </p>
                 </div>
 
                 <a href="{{ route('dashboard') }}"
                    wire:navigate
-                   class="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/10">
+                   class="inline-flex items-center justify-center border border-[#e8e2d6] bg-white px-4 py-2.5 text-sm font-medium text-[#1a1410] transition hover:bg-[#faf9f7] hover:border-[#d0c8bc]">
                     Back to Dashboard
                 </a>
             </div>
@@ -28,13 +29,13 @@
 
         {{-- Alerts --}}
         @if (session('success'))
-            <div class="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-4 text-sm text-emerald-300 sm:px-5">
+            <div class="border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-700 sm:px-5">
                 {{ session('success') }}
             </div>
         @endif
 
         @if (session('error'))
-            <div class="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-4 text-sm text-rose-300 sm:px-5">
+            <div class="border border-rose-200 bg-rose-50 px-4 py-4 text-sm text-rose-700 sm:px-5">
                 {{ session('error') }}
             </div>
         @endif
@@ -43,17 +44,17 @@
             $currentStatus = $this->rsvpStatus ?? null;
 
             $statusBadgeClasses = match($currentStatus) {
-                'attending' => 'border-emerald-400/20 bg-emerald-500/10 text-emerald-300',
-                'maybe' => 'border-amber-400/20 bg-amber-500/10 text-amber-300',
-                'not_attending' => 'border-rose-400/20 bg-rose-500/10 text-rose-300',
-                default => 'border-slate-400/20 bg-slate-500/10 text-slate-300',
+                'attending'     => 'border-emerald-300 bg-emerald-50 text-emerald-700',
+                'maybe'         => 'border-amber-300 bg-amber-50 text-amber-700',
+                'not_attending' => 'border-rose-300 bg-rose-50 text-rose-700',
+                default         => 'border-[#d0c8bc] bg-[#f0ebe1] text-[#7a7060]',
             };
 
             $statusLabel = match($currentStatus) {
-                'attending' => 'Attending',
-                'maybe' => 'Maybe Attending',
+                'attending'     => 'Attending',
+                'maybe'         => 'Maybe Attending',
                 'not_attending' => 'Not Attending',
-                default => 'No Response Yet',
+                default         => 'No Response Yet',
             };
 
             $isPastEvent = optional($event->event_date)?->isPast() ?? false;
@@ -65,17 +66,17 @@
             <div class="space-y-4 sm:space-y-6">
 
                 {{-- RSVP SECTION --}}
-                <section class="rounded-2xl border border-white/10 bg-[#020617] shadow-[0_16px_40px_rgba(0,0,0,0.4)] sm:rounded-3xl">
-                    <div class="border-b border-white/10 px-4 py-4 sm:px-5">
+                <section class="border border-[#e8e2d6] bg-white">
+                    <div class="border-b border-[#e8e2d6] px-4 py-4 sm:px-5">
                         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <h2 class="text-base font-semibold text-white sm:text-lg">Attendance Confirmation</h2>
-                                <p class="mt-1 text-sm text-slate-400">
+                                <h2 class="text-base font-semibold text-[#1a1410] sm:text-lg">Attendance Confirmation</h2>
+                                <p class="mt-1 text-sm text-[#7a7060]">
                                     Confirm whether you will participate in this event.
                                 </p>
                             </div>
 
-                            <span class="inline-flex w-fit rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide {{ $statusBadgeClasses }}">
+                            <span class="inline-flex w-fit border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide {{ $statusBadgeClasses }}">
                                 {{ $statusLabel }}
                             </span>
                         </div>
@@ -83,7 +84,7 @@
 
                     <div class="p-4 sm:p-5">
                         @if ($isPastEvent)
-                            <div class="rounded-xl border border-slate-500/20 bg-slate-500/10 px-4 py-4 text-sm text-slate-300 sm:rounded-2xl">
+                            <div class="border border-[#e8e2d6] bg-[#f7f5f1] px-4 py-4 text-sm text-[#7a7060]">
                                 This event has already ended. RSVP is now closed.
                             </div>
                         @else
@@ -91,40 +92,40 @@
                                 <button
                                     type="button"
                                     wire:click="setRsvp('attending')"
-                                    class="inline-flex items-center justify-center rounded-xl border px-4 py-3 text-sm font-semibold transition sm:rounded-2xl
+                                    class="inline-flex items-center justify-center border px-4 py-3 text-sm font-semibold transition
                                         {{ $currentStatus === 'attending'
-                                            ? 'border-emerald-400/30 bg-emerald-500/15 text-emerald-300'
-                                            : 'border-white/10 bg-white/5 text-white hover:bg-white/10' }}">
+                                            ? 'border-emerald-400 bg-emerald-50 text-emerald-700'
+                                            : 'border-[#e8e2d6] bg-white text-[#1a1410] hover:bg-[#faf9f7]' }}">
                                     Attend
                                 </button>
 
                                 <button
                                     type="button"
                                     wire:click="setRsvp('maybe')"
-                                    class="inline-flex items-center justify-center rounded-xl border px-4 py-3 text-sm font-semibold transition sm:rounded-2xl
+                                    class="inline-flex items-center justify-center border px-4 py-3 text-sm font-semibold transition
                                         {{ $currentStatus === 'maybe'
-                                            ? 'border-amber-400/30 bg-amber-500/15 text-amber-300'
-                                            : 'border-white/10 bg-white/5 text-white hover:bg-white/10' }}">
+                                            ? 'border-amber-400 bg-amber-50 text-amber-700'
+                                            : 'border-[#e8e2d6] bg-white text-[#1a1410] hover:bg-[#faf9f7]' }}">
                                     Maybe
                                 </button>
 
                                 <button
                                     type="button"
                                     wire:click="setRsvp('not_attending')"
-                                    class="inline-flex items-center justify-center rounded-xl border px-4 py-3 text-sm font-semibold transition sm:rounded-2xl
+                                    class="inline-flex items-center justify-center border px-4 py-3 text-sm font-semibold transition
                                         {{ $currentStatus === 'not_attending'
-                                            ? 'border-rose-400/30 bg-rose-500/15 text-rose-300'
-                                            : 'border-white/10 bg-white/5 text-white hover:bg-white/10' }}">
+                                            ? 'border-rose-400 bg-rose-50 text-rose-700'
+                                            : 'border-[#e8e2d6] bg-white text-[#1a1410] hover:bg-[#faf9f7]' }}">
                                     Not Attending
                                 </button>
                             </div>
 
-                            <div class="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 sm:rounded-2xl">
-                                <p class="text-[11px] uppercase tracking-wide text-slate-500">Your Current Response</p>
-                                <p class="mt-2 text-sm font-medium text-white">
+                            <div class="mt-4 border border-[#e8e2d6] bg-[#faf9f7] p-4">
+                                <p class="text-[11px] uppercase tracking-wide text-[#9a9080]">Your Current Response</p>
+                                <p class="mt-2 text-sm font-medium text-[#1a1410]">
                                     {{ $statusLabel }}
                                 </p>
-                                <p class="mt-2 text-sm text-slate-400">
+                                <p class="mt-2 text-sm text-[#7a7060]">
                                     You can still update your response anytime before the event schedule closes.
                                 </p>
                             </div>
@@ -133,39 +134,39 @@
                 </section>
 
                 {{-- Event Summary --}}
-                <section class="rounded-2xl border border-white/10 bg-[#020617] shadow-[0_16px_40px_rgba(0,0,0,0.4)] sm:rounded-3xl">
-                    <div class="border-b border-white/10 px-4 py-4 sm:px-5">
-                        <h2 class="text-base font-semibold text-white sm:text-lg">Event Summary</h2>
-                        <p class="mt-1 text-sm text-slate-400">
+                <section class="border border-[#e8e2d6] bg-white">
+                    <div class="border-b border-[#e8e2d6] px-4 py-4 sm:px-5">
+                        <h2 class="text-base font-semibold text-[#1a1410] sm:text-lg">Event Summary</h2>
+                        <p class="mt-1 text-sm text-[#7a7060]">
                             Important details about this reunion activity.
                         </p>
                     </div>
 
                     <div class="grid gap-3 p-4 sm:grid-cols-2 sm:gap-4 sm:p-5">
-                        <div class="rounded-xl border border-white/10 bg-white/5 p-4 sm:rounded-2xl">
-                            <p class="text-[11px] uppercase tracking-wide text-slate-500">Venue</p>
-                            <p class="mt-2 text-sm font-medium text-white">
+                        <div class="border border-[#e8e2d6] bg-[#faf9f7] p-4">
+                            <p class="text-[11px] uppercase tracking-wide text-[#9a9080]">Venue</p>
+                            <p class="mt-2 text-sm font-medium text-[#1a1410]">
                                 {{ $event->venue ?: 'No venue set' }}
                             </p>
                         </div>
 
-                        <div class="rounded-xl border border-white/10 bg-white/5 p-4 sm:rounded-2xl">
-                            <p class="text-[11px] uppercase tracking-wide text-slate-500">Event Date</p>
-                            <p class="mt-2 text-sm font-medium text-white">
+                        <div class="border border-[#e8e2d6] bg-[#faf9f7] p-4">
+                            <p class="text-[11px] uppercase tracking-wide text-[#9a9080]">Event Date</p>
+                            <p class="mt-2 text-sm font-medium text-[#1a1410]">
                                 {{ optional($event->event_date)->format('M d, Y • h:i A') ?: 'Date not set' }}
                             </p>
                         </div>
 
-                        <div class="rounded-xl border border-white/10 bg-white/5 p-4 sm:rounded-2xl">
-                            <p class="text-[11px] uppercase tracking-wide text-slate-500">Dress Code</p>
-                            <p class="mt-2 text-sm font-medium text-white">
+                        <div class="border border-[#e8e2d6] bg-[#faf9f7] p-4">
+                            <p class="text-[11px] uppercase tracking-wide text-[#9a9080]">Dress Code</p>
+                            <p class="mt-2 text-sm font-medium text-[#1a1410]">
                                 {{ $event->dress_code ?: 'No dress code specified' }}
                             </p>
                         </div>
 
-                        <div class="rounded-xl border border-white/10 bg-white/5 p-4 sm:rounded-2xl">
-                            <p class="text-[11px] uppercase tracking-wide text-slate-500">Registration Fee</p>
-                            <p class="mt-2 text-sm font-medium text-white">
+                        <div class="border border-[#e8e2d6] bg-[#faf9f7] p-4">
+                            <p class="text-[11px] uppercase tracking-wide text-[#9a9080]">Registration Fee</p>
+                            <p class="mt-2 text-sm font-medium text-[#1a1410]">
                                 @if(($event->registration_fee ?? 0) > 0)
                                     ₱{{ number_format(($event->registration_fee ?? 0) / 100, 2) }}
                                 @else
@@ -176,9 +177,9 @@
                     </div>
 
                     @if ($event->description)
-                        <div class="border-t border-white/10 px-4 py-4 sm:px-5">
-                            <p class="text-[11px] uppercase tracking-wide text-slate-500">Description</p>
-                            <div class="mt-2 text-sm leading-7 text-slate-300">
+                        <div class="border-t border-[#e8e2d6] px-4 py-4 sm:px-5">
+                            <p class="text-[11px] uppercase tracking-wide text-[#9a9080]">Description</p>
+                            <div class="mt-2 text-sm leading-7 text-[#4a4235]">
                                 {!! nl2br(e($event->description)) !!}
                             </div>
                         </div>
@@ -187,32 +188,32 @@
 
                 {{-- Program Schedule --}}
                 @if ($event->schedules->isNotEmpty())
-                    <section class="rounded-2xl border border-white/10 bg-[#020617] shadow-[0_16px_40px_rgba(0,0,0,0.4)] sm:rounded-3xl">
-                        <div class="border-b border-white/10 px-4 py-4 sm:px-5">
-                            <h2 class="text-base font-semibold text-white sm:text-lg">Program Schedule</h2>
-                            <p class="mt-1 text-sm text-slate-400">
+                    <section class="border border-[#e8e2d6] bg-white">
+                        <div class="border-b border-[#e8e2d6] px-4 py-4 sm:px-5">
+                            <h2 class="text-base font-semibold text-[#1a1410] sm:text-lg">Program Schedule</h2>
+                            <p class="mt-1 text-sm text-[#7a7060]">
                                 Event activities and timeline.
                             </p>
                         </div>
 
                         <div class="space-y-3 p-4 sm:p-5">
                             @foreach ($event->schedules as $schedule)
-                                <div class="rounded-xl border border-white/10 bg-white/5 p-4 sm:rounded-2xl">
+                                <div class="border border-[#e8e2d6] bg-[#faf9f7] p-4">
                                     <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                                         <div class="min-w-0">
-                                            <p class="text-sm font-semibold text-white">
+                                            <p class="text-sm font-semibold text-[#1a1410]">
                                                 {{ $schedule->title }}
                                             </p>
 
                                             @if ($schedule->description)
-                                                <p class="mt-1 text-sm text-slate-400">
+                                                <p class="mt-1 text-sm text-[#7a7060]">
                                                     {{ $schedule->description }}
                                                 </p>
                                             @endif
                                         </div>
 
                                         @if ($schedule->schedule_time)
-                                            <span class="inline-flex w-fit rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
+                                            <span class="inline-flex w-fit border border-[#e8e2d6] bg-white px-3 py-1 text-xs text-[#7a7060]">
                                                 {{ \Illuminate\Support\Carbon::parse($schedule->schedule_time)->format('h:i A') }}
                                             </span>
                                         @endif
@@ -228,34 +229,34 @@
             <div class="space-y-4 sm:space-y-6">
 
                 {{-- Attendance Status --}}
-                <section class="rounded-2xl border border-white/10 bg-[#020617] shadow-[0_16px_40px_rgba(0,0,0,0.4)] sm:rounded-3xl">
-                    <div class="border-b border-white/10 px-4 py-4 sm:px-5">
-                        <h2 class="text-base font-semibold text-white sm:text-lg">My Attendance Status</h2>
+                <section class="border border-[#e8e2d6] bg-white">
+                    <div class="border-b border-[#e8e2d6] px-4 py-4 sm:px-5">
+                        <h2 class="text-base font-semibold text-[#1a1410] sm:text-lg">My Attendance Status</h2>
                     </div>
 
                     <div class="grid gap-3 p-4 sm:p-5">
-                        <div class="rounded-xl border border-white/10 bg-white/5 p-4 sm:rounded-2xl">
-                            <p class="text-[11px] uppercase tracking-wide text-slate-500">Current RSVP</p>
-                            <p class="mt-2 text-sm font-medium text-white">{{ $statusLabel }}</p>
+                        <div class="border border-[#e8e2d6] bg-[#faf9f7] p-4">
+                            <p class="text-[11px] uppercase tracking-wide text-[#9a9080]">Current RSVP</p>
+                            <p class="mt-2 text-sm font-medium text-[#1a1410]">{{ $statusLabel }}</p>
                         </div>
 
-                        <div class="rounded-xl border border-white/10 bg-white/5 p-4 sm:rounded-2xl">
-                            <p class="text-[11px] uppercase tracking-wide text-slate-500">Event Date</p>
-                            <p class="mt-2 text-sm font-medium text-white">
+                        <div class="border border-[#e8e2d6] bg-[#faf9f7] p-4">
+                            <p class="text-[11px] uppercase tracking-wide text-[#9a9080]">Event Date</p>
+                            <p class="mt-2 text-sm font-medium text-[#1a1410]">
                                 {{ optional($event->event_date)->format('M d, Y • h:i A') ?: 'Date not set' }}
                             </p>
                         </div>
 
-                        <div class="rounded-xl border border-white/10 bg-white/5 p-4 sm:rounded-2xl">
-                            <p class="text-[11px] uppercase tracking-wide text-slate-500">Venue</p>
-                            <p class="mt-2 text-sm font-medium text-white">
+                        <div class="border border-[#e8e2d6] bg-[#faf9f7] p-4">
+                            <p class="text-[11px] uppercase tracking-wide text-[#9a9080]">Venue</p>
+                            <p class="mt-2 text-sm font-medium text-[#1a1410]">
                                 {{ $event->venue ?: 'Venue TBA' }}
                             </p>
                         </div>
 
-                        <div class="rounded-xl border border-white/10 bg-white/5 p-4 sm:rounded-2xl">
-                            <p class="text-[11px] uppercase tracking-wide text-slate-500">Fee</p>
-                            <p class="mt-2 text-lg font-semibold text-white">
+                        <div class="border border-[#e8e2d6] bg-[#faf9f7] p-4">
+                            <p class="text-[11px] uppercase tracking-wide text-[#9a9080]">Fee</p>
+                            <p class="mt-2 text-lg font-semibold text-[#1a1410]">
                                 @if(($event->registration_fee ?? 0) > 0)
                                     ₱{{ number_format(($event->registration_fee ?? 0) / 100, 2) }}
                                 @else
@@ -267,37 +268,37 @@
                 </section>
 
                 {{-- Event Attendance Overview --}}
-                <section class="rounded-2xl border border-white/10 bg-gradient-to-br from-[#1E3A8A]/20 to-sky-500/10 p-5 shadow-[0_16px_40px_rgba(0,0,0,0.35)] sm:rounded-3xl sm:p-6">
-                    <h2 class="text-base font-semibold text-white sm:text-lg">Attendance Overview</h2>
-                    <p class="mt-2 text-sm leading-6 text-slate-300">
+                <section class="border border-[#e8e2d6] bg-white p-5 sm:p-6">
+                    <h2 class="text-base font-semibold text-[#1a1410] sm:text-lg">Attendance Overview</h2>
+                    <p class="mt-2 text-sm leading-6 text-[#7a7060]">
                         A quick look at the current event response summary from alumni.
                     </p>
 
                     <div class="mt-5 grid gap-3">
-                        <div class="rounded-xl border border-white/10 bg-black/30 p-4 text-slate-200 sm:rounded-2xl">
-                            <p class="text-slate-400">Attending</p>
-                            <p class="mt-1 text-lg font-semibold text-white">{{ $attendingCount ?? 0 }}</p>
+                        <div class="border border-[#e8e2d6] bg-[#faf9f7] p-4">
+                            <p class="text-sm text-[#7a7060]">Attending</p>
+                            <p class="mt-1 text-lg font-semibold text-emerald-700">{{ $attendingCount ?? 0 }}</p>
                         </div>
 
-                        <div class="rounded-xl border border-white/10 bg-black/30 p-4 text-slate-200 sm:rounded-2xl">
-                            <p class="text-slate-400">Maybe</p>
-                            <p class="mt-1 text-lg font-semibold text-white">{{ $maybeCount ?? 0 }}</p>
+                        <div class="border border-[#e8e2d6] bg-[#faf9f7] p-4">
+                            <p class="text-sm text-[#7a7060]">Maybe</p>
+                            <p class="mt-1 text-lg font-semibold text-amber-600">{{ $maybeCount ?? 0 }}</p>
                         </div>
 
-                        <div class="rounded-xl border border-white/10 bg-black/30 p-4 text-slate-200 sm:rounded-2xl">
-                            <p class="text-slate-400">Not Attending</p>
-                            <p class="mt-1 text-lg font-semibold text-white">{{ $notAttendingCount ?? 0 }}</p>
+                        <div class="border border-[#e8e2d6] bg-[#faf9f7] p-4">
+                            <p class="text-sm text-[#7a7060]">Not Attending</p>
+                            <p class="mt-1 text-lg font-semibold text-rose-600">{{ $notAttendingCount ?? 0 }}</p>
                         </div>
                     </div>
                 </section>
 
                 {{-- Reminder --}}
-                <section class="rounded-2xl border border-white/10 bg-[#020617] shadow-[0_16px_40px_rgba(0,0,0,0.4)] sm:rounded-3xl">
-                    <div class="border-b border-white/10 px-4 py-4 sm:px-5">
-                        <h2 class="text-base font-semibold text-white sm:text-lg">Reminder</h2>
+                <section class="border border-[#e8e2d6] bg-white">
+                    <div class="border-b border-[#e8e2d6] px-4 py-4 sm:px-5">
+                        <h2 class="text-base font-semibold text-[#1a1410] sm:text-lg">Reminder</h2>
                     </div>
 
-                    <div class="space-y-3 p-4 text-sm leading-6 text-slate-400 sm:p-5">
+                    <div class="space-y-3 p-4 text-sm leading-6 text-[#7a7060] sm:p-5">
                         <p>
                             Please update your RSVP as early as possible so the organizers can prepare seating, food, materials, and logistics properly.
                         </p>

@@ -100,25 +100,26 @@ class AlumniDashboard extends Component
         $this->lastPaidAt = $lastPayment?->created_at?->format('M d, Y h:i A');
     }
 
-    protected function getUpcomingEvents(): LengthAwarePaginator
-    {
-        return Event::query()
-            ->select([
-                'id',
-                'slug',
-                'title',
-                'venue',
-                'event_date',
-                'registration_fee',
-                'dress_code',
-                'description',
-                'is_active',
-            ])
-            ->where('is_active', true)
-            ->whereDate('event_date', '>=', now()->toDateString())
-            ->orderBy('event_date')
-            ->paginate($this->perPage);
-    }
+  protected function getUpcomingEvents(): LengthAwarePaginator
+{
+    return Event::query()
+        ->select([
+            'id',
+            'slug',
+            'title',
+            'venue',
+            'event_date',
+            'registration_fee',
+            'dress_code',
+            'description',
+            'banner_image', 
+            'is_active',
+        ])
+        ->where('is_active', true)
+        ->whereDate('event_date', '>=', now()->toDateString())
+        ->orderBy('event_date')
+        ->paginate($this->perPage);
+}
 
     protected function loadMyEventRegistrations(int $alumniId, array $eventIds, $events): void
     {

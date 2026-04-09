@@ -177,231 +177,287 @@
                              
 
                                 {{-- PANEL 1--}}
-                                <section id="panel-1" class="panel active">
-                                    <div class="mx-auto max-w-3xl rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
-                                        <div class="grid gap-5 md:grid-cols-2">
+                               @php
+    $batchOptions = \App\Models\Batch::query()
+        ->orderByRaw("FIELD(level, 'elementary', 'highschool', 'college')")
+        ->orderByDesc('yeargrad')
+        ->get()
+        ->groupBy('level');
 
-                                            <div>
-                                                <label for="prefix" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    Prefix <span class="font-normal text-slate-400">(optional)</span>
-                                                </label>
-                                                <select
-                                                    id="prefix"
-                                                    name="prefix"
-                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                                                >
-                                                    <option value="">Select prefix</option>
-                                                    <option value="Mr." {{ old('prefix') === 'Mr.' ? 'selected' : '' }}>Mr.</option>
-                                                    <option value="Mrs." {{ old('prefix') === 'Mrs.' ? 'selected' : '' }}>Mrs.</option>
-                                                    <option value="Ms." {{ old('prefix') === 'Ms.' ? 'selected' : '' }}>Ms.</option>
-                                                    <option value="Dr." {{ old('prefix') === 'Dr.' ? 'selected' : '' }}>Dr.</option>
-                                                    <option value="Atty." {{ old('prefix') === 'Atty.' ? 'selected' : '' }}>Atty.</option>
-                                                    <option value="Engr." {{ old('prefix') === 'Engr.' ? 'selected' : '' }}>Engr.</option>
-                                                    <option value="Rev." {{ old('prefix') === 'Rev.' ? 'selected' : '' }}>Rev.</option>
-                                                    <option value="Hon." {{ old('prefix') === 'Hon.' ? 'selected' : '' }}>Hon.</option>
-                                                </select>
-                                            </div>
+    $educationLevels = [
+        'elementary' => 'Elementary',
+        'highschool' => 'High School',
+        'college' => 'College',
+    ];
+@endphp
 
-                                            <div>
-                                                <label for="suffix" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    Suffix <span class="font-normal text-slate-400">(optional)</span>
-                                                </label>
-                                                <select
-                                                    id="suffix"
-                                                    name="suffix"
-                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                                                >
-                                                    <option value="">Select suffix</option>
-                                                    <option value="Jr." {{ old('suffix') === 'Jr.' ? 'selected' : '' }}>Jr.</option>
-                                                    <option value="Sr." {{ old('suffix') === 'Sr.' ? 'selected' : '' }}>Sr.</option>
-                                                    <option value="II" {{ old('suffix') === 'II' ? 'selected' : '' }}>II</option>
-                                                    <option value="III" {{ old('suffix') === 'III' ? 'selected' : '' }}>III</option>
-                                                    <option value="IV" {{ old('suffix') === 'IV' ? 'selected' : '' }}>IV</option>
-                                                </select>
-                                            </div>
+<section id="panel-1" class="panel active">
+    <div class="mx-auto max-w-4xl rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
+        <div class="grid gap-5 md:grid-cols-2">
 
-                                            <div>
-                                                <label for="fname" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    First name
-                                                </label>
+            <div>
+                <label for="prefix" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                    Prefix <span class="font-normal text-slate-400">(optional)</span>
+                </label>
+                <select
+                    id="prefix"
+                    name="prefix"
+                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                >
+                    <option value="">Select prefix</option>
+                    <option value="Mr." {{ old('prefix') === 'Mr.' ? 'selected' : '' }}>Mr.</option>
+                    <option value="Mrs." {{ old('prefix') === 'Mrs.' ? 'selected' : '' }}>Mrs.</option>
+                    <option value="Ms." {{ old('prefix') === 'Ms.' ? 'selected' : '' }}>Ms.</option>
+                    <option value="Dr." {{ old('prefix') === 'Dr.' ? 'selected' : '' }}>Dr.</option>
+                    <option value="Atty." {{ old('prefix') === 'Atty.' ? 'selected' : '' }}>Atty.</option>
+                    <option value="Engr." {{ old('prefix') === 'Engr.' ? 'selected' : '' }}>Engr.</option>
+                    <option value="Rev." {{ old('prefix') === 'Rev.' ? 'selected' : '' }}>Rev.</option>
+                    <option value="Hon." {{ old('prefix') === 'Hon.' ? 'selected' : '' }}>Hon.</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="suffix" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                    Suffix <span class="font-normal text-slate-400">(optional)</span>
+                </label>
+                <select
+                    id="suffix"
+                    name="suffix"
+                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                >
+                    <option value="">Select suffix</option>
+                    <option value="Jr." {{ old('suffix') === 'Jr.' ? 'selected' : '' }}>Jr.</option>
+                    <option value="Sr." {{ old('suffix') === 'Sr.' ? 'selected' : '' }}>Sr.</option>
+                    <option value="II" {{ old('suffix') === 'II' ? 'selected' : '' }}>II</option>
+                    <option value="III" {{ old('suffix') === 'III' ? 'selected' : '' }}>III</option>
+                    <option value="IV" {{ old('suffix') === 'IV' ? 'selected' : '' }}>IV</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="fname" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                    First name
+                </label>
+                <input
+                    type="text"
+                    id="fname"
+                    name="fname"
+                    value="{{ old('fname') }}"
+                    placeholder="First name"
+                    autocomplete="given-name"
+                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                >
+                <p id="err-fname" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                    @error('fname'){{ $message }}@enderror
+                </p>
+            </div>
+
+            <div>
+                <label for="lname" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                    Last name
+                </label>
+                <input
+                    type="text"
+                    id="lname"
+                    name="lname"
+                    value="{{ old('lname') }}"
+                    placeholder="Last name"
+                    autocomplete="family-name"
+                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                >
+                <p id="err-lname" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                    @error('lname'){{ $message }}@enderror
+                </p>
+            </div>
+
+            <div>
+                <label for="mname" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                    Middle name <span class="font-normal text-slate-400">(optional)</span>
+                </label>
+                <input
+                    type="text"
+                    id="mname"
+                    name="mname"
+                    value="{{ old('mname') }}"
+                    placeholder="Middle name"
+                    autocomplete="additional-name"
+                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                >
+            </div>
+
+            <div>
+                <label for="cellphone" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                    Cellphone #
+                </label>
+                <input
+                    type="text"
+                    id="cellphone"
+                    name="cellphone"
+                    value="{{ old('cellphone') }}"
+                    placeholder="e.g. 09171234567"
+                    autocomplete="tel"
+                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                >
+                <p id="err-cellphone" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                    @error('cellphone'){{ $message }}@enderror
+                </p>
+            </div>
+
+            <div class="md:col-span-2">
+                <label for="occupation" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                    Occupation <span class="font-normal text-slate-400">(optional)</span>
+                </label>
+                <input
+                    type="text"
+                    id="occupation"
+                    name="occupation"
+                    value="{{ old('occupation') }}"
+                    placeholder="e.g. Teacher, Engineer, Nurse"
+                    autocomplete="organization-title"
+                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                >
+            </div>
+        </div>
+
+        <div class="mt-8 border-t border-slate-200 pt-6">
+            <div class="mb-4">
+                <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-blue-700">
+                    Alumni Membership
+                </p>
+                <h3 class="mt-2 text-xl font-bold tracking-[-0.02em] text-slate-900">
+                    Select the level(s) you attended
+                </h3>
+                <p class="mt-2 text-sm leading-7 text-slate-500">
+                    You may belong to Elementary, High School, College, or multiple levels.
+                </p>
+            </div>
+
+            <div class="space-y-5">
+                @foreach ($educationLevels as $levelKey => $levelLabel)
+                    @php
+                        $enabled = old("educations.$levelKey.enabled");
+                        $didGraduate = old("educations.$levelKey.did_graduate", '1');
+                        $batchId = old("educations.$levelKey.batch_id");
+                        $schoolYearAttended = old("educations.$levelKey.school_year_attended");
+                        $isBatchRep = old("educations.$levelKey.is_batch_rep");
+                    @endphp
+
+                    <div class="rounded-[20px] border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+                        <div class="flex flex-col gap-4">
+                            <div class="flex items-start justify-between gap-4">
+                                <div>
+                                    <h4 class="text-base font-bold text-slate-900">{{ $levelLabel }}</h4>
+                                    <p class="mt-1 text-sm text-slate-500">
+                                        Add your {{ strtolower($levelLabel) }} batch details if applicable.
+                                    </p>
+                                </div>
+
+                                <label class="inline-flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">
+                                    <input
+                                        type="checkbox"
+                                        name="educations[{{ $levelKey }}][enabled]"
+                                        value="1"
+                                        class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                        {{ $enabled ? 'checked' : '' }}
+                                        onchange="toggleEducationSection('{{ $levelKey }}')"
+                                    >
+                                    Include
+                                </label>
+                            </div>
+
+                            <div id="education-fields-{{ $levelKey }}" class="{{ $enabled ? '' : 'hidden' }}">
+                                <div class="grid gap-5 md:grid-cols-2">
+                                    <div>
+                                        <label class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                            Did you graduate from HSST at this level?
+                                        </label>
+
+                                        <div class="grid gap-3 sm:grid-cols-2">
+                                            <label class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 transition hover:border-slate-300">
                                                 <input
-                                                    type="text"
-                                                    id="fname"
-                                                    name="fname"
-                                                    value="{{ old('fname') }}"
-                                                    placeholder="First name"
-                                                    autocomplete="given-name"
-                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                    type="radio"
+                                                    name="educations[{{ $levelKey }}][did_graduate]"
+                                                    value="1"
+                                                    class="mt-1 h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500"
+                                                    {{ $didGraduate == '1' ? 'checked' : '' }}
+                                                    onchange="toggleEducationGraduateFields('{{ $levelKey }}')"
                                                 >
-                                                <p id="err-fname" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
-                                                    @error('fname'){{ $message }}@enderror
-                                                </p>
-                                            </div>
-
-                                            <div>
-                                                <label for="lname" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    Last name
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    id="lname"
-                                                    name="lname"
-                                                    value="{{ old('lname') }}"
-                                                    placeholder="Last name"
-                                                    autocomplete="family-name"
-                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                                                >
-                                                <p id="err-lname" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
-                                                    @error('lname'){{ $message }}@enderror
-                                                </p>
-                                            </div>
-
-                                            <div>
-                                                <label for="mname" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    Middle name <span class="font-normal text-slate-400">(optional)</span>
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    id="mname"
-                                                    name="mname"
-                                                    value="{{ old('mname') }}"
-                                                    placeholder="Middle name"
-                                                    autocomplete="additional-name"
-                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                                                >
-                                            </div>
-
-                                            <div>
-                                                <label for="cellphone" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    Cellphone #
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    id="cellphone"
-                                                    name="cellphone"
-                                                    value="{{ old('cellphone') }}"
-                                                    placeholder="e.g. 09171234567"
-                                                    autocomplete="tel"
-                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                                                >
-                                                <p id="err-cellphone" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
-                                                    @error('cellphone'){{ $message }}@enderror
-                                                </p>
-                                            </div>
-
-                                            <div>
-                                                <label for="educational_level" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    Educational Level
-                                                </label>
-                                                <select
-                                                    id="educational_level"
-                                                    name="educational_level"
-                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                                                >
-                                                    <option value="">Select level</option>
-                                                    <option value="elementary" {{ old('educational_level') === 'elementary' ? 'selected' : '' }}>Elementary</option>
-                                                    <option value="high_school" {{ old('educational_level') === 'high_school' ? 'selected' : '' }}>High School</option>
-                                                    <option value="college" {{ old('educational_level') === 'college' ? 'selected' : '' }}>College</option>
-                                                </select>
-                                                <p id="err-educational-level" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
-                                                    @error('educational_level'){{ $message }}@enderror
-                                                </p>
-                                            </div>
-
-                                            <div>
-                                                <label for="occupation" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    Occupation <span class="font-normal text-slate-400">(optional)</span>
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    id="occupation"
-                                                    name="occupation"
-                                                    value="{{ old('occupation') }}"
-                                                    placeholder="e.g. Teacher, Engineer, Nurse"
-                                                    autocomplete="organization-title"
-                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                                                >
-                                            </div>
-
-                                            <div class="md:col-span-2">
-                                                <label class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    Did you graduate from HSST?
-                                                </label>
-
-                                                <div class="grid gap-3 sm:grid-cols-2">
-                                                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 transition hover:border-slate-300 hover:bg-white">
-                                                        <input
-                                                            type="radio"
-                                                            name="did_graduate"
-                                                            value="1"
-                                                            {{ old('did_graduate', '1') == '1' ? 'checked' : '' }}
-                                                            onchange="toggleSchoolYearFields()"
-                                                            class="mt-1 h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500"
-                                                        >
-                                                        <div>
-                                                            <p class="text-sm font-bold text-slate-900">Yes</p>
-                                                            <p class="mt-1 text-xs text-slate-500">I completed my studies here.</p>
-                                                        </div>
-                                                    </label>
-
-                                                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 transition hover:border-slate-300 hover:bg-white">
-                                                        <input
-                                                            type="radio"
-                                                            name="did_graduate"
-                                                            value="0"
-                                                            {{ old('did_graduate') === '0' ? 'checked' : '' }}
-                                                            onchange="toggleSchoolYearFields()"
-                                                            class="mt-1 h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500"
-                                                        >
-                                                        <div>
-                                                            <p class="text-sm font-bold text-slate-900">No</p>
-                                                            <p class="mt-1 text-xs text-slate-500">I attended HSST but did not graduate here.</p>
-                                                        </div>
-                                                    </label>
+                                                <div>
+                                                    <p class="text-sm font-bold text-slate-900">Yes</p>
+                                                    <p class="mt-1 text-xs text-slate-500">I graduated at this level.</p>
                                                 </div>
-                                            </div>
+                                            </label>
 
-                                            <div id="yeargradWrap">
-                                                <label for="yeargrad" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    Year Graduated
-                                                </label>
+                                            <label class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 transition hover:border-slate-300">
                                                 <input
-                                                    type="number"
-                                                    id="yeargrad"
-                                                    name="yeargrad"
-                                                    value="{{ old('yeargrad') }}"
-                                                    placeholder="e.g. 2015"
-                                                    min="1900"
-                                                    max="{{ now()->year }}"
-                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                                    type="radio"
+                                                    name="educations[{{ $levelKey }}][did_graduate]"
+                                                    value="0"
+                                                    class="mt-1 h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500"
+                                                    {{ $didGraduate === '0' ? 'checked' : '' }}
+                                                    onchange="toggleEducationGraduateFields('{{ $levelKey }}')"
                                                 >
-                                                <p id="err-yeargrad" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
-                                                    @error('yeargrad'){{ $message }}@enderror
-                                                </p>
-                                            </div>
-
-                                            <div id="schoolYearAttendedWrap" class="hidden">
-                                                <label for="school_year_attended" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
-                                                    School Year Attended
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    id="school_year_attended"
-                                                    name="school_year_attended"
-                                                    value="{{ old('school_year_attended') }}"
-                                                    placeholder="e.g. 2012-2014"
-                                                    class="h-12 w-full rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                                                >
-                                                <p class="mt-2 text-xs leading-5 text-slate-400">
-                                                    Example: 2012-2014 or 2018-2019
-                                                </p>
-                                                <p id="err-school-year-attended" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
-                                                    @error('school_year_attended'){{ $message }}@enderror
-                                                </p>
-                                            </div>
+                                                <div>
+                                                    <p class="text-sm font-bold text-slate-900">No</p>
+                                                    <p class="mt-1 text-xs text-slate-500">I attended but did not graduate.</p>
+                                                </div>
+                                            </label>
                                         </div>
                                     </div>
-                                </section>
+
+                                    <div id="batch-wrap-{{ $levelKey }}">
+                                        <label for="batch_id_{{ $levelKey }}" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                            Batch
+                                        </label>
+                                        <select
+                                            id="batch_id_{{ $levelKey }}"
+                                            name="educations[{{ $levelKey }}][batch_id]"
+                                            class="h-12 w-full rounded-[14px] border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition hover:border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+                                        >
+                                            <option value="">Select batch</option>
+                                            @foreach (($batchOptions[$levelKey] ?? collect()) as $batch)
+                                                <option value="{{ $batch->id }}" {{ (string) $batchId === (string) $batch->id ? 'selected' : '' }}>
+                                                    {{ strtoupper($levelLabel) }} • {{ $batch->schoolyear }} • Grad {{ $batch->yeargrad }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <p id="err-batch-{{ $levelKey }}" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                            @error("educations.$levelKey.batch_id"){{ $message }}@enderror
+                                        </p>
+                                    </div>
+
+                                    <div id="school-year-wrap-{{ $levelKey }}" class="{{ $didGraduate === '0' ? '' : 'hidden' }}">
+                                        <label for="school_year_attended_{{ $levelKey }}" class="mb-2 block text-xs font-bold tracking-[0.01em] text-slate-500">
+                                            School Year Attended
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="school_year_attended_{{ $levelKey }}"
+                                            name="educations[{{ $levelKey }}][school_year_attended]"
+                                            value="{{ $schoolYearAttended }}"
+                                            placeholder="e.g. 2012-2014"
+                                            class="h-12 w-full rounded-[14px] border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+                                        >
+                                        <p class="mt-2 text-xs leading-5 text-slate-400">
+                                            Required if you attended but did not graduate at this level.
+                                        </p>
+                                        <p id="err-school-year-{{ $levelKey }}" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                            @error("educations.$levelKey.school_year_attended"){{ $message }}@enderror
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <p id="err-educations" class="field-error mt-4 hidden text-xs leading-5 text-red-600">
+                @error('educations'){{ $message }}@enderror
+            </p>
+        </div>
+    </div>
+</section>
     {{-- -panel 2 --}}
 
                                 {{-- PANEL 3 --}}
@@ -824,32 +880,32 @@
     </div>
 
     <script>
-        const STEPS = [
-             {
-                short: "Personal",
-                sub: "Name & graduation year",
-                title: "Personal info",
-                desc: "Tell us your name and the year you graduated from HSST.",
-            },
-            {
-                short: "Address",
-                sub: "Current location",
-                title: "Address details",
-                desc: "Provide your current mailing or residential address.",
-            },
-            {
-                short: "Interest",
-                sub: "volunteer interest",
-                title: "Involvement",
-                desc: "optionally share your committee interest",
-            },
-            {
-                short: "Account & Security",
-                sub: "Password",
-                title: "Security",
-                desc: "Set a secure password",
-            },
-        ];
+      const STEPS = [
+    {
+        short: "Profile",
+        sub: "Personal & alumni levels",
+        title: "Personal and alumni information",
+        desc: "Tell us about yourself and select the HSST level or levels you attended.",
+    },
+    {
+        short: "Address",
+        sub: "Current location",
+        title: "Address details",
+        desc: "Provide your current mailing or residential address.",
+    },
+    {
+        short: "Interest",
+        sub: "Volunteer interest",
+        title: "Involvement",
+        desc: "Optionally share your committee interest.",
+    },
+    {
+        short: "Account",
+        sub: "Login & security",
+        title: "Account setup",
+        desc: "Choose your login credentials and secure your account.",
+    },
+];
 
         let currentStep = 1;
         let isSubmitting = false;
@@ -966,15 +1022,10 @@
     clearErrors();
     let valid = true; 
 
- if (step === 1) {
+if (step === 1) {
     const fname = document.getElementById("fname").value.trim();
     const lname = document.getElementById("lname").value.trim();
     const cellphone = document.getElementById("cellphone").value.trim();
-    const educationalLevel = document.getElementById("educational_level").value.trim();
-    const didGraduate = document.querySelector('input[name="did_graduate"]:checked')?.value;
-    const yeargrad = document.getElementById("yeargrad").value.trim();
-    const schoolYearAttended = document.getElementById("school_year_attended").value.trim();
-    const currentYear = new Date().getFullYear();
 
     if (!fname) {
         showError("fname", "err-fname", "First name is required.");
@@ -991,23 +1042,52 @@
         valid = false;
     }
 
-    if (!educationalLevel) {
-        showError("educational_level", "err-educational-level", "Please select educational level.");
-        valid = false;
-    }
+    const levels = ['elementary', 'highschool', 'college'];
+    let selectedCount = 0;
 
-    if (didGraduate === undefined) {
+    levels.forEach(level => {
+        const enabled = document.querySelector(`input[name="educations[${level}][enabled]"]`)?.checked;
+
+        if (!enabled) return;
+
+        selectedCount++;
+
+        const batchSelect = document.getElementById(`batch_id_${level}`);
+        const didGraduate = document.querySelector(`input[name="educations[${level}][did_graduate]"]:checked`)?.value;
+        const schoolYear = document.getElementById(`school_year_attended_${level}`)?.value.trim();
+
+        if (!batchSelect?.value) {
+            const err = document.getElementById(`err-batch-${level}`);
+            if (err) {
+                err.textContent = "Please select a batch.";
+                err.classList.remove("hidden");
+            }
+            batchSelect?.classList.add("border-red-500", "ring-4", "ring-red-100");
+            valid = false;
+        }
+
+        if (didGraduate === undefined) {
+            valid = false;
+        }
+
+        if (didGraduate === "0" && !schoolYear) {
+            const err = document.getElementById(`err-school-year-${level}`);
+            if (err) {
+                err.textContent = "Please enter the school year attended.";
+                err.classList.remove("hidden");
+            }
+            document.getElementById(`school_year_attended_${level}`)?.classList.add("border-red-500", "ring-4", "ring-red-100");
+            valid = false;
+        }
+    });
+
+    if (selectedCount === 0) {
+        const err = document.getElementById("err-educations");
+        if (err) {
+            err.textContent = "Please include at least one alumni level.";
+            err.classList.remove("hidden");
+        }
         valid = false;
-    } else if (didGraduate === "1") {
-        if (!yeargrad || yeargrad < 1900 || yeargrad > currentYear) {
-            showError("yeargrad", "err-yeargrad", `Please enter a valid graduation year (1900–${currentYear}).`);
-            valid = false;
-        }
-    } else if (didGraduate === "0") {
-        if (!schoolYearAttended) {
-            showError("school_year_attended", "err-school-year-attended", "Please enter the school year attended.");
-            valid = false;
-        }
     }
 }
     if (step === 2) {
@@ -1294,11 +1374,44 @@
             }
         }
 
+        function toggleEducationSection(level) {
+    const checkbox = document.querySelector(`input[name="educations[${level}][enabled]"]`);
+    const wrap = document.getElementById(`education-fields-${level}`);
+
+    if (!checkbox || !wrap) return;
+
+    if (checkbox.checked) {
+        wrap.classList.remove("hidden");
+    } else {
+        wrap.classList.add("hidden");
+    }
+}
+
+function toggleEducationGraduateFields(level) {
+    const selected = document.querySelector(`input[name="educations[${level}][did_graduate]"]:checked`)?.value;
+    const schoolYearWrap = document.getElementById(`school-year-wrap-${level}`);
+
+    if (!schoolYearWrap) return;
+
+    if (selected === "0") {
+        schoolYearWrap.classList.remove("hidden");
+    } else {
+        schoolYearWrap.classList.add("hidden");
+    }
+}
+
+function initEducationSections() {
+    ['elementary', 'highschool', 'college'].forEach(level => {
+        toggleEducationSection(level);
+        toggleEducationGraduateFields(level);
+    });
+}
+
         buildNav();
         updateHeader();
         jumpToErrorStep();
         toggleVolunteerFields();
-        toggleSchoolYearFields();
+        initEducationSections();
     
     </script>
 

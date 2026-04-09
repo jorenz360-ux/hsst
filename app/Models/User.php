@@ -88,4 +88,8 @@ public function latestVolunteerSignup()
 {
     return $this->hasOne(\App\Models\VolunteerSignup::class)->latestOfMany();
 }
+public function passwordResetRequests(): HasMany
+{
+    return $this->hasMany(\App\Models\PasswordResetRequest::class);
+}
 }

@@ -9,24 +9,24 @@ class BatchSeeder extends Seeder
 {
     public function run(): void
     {
-      $startGradYear = 1899;
-        $endGradYear   = (int) date('Y'); 
+        $startYear = 1900;
+        $endYear = now()->year;
+        $levels = ['elementary', 'highschool', 'college'];
 
-        $rows = [];
+        foreach (range($startYear, $endYear) as $yeargrad) {
+            $schoolyear = ($yeargrad - 1) . '-' . $yeargrad;
 
-        for ($year = $startGradYear; $year <= $endGradYear; $year++) {
-            $schoolYear = ($year - 1) . '-' . $year;
-
-            $rows[] = [
-                'yeargrad' => $year,
-                'schoolyear' => $schoolYear,
-            ];
+            foreach ($levels as $level) {
+                Batch::updateOrCreate(
+                    [
+                        'level' => $level,
+                        'yeargrad' => $yeargrad,
+                    ],
+                    [
+                        'schoolyear' => $schoolyear,
+                    ]
+                );
+            }
         }
-
-        Batch::upsert(
-            $rows,
-            uniqueBy: ['yeargrad'],    
-            update: ['schoolyear']      
-        );
     }
 }

@@ -10,6 +10,7 @@ class Batch extends Model
     use HasFactory;
 
     protected $fillable = [
+        'level',
         'schoolyear',
         'yeargrad',
     ];
@@ -44,9 +45,9 @@ class Batch extends Model
         self::insert($rows);
     }
 
-    public function alumni()
+    public function alumniEducations()
     {
-        return $this->hasMany(Alumni::class);
+        return $this->hasMany(AlumniEducation::class);
     }
 }
 

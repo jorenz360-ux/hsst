@@ -15,7 +15,7 @@
         }
     </style>
 
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
+    <body class="min-h-screen bg-[#f7f5f1]">
         <flux:sidebar
             sticky
             collapsible="mobile"
@@ -49,10 +49,24 @@
                     </flux:sidebar.item>
                 </flux:sidebar.group>
 
-                @can('users.view')
-                    <flux:sidebar.item icon="user" :href="route('manage-users')" wire:navigate>
-                        {{ __('Users') }}
-                    </flux:sidebar.item>
+               @can('users.view')
+               <flux:sidebar.nav>
+                        <flux:sidebar.group expandable heading="Accounts" class="grid">
+                              <flux:sidebar.item
+                            :href="route('manage-users')"
+                            wire:navigate
+                        >
+                            {{ __('Manage Users') }}
+                        </flux:sidebar.item>
+
+                        <flux:sidebar.item
+                            :href="route('admin.password-reset-requests')"
+                            wire:navigate
+                        >
+                            {{ __('Password Reset Requests') }}
+                        </flux:sidebar.item>
+                        </flux:sidebar.group>
+                    </flux:sidebar.nav>
                 @endcan
 
                 @can('announcement.manage')

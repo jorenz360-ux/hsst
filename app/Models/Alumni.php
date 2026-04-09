@@ -15,14 +15,9 @@ protected $fillable = [
     'fname',
     'mname',
     'suffix',
-    'batch_id',
-    'is_batch_rep',
 
     'occupation',
     'cellphone',
-    'educational_level',
-    'did_graduate',
-    'school_year_attended',
 
     'address_line_1',
     'address_line_2',
@@ -30,17 +25,7 @@ protected $fillable = [
     'state_province',
     'postal_code',
     'country',
-
-    'formatted_address',
-    'place_id',
-    'latitude',
-    'longitude',
 ];
-    public function batch()
-    {
-        return $this->belongsTo(Batch::class);
-    }
-
     public function donations()
     {
         return $this->hasMany(Donation::class);
@@ -84,6 +69,10 @@ public function volunteerSignups()
 public function latestVolunteerSignup()
 {
     return $this->hasOne(\App\Models\VolunteerSignup::class)->latestOfMany();
+}
+public function educations()
+{
+    return $this->hasMany(AlumniEducation::class);
 }
 }
 

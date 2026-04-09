@@ -19,6 +19,7 @@ class ManageUsers extends Component
     public const DEFAULT_BATCH = 'all';
     public const DEFAULT_YEAR_GRAD = 'all';
     public const DEFAULT_SCHOOL_YEAR = 'all';
+    public const DEFAULT_LEVEL = 'all';
     public const DEFAULT_BATCH_REP = 'all';
     public const DEFAULT_HAS_ALUMNI = 'all';
     public const DEFAULT_PER_PAGE = 10;
@@ -28,9 +29,13 @@ class ManageUsers extends Component
     public string $batchId = self::DEFAULT_BATCH;
     public string $yearGrad = self::DEFAULT_YEAR_GRAD;
     public string $schoolyear = self::DEFAULT_SCHOOL_YEAR;
+    public string $level = self::DEFAULT_LEVEL;
     public string $isBatchRep = self::DEFAULT_BATCH_REP;
     public string $hasAlumni = self::DEFAULT_HAS_ALUMNI;
     public int $perPage = self::DEFAULT_PER_PAGE;
+
+    public ?int $viewUserId = null;
+    public bool $showViewModal = false;
 
     protected array $queryString = [
         'search' => ['except' => ''],
@@ -38,6 +43,7 @@ class ManageUsers extends Component
         'batchId' => ['except' => self::DEFAULT_BATCH],
         'yearGrad' => ['except' => self::DEFAULT_YEAR_GRAD],
         'schoolyear' => ['except' => self::DEFAULT_SCHOOL_YEAR],
+        'level' => ['except' => self::DEFAULT_LEVEL],
         'isBatchRep' => ['except' => self::DEFAULT_BATCH_REP],
         'hasAlumni' => ['except' => self::DEFAULT_HAS_ALUMNI],
         'perPage' => ['except' => self::DEFAULT_PER_PAGE],
@@ -52,6 +58,7 @@ class ManageUsers extends Component
             'batchId',
             'yearGrad',
             'schoolyear',
+            'level',
             'isBatchRep',
             'hasAlumni',
             'perPage',
@@ -69,6 +76,7 @@ class ManageUsers extends Component
             'batchId',
             'yearGrad',
             'schoolyear',
+            'level',
             'isBatchRep',
             'hasAlumni',
             'perPage',
@@ -79,6 +87,7 @@ class ManageUsers extends Component
         $this->batchId = self::DEFAULT_BATCH;
         $this->yearGrad = self::DEFAULT_YEAR_GRAD;
         $this->schoolyear = self::DEFAULT_SCHOOL_YEAR;
+        $this->level = self::DEFAULT_LEVEL;
         $this->isBatchRep = self::DEFAULT_BATCH_REP;
         $this->hasAlumni = self::DEFAULT_HAS_ALUMNI;
         $this->perPage = self::DEFAULT_PER_PAGE;
@@ -89,6 +98,18 @@ class ManageUsers extends Component
     public function edit(int $userId)
     {
         return $this->redirect(route('users.edit', $userId), navigate: true);
+    }
+
+    public function view(int $userId): void
+    {
+        $this->viewUserId = $userId;
+        $this->showViewModal = true;
+    }
+
+    public function closeViewModal(): void
+    {
+        $this->showViewModal = false;
+        $this->viewUserId = null;
     }
 
     protected function normalizePerPage(): void
@@ -111,12 +132,27 @@ class ManageUsers extends Component
         ];
     }
 
+    protected function levelOptions(): array
+    {
+        return [
+            'all' => 'All Levels',
+            'elementary' => 'Elementary',
+            'highschool' => 'High School',
+            'college' => 'College',
+        ];
+    }
+
     protected function usersQuery(): Builder
     {
         $search = trim($this->search);
 
         return User::query()
-            ->with(['roles', 'alumni.batch'])
+            ->with([
+                'roles',
+                'alumni.educations.batch',
+            ])
+              ->whereDoesntHave('roles', function ($query) {
+                 $query->where('name', 'reunion-coordinator');})
             ->when($search !== '', function (Builder $query) use ($search) {
                 $like = '%' . $search . '%';
 
@@ -128,11 +164,14 @@ class ManageUsers extends Component
                                 ->orWhere('lname', 'like', $like)
                                 ->orWhere('mname', 'like', $like)
                                 ->orWhereRaw("CONCAT(fname, ' ', lname) LIKE ?", [$like])
-                                ->orWhereRaw("CONCAT(lname, ', ', fname) LIKE ?", [$like]);
+                                ->orWhereRaw("CONCAT(lname, ', ', fname) LIKE ?", [$like])
+                                ->orWhere('cellphone', 'like', $like)
+                                ->orWhere('occupation', 'like', $like);
                         })
-                        ->orWhereHas('alumni.batch', function (Builder $batchQuery) use ($like) {
+                        ->orWhereHas('alumni.educations.batch', function (Builder $batchQuery) use ($like) {
                             $batchQuery->where('schoolyear', 'like', $like)
-                                ->orWhere('yeargrad', 'like', $like);
+                                ->orWhere('yeargrad', 'like', $like)
+                                ->orWhere('level', 'like', $like);
                         });
                 });
             })
@@ -148,28 +187,33 @@ class ManageUsers extends Component
                 $query->whereNull('alumni_id');
             })
             ->when($this->batchId !== self::DEFAULT_BATCH, function (Builder $query) {
-                $query->whereHas('alumni', function (Builder $alumniQuery) {
-                    $alumniQuery->where('batch_id', $this->batchId);
+                $query->whereHas('alumni.educations', function (Builder $educationQuery) {
+                    $educationQuery->where('batch_id', $this->batchId);
                 });
             })
             ->when($this->yearGrad !== self::DEFAULT_YEAR_GRAD, function (Builder $query) {
-                $query->whereHas('alumni.batch', function (Builder $batchQuery) {
+                $query->whereHas('alumni.educations.batch', function (Builder $batchQuery) {
                     $batchQuery->where('yeargrad', $this->yearGrad);
                 });
             })
             ->when($this->schoolyear !== self::DEFAULT_SCHOOL_YEAR, function (Builder $query) {
-                $query->whereHas('alumni.batch', function (Builder $batchQuery) {
+                $query->whereHas('alumni.educations.batch', function (Builder $batchQuery) {
                     $batchQuery->where('schoolyear', $this->schoolyear);
                 });
             })
+            ->when($this->level !== self::DEFAULT_LEVEL, function (Builder $query) {
+                $query->whereHas('alumni.educations.batch', function (Builder $batchQuery) {
+                    $batchQuery->where('level', $this->level);
+                });
+            })
             ->when($this->isBatchRep === 'yes', function (Builder $query) {
-                $query->whereHas('alumni', function (Builder $alumniQuery) {
-                    $alumniQuery->where('is_batch_rep', true);
+                $query->whereHas('alumni.educations', function (Builder $educationQuery) {
+                    $educationQuery->where('is_batch_rep', true);
                 });
             })
             ->when($this->isBatchRep === 'no', function (Builder $query) {
-                $query->whereHas('alumni', function (Builder $alumniQuery) {
-                    $alumniQuery->where('is_batch_rep', false);
+                $query->whereHas('alumni.educations', function (Builder $educationQuery) {
+                    $educationQuery->where('is_batch_rep', false);
                 });
             });
     }
@@ -177,9 +221,9 @@ class ManageUsers extends Component
     protected function batchOptions(): Collection
     {
         return Batch::query()
+            ->orderByRaw("FIELD(level, 'elementary', 'highschool', 'college')")
             ->orderByDesc('yeargrad')
-            ->orderByDesc('schoolyear')
-            ->get(['id', 'schoolyear', 'yeargrad']);
+            ->get(['id', 'level', 'schoolyear', 'yeargrad']);
     }
 
     protected function yearGradOptions(): Collection
@@ -202,6 +246,20 @@ class ManageUsers extends Component
             ->pluck('schoolyear');
     }
 
+    protected function selectedUser(): ?User
+    {
+        if (! $this->viewUserId) {
+            return null;
+        }
+
+        return User::query()
+            ->with([
+                'roles',
+                'alumni.educations.batch',
+            ])
+            ->find($this->viewUserId);
+    }
+
     public function render()
     {
         $this->normalizePerPage();
@@ -213,9 +271,11 @@ class ManageUsers extends Component
         return view('livewire.manage-users', [
             'users' => $users,
             'roles' => $this->roleOptions(),
+            'levels' => $this->levelOptions(),
             'batches' => $this->batchOptions(),
             'yearGrads' => $this->yearGradOptions(),
             'schoolyears' => $this->schoolYearOptions(),
+            'selectedUser' => $this->selectedUser(),
         ]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Actions\Fortify;
 
 use App\Models\Alumni;
+use App\Models\AlumniEducation;
 use App\Models\Batch;
 use App\Models\Committee;
 use App\Models\User;
@@ -31,8 +32,8 @@ class CreateNewUser implements CreatesNewUsers
 
         try {
             return DB::transaction(function () use ($validated): User {
-                $batch = $this->resolveBatch($validated);
-                $alumni = $this->createAlumni($validated, $batch);
+                $alumni = $this->createAlumni($validated);
+                $this->createEducationRecords($alumni, $validated);
                 $user = $this->createUserAccount($validated, $alumni);
 
                 $user->assignRole('alumni');
@@ -102,12 +103,6 @@ class CreateNewUser implements CreatesNewUsers
             'suffix' => ['nullable', 'string', 'max:20'],
 
             'cellphone' => ['required', 'string', 'max:30'],
-            'educational_level' => ['required', Rule::in(['elementary', 'high_school', 'college'])],
-            'did_graduate' => ['required', 'boolean'],
-
-            'yeargrad' => ['nullable', 'integer', 'min:1900', 'max:' . now()->year],
-            'school_year_attended' => ['nullable', 'string', 'max:50'],
-
             'occupation' => ['nullable', 'string', 'max:255'],
 
             'address_line_1' => ['required', 'string', 'max:255'],
@@ -122,6 +117,23 @@ class CreateNewUser implements CreatesNewUsers
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
 
+            'educations' => ['required', 'array'],
+            'educations.elementary.enabled' => ['nullable', 'boolean'],
+            'educations.highschool.enabled' => ['nullable', 'boolean'],
+            'educations.college.enabled' => ['nullable', 'boolean'],
+
+            'educations.elementary.did_graduate' => ['nullable', 'boolean'],
+            'educations.highschool.did_graduate' => ['nullable', 'boolean'],
+            'educations.college.did_graduate' => ['nullable', 'boolean'],
+
+            'educations.elementary.batch_id' => ['nullable', 'integer', 'exists:batches,id'],
+            'educations.highschool.batch_id' => ['nullable', 'integer', 'exists:batches,id'],
+            'educations.college.batch_id' => ['nullable', 'integer', 'exists:batches,id'],
+
+            'educations.elementary.school_year_attended' => ['nullable', 'string', 'max:50'],
+            'educations.highschool.school_year_attended' => ['nullable', 'string', 'max:50'],
+            'educations.college.school_year_attended' => ['nullable', 'string', 'max:50'],
+
             'volunteer_interest' => ['nullable', 'in:yes,later'],
             'committees' => ['nullable', 'array'],
             'committees.*' => ['integer', 'exists:committees,id'],
@@ -129,16 +141,53 @@ class CreateNewUser implements CreatesNewUsers
         ]);
 
         $validator->after(function ($validator) use ($input) {
-            $didGraduate = array_key_exists('did_graduate', $input)
-                ? filter_var($input['did_graduate'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)
-                : null;
+            $levels = ['elementary', 'highschool', 'college'];
+            $selectedCount = 0;
 
-            if ($didGraduate === true && empty($input['yeargrad'])) {
-                $validator->errors()->add('yeargrad', 'Year graduated is required if you graduated from HSST.');
+            foreach ($levels as $level) {
+                $education = $input['educations'][$level] ?? [];
+                $enabled = filter_var($education['enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+                if (! $enabled) {
+                    continue;
+                }
+
+                $selectedCount++;
+
+                $batchId = $education['batch_id'] ?? null;
+                $didGraduate = array_key_exists('did_graduate', $education)
+                    ? filter_var($education['did_graduate'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)
+                    : null;
+
+                $schoolYearAttended = $education['school_year_attended'] ?? null;
+
+                if (empty($batchId)) {
+                    $validator->errors()->add("educations.$level.batch_id", "Please select a batch for {$level}.");
+                    continue;
+                }
+
+                $batch = Batch::find($batchId);
+
+                if (! $batch) {
+                    $validator->errors()->add("educations.$level.batch_id", "Selected batch for {$level} is invalid.");
+                    continue;
+                }
+
+                if ($batch->level !== $level) {
+                    $validator->errors()->add("educations.$level.batch_id", "Selected batch does not match the {$level} level.");
+                }
+
+                if ($didGraduate === null) {
+                    $validator->errors()->add("educations.$level.did_graduate", "Please indicate whether you graduated for {$level}.");
+                }
+
+                if ($didGraduate === false && empty($schoolYearAttended)) {
+                    $validator->errors()->add("educations.$level.school_year_attended", "School year attended is required for {$level} if you did not graduate.");
+                }
             }
 
-            if ($didGraduate === false && empty($input['school_year_attended'])) {
-                $validator->errors()->add('school_year_attended', 'School year attended is required if you did not graduate from HSST.');
+            if ($selectedCount === 0) {
+                $validator->errors()->add('educations', 'Please include at least one alumni level.');
             }
 
             if (($input['volunteer_interest'] ?? 'later') === 'yes' && empty($input['committees'])) {
@@ -149,32 +198,11 @@ class CreateNewUser implements CreatesNewUsers
         return $validator->validate();
     }
 
-    protected function resolveBatch(array $validated): ?Batch
-    {
-        $didGraduate = filter_var($validated['did_graduate'] ?? false, FILTER_VALIDATE_BOOLEAN);
-
-        if ($didGraduate && ! empty($validated['yeargrad'])) {
-            return $this->createOrGetBatch((int) $validated['yeargrad']);
-        }
-
-        return null;
-    }
-
-    protected function createOrGetBatch(int $yeargrad): Batch
-    {
-        return Batch::firstOrCreate(
-            ['yeargrad' => $yeargrad],
-            ['schoolyear' => ($yeargrad - 1) . '-' . $yeargrad]
-        );
-    }
-
     /**
      * @param array<string, mixed> $validated
      */
-    protected function createAlumni(array $validated, ?Batch $batch): Alumni
+    protected function createAlumni(array $validated): Alumni
     {
-        $didGraduate = filter_var($validated['did_graduate'], FILTER_VALIDATE_BOOLEAN);
-
         return Alumni::create([
             'prefix' => $validated['prefix'] ?? null,
             'fname' => $validated['fname'],
@@ -182,14 +210,8 @@ class CreateNewUser implements CreatesNewUsers
             'lname' => $validated['lname'],
             'suffix' => $validated['suffix'] ?? null,
 
-            'batch_id' => $batch?->id,
-            'is_batch_rep' => false,
-
             'occupation' => $validated['occupation'] ?? null,
             'cellphone' => $validated['cellphone'],
-            'educational_level' => $validated['educational_level'],
-            'did_graduate' => $didGraduate,
-            'school_year_attended' => $didGraduate ? null : ($validated['school_year_attended'] ?? null),
 
             'address_line_1' => $validated['address_line_1'],
             'address_line_2' => $validated['address_line_2'] ?? null,
@@ -197,12 +219,34 @@ class CreateNewUser implements CreatesNewUsers
             'state_province' => $validated['state_province'],
             'postal_code' => $validated['postal_code'] ?? null,
             'country' => $validated['country'],
-
-            'formatted_address' => $validated['formatted_address'] ?? null,
-            'place_id' => $validated['place_id'] ?? null,
-            'latitude' => $validated['latitude'] ?? null,
-            'longitude' => $validated['longitude'] ?? null,
         ]);
+    }
+
+    /**
+     * @param array<string, mixed> $validated
+     */
+    protected function createEducationRecords(Alumni $alumni, array $validated): void
+    {
+        $levels = ['elementary', 'highschool', 'college'];
+
+        foreach ($levels as $level) {
+            $education = $validated['educations'][$level] ?? [];
+            $enabled = filter_var($education['enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+            if (! $enabled) {
+                continue;
+            }
+
+            $didGraduate = filter_var($education['did_graduate'] ?? true, FILTER_VALIDATE_BOOLEAN);
+
+            AlumniEducation::create([
+                'alumni_id' => $alumni->id,
+                'batch_id' => (int) $education['batch_id'],
+                'did_graduate' => $didGraduate,
+                'school_year_attended' => $didGraduate ? null : ($education['school_year_attended'] ?? null),
+                'is_batch_rep' => false, // public registration cannot assign batch rep
+            ]);
+        }
     }
 
     /**
@@ -224,9 +268,9 @@ class CreateNewUser implements CreatesNewUsers
             'message' => $e->getMessage(),
             'username' => $input['username'] ?? null,
             'email' => $input['email'] ?? null,
-            'yeargrad' => $input['yeargrad'] ?? null,
-            'school_year_attended' => $input['school_year_attended'] ?? null,
-            'educational_level' => $input['educational_level'] ?? null,
+            'education_levels' => array_keys(array_filter($input['educations'] ?? [], function ($education) {
+                return filter_var($education['enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+            })),
         ]);
     }
 
@@ -247,8 +291,6 @@ class CreateNewUser implements CreatesNewUsers
             'lname',
             'suffix',
             'cellphone',
-            'educational_level',
-            'school_year_attended',
             'occupation',
             'address_line_1',
             'address_line_2',
@@ -269,18 +311,13 @@ class CreateNewUser implements CreatesNewUsers
         }
 
         if (isset($input['email']) && is_string($input['email'])) {
-            $input['email'] = strtolower($input['email']);
-        }
-
-        if (array_key_exists('did_graduate', $input)) {
-            $input['did_graduate'] = filter_var($input['did_graduate'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            $input['email'] = strtolower(trim($input['email']));
         }
 
         foreach ([
             'prefix',
             'mname',
             'suffix',
-            'school_year_attended',
             'occupation',
             'address_line_2',
             'postal_code',
@@ -294,12 +331,44 @@ class CreateNewUser implements CreatesNewUsers
             }
         }
 
-        if (($input['did_graduate'] ?? null) === true) {
-            $input['school_year_attended'] = null;
+        if (! isset($input['educations']) || ! is_array($input['educations'])) {
+            $input['educations'] = [];
         }
 
-        if (($input['did_graduate'] ?? null) === false) {
-            $input['yeargrad'] = null;
+        foreach (['elementary', 'highschool', 'college'] as $level) {
+            $education = $input['educations'][$level] ?? [];
+
+            if (! is_array($education)) {
+                $education = [];
+            }
+
+            foreach (['school_year_attended'] as $field) {
+                if (array_key_exists($field, $education) && is_string($education[$field])) {
+                    $education[$field] = trim($education[$field]);
+                }
+            }
+
+            $education['enabled'] = filter_var($education['enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+            $education['did_graduate'] = array_key_exists('did_graduate', $education)
+                ? filter_var($education['did_graduate'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)
+                : null;
+
+            if (($education['school_year_attended'] ?? '') === '') {
+                $education['school_year_attended'] = null;
+            }
+
+            if (($education['batch_id'] ?? '') === '') {
+                $education['batch_id'] = null;
+            }
+
+            // Never trust public registration for batch rep assignment
+            unset($education['is_batch_rep']);
+
+            if ($education['did_graduate'] === true) {
+                $education['school_year_attended'] = null;
+            }
+
+            $input['educations'][$level] = $education;
         }
 
         return $input;
