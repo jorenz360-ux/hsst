@@ -8,7 +8,10 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Livewire\Attributes\Title;
 
+#[Title('Admin | Password reset request')]
 class PasswordResetRequests extends Component
 {
     use WithPagination;
