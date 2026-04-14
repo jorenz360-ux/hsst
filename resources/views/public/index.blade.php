@@ -798,8 +798,16 @@
     mobileMenuButton?.classList.replace('text-ink','text-white');
   }
 
-  function handleNavScroll() { window.scrollY > 60 ? setScrolledNav() : setTopNav(); }
+  function handleNavScroll() {
+    const isDesktop = window.innerWidth >= 768;
+    if (isDesktop || window.scrollY > 60) {
+      setScrolledNav();
+    } else {
+      setTopNav();
+    }
+  }
   window.addEventListener('scroll', handleNavScroll, { passive: true });
+  window.addEventListener('resize', handleNavScroll, { passive: true });
   handleNavScroll();
 
   // ── Reveal on scroll ──

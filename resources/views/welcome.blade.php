@@ -799,9 +799,10 @@
         <span class="open-quote">"</span>
         <blockquote class="garamond italic text-ink/75 text-base leading-relaxed mb-7 -mt-3">
           As Holy Spirit School of Tagbilaran celebrates 100 years of inspiring young minds and souls,
-          I'm filled with pride and purpose. My own journey was shaped by HSST's values and teachings,
-          and now it's our chance to pay it forward. Let's come together to invest in the future
-          through our beloved Alma Mater.
+          I'm filled with pride and purpose, eager to join its historic celebration. My own journey was
+          shaped by HSST's values and teachings, and now it's our chance to pay it forward. Together,
+          with just PhP1,000 from 100 of us, we can empower the next generation and create lasting change.
+          Let's come together to invest in the future through our beloved Alma Mater.
         </blockquote>
         <div class="border-t pt-5" style="border-color:rgba(26,63,196,.1);">
           <div class="flex items-center gap-3">
@@ -809,7 +810,7 @@
                  style="background:linear-gradient(135deg,var(--royal-dark),var(--royal));">SS</div>
             <div>
               <p class="kicker font-bold text-ink text-[.68rem]">Steven Sarigumba Suganob</p>
-              <p class="kicker text-ink/35 mt-0.5 text-[.58rem]" style="text-transform:none;letter-spacing:.08em;">Elementary Batch 1987</p>
+              <p class="kicker text-ink/35 mt-0.5 text-[.58rem]" style="text-transform:none;letter-spacing:.08em;">Elementary Batch 1987 · Philadelphia, PA, USA</p>
             </div>
           </div>
         </div>
@@ -818,16 +819,17 @@
       <div class="reveal d2 p-8" style="background:var(--royal-deeper);border-top:3px solid var(--gold);">
         <span class="open-quote" style="color:var(--gold);">"</span>
         <blockquote class="garamond italic text-white/75 text-base leading-relaxed mb-7 -mt-3">
-          Being a Crusader is a lifelong identity. When I heard about the CRUSADE campaign,
-          I didn't hesitate — this school gave me everything. It's our turn to give back.
+          I spent four formative years at HSS, where my values took root and my closest friendships were formed.
+          For over twenty years, I have served as an international civil servant with the World Health Organization,
+          and the values I carry from HSS continue to guide me today.
         </blockquote>
         <div class="border-t pt-5" style="border-color:rgba(255,255,255,.1);">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 flex items-center justify-center kicker font-bold text-white shrink-0"
-                 style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);">JP</div>
+                 style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);">GPV</div>
             <div>
-              <p class="kicker font-bold text-white text-[.68rem]">Jose Paolo Dizon</p>
-              <p class="kicker text-white/35 mt-0.5 text-[.58rem]" style="text-transform:none;letter-spacing:.08em;">Batch 2005 · Engineer, Cebu</p>
+              <p class="kicker font-bold text-white text-[.68rem]">Gemma Payot Vestal</p>
+              <p class="kicker text-white/35 mt-0.5 text-[.58rem]" style="text-transform:none;letter-spacing:.08em;">High School Class 1982 · Cairo, Egypt</p>
             </div>
           </div>
         </div>
@@ -836,16 +838,18 @@
       <div class="reveal d3 bg-white p-8" style="border-top:3px solid #0a7c68;box-shadow:0 2px 16px rgba(26,63,196,.06);">
         <span class="open-quote" style="color:#0a7c68;">"</span>
         <blockquote class="garamond italic text-ink/75 text-base leading-relaxed mb-7 -mt-3">
-          I grew up in a simple home in Tagbilaran. HSS believed in me before I believed
-          in myself. A gift from a hundred alumni changes one child's entire trajectory.
+          It was an immense sense of pride to be a student of Saint Joseph's College, circa 1960s.
+          During BIDSAL time, SJC's students walked proud and tall reaping almost all the medals from
+          religion, spelling, dance and declamation contests. Now in my twilight years here in the USA,
+          my SJC memories warm my heart with joy, nostalgia &amp; gratitude.
         </blockquote>
         <div class="border-t pt-5" style="border-color:rgba(26,63,196,.1);">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 flex items-center justify-center kicker font-bold text-white shrink-0"
-                 style="background:#0a7c68;">AL</div>
+                 style="background:#0a7c68;">EE</div>
             <div>
-              <p class="kicker font-bold text-ink text-[.68rem]">Ana Luz Santillan</p>
-              <p class="kicker text-ink/35 mt-0.5 text-[.58rem]" style="text-transform:none;letter-spacing:.08em;">Batch 2012 · Nurse, Dubai</p>
+              <p class="kicker font-bold text-ink text-[.68rem]">Estela Enerio</p>
+              <p class="kicker text-ink/35 mt-0.5 text-[.58rem]" style="text-transform:none;letter-spacing:.08em;">Saint Joseph's College · Elem '54 · HS '60 · College '62 · USA</p>
             </div>
           </div>
         </div>
