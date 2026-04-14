@@ -674,7 +674,7 @@ new class extends Component {
                                     <p class="text-sm font-medium text-[#1a1410]">{{ $label }}</p>
                                     <p class="text-xs text-[#9a9080]">
                                         @if ($educations[$level]['enabled'])
-                                            Active — fill in your batch details below
+                                            Active - fill in your batch details below
                                         @else
                                             Toggle to add your {{ strtolower($label) }} record
                                         @endif

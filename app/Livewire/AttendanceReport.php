@@ -138,7 +138,7 @@ class AttendanceReport extends Component
                     'elementary' => 'Elementary',
                     'highschool' => 'High School',
                     'college' => 'College',
-                    default => '—',
+                    default => '-',
                 };
 
                 $eventFee = ($selectedEvent->registration_fee ?? 0) > 0
@@ -147,12 +147,12 @@ class AttendanceReport extends Component
 
                 $updatedAt = $participant->payment_updated_at
                     ? \Carbon\Carbon::parse($participant->payment_updated_at)->format('M d, Y h:i A')
-                    : '—';
+                    : '-';
 
                 fputcsv($handle, [
-                    $participant->batch_label ?: '—',
+                    $participant->batch_label ?: '-',
                     $batchLevel,
-                    $fullName ?: '—',
+                    $fullName ?: '-',
                     $rsvpStatus,
                     $participant->guest_count ?? 0,
                     $eventFee,

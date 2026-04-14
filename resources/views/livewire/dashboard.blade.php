@@ -256,7 +256,7 @@
                       <span class="text-sm font-bold" style="color:#0a7c68;">₱{{ number_format($payment->amount) }}</span>
                     </td>
                     <td class="px-5 py-3.5 text-sm text-slate-500">
-                      {{ optional($payment->paid_at)->format('M d, Y · g:i A') ?? '—' }}
+                      {{ optional($payment->paid_at)->format('M d, Y · g:i A') ?? '-' }}
                     </td>
                     <td class="px-5 py-3.5">
                       @if($payment->paymongo_checkout_session_id)
@@ -264,7 +264,7 @@
                           {{ substr($payment->paymongo_checkout_session_id, 0, 14) }}…
                         </span>
                       @else
-                        <span class="text-slate-300">—</span>
+                        <span class="text-slate-300">-</span>
                       @endif
                     </td>
                   </tr>
@@ -326,10 +326,10 @@
                       <span class="text-sm font-bold text-slate-800">₱{{ number_format($donation->amount) }}</span>
                     </td>
                     <td class="px-5 py-3.5 text-sm text-slate-500 max-w-[180px] truncate">
-                      {{ $donation->remarks ?: '—' }}
+                      {{ $donation->remarks ?: '-' }}
                     </td>
                     <td class="px-5 py-3.5 text-sm text-slate-400">
-                      {{ optional($donation->paid_at)->format('M d, Y') ?? '—' }}
+                      {{ optional($donation->paid_at)->format('M d, Y') ?? '-' }}
                     </td>
                   </tr>
                 @empty
@@ -456,7 +456,7 @@
                 <div class="mt-3 grid grid-cols-2 gap-2">
                   <div class="rounded px-3 py-2" style="background:#f4f7ff;border:1px solid rgba(26,63,196,.08);">
                     <p class="text-[.6rem] font-bold uppercase tracking-[.1em] text-slate-400">Dress Code</p>
-                    <p class="mt-0.5 text-xs font-semibold text-slate-700">{{ $event->dress_code ?: '—' }}</p>
+                    <p class="mt-0.5 text-xs font-semibold text-slate-700">{{ $event->dress_code ?: '-' }}</p>
                   </div>
                   <div class="rounded px-3 py-2" style="background:#f4f7ff;border:1px solid rgba(26,63,196,.08);">
                     <p class="text-[.6rem] font-bold uppercase tracking-[.1em] text-slate-400">Reg. Fee</p>

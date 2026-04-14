@@ -85,7 +85,7 @@
                                 $dt = $donation->paid_at ?? $donation->date_donated;
                             @endphp
 
-                            {{ $dt ? $dt->timezone('Asia/Manila')->format('M d, Y h:i A') : '—' }}
+                            {{ $dt ? $dt->timezone('Asia/Manila')->format('M d, Y h:i A') : '-' }}
                         </td>
 
                         <td class="px-4 py-3 whitespace-nowrap text-gray-200">
@@ -93,7 +93,7 @@
                         </td>
 
                         <td class="px-4 py-3 text-gray-200">
-                            {{ $donation->remarks ?: '—' }}
+                            {{ $donation->remarks ?: '-' }}
                         </td>
 
                         <td class="px-4 py-3 whitespace-nowrap">

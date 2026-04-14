@@ -33,7 +33,7 @@
                         <option value="all">Select an Event</option>
                         @foreach ($allEvents as $eventOption)
                             <option value="{{ $eventOption->id }}">
-                                {{ $eventOption->title }} —
+                                {{ $eventOption->title }} -
                                 {{ $eventOption->event_date?->format('M d, Y') }}
                             </option>
                         @endforeach
@@ -114,7 +114,7 @@
 
                             {{-- Name --}}
                             <td class="px-4 py-3 text-zinc-900">
-                                {{ $fullName ?: '—' }}
+                                {{ $fullName ?: '-' }}
                             </td>
 
                             {{-- Batch --}}
@@ -141,7 +141,7 @@
                             <td class="px-4 py-3 text-zinc-400 text-xs">
                                 {{ $p->payment_updated_at
                                     ? \Carbon\Carbon::parse($p->payment_updated_at)->format('M d, Y h:i A')
-                                    : '—' }}
+                                    : '-' }}
                             </td>
 
                             {{-- Action --}}

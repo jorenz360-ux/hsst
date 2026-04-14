@@ -164,13 +164,13 @@ class BatchRepReports extends Component
 
                 $updatedAt = $participant->payment_updated_at
                     ? \Carbon\Carbon::parse($participant->payment_updated_at)->format('M d, Y h:i A')
-                    : '—';
+                    : '-';
 
                 fputcsv($handle, [
-                    $fullName ?: '—',
-                    $participant->level ? str($participant->level)->headline()->toString() : '—',
-                    $participant->yeargrad ?? '—',
-                    $participant->schoolyear ?? '—',
+                    $fullName ?: '-',
+                    $participant->level ? str($participant->level)->headline()->toString() : '-',
+                    $participant->yeargrad ?? '-',
+                    $participant->schoolyear ?? '-',
                     $rsvpStatus,
                     $eventFee,
                     $paymentStatus,

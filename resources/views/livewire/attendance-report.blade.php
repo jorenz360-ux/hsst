@@ -77,7 +77,7 @@
                                 <option value="{{ $eventOption->id }}">
                                     {{ $eventOption->title }}
                                     @if ($eventOption->event_date)
-                                        — {{ $eventOption->event_date->format('M d, Y') }}
+                                        - {{ $eventOption->event_date->format('M d, Y') }}
                                     @endif
                                 </option>
                             @endforeach
@@ -217,13 +217,13 @@
                                             'elementary' => 'Elementary',
                                             'highschool' => 'High School',
                                             'college'    => 'College',
-                                            default      => '—',
+                                            default      => '-',
                                         };
                                     @endphp
 
                                     <tr class="transition hover:bg-emerald-50/60">
                                         <td class="px-3 py-2.5 text-gray-600 whitespace-nowrap">
-                                            {{ $participant->batch_label ?: '—' }}
+                                            {{ $participant->batch_label ?: '-' }}
                                         </td>
 
                                         <td class="px-3 py-2.5 text-gray-500 whitespace-nowrap text-[12px]">
@@ -231,7 +231,7 @@
                                         </td>
 
                                         <td class="px-3 py-2.5 font-medium text-gray-800">
-                                            {{ $fullName ?: '—' }}
+                                            {{ $fullName ?: '-' }}
                                         </td>
 
                                         <td class="px-3 py-2.5">
@@ -259,7 +259,7 @@
                                         </td>
 
                                         <td class="px-3 py-2.5 text-gray-500 whitespace-nowrap">
-                                            {{ $participant->payment_updated_at ? \Carbon\Carbon::parse($participant->payment_updated_at)->format('M d, Y h:i A') : '—' }}
+                                            {{ $participant->payment_updated_at ? \Carbon\Carbon::parse($participant->payment_updated_at)->format('M d, Y h:i A') : '-' }}
                                         </td>
 
                                         <td class="px-3 py-2.5">

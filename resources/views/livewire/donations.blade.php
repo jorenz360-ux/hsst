@@ -137,11 +137,11 @@
                                 </td>
 
                                 <td class="px-6 py-4">
-                                    <span class="font-mono text-xs text-gray-500">{{ $donation->reference_number ?: '—' }}</span>
+                                    <span class="font-mono text-xs text-gray-500">{{ $donation->reference_number ?: '-' }}</span>
                                 </td>
 
                                 <td class="px-6 py-4 text-xs text-gray-400">
-                                    {{ $donation->created_at?->format('M d, Y') ?: '—' }}<br>
+                                    {{ $donation->created_at?->format('M d, Y') ?: '-' }}<br>
                                     <span class="text-gray-300">{{ $donation->created_at?->format('h:i A') }}</span>
                                 </td>
 
@@ -206,7 +206,7 @@
                                                 @if ($donation->reviewed_at)
                                                     Reviewed<br>{{ $donation->reviewed_at->format('M d, Y') }}
                                                 @else
-                                                    —
+                                                    -
                                                 @endif
                                             </span>
                                         @endif
@@ -280,13 +280,13 @@
                         <div class="mt-4 grid gap-2 sm:grid-cols-2">
                             <div class="rounded-xl border border-gray-100 bg-gray-50 p-3">
                                 <p class="text-xs text-gray-400">Reference Number</p>
-                                <p class="mt-1 font-mono text-sm font-medium text-gray-700">{{ $donation->reference_number ?: '—' }}</p>
+                                <p class="mt-1 font-mono text-sm font-medium text-gray-700">{{ $donation->reference_number ?: '-' }}</p>
                             </div>
 
                             <div class="rounded-xl border border-gray-100 bg-gray-50 p-3">
                                 <p class="text-xs text-gray-400">Submitted At</p>
                                 <p class="mt-1 text-sm font-medium text-gray-700">
-                                    {{ $donation->created_at?->format('M d, Y h:i A') ?: '—' }}
+                                    {{ $donation->created_at?->format('M d, Y h:i A') ?: '-' }}
                                 </p>
                             </div>
 

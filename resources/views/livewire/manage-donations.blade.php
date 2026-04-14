@@ -22,9 +22,9 @@
                 @if ($currentEducation?->batch)
                     <div class="mt-3 inline-flex flex-wrap items-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs text-zinc-600">
                         <span class="font-medium text-zinc-900">Assigned Batch:</span>
-                        <span>{{ $currentEducation->batch->yeargrad ?? '—' }}</span>
+                        <span>{{ $currentEducation->batch->yeargrad ?? '-' }}</span>
                         <span class="text-zinc-400">•</span>
-                        <span>{{ $currentEducation->batch->schoolyear ?? '—' }}</span>
+                        <span>{{ $currentEducation->batch->schoolyear ?? '-' }}</span>
                         @if ($currentEducation->batch->level ?? null)
                             <span class="text-zinc-400">•</span>
                             <span>{{ str($currentEducation->batch->level)->headline() }}</span>
@@ -141,7 +141,7 @@
                                 {{ $fullName ?: 'Unknown Donor' }}
                             </h3>
                             <p class="mt-1 text-xs text-zinc-500">
-                                {{ $batch?->yeargrad ?? '—' }} • {{ $batch?->schoolyear ?? '—' }}
+                                {{ $batch?->yeargrad ?? '-' }} • {{ $batch?->schoolyear ?? '-' }}
                             </p>
                         </div>
 
@@ -162,14 +162,14 @@
                         <div>
                             <p class="text-zinc-500">Submission</p>
                             <p class="mt-1 text-zinc-700">
-                                {{ $d->date_donated?->format('M d, Y h:i A') ?? $d->created_at?->format('M d, Y h:i A') ?? '—' }}
+                                {{ $d->date_donated?->format('M d, Y h:i A') ?? $d->created_at?->format('M d, Y h:i A') ?? '-' }}
                             </p>
                         </div>
 
                         <div>
                             <p class="text-zinc-500">Reference</p>
                             <p class="mt-1 break-all text-zinc-700">
-                                {{ $d->reference_number ?? '—' }}
+                                {{ $d->reference_number ?? '-' }}
                             </p>
                         </div>
                     </div>
@@ -208,7 +208,7 @@
 
                     <div class="mt-4 flex items-center justify-between gap-3">
                         <div class="text-xs text-zinc-500">
-                            Created {{ $d->created_at?->format('M d, Y') ?? '—' }}
+                            Created {{ $d->created_at?->format('M d, Y') ?? '-' }}
                         </div>
 
                         @if ($d->or_file_path)
@@ -281,9 +281,9 @@
                                 </td>
 
                                 <td class="px-5 py-4 align-top text-zinc-600">
-                                    <div>{{ $batch?->yeargrad ?? '—' }}</div>
+                                    <div>{{ $batch?->yeargrad ?? '-' }}</div>
                                     <div class="text-xs text-zinc-500">
-                                        {{ $batch?->schoolyear ?? '—' }}
+                                        {{ $batch?->schoolyear ?? '-' }}
                                     </div>
                                     @if ($batch?->level)
                                         <div class="mt-1 text-xs text-zinc-500">
@@ -298,10 +298,10 @@
 
                                 <td class="px-5 py-4 align-top text-zinc-600">
                                     <div>
-                                        {{ $d->date_donated?->format('M d, Y h:i A') ?? $d->created_at?->format('M d, Y h:i A') ?? '—' }}
+                                        {{ $d->date_donated?->format('M d, Y h:i A') ?? $d->created_at?->format('M d, Y h:i A') ?? '-' }}
                                     </div>
                                     <div class="mt-1 text-xs text-zinc-500">
-                                        Created {{ $d->created_at?->format('M d, Y') ?? '—' }}
+                                        Created {{ $d->created_at?->format('M d, Y') ?? '-' }}
                                     </div>
                                 </td>
 
@@ -346,7 +346,7 @@
                                 </td>
 
                                 <td class="px-5 py-4 align-top text-xs text-zinc-500">
-                                    {{ $d->reference_number ?? '—' }}
+                                    {{ $d->reference_number ?? '-' }}
                                 </td>
 
                                 <td class="px-5 py-4 align-top">

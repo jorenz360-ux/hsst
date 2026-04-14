@@ -156,7 +156,7 @@
 <div id="pgbar"></div>
 
 <!-- ════════════════════════════════════════
-     MASTHEAD TOP STRIP — desktop only
+     MASTHEAD TOP STRIP - desktop only
 ════════════════════════════════════════ -->
 <div class="bg-ink text-paper/50 border-b border-paper/10 hidden md:block">
   <div class="max-w-7xl mx-auto px-6 py-1.5 flex items-center justify-between">
@@ -170,7 +170,7 @@
 </div>
 
 <!-- ════════════════════════════════════════
-     NAV — fixed on mobile, relative on md+
+     NAV - fixed on mobile, relative on md+
 ════════════════════════════════════════ -->
 <header id="nav" class="fixed inset-x-0 top-0 z-50 md:relative md:z-auto">
   <div class="max-w-7xl mx-auto px-4 sm:px-6">
@@ -236,7 +236,7 @@
 </header>
 
 <!-- ════════════════════════════════════════
-     MOBILE MENU — full screen overlay
+     MOBILE MENU - full screen overlay
 ════════════════════════════════════════ -->
 <div id="mobile-menu" class="fixed inset-0 z-[9999] hidden md:hidden bg-ink text-paper">
   <div class="flex h-dvh flex-col">
@@ -276,7 +276,7 @@
 </div>
 
 <!-- ════════════════════════════════════════
-     HERO — mobile-first magazine cover
+     HERO - mobile-first magazine cover
 ════════════════════════════════════════ -->
 <section class="relative flex items-end overflow-hidden pt-16 md:pt-0"
   style="min-height:65vh;">
@@ -290,14 +290,14 @@
       style="background-image:url(data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E);"></div>
   </div>
 
-  <!-- Vertical rule — xl only -->
+  <!-- Vertical rule - xl only -->
   <div class="pointer-events-none absolute right-12 top-0 bottom-0 hidden xl:flex flex-col items-center justify-center opacity-10">
     <div class="h-64 w-px bg-white"></div>
     <div class="my-3 caption-text text-white" style="writing-mode:vertical-rl;letter-spacing:.3em;font-size:.6rem;">HOLY SPIRIT SCHOOL · EVENTS</div>
     <div class="h-64 w-px bg-white"></div>
   </div>
 
-  <!-- Content — mobile: compact padding, desktop: generous -->
+  <!-- Content - mobile: compact padding, desktop: generous -->
   <div class="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 pb-12 sm:pb-16 md:pb-24">
     <div class="max-w-3xl">
 
@@ -315,7 +315,7 @@
         &amp; community.
       </h1>
 
-      <!-- Body copy — hidden on very small, visible from xs -->
+      <!-- Body copy - hidden on very small, visible from xs -->
       <p class="garamond text-white/70 mb-6 sm:mb-8 max-w-xl animate-fade-up"
         style="font-size:clamp(.95rem,1.5vw,1.15rem);animation-delay:.32s;">
         Explore reunions, school celebrations, alumni programs, and community gatherings
@@ -361,7 +361,7 @@
             Browse events <em style="color:var(--royal);">by date.</em>
           </h2>
         </div>
-        <!-- Calendar nav — full width row on mobile -->
+        <!-- Calendar nav - full width row on mobile -->
         <div class="flex items-center gap-2">
           <a href="{{ route('events.index', ['month' => $prevMonth, 'date' => $selectedDate]) }}#event-calendar"
             class="flex-1 sm:flex-none touch-target caption-text border border-ink/20 text-ink/60 px-3 sm:px-4 py-2 hover:border-ink/50 hover:text-ink transition-all text-center">
@@ -473,7 +473,7 @@
             </article>
           @empty
             <div class="flex flex-col items-center justify-center h-full py-10 sm:py-12 text-center">
-              <span class="display text-ink/20 font-bold" style="font-size:4rem;">—</span>
+              <span class="display text-ink/20 font-bold" style="font-size:4rem;">-</span>
               <p class="caption-text text-ink/40 mt-3 font-bold">No events on this date</p>
               <p class="caption-text text-ink/25 mt-1" style="letter-spacing:.06em;text-transform:none;font-size:.7rem;">Try another date or browse upcoming events below</p>
             </div>
@@ -488,7 +488,7 @@
 </section>
 
 <!-- ════════════════════════════════════════
-     UPCOMING EVENTS — newspaper grid
+     UPCOMING EVENTS - newspaper grid
 ════════════════════════════════════════ -->
 <section id="upcoming-events" class="py-12 sm:py-20 lg:py-28" style="background:var(--paper);">
   <div class="max-w-7xl mx-auto px-4 sm:px-6">

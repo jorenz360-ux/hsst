@@ -375,7 +375,7 @@
                                         {{ $dateDisplay->diffForHumans() }}
                                     </p>
                                 @else
-                                    <span class="text-xs text-slate-400">—</span>
+                                    <span class="text-xs text-slate-400">-</span>
                                 @endif
                             </td>
 

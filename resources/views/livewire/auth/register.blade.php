@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create Account — HSST Alumni Portal</title>
+    <title>Create Account - HSST Alumni Portal</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -374,7 +374,7 @@
                         </h2>
 
                         <p id="stepDesc" class="mt-2 text-sm leading-6 text-slate-500">
-                            Tell us about yourself — your name, contact number, and occupation.
+                            Tell us about yourself - your name, contact number, and occupation.
                         </p>
                     </div>
 
@@ -400,7 +400,7 @@
             <div class="flex-1 overflow-y-auto px-5 py-7 sm:px-8 lg:px-12 xl:px-16 lg:py-10">
 
                 {{-- ===================================================== --}}
-                {{-- PANEL 1 — Profile & Alumni Levels                      --}}
+                {{-- PANEL 1 - Profile & Alumni Levels                      --}}
                 {{-- ===================================================== --}}
                 @php
                     $batchOptions = \App\Models\Batch::query()
@@ -526,7 +526,7 @@
                 </section>
 
                 {{-- ===================================================== --}}
-                {{-- PANEL 2 — Alumni Level                                  --}}
+                {{-- PANEL 2 - Alumni Level                                  --}}
                 {{-- ===================================================== --}}
                 <section id="panel-2" class="panel hidden">
                     <div class="max-w-3xl space-y-6">
@@ -647,7 +647,7 @@
                 </section>
 
                 {{-- ===================================================== --}}
-                {{-- PANEL 3 — Address                                       --}}
+                {{-- PANEL 3 - Address                                       --}}
                 {{-- ===================================================== --}}
                 <section id="panel-3" class="panel hidden">
                     <div class="max-w-2xl space-y-5">
@@ -776,7 +776,7 @@
                 </section>
 
                 {{-- ===================================================== --}}
-                {{-- PANEL 4 — Volunteer Interest                            --}}
+                {{-- PANEL 4 - Volunteer Interest                            --}}
                 {{-- ===================================================== --}}
                 <section id="panel-4" class="panel hidden">
                     <div class="max-w-2xl space-y-6">
@@ -894,7 +894,7 @@
                 </section>
 
                 {{-- ===================================================== --}}
-                {{-- PANEL 5 — Account credentials                          --}}
+                {{-- PANEL 5 - Account credentials                          --}}
                 {{-- ===================================================== --}}
                 <section id="panel-5" class="panel hidden">
                     <div class="max-w-2xl space-y-5">
@@ -1054,7 +1054,7 @@
 {{-- ================================================================== --}}
 <script>
 const STEPS = [
-    { short: "Profile",  sub: "Personal details",         title: "Personal information",    desc: "Tell us about yourself — your name, contact number, and occupation." },
+    { short: "Profile",  sub: "Personal details",         title: "Personal information",    desc: "Tell us about yourself - your name, contact number, and occupation." },
     { short: "Alumni",   sub: "Levels attended",          title: "Alumni membership",        desc: "Select the HSST level or levels you attended." },
     { short: "Address",  sub: "Current location",         title: "Address details",          desc: "Provide your current mailing or residential address." },
     { short: "Interest", sub: "Volunteer interest",       title: "Involvement",              desc: "Optionally share your committee interest." },
@@ -1346,8 +1346,8 @@ function checkPasswordStrength(val) {
     const colors = ['bg-slate-200','bg-red-500','bg-amber-500','bg-emerald-500','bg-blue-600'];
     const labels = [
         "Use letters, numbers, and symbols for a stronger password.",
-        "Weak — try adding numbers or symbols.",
-        "Fair — add uppercase or symbols.",
+        "Weak - try adding numbers or symbols.",
+        "Fair - add uppercase or symbols.",
         "Good password.",
         "Strong password!",
     ];

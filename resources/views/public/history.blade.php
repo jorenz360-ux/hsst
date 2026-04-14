@@ -296,7 +296,7 @@
 </div>
 
 <!-- ════════════════════════════════════════
-     HERO — MAGAZINE COVER
+     HERO - MAGAZINE COVER
 ════════════════════════════════════════ -->
 <section class="relative min-h-[72vh] md:min-h-[80vh] flex items-end overflow-hidden pt-24 md:pt-0">
   <div class="absolute inset-0">
@@ -338,7 +338,7 @@
       <p class="garamond text-white/70 mb-8 max-w-xl animate-fade-up"
          style="font-size:clamp(1rem,1.5vw,1.15rem);animation-delay:.32s;">
         From a humble dormitory for girls in Tagbilaran to a thriving institution
-        that continues to shape lives — Holy Spirit School of Tagbilaran carries
+        that continues to shape lives - Holy Spirit School of Tagbilaran carries
         a legacy built on mission, excellence, and love for community.
       </p>
 
@@ -364,7 +364,7 @@
 </section>
 
 <!-- ════════════════════════════════════════
-     QUICK FACTS — EDITORIAL DATA POINTS
+     QUICK FACTS - EDITORIAL DATA POINTS
 ════════════════════════════════════════ -->
 <section style="background:var(--paper-dark,#f0ece3);">
   <div class="max-w-7xl mx-auto px-6 py-10 sm:py-12">
@@ -393,7 +393,7 @@
 </section>
 
 <!-- ════════════════════════════════════════
-     SHORT HISTORY — FEATURE ARTICLE
+     SHORT HISTORY - FEATURE ARTICLE
 ════════════════════════════════════════ -->
 <section class="py-20 sm:py-28" style="background:var(--paper);">
   <div class="max-w-5xl mx-auto px-6">
@@ -442,7 +442,7 @@
 
         <p class="garamond text-ink/70 reveal d2">
           On October 16, 1926, on the feast of Nuestra Señora del Pilar, the first three SSpS Sisters
-          — Sr. Laeticia, Sr. Blasia, and Sr. Josaphata — arrived in Tagbilaran. This was in answer
+          - Sr. Laeticia, Sr. Blasia, and Sr. Josaphata - arrived in Tagbilaran. This was in answer
           to the request made by Father Gelacio Ramirez for the SSpS Sisters to work in his parish
           in Tagbilaran, Bohol.
         </p>
@@ -505,7 +505,7 @@
         <div class="p-7 border-b border-ink/10" style="background:var(--paper-dark,#f0ece3);">
           <span class="kicker block mb-3" style="color:var(--royal);">January 2015</span>
           <p class="garamond text-ink/65" style="font-size:.98rem;">
-            HSST underwent its first survey visit as an Integrated Basic Education Program —
+            HSST underwent its first survey visit as an Integrated Basic Education Program -
             more than two and a half years after challenges involving ownership and damage
             from the October 2013 earthquake.
           </p>
@@ -515,7 +515,7 @@
           <span class="kicker block mb-3" style="color:var(--teal);">2016–Present</span>
           <p class="garamond text-ink/65" style="font-size:.98rem;">
             The school transferred fully to its new three-hectare site at J.A. Clarin, Purok 3,
-            Dao District, Tagbilaran City — and opened the new Senior High School offering ABM,
+            Dao District, Tagbilaran City - and opened the new Senior High School offering ABM,
             GAS, and STEM tracks.
           </p>
         </div>
@@ -559,7 +559,7 @@
 </section>
 
 <!-- ════════════════════════════════════════
-     TIMELINE — NEWSPAPER COLUMN
+     TIMELINE - NEWSPAPER COLUMN
 ════════════════════════════════════════ -->
 <section class="py-20 sm:py-28" style="background:var(--paper-dark,#f0ece3);">
   <div class="max-w-5xl mx-auto px-6">
@@ -632,7 +632,7 @@
 </section>
 
 <!-- ════════════════════════════════════════
-     CTA — CRUSADERS FOREVER
+     CTA - CRUSADERS FOREVER
 ════════════════════════════════════════ -->
 <section class="py-24 sm:py-32 text-center" style="background:var(--ink);">
   <div class="max-w-3xl mx-auto px-6">
@@ -674,7 +674,7 @@
 </section>
 
 <!-- ════════════════════════════════════════
-     FOOTER — MASTHEAD COLOPHON
+     FOOTER - MASTHEAD COLOPHON
 ════════════════════════════════════════ -->
 <footer id="contact" class="bg-ink pt-16 pb-8">
   <div class="max-w-7xl mx-auto px-6">

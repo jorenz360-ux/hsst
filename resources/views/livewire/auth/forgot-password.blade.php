@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Forgot Password — HSST Alumni Portal</title>
+    <title>Forgot Password - HSST Alumni Portal</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -150,7 +150,7 @@
 <div class="min-h-screen flex flex-col md:flex-row">
 
     {{-- ================================================================== --}}
-    {{-- SIDEBAR — Desktop only                                              --}}
+    {{-- SIDEBAR - Desktop only                                              --}}
     {{-- ================================================================== --}}
     <aside class="hidden md:flex md:flex-col md:w-[340px] lg:w-[400px] xl:w-[440px] flex-shrink-0 relative overflow-hidden"
            style="background: linear-gradient(160deg, var(--royal-700) 0%, var(--royal-900) 100%);">
@@ -273,7 +273,7 @@
     </aside>
 
     {{-- ================================================================== --}}
-    {{-- MAIN CONTENT — Form area                                            --}}
+    {{-- MAIN CONTENT - Form area                                            --}}
     {{-- ================================================================== --}}
     <main class="flex-1 flex flex-col min-h-screen md:min-h-0 bg-white md:bg-transparent">
 

@@ -141,7 +141,7 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-medium text-[#1a1410]">Click to upload proof</p>
-                                    <p class="mt-0.5 text-xs text-[#9a9080]">JPG, JPEG, PNG, PDF — max 5MB</p>
+                                    <p class="mt-0.5 text-xs text-[#9a9080]">JPG, JPEG, PNG, PDF - max 5MB</p>
                                 </div>
                                 <input
                                     type="file"
@@ -298,13 +298,13 @@
                                     ₱{{ number_format($donation->amount ?? 0, 2) }}
                                 </td>
                                 <td class="px-5 py-4 text-[13px] text-[#7a7060]">
-                                    {{ $donation->reference_number ?: '—' }}
+                                    {{ $donation->reference_number ?: '-' }}
                                 </td>
                                 <td class="px-5 py-4 text-[13px] text-[#7a7060]">
-                                    {{ optional($donation->created_at)->format('M d, Y h:i A') ?: '—' }}
+                                    {{ optional($donation->created_at)->format('M d, Y h:i A') ?: '-' }}
                                 </td>
                                 <td class="px-5 py-4 text-[13px] text-[#7a7060]">
-                                    {{ optional($donation->paid_at)->format('M d, Y h:i A') ?: '—' }}
+                                    {{ optional($donation->paid_at)->format('M d, Y h:i A') ?: '-' }}
                                 </td>
                                 <td class="px-5 py-4">
                                     @if ($donation->status === 'verified')
@@ -338,7 +338,7 @@
                                     @endif
                                 </td>
                                 <td class="px-5 py-4 text-[13px] text-[#7a7060]">
-                                    {{ $donation->remarks ?: '—' }}
+                                    {{ $donation->remarks ?: '-' }}
                                 </td>
                             </tr>
 
@@ -380,7 +380,7 @@
                                     ₱{{ number_format($donation->amount ?? 0, 2) }}
                                 </p>
                                 <p class="mt-0.5 text-xs text-[#9a9080]">
-                                    {{ optional($donation->created_at)->format('M d, Y h:i A') ?: '—' }}
+                                    {{ optional($donation->created_at)->format('M d, Y h:i A') ?: '-' }}
                                 </p>
                             </div>
 
@@ -402,11 +402,11 @@
                         <div class="mt-3.5 grid gap-2.5 sm:grid-cols-2">
                             <div class="rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] px-3.5 py-3">
                                 <p class="text-[10px] font-semibold uppercase tracking-[.1em] text-[#9a9080]">Reference Number</p>
-                                <p class="mt-1 text-[13px] text-[#1a1410]">{{ $donation->reference_number ?: '—' }}</p>
+                                <p class="mt-1 text-[13px] text-[#1a1410]">{{ $donation->reference_number ?: '-' }}</p>
                             </div>
                             <div class="rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] px-3.5 py-3">
                                 <p class="text-[10px] font-semibold uppercase tracking-[.1em] text-[#9a9080]">Verified At</p>
-                                <p class="mt-1 text-[13px] text-[#1a1410]">{{ optional($donation->paid_at)->format('M d, Y h:i A') ?: '—' }}</p>
+                                <p class="mt-1 text-[13px] text-[#1a1410]">{{ optional($donation->paid_at)->format('M d, Y h:i A') ?: '-' }}</p>
                             </div>
 
                             @if ($donation->remarks)

@@ -153,7 +153,7 @@
 <div x-data="{ mobileOpen: false }">
 
 {{-- ══════════════════════════════════════════════
-     TOP STRIP — desktop only
+     TOP STRIP - desktop only
 ══════════════════════════════════════════════ --}}
 <div style="background:var(--ink);" class="hidden md:block border-b border-white/10">
     <div class="max-w-7xl mx-auto px-6 py-1.5 flex items-center justify-between">

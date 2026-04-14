@@ -263,7 +263,7 @@
                                 </td>
 
                                 <td class="px-3 py-2.5 text-sm font-medium text-gray-800">
-                                    {{ $signup->committee?->name ?? '—' }}
+                                    {{ $signup->committee?->name ?? '-' }}
                                 </td>
 
                                 <td class="px-3 py-2.5">

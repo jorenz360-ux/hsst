@@ -549,7 +549,7 @@
                                                     'elementary' => 'Elem',
                                                     'highschool' => 'H.S.',
                                                     'college' => 'Col',
-                                                    default => '—',
+                                                    default => '-',
                                                 };
                                             @endphp
                                             <span class="edu-tag {{ $levelTag }}" title="{{ str($edu->batch?->level)->headline() }} &bull; {{ $edu->batch?->schoolyear }} &bull; Grad {{ $edu->batch?->yeargrad }}">
@@ -561,7 +561,7 @@
                                         @endforeach
                                     </div>
                                 @else
-                                    <span class="text-xs text-slate-400">—</span>
+                                    <span class="text-xs text-slate-400">-</span>
                                 @endif
                             </td>
 
@@ -769,12 +769,12 @@
                                 ] as [$lbl, $val])
                                     <div>
                                         <p class="detail-label">{{ $lbl }}</p>
-                                        <p class="detail-val">{{ $val ?: '—' }}</p>
+                                        <p class="detail-val">{{ $val ?: '-' }}</p>
                                     </div>
                                 @endforeach
                                 <div class="sm:col-span-2">
                                     <p class="detail-label">Occupation</p>
-                                    <p class="detail-val">{{ $suAlumni->occupation ?: '—' }}</p>
+                                    <p class="detail-val">{{ $suAlumni->occupation ?: '-' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -786,7 +786,7 @@
                             <div class="grid gap-3.5 sm:grid-cols-2">
                                 <div class="sm:col-span-2">
                                     <p class="detail-label">Street Address</p>
-                                    <p class="detail-val">{{ $suAlumni->address_line_1 ?: '—' }}</p>
+                                    <p class="detail-val">{{ $suAlumni->address_line_1 ?: '-' }}</p>
                                 </div>
                                 @if ($suAlumni->address_line_2)
                                     <div class="sm:col-span-2">
@@ -802,7 +802,7 @@
                                 ] as [$lbl, $val])
                                     <div>
                                         <p class="detail-label">{{ $lbl }}</p>
-                                        <p class="detail-val">{{ $val ?: '—' }}</p>
+                                        <p class="detail-val">{{ $val ?: '-' }}</p>
                                     </div>
                                 @endforeach
                             </div>
@@ -850,7 +850,7 @@
                                             ] as [$lbl, $val])
                                                 <div>
                                                     <p class="detail-label">{{ $lbl }}</p>
-                                                    <p class="detail-val">{{ $val ?: '—' }}</p>
+                                                    <p class="detail-val">{{ $val ?: '-' }}</p>
                                                 </div>
                                             @endforeach
                                         </div>

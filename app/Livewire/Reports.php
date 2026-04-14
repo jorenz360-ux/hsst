@@ -351,15 +351,15 @@ class Reports extends Component
                         $donation->alumni->mname,
                         $donation->alumni->lname,
                     ])->filter()->implode(' '))
-                    : '—';
+                    : '-';
 
                 fputcsv($handle, [
                     $donorName,
-                    $education?->batch?->level ? str($education->batch->level)->headline()->toString() : '—',
-                    $education?->batch?->yeargrad ?? '—',
-                    $education?->batch?->schoolyear ?? '—',
+                    $education?->batch?->level ? str($education->batch->level)->headline()->toString() : '-',
+                    $education?->batch?->yeargrad ?? '-',
+                    $education?->batch?->schoolyear ?? '-',
                     $donation->amount,
-                    $donation->created_at?->format('Y-m-d h:i A') ?? '—',
+                    $donation->created_at?->format('Y-m-d h:i A') ?? '-',
                 ]);
             }
 
@@ -434,20 +434,20 @@ class Reports extends Component
                 ])->filter()->implode(' '));
 
                 fputcsv($handle, [
-                    $fullName ?: '—',
-                    $member->batch?->level ? str($member->batch->level)->headline()->toString() : '—',
-                    $member->batch?->yeargrad ?? '—',
-                    $member->batch?->schoolyear ?? '—',
+                    $fullName ?: '-',
+                    $member->batch?->level ? str($member->batch->level)->headline()->toString() : '-',
+                    $member->batch?->yeargrad ?? '-',
+                    $member->batch?->schoolyear ?? '-',
                     $member->did_graduate ? 'Yes' : 'No',
                     $member->is_batch_rep ? 'Yes' : 'No',
-                    $member->alumni?->occupation ?? '—',
-                    $member->alumni?->cellphone ?? '—',
-                    $member->alumni?->address_line_1 ?? '—',
-                    $member->alumni?->address_line_2 ?? '—',
-                    $member->alumni?->city ?? '—',
-                    $member->alumni?->state_province ?? '—',
-                    $member->alumni?->postal_code ?? '—',
-                    $member->alumni?->country ?? '—',
+                    $member->alumni?->occupation ?? '-',
+                    $member->alumni?->cellphone ?? '-',
+                    $member->alumni?->address_line_1 ?? '-',
+                    $member->alumni?->address_line_2 ?? '-',
+                    $member->alumni?->city ?? '-',
+                    $member->alumni?->state_province ?? '-',
+                    $member->alumni?->postal_code ?? '-',
+                    $member->alumni?->country ?? '-',
                 ]);
             }
 
@@ -490,17 +490,17 @@ class Reports extends Component
                         $registration->alumni->mname,
                         $registration->alumni->lname,
                     ])->filter()->implode(' '))
-                    : '—';
+                    : '-';
 
                 fputcsv($handle, [
-                    $registration->event?->title ?? '—',
-                    $registration->event?->event_date?->format('Y-m-d h:i A') ?? '—',
+                    $registration->event?->title ?? '-',
+                    $registration->event?->event_date?->format('Y-m-d h:i A') ?? '-',
                     $alumniName,
-                    $education?->batch?->level ? str($education->batch->level)->headline()->toString() : '—',
-                    $education?->batch?->yeargrad ?? '—',
-                    $education?->batch?->schoolyear ?? '—',
-                    $registration->status ?? '—',
-                    $registration->created_at?->format('Y-m-d h:i A') ?? '—',
+                    $education?->batch?->level ? str($education->batch->level)->headline()->toString() : '-',
+                    $education?->batch?->yeargrad ?? '-',
+                    $education?->batch?->schoolyear ?? '-',
+                    $registration->status ?? '-',
+                    $registration->created_at?->format('Y-m-d h:i A') ?? '-',
                 ]);
             }
 

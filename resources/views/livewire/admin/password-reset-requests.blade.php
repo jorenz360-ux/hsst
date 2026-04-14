@@ -410,7 +410,7 @@
                                         <span class="text-xs text-slate-600 truncate max-w-[160px]">{{ $request->email }}</span>
                                     </div>
                                 @else
-                                    <span class="text-xs text-slate-400">—</span>
+                                    <span class="text-xs text-slate-400">-</span>
                                 @endif
                             </td>
 
@@ -427,7 +427,7 @@
                                         {{ $request->requested_at->diffForHumans() }}
                                     </p>
                                 @else
-                                    <span class="text-xs text-slate-400">—</span>
+                                    <span class="text-xs text-slate-400">-</span>
                                 @endif
                             </td>
 
@@ -465,7 +465,7 @@
                                         @endif
                                     </div>
                                 @else
-                                    <span class="text-xs text-slate-300">—</span>
+                                    <span class="text-xs text-slate-300">-</span>
                                 @endif
                             </td>
 

@@ -82,7 +82,7 @@
 
                                         {{-- Name --}}
                                         <td class="px-6 py-4 text-sm text-zinc-900">
-                                            {{ $fullName ?: '—' }}
+                                            {{ $fullName ?: '-' }}
                                         </td>
 
                                         {{-- Email --}}

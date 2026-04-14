@@ -177,7 +177,7 @@
                                             </td>
 
                                             <td class="px-5 py-4 text-gray-600">
-                                                {{ $payment->registration->event->title ?? '—' }}
+                                                {{ $payment->registration->event->title ?? '-' }}
                                             </td>
 
                                             <td class="px-5 py-4">
@@ -209,7 +209,7 @@
                                             </td>
 
                                             <td class="px-5 py-4">
-                                                <span class="font-mono text-xs text-gray-500">{{ $payment->reference_number ?? '—' }}</span>
+                                                <span class="font-mono text-xs text-gray-500">{{ $payment->reference_number ?? '-' }}</span>
                                             </td>
 
                                             <td class="px-5 py-4">

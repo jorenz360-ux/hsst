@@ -273,20 +273,20 @@
                                             @if ($donation->alumni)
                                                 {{ trim(collect([$donation->alumni->fname, $donation->alumni->mname, $donation->alumni->lname])->filter()->implode(' ')) }}
                                             @else
-                                                —
+                                                -
                                             @endif
                                         </td>
                                         <td class="px-5 py-4 text-gray-600 sm:px-6">
-                                            {{ $donation->alumni?->batch?->yeargrad ?? '—' }}
+                                            {{ $donation->alumni?->batch?->yeargrad ?? '-' }}
                                         </td>
                                         <td class="px-5 py-4 text-gray-600 sm:px-6">
-                                            {{ $donation->alumni?->batch?->schoolyear ?? '—' }}
+                                            {{ $donation->alumni?->batch?->schoolyear ?? '-' }}
                                         </td>
                                         <td class="px-5 py-4 text-right font-semibold text-gray-900 sm:px-6">
                                             ₱{{ number_format($donation->amount, 2) }}
                                         </td>
                                         <td class="px-5 py-4 text-gray-500 sm:px-6">
-                                            {{ $donation->created_at?->format('M d, Y h:i A') ?? '—' }}
+                                            {{ $donation->created_at?->format('M d, Y h:i A') ?? '-' }}
                                         </td>
                                     </tr>
                                 @empty
@@ -467,10 +467,10 @@
                                             {{ trim(collect([$member->fname, $member->mname, $member->lname])->filter()->implode(' ')) }}
                                         </td>
                                         <td class="px-5 py-4 text-gray-600 sm:px-6">
-                                            {{ $member->batch?->yeargrad ?? '—' }}
+                                            {{ $member->batch?->yeargrad ?? '-' }}
                                         </td>
                                         <td class="px-5 py-4 text-gray-600 sm:px-6">
-                                            {{ $member->batch?->schoolyear ?? '—' }}
+                                            {{ $member->batch?->schoolyear ?? '-' }}
                                         </td>
                                         <td class="px-5 py-4 sm:px-6">
                                             @if ($member->is_batch_rep)
@@ -484,10 +484,10 @@
                                             @endif
                                         </td>
                                         <td class="px-5 py-4 text-gray-600 sm:px-6">
-                                            {{ $member->occupation ?: '—' }}
+                                            {{ $member->occupation ?: '-' }}
                                         </td>
                                         <td class="px-5 py-4 text-gray-600 sm:px-6">
-                                            {{ $fullAddress ?: '—' }}
+                                            {{ $fullAddress ?: '-' }}
                                         </td>
                                     </tr>
                                 @empty
@@ -536,7 +536,7 @@
                                     <option value="{{ $eventOption->id }}">
                                         {{ $eventOption->title }}
                                         @if ($eventOption->event_date)
-                                            — {{ $eventOption->event_date->format('M d, Y') }}
+                                            - {{ $eventOption->event_date->format('M d, Y') }}
                                         @endif
                                     </option>
                                 @endforeach
@@ -646,20 +646,20 @@
                                 @forelse ($eventRegistrations as $registration)
                                     <tr class="transition hover:bg-emerald-50/40">
                                         <td class="px-5 py-4 text-gray-700 sm:px-6">
-                                            {{ $registration->event?->title ?? '—' }}
+                                            {{ $registration->event?->title ?? '-' }}
                                         </td>
                                         <td class="px-5 py-4 font-medium text-gray-900 sm:px-6">
                                             @if ($registration->alumni)
                                                 {{ trim(collect([$registration->alumni->fname, $registration->alumni->mname, $registration->alumni->lname])->filter()->implode(' ')) }}
                                             @else
-                                                —
+                                                -
                                             @endif
                                         </td>
                                         <td class="px-5 py-4 text-gray-600 sm:px-6">
-                                            {{ $registration->alumni?->batch?->yeargrad ?? '—' }}
+                                            {{ $registration->alumni?->batch?->yeargrad ?? '-' }}
                                         </td>
                                         <td class="px-5 py-4 text-gray-600 sm:px-6">
-                                            {{ $registration->alumni?->batch?->schoolyear ?? '—' }}
+                                            {{ $registration->alumni?->batch?->schoolyear ?? '-' }}
                                         </td>
                                         <td class="px-5 py-4 sm:px-6">
                                             @php
@@ -671,11 +671,11 @@
                                                 };
                                             @endphp
                                             <span class="inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] {{ $statusClasses }}">
-                                                {{ $registration->status ?? '—' }}
+                                                {{ $registration->status ?? '-' }}
                                             </span>
                                         </td>
                                         <td class="px-5 py-4 text-gray-500 sm:px-6">
-                                            {{ $registration->created_at?->format('M d, Y h:i A') ?? '—' }}
+                                            {{ $registration->created_at?->format('M d, Y h:i A') ?? '-' }}
                                         </td>
                                     </tr>
                                 @empty

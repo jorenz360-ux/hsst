@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign In — HSST Alumni Portal</title>
+    <title>Sign In - HSST Alumni Portal</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -50,7 +50,7 @@
             box-shadow: 0 2px 10px rgba(21, 53, 145, 0.3);
         }
 
-        /* Input focus state — royal blue ring with faint gold tint */
+        /* Input focus state - royal blue ring with faint gold tint */
         .field-input:focus {
             outline: none;
             border-color: var(--royal-600);
@@ -126,7 +126,7 @@
 <div class="min-h-screen flex flex-col md:flex-row">
 
     {{-- ================================================================== --}}
-    {{-- SIDEBAR — Desktop only                                              --}}
+    {{-- SIDEBAR - Desktop only                                              --}}
     {{-- ================================================================== --}}
     <aside class="hidden md:flex md:flex-col md:w-[340px] lg:w-[400px] xl:w-[440px] flex-shrink-0 relative overflow-hidden"
            style="background: linear-gradient(160deg, var(--royal-700) 0%, var(--royal-900) 100%);">
@@ -251,7 +251,7 @@
     </aside>
 
     {{-- ================================================================== --}}
-    {{-- MAIN CONTENT — Form area                                            --}}
+    {{-- MAIN CONTENT - Form area                                            --}}
     {{-- ================================================================== --}}
     <main class="flex-1 flex flex-col min-h-screen md:min-h-0 bg-white md:bg-transparent">
 
@@ -299,7 +299,7 @@
         <div class="flex flex-1 items-center justify-center px-5 py-8 sm:px-8 md:px-14 lg:px-20 xl:px-28">
             <div class="w-full max-w-[440px]">
 
-                {{-- Desktop heading (hidden on mobile — shown in mobile header) --}}
+                {{-- Desktop heading (hidden on mobile - shown in mobile header) --}}
                 <div class="hidden md:block mb-8">
                     <p class="text-xs font-bold uppercase tracking-[0.15em] mb-3" style="color: var(--gold-500);">
                         Alumni Portal

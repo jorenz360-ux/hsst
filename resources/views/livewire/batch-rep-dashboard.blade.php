@@ -147,11 +147,11 @@
                                     </td>
 
                                     <td class="px-5 py-4 text-zinc-700">
-                                        {{ $member->user?->email ?? '—' }}
+                                        {{ $member->user?->email ?? '-' }}
                                     </td>
 
                                     <td class="px-5 py-4 text-zinc-700">
-                                        {{ $member->user?->username ?? '—' }}
+                                        {{ $member->user?->username ?? '-' }}
                                     </td>
 
                                     <td class="px-5 py-4">
