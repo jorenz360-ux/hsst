@@ -2,26 +2,25 @@
 
 namespace App\Livewire;
 
+use App\Mail\WelcomeCredentials;
 use App\Models\Alumni;
 use App\Models\AlumniEducation;
 use App\Models\Batch;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 
 #[Title('Add User')]
 class CreateUser extends Component
 {
-    public string $generatedUsername = '';
-    public string $generatedPassword = '';
-    public bool $showCredentials = false;
-
     // Alumni fields
     public string $lname = '';
     public string $fname = '';
     public string $mname = '';
+    public string $email = '';
 
     // Education fields
     public ?int $batch_id = null;
@@ -31,7 +30,11 @@ class CreateUser extends Component
 
     public function getBatchesProperty()
     {
-        return Batch::query()->orderBy('level')->orderByDesc('yeargrad')->get();
+        return Batch::query()
+            ->orderByRaw("FIELD(level, 'elementary', 'highschool', 'college')")
+            ->orderByDesc('yeargrad')
+            ->get()
+            ->groupBy('level');
     }
 
     public function getBatchHasRepProperty(): bool
@@ -53,9 +56,8 @@ class CreateUser extends Component
     public function resetForm(): void
     {
         $this->reset([
-            'lname', 'fname', 'mname',
+            'lname', 'fname', 'mname', 'email',
             'batch_id', 'is_batch_rep', 'did_graduate', 'school_year_attended',
-            'showCredentials', 'generatedUsername', 'generatedPassword',
         ]);
     }
 
@@ -65,17 +67,17 @@ class CreateUser extends Component
             'lname'                => 'required|string|max:80',
             'fname'                => 'required|string|max:80',
             'mname'                => 'nullable|string|max:80',
+            'email'                => 'required|email|max:255|unique:users,email',
             'batch_id'             => 'required|exists:batches,id',
             'is_batch_rep'         => 'boolean',
             'did_graduate'         => 'boolean',
             'school_year_attended' => 'nullable|string|max:50',
         ]);
 
-        $this->generatedUsername = $this->generateUsername();
-        $this->generatedPassword = $this->generateTempPassword();
+        $username = $this->generateUsername();
+        $temporaryPassword = $this->generateTempPassword();
 
-        DB::transaction(function () {
-            // If marking as batch rep, demote any existing rep for this batch
+        DB::transaction(function () use ($username, $temporaryPassword) {
             if ($this->is_batch_rep) {
                 AlumniEducation::where('batch_id', $this->batch_id)
                     ->where('is_batch_rep', true)
@@ -97,22 +99,26 @@ class CreateUser extends Component
             ]);
 
             $user = User::create([
-                'username'             => $this->generatedUsername,
-                'password'             => Hash::make($this->generatedPassword),
+                'username'             => $username,
+                'password'             => Hash::make($temporaryPassword),
                 'alumni_id'            => $alumni->id,
                 'must_change_password' => true,
-                'email'                => null,
+                'email'                => $this->email,
             ]);
 
             $roleToAssign = $this->is_batch_rep ? 'batch-representative' : 'alumni';
             $user->syncRoles([$roleToAssign]);
         });
 
-        $this->showCredentials = true;
+        $fullName = trim("{$this->fname} {$this->lname}");
+        Mail::to($this->email)->send(new WelcomeCredentials($fullName, $username, $temporaryPassword));
+
         session()->flash('success', $this->is_batch_rep
-            ? 'Batch representative account created successfully.'
-            : 'Alumni account created successfully.'
+            ? "Batch representative account created. Credentials sent to {$this->email}."
+            : "Alumni account created. Credentials sent to {$this->email}."
         );
+
+        $this->resetForm();
     }
 
     protected function generateUsername(): string

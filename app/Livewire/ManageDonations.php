@@ -151,19 +151,24 @@ class ManageDonations extends Component
 
         $donations = (clone $query)->paginate($this->perPage);
 
-        $verifiedPaidTotal = (clone $this->baseQuery())
-            ->where('status', 'verified')
-            ->sum('amount');
+        $baseClone = fn () => clone $this->baseQuery();
 
-        $pendingCount = (clone $this->baseQuery())
-            ->where('status', 'pending')
-            ->count();
+        $verifiedPaidTotal = $baseClone()->where('status', 'verified')->sum('amount');
+        $totalAmount       = $baseClone()->sum('amount');
+        $pendingCount      = $baseClone()->where('status', 'pending')->count();
+        $verifiedCount     = $baseClone()->where('status', 'verified')->count();
+        $rejectedCount     = $baseClone()->where('status', 'rejected')->count();
+        $totalCount        = $baseClone()->count();
 
         return view('livewire.manage-donations', [
-            'donations' => $donations,
-            'verifiedPaidTotal' => $verifiedPaidTotal,
-            'pendingCount' => $pendingCount,
-            'scopeBatchId' => $this->scopeBatchId,
+            'donations'        => $donations,
+            'verifiedPaidTotal'=> $verifiedPaidTotal,
+            'totalAmount'      => $totalAmount,
+            'pendingCount'     => $pendingCount,
+            'verifiedCount'    => $verifiedCount,
+            'rejectedCount'    => $rejectedCount,
+            'totalCount'       => $totalCount,
+            'scopeBatchId'     => $this->scopeBatchId,
             'scopeEducationId' => $this->scopeEducationId,
             'currentEducation' => $this->representativeEducation(),
         ]);

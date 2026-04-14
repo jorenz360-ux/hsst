@@ -37,6 +37,9 @@ class ManageUsers extends Component
     public ?int $viewUserId = null;
     public bool $showViewModal = false;
 
+    public ?int $confirmDeleteId = null;
+    public bool $showDeleteModal = false;
+
     protected array $queryString = [
         'search' => ['except' => ''],
         'role' => ['except' => self::DEFAULT_ROLE],
@@ -110,6 +113,36 @@ class ManageUsers extends Component
     {
         $this->showViewModal = false;
         $this->viewUserId = null;
+    }
+
+    public function confirmDelete(int $userId): void
+    {
+        $this->confirmDeleteId = $userId;
+        $this->showDeleteModal = true;
+    }
+
+    public function cancelDelete(): void
+    {
+        $this->confirmDeleteId = null;
+        $this->showDeleteModal = false;
+    }
+
+    public function deleteUser(): void
+    {
+        $user = User::find($this->confirmDeleteId);
+
+        if ($user) {
+            $alumni = $user->alumni;
+            $user->delete();
+
+            if ($alumni) {
+                $alumni->delete();
+            }
+        }
+
+        $this->cancelDelete();
+        $this->closeViewModal();
+        session()->flash('deleted', 'User account deleted successfully.');
     }
 
     protected function normalizePerPage(): void
