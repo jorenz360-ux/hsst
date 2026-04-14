@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HSSTian Alumni Association — Holy Spirit School of Tagbilaran</title>
+  <title>HSSTian Alumni Association - Holy Spirit School of Tagbilaran</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,700;1,900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -411,7 +411,7 @@
   </div>
   <div class="ticker-wrap flex-1 py-3">
     <div class="ticker-inner kicker text-white/45" style="letter-spacing:.13em;">
-      <span class="mx-8">HSSTian Alumni Centennial Celebration — 1926 to 2026</span>
+      <span class="mx-8">HSSTian Alumni Centennial Celebration - 1926 to 2026</span>
       <span class="mx-3" style="color:var(--gold);">✦</span>
       <span class="mx-8">CRUSADE Campaign · Target: PhP 100,000 per Batch</span>
       <span class="mx-3" style="color:var(--gold);">✦</span>
@@ -423,7 +423,7 @@
       <span class="mx-3" style="color:var(--gold);">✦</span>
       <span class="mx-8">Elevating Campus Experience for Future Crusaders</span>
       <span class="mx-3" style="color:var(--gold);">✦</span>
-      <span class="mx-8">HSSTian Alumni Centennial Celebration — 1926 to 2026</span>
+      <span class="mx-8">HSSTian Alumni Centennial Celebration - 1926 to 2026</span>
       <span class="mx-3" style="color:var(--gold);">✦</span>
       <span class="mx-8">CRUSADE Campaign · Target: PhP 100,000 per Batch</span>
       <span class="mx-3" style="color:var(--gold);">✦</span>
@@ -440,7 +440,7 @@
 </div>
 
 <!-- ══════════════════════════════════════
-     ABOUT — ALUMNI COMMUNITY
+     ABOUT - ALUMNI COMMUNITY
 ══════════════════════════════════════ -->
 <section id="about" class="py-20 sm:py-28 bg-white">
   <div class="max-w-7xl mx-auto px-6">
@@ -537,12 +537,12 @@
 
         <p class="garamond text-ink/65 reveal d2 mb-5">
           The HSSTian Alumni Association is the official organization of graduates
-          of Holy Spirit School of Tagbilaran — the Crusaders. For generations, we have
+          of Holy Spirit School of Tagbilaran - the Crusaders. For generations, we have
           carried the school's mission of truth, love, and excellence far beyond the
           campus gates, into every corner of the Philippines and the world.
         </p>
         <p class="garamond text-ink/65 reveal d2 mb-8">
-          As we approach our Centennial, we are called once again to give back — to the
+          As we approach our Centennial, we are called once again to give back - to the
           school that shaped our character, deepened our faith, and ignited our purpose.
           The HSSTian Alumni Association is the bridge between the legacy of the past
           and the promise of the future.
@@ -789,7 +789,7 @@
         Crusaders Who <em style="color:var(--royal);">Carried the Cross.</em>
       </h2>
       <p class="garamond text-ink/50 mt-4 max-w-xl mx-auto">
-        From Tagbilaran to the world — HSSTians who turned school values into extraordinary lives.
+        From Tagbilaran to the world - HSSTians who turned school values into extraordinary lives.
       </p>
     </div>
 
@@ -860,7 +860,7 @@
 </section>
 
 <!-- ══════════════════════════════════════
-     SUPPORT — CRUSADE DONATION
+     SUPPORT - CRUSADE DONATION
 ══════════════════════════════════════ -->
 <section id="crusade" class="relative py-20 sm:py-28 overflow-hidden" style="background:var(--ink);">
 
@@ -881,7 +881,7 @@
       </h2>
       <p class="garamond mt-4 max-w-xl mx-auto" style="color:rgba(255,255,255,.5);">
         Be generous. Join us in shaping a brighter future for our students and community,
-        where every gift — regardless of size — leaves a lasting impact.
+        where every gift - regardless of size - leaves a lasting impact.
       </p>
     </div>
 
@@ -894,7 +894,7 @@
         </h3>
         <p class="garamond mb-5" style="color:rgba(255,255,255,.5);">
           Although <strong style="color:var(--gold);">PhP 100,000 per batch</strong> is recommended,
-          every gift — no matter the amount — is invaluable and deeply cherished.
+          every gift - no matter the amount - is invaluable and deeply cherished.
         </p>
         <p class="garamond" style="color:rgba(255,255,255,.5);">
           Your support will fuel our Centennial Celebrations, enhancing campus life,
@@ -981,7 +981,7 @@
         </div>
         <h4 class="display text-white text-xl font-bold mb-3">Elevating Campus Experience</h4>
         <p class="garamond" style="color:rgba(255,255,255,.4);font-size:.93rem;">
-          Transformative upgrades to learning spaces, facilities, and technology —
+          Transformative upgrades to learning spaces, facilities, and technology -
           ensuring every student thrives in an environment worthy of their potential.
         </p>
       </div>
@@ -997,7 +997,7 @@
         </div>
         <h4 class="display text-white text-xl font-bold mb-3">Faculty Development</h4>
         <p class="garamond" style="color:rgba(255,255,255,.5);font-size:.93rem;">
-          Investing in the dedicated educators who shape future Crusaders — through training,
+          Investing in the dedicated educators who shape future Crusaders - through training,
           scholarships, and professional growth programs.
         </p>
       </div>
@@ -1013,7 +1013,7 @@
         </div>
         <h4 class="display text-white text-xl font-bold mb-3">Crusaders Scholarship Fund</h4>
         <p class="garamond" style="color:rgba(255,255,255,.4);font-size:.93rem;">
-          Empowering deserving students to reach new heights — funding equipment, training,
+          Empowering deserving students to reach new heights - funding equipment, training,
           and opportunities that build character through excellence.
         </p>
       </div>
@@ -1046,7 +1046,7 @@
           <span class="faq-icon w-7 h-7 flex items-center justify-center shrink-0 text-xl font-light" style="color:var(--royal);">+</span>
         </summary>
         <div class="px-5 pb-6">
-          <p class="garamond text-ink/60">Any graduate of Holy Spirit School of Tagbilaran — whether elementary, high school, or college — is automatically a member of the HSSTian Alumni Association. All Crusaders, past and present, are welcome home.</p>
+          <p class="garamond text-ink/60">Any graduate of Holy Spirit School of Tagbilaran - whether elementary, high school, or college - is automatically a member of the HSSTian Alumni Association. All Crusaders, past and present, are welcome home.</p>
         </div>
       </details>
 
