@@ -446,15 +446,25 @@
 
                         {{-- Submit --}}
                         <button
+                            id="login-btn"
                             type="submit"
                             data-test="login-button"
                             class="btn-royal w-full inline-flex items-center justify-center gap-2 rounded-2xl text-sm font-bold text-white"
                             style="height: 3.25rem; color: white;"
                         >
-                            <svg class="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/>
-                            </svg>
-                            Sign in to Portal
+                            <span id="login-btn-default" class="flex items-center gap-2">
+                                <svg class="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/>
+                                </svg>
+                                Sign in to Portal
+                            </span>
+                            <span id="login-btn-loading" class="hidden items-center gap-2">
+                                <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                                </svg>
+                                Signing in…
+                            </span>
                         </button>
 
                     </div>
@@ -506,6 +516,17 @@
 {{-- Password toggle script --}}
 <script>
 (function () {
+    document.querySelector('form').addEventListener('submit', function () {
+        var btn = document.getElementById('login-btn');
+        btn.disabled = true;
+        btn.style.opacity = '0.75';
+        btn.style.cursor = 'not-allowed';
+        document.getElementById('login-btn-default').classList.add('hidden');
+        var loading = document.getElementById('login-btn-loading');
+        loading.classList.remove('hidden');
+        loading.classList.add('flex');
+    });
+
     var btn   = document.getElementById('togglePassword');
     var input = document.getElementById('password');
     var open  = document.getElementById('iconEyeOpen');

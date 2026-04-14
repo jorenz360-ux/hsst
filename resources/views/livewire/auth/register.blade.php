@@ -365,7 +365,7 @@
                            style="color: var(--gold-500);">Alumni Portal</p>
 
                         <p id="eyebrow" class="text-xs font-bold uppercase tracking-[0.12em] mb-1.5 lg:hidden"
-                           style="color: var(--royal-600);">Step 1 of 4</p>
+                           style="color: var(--royal-600);">Step 1 of 5</p>
 
                         <h2 id="stepTitle"
                             class="font-display text-slate-900 leading-tight tracking-[-0.02em]"
@@ -374,7 +374,7 @@
                         </h2>
 
                         <p id="stepDesc" class="mt-2 text-sm leading-6 text-slate-500">
-                            Tell us about yourself and select the HSST level or levels you attended.
+                            Tell us about yourself — your name, contact number, and occupation.
                         </p>
                     </div>
 
@@ -392,7 +392,7 @@
 
                 {{-- Progress bar --}}
                 <div class="mt-5 h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
-                    <div id="progressFill" class="progress-fill h-full rounded-full" style="width: 25%;"></div>
+                    <div id="progressFill" class="progress-fill h-full rounded-full" style="width: 20%;"></div>
                 </div>
             </div>
 
@@ -522,136 +522,134 @@
                             </div>
                         </div>
 
-                        {{-- Alumni membership --}}
-                        <div class="pt-4" style="border-top: 1px solid #e2e8f0;">
-                            <p class="text-xs font-bold uppercase tracking-[0.12em] mb-1" style="color: var(--royal-600);">
-                                Alumni Membership
-                            </p>
-                            <h3 class="font-display text-xl text-slate-900 mb-1">Select the level(s) you attended</h3>
-                            <p class="text-sm leading-6 text-slate-500 mb-5">
-                                You may belong to Elementary, High School, College, or multiple levels.
-                            </p>
+                    </div>
+                </section>
 
-                            <div class="space-y-4">
-                                @foreach ($educationLevels as $levelKey => $levelLabel)
-                                    @php
-                                        $enabled             = old("educations.$levelKey.enabled");
-                                        $didGraduate         = old("educations.$levelKey.did_graduate", '1');
-                                        $batchId             = old("educations.$levelKey.batch_id");
-                                        $schoolYearAttended  = old("educations.$levelKey.school_year_attended");
-                                    @endphp
+                {{-- ===================================================== --}}
+                {{-- PANEL 2 — Alumni Level                                  --}}
+                {{-- ===================================================== --}}
+                <section id="panel-2" class="panel hidden">
+                    <div class="max-w-3xl space-y-6">
 
-                                    <div class="edu-card">
-                                        <div class="flex items-start justify-between gap-4 mb-3">
+                        <div class="space-y-4">
+                            @foreach ($educationLevels as $levelKey => $levelLabel)
+                                @php
+                                    $enabled             = old("educations.$levelKey.enabled");
+                                    $didGraduate         = old("educations.$levelKey.did_graduate", '1');
+                                    $batchId             = old("educations.$levelKey.batch_id");
+                                    $schoolYearAttended  = old("educations.$levelKey.school_year_attended");
+                                @endphp
+
+                                <div class="edu-card">
+                                    <div class="flex items-start justify-between gap-4 mb-3">
+                                        <div>
+                                            <h4 class="text-sm font-bold text-slate-900">{{ $levelLabel }}</h4>
+                                            <p class="text-xs text-slate-500 mt-0.5">
+                                                Add your {{ strtolower($levelLabel) }} batch details.
+                                            </p>
+                                        </div>
+                                        <label class="include-toggle">
+                                            <input
+                                                type="checkbox"
+                                                name="educations[{{ $levelKey }}][enabled]"
+                                                value="1"
+                                                class="h-4 w-4 rounded"
+                                                {{ $enabled ? 'checked' : '' }}
+                                                onchange="toggleEducationSection('{{ $levelKey }}')"
+                                            >
+                                            Include
+                                        </label>
+                                    </div>
+
+                                    <div id="education-fields-{{ $levelKey }}" class="{{ $enabled ? '' : 'hidden' }}">
+                                        <div class="grid gap-4 sm:grid-cols-2 pt-3" style="border-top: 1px solid #e2e8f0;">
+
                                             <div>
-                                                <h4 class="text-sm font-bold text-slate-900">{{ $levelLabel }}</h4>
-                                                <p class="text-xs text-slate-500 mt-0.5">
-                                                    Add your {{ strtolower($levelLabel) }} batch details.
+                                                <label class="field-label">Did you graduate at this level?</label>
+                                                <div class="grid gap-2 sm:grid-cols-2">
+                                                    <label class="choice-card flex items-start gap-3">
+                                                        <input
+                                                            type="radio"
+                                                            name="educations[{{ $levelKey }}][did_graduate]"
+                                                            value="1"
+                                                            class="mt-0.5 h-4 w-4"
+                                                            {{ $didGraduate == '1' ? 'checked' : '' }}
+                                                            onchange="toggleEducationGraduateFields('{{ $levelKey }}')"
+                                                        >
+                                                        <div>
+                                                            <p class="text-sm font-bold text-slate-900">Yes</p>
+                                                            <p class="text-xs text-slate-500">I graduated.</p>
+                                                        </div>
+                                                    </label>
+                                                    <label class="choice-card flex items-start gap-3">
+                                                        <input
+                                                            type="radio"
+                                                            name="educations[{{ $levelKey }}][did_graduate]"
+                                                            value="0"
+                                                            class="mt-0.5 h-4 w-4"
+                                                            {{ $didGraduate === '0' ? 'checked' : '' }}
+                                                            onchange="toggleEducationGraduateFields('{{ $levelKey }}')"
+                                                        >
+                                                        <div>
+                                                            <p class="text-sm font-bold text-slate-900">No</p>
+                                                            <p class="text-xs text-slate-500">I attended only.</p>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div id="batch-wrap-{{ $levelKey }}">
+                                                <label for="batch_id_{{ $levelKey }}" class="field-label">Batch</label>
+                                                <select
+                                                    id="batch_id_{{ $levelKey }}"
+                                                    name="educations[{{ $levelKey }}][batch_id]"
+                                                    class="field-select"
+                                                >
+                                                    <option value="">Select batch</option>
+                                                    @foreach (($batchOptions[$levelKey] ?? collect()) as $batch)
+                                                        <option value="{{ $batch->id }}" {{ (string)$batchId === (string)$batch->id ? 'selected' : '' }}>
+                                                            {{ strtoupper($levelLabel) }} &bull; {{ $batch->schoolyear }} &bull; Grad {{ $batch->yeargrad }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <p id="err-batch-{{ $levelKey }}" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                    @error("educations.$levelKey.batch_id"){{ $message }}@enderror
                                                 </p>
                                             </div>
-                                            <label class="include-toggle">
+
+                                            <div id="school-year-wrap-{{ $levelKey }}" class="{{ $didGraduate === '0' ? '' : 'hidden' }}">
+                                                <label for="school_year_attended_{{ $levelKey }}" class="field-label">School Year Attended</label>
                                                 <input
-                                                    type="checkbox"
-                                                    name="educations[{{ $levelKey }}][enabled]"
-                                                    value="1"
-                                                    class="h-4 w-4 rounded"
-                                                    {{ $enabled ? 'checked' : '' }}
-                                                    onchange="toggleEducationSection('{{ $levelKey }}')"
+                                                    type="text"
+                                                    id="school_year_attended_{{ $levelKey }}"
+                                                    name="educations[{{ $levelKey }}][school_year_attended]"
+                                                    value="{{ $schoolYearAttended }}"
+                                                    placeholder="e.g. 2012–2014"
+                                                    class="field-input"
                                                 >
-                                                Include
-                                            </label>
-                                        </div>
-
-                                        <div id="education-fields-{{ $levelKey }}" class="{{ $enabled ? '' : 'hidden' }}">
-                                            <div class="grid gap-4 sm:grid-cols-2 pt-3" style="border-top: 1px solid #e2e8f0;">
-
-                                                <div>
-                                                    <label class="field-label">Did you graduate at this level?</label>
-                                                    <div class="grid gap-2 sm:grid-cols-2">
-                                                        <label class="choice-card flex items-start gap-3">
-                                                            <input
-                                                                type="radio"
-                                                                name="educations[{{ $levelKey }}][did_graduate]"
-                                                                value="1"
-                                                                class="mt-0.5 h-4 w-4"
-                                                                {{ $didGraduate == '1' ? 'checked' : '' }}
-                                                                onchange="toggleEducationGraduateFields('{{ $levelKey }}')"
-                                                            >
-                                                            <div>
-                                                                <p class="text-sm font-bold text-slate-900">Yes</p>
-                                                                <p class="text-xs text-slate-500">I graduated.</p>
-                                                            </div>
-                                                        </label>
-                                                        <label class="choice-card flex items-start gap-3">
-                                                            <input
-                                                                type="radio"
-                                                                name="educations[{{ $levelKey }}][did_graduate]"
-                                                                value="0"
-                                                                class="mt-0.5 h-4 w-4"
-                                                                {{ $didGraduate === '0' ? 'checked' : '' }}
-                                                                onchange="toggleEducationGraduateFields('{{ $levelKey }}')"
-                                                            >
-                                                            <div>
-                                                                <p class="text-sm font-bold text-slate-900">No</p>
-                                                                <p class="text-xs text-slate-500">I attended only.</p>
-                                                            </div>
-                                                        </label>
-                                                    </div>
-                                                </div>
-
-                                                <div id="batch-wrap-{{ $levelKey }}">
-                                                    <label for="batch_id_{{ $levelKey }}" class="field-label">Batch</label>
-                                                    <select
-                                                        id="batch_id_{{ $levelKey }}"
-                                                        name="educations[{{ $levelKey }}][batch_id]"
-                                                        class="field-select"
-                                                    >
-                                                        <option value="">Select batch</option>
-                                                        @foreach (($batchOptions[$levelKey] ?? collect()) as $batch)
-                                                            <option value="{{ $batch->id }}" {{ (string)$batchId === (string)$batch->id ? 'selected' : '' }}>
-                                                                {{ strtoupper($levelLabel) }} &bull; {{ $batch->schoolyear }} &bull; Grad {{ $batch->yeargrad }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                    <p id="err-batch-{{ $levelKey }}" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
-                                                        @error("educations.$levelKey.batch_id"){{ $message }}@enderror
-                                                    </p>
-                                                </div>
-
-                                                <div id="school-year-wrap-{{ $levelKey }}" class="{{ $didGraduate === '0' ? '' : 'hidden' }}">
-                                                    <label for="school_year_attended_{{ $levelKey }}" class="field-label">School Year Attended</label>
-                                                    <input
-                                                        type="text"
-                                                        id="school_year_attended_{{ $levelKey }}"
-                                                        name="educations[{{ $levelKey }}][school_year_attended]"
-                                                        value="{{ $schoolYearAttended }}"
-                                                        placeholder="e.g. 2012–2014"
-                                                        class="field-input"
-                                                    >
-                                                    <p class="mt-1.5 text-xs text-slate-400">Required if you attended but did not graduate.</p>
-                                                    <p id="err-school-year-{{ $levelKey }}" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
-                                                        @error("educations.$levelKey.school_year_attended"){{ $message }}@enderror
-                                                    </p>
-                                                </div>
-
+                                                <p class="mt-1.5 text-xs text-slate-400">Required if you attended but did not graduate.</p>
+                                                <p id="err-school-year-{{ $levelKey }}" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
+                                                    @error("educations.$levelKey.school_year_attended"){{ $message }}@enderror
+                                                </p>
                                             </div>
+
                                         </div>
                                     </div>
-                                @endforeach
-                            </div>
-
-                            <p id="err-educations" class="field-error mt-4 hidden text-xs leading-5 text-red-600">
-                                @error('educations'){{ $message }}@enderror
-                            </p>
+                                </div>
+                            @endforeach
                         </div>
+
+                        <p id="err-educations" class="field-error mt-4 hidden text-xs leading-5 text-red-600">
+                            @error('educations'){{ $message }}@enderror
+                        </p>
 
                     </div>
                 </section>
 
                 {{-- ===================================================== --}}
-                {{-- PANEL 2 — Address                                       --}}
+                {{-- PANEL 3 — Address                                       --}}
                 {{-- ===================================================== --}}
-                <section id="panel-2" class="panel hidden">
+                <section id="panel-3" class="panel hidden">
                     <div class="max-w-2xl space-y-5">
 
                         <div>
@@ -778,9 +776,9 @@
                 </section>
 
                 {{-- ===================================================== --}}
-                {{-- PANEL 3 — Volunteer Interest                            --}}
+                {{-- PANEL 4 — Volunteer Interest                            --}}
                 {{-- ===================================================== --}}
-                <section id="panel-3" class="panel hidden">
+                <section id="panel-4" class="panel hidden">
                     <div class="max-w-2xl space-y-6">
 
                         {{-- Volunteer card --}}
@@ -896,9 +894,9 @@
                 </section>
 
                 {{-- ===================================================== --}}
-                {{-- PANEL 4 — Account credentials                          --}}
+                {{-- PANEL 5 — Account credentials                          --}}
                 {{-- ===================================================== --}}
-                <section id="panel-4" class="panel hidden">
+                <section id="panel-5" class="panel hidden">
                     <div class="max-w-2xl space-y-5">
 
                         <div class="grid gap-5 sm:grid-cols-2">
@@ -1056,7 +1054,8 @@
 {{-- ================================================================== --}}
 <script>
 const STEPS = [
-    { short: "Profile",  sub: "Personal & alumni levels", title: "Personal information",    desc: "Tell us about yourself and select the HSST level or levels you attended." },
+    { short: "Profile",  sub: "Personal details",         title: "Personal information",    desc: "Tell us about yourself — your name, contact number, and occupation." },
+    { short: "Alumni",   sub: "Levels attended",          title: "Alumni membership",        desc: "Select the HSST level or levels you attended." },
     { short: "Address",  sub: "Current location",         title: "Address details",          desc: "Provide your current mailing or residential address." },
     { short: "Interest", sub: "Volunteer interest",       title: "Involvement",              desc: "Optionally share your committee interest." },
     { short: "Account",  sub: "Login & security",         title: "Account setup",            desc: "Choose your login credentials and secure your account." },
@@ -1165,7 +1164,9 @@ function validateStep(step) {
         if (!fname)     { showError("fname",     "err-fname",     "First name is required.");        valid = false; }
         if (!lname)     { showError("lname",     "err-lname",     "Last name is required.");         valid = false; }
         if (!cellphone) { showError("cellphone", "err-cellphone", "Cellphone number is required."); valid = false; }
+    }
 
+    if (step === 2) {
         const levels = ['elementary', 'highschool', 'college'];
         let selectedCount = 0;
 
@@ -1200,7 +1201,7 @@ function validateStep(step) {
         }
     }
 
-    if (step === 2) {
+    if (step === 3) {
         const addr1    = document.getElementById("address_line_1").value.trim();
         const city     = document.getElementById("city").value.trim();
         const province = document.getElementById("state_province").value.trim();
@@ -1214,7 +1215,7 @@ function validateStep(step) {
         if (!country)  { showError("country",        "err-country",  "Country is required.");              valid = false; }
     }
 
-    if (step === 3) {
+    if (step === 4) {
         const volunteerInterest   = document.querySelector('input[name="volunteer_interest"]:checked')?.value;
         const selectedCommittees  = document.querySelectorAll('input[name="committees[]"]:checked');
 
@@ -1225,7 +1226,7 @@ function validateStep(step) {
         }
     }
 
-    if (step === 4) {
+    if (step === 5) {
         const username = document.getElementById("username").value.trim();
         const email    = document.getElementById("email").value.trim();
         const pw       = document.getElementById("password").value;

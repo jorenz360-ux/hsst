@@ -328,12 +328,12 @@
       </p>
 
       <div class="flex flex-col sm:flex-row gap-3 mb-14 animate-fade-up" style="animation-delay:.42s;">
-        <a href="#crusade"
+        {{-- <a href="#crusade"
            class="inline-flex items-center justify-center gap-2 text-ink kicker font-bold px-8 py-4 hover:opacity-90 transition-opacity"
            style="background:var(--gold);">
           Join the CRUSADE
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        </a>
+        </a> --}}
         <a href="#about"
            class="inline-flex items-center justify-center border border-white/35 text-white/85 kicker px-8 py-4 hover:border-white/70 hover:text-white transition-all">
           Learn More

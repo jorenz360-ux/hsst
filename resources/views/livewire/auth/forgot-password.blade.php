@@ -416,16 +416,39 @@
 
                     {{-- Submit --}}
                     <button
+                        id="reset-btn"
                         type="submit"
                         class="btn-royal w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl text-white text-sm font-bold tracking-wide"
                         data-test="email-password-reset-link-button"
                     >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/>
-                        </svg>
-                        Send Reset Link
+                        <span id="reset-btn-default" class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/>
+                            </svg>
+                            Send Reset Link
+                        </span>
+                        <span id="reset-btn-loading" class="hidden items-center gap-2">
+                            <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                            </svg>
+                            Sending…
+                        </span>
                     </button>
                 </form>
+
+                <script>
+                    document.querySelector('form').addEventListener('submit', function () {
+                        var btn = document.getElementById('reset-btn');
+                        btn.disabled = true;
+                        btn.style.opacity = '0.75';
+                        btn.style.cursor = 'not-allowed';
+                        document.getElementById('reset-btn-default').classList.add('hidden');
+                        var loading = document.getElementById('reset-btn-loading');
+                        loading.classList.remove('hidden');
+                        loading.classList.add('flex');
+                    });
+                </script>
 
                 {{-- ---- Back to login ------------------------------------ --}}
                 <div class="mt-6 text-center">

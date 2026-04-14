@@ -404,14 +404,24 @@
 
                     {{-- Submit --}}
                     <button
+                        id="reset-btn"
                         type="submit"
                         class="btn-royal w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl text-white text-sm font-bold tracking-wide"
                         data-test="reset-password-button"
                     >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
-                        </svg>
-                        Reset Password
+                        <span id="reset-btn-default" class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+                            </svg>
+                            Reset Password
+                        </span>
+                        <span id="reset-btn-loading" class="hidden items-center gap-2">
+                            <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                            </svg>
+                            Resetting…
+                        </span>
                     </button>
                 </form>
 
@@ -445,6 +455,17 @@
 </div>
 
 <script>
+    document.getElementById('resetForm').addEventListener('submit', function () {
+        var btn = document.getElementById('reset-btn');
+        btn.disabled = true;
+        btn.style.opacity = '0.75';
+        btn.style.cursor = 'not-allowed';
+        document.getElementById('reset-btn-default').classList.add('hidden');
+        var loading = document.getElementById('reset-btn-loading');
+        loading.classList.remove('hidden');
+        loading.classList.add('flex');
+    });
+
     function togglePw(fieldId, iconId) {
         const field = document.getElementById(fieldId);
         const icon  = document.getElementById(iconId);
