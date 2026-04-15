@@ -374,7 +374,7 @@
                         <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3" style="color:#94a3b8;">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
-                            </svg>
+                            </svg> 
                         </span>
                         <input
                             type="text"
@@ -482,7 +482,7 @@
                 <tbody>
                     @forelse ($users as $user)
                         @php
-                            $fullName     = $user->alumni ? trim($user->alumni->fname . ' ' . $user->alumni->lname) : null;
+                            $fullName     = $user->alumni ? trim(collect([$user->alumni->fname, $user->alumni->mname, $user->alumni->lname])->filter()->map(fn($n) => ucwords(strtolower($n)))->implode(' ')) : null;
                             $hasProfile   = filled($user->alumni);
                             $isRep        = $user->alumni?->educations?->contains(fn($e) => $e->is_batch_rep) ?? false;
                             $primaryRole  = $user->getRoleNames()->first() ?? 'user';

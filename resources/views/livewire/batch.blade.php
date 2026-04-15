@@ -386,19 +386,17 @@
                     <tr>
                         <th>Member</th>
                         <th>Contact</th>
-                        <th>Account</th>
                         <th>Graduation</th>
-                        @if ($activeEvents->isNotEmpty())
-                            <th>RSVP</th>
-                        @endif
-                        <th>Involvement</th>
+                        <th>Occupation</th>
+                        <th>Address</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($members as $member)
                         @php
                             $al       = $member->alumni;
-                            $name     = trim(($al->lname ?? '') . ', ' . ($al->fname ?? '') . ($al->mname ? ' ' . $al->mname : ''));
+                            $name     = trim(ucwords(strtolower($al->lname ?? '')) . ', ' . ucwords(strtolower($al->fname ?? '')) . ($al->mname ? ' ' . ucwords(strtolower($al->mname)) : ''));
                             $initials = strtoupper(substr($al->fname ?? 'U', 0, 1) . substr($al->lname ?? '', 0, 1));
 
                             // RSVPs keyed by event_id
@@ -408,7 +406,6 @@
                             $inv = $al->involvement;
                         @endphp
                         <tr>
-                            {{-- Member --}}
                             <td style="min-width:200px;">
                                 <div class="flex items-center gap-2.5">
                                     <div class="bt-avatar">{{ $initials }}</div>
@@ -434,31 +431,8 @@
                                 @if ($al->user?->email)
                                     <p class="text-xs truncate max-w-[160px]" style="color:#334155;">{{ $al->user->email }}</p>
                                 @endif
-                                @if ($al->cellphone)
-                                    <p class="text-xs mt-0.5" style="color:#64748b;">{{ $al->cellphone }}</p>
-                                @endif
-                                @if ($al->user?->username)
-                                    <p class="text-xs mt-0.5 font-mono" style="color:#94a3b8;">{{ $al->user->username }}</p>
-                                @endif
-                                @if (!$al->user?->email && !$al->cellphone)
-                                    <span class="text-xs" style="color:#cbd5e1;">—</span>
-                                @endif
                             </td>
 
-                            {{-- Account --}}
-                            <td>
-                                @if ($al->user)
-                                    <span class="chip chip-green">
-                                        <span class="chip-dot" style="background:#10b981;"></span>
-                                        Registered
-                                    </span>
-                                @else
-                                    <span class="chip chip-slate">
-                                        <span class="chip-dot" style="background:#94a3b8;"></span>
-                                        No Account
-                                    </span>
-                                @endif
-                            </td>
 
                             {{-- Graduation --}}
                             <td>
@@ -475,59 +449,47 @@
                                 @endif
                             </td>
 
-                            {{-- RSVP per event --}}
-                            @if ($activeEvents->isNotEmpty())
-                                <td style="min-width:140px;">
-                                    <div class="flex flex-col gap-1">
-                                        @foreach ($activeEvents as $event)
-                                            @php
-                                                $rsvp = $rsvpMap->get($event->id);
-                                                [$rsvpLabel, $rsvpClass] = match($rsvp?->status) {
-                                                    'attending'     => ['Attending',     'chip-green'],
-                                                    'maybe'         => ['Maybe',         'chip-amber'],
-                                                    'not_attending' => ['Not Attending', 'chip-red'],
-                                                    default         => ['No RSVP',       'chip-slate'],
-                                                };
-                                            @endphp
-                                            <div class="flex items-center gap-1.5">
-                                                <span class="chip {{ $rsvpClass }}" style="font-size:.6rem;">{{ $rsvpLabel }}</span>
-                                                @if ($activeEvents->count() > 1)
-                                                    <span class="text-[.6rem] truncate max-w-[80px]" style="color:#94a3b8;"
-                                                          title="{{ $event->title }}">{{ $event->title }}</span>
-                                                @endif
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </td>
-                            @endif
 
-                            {{-- Involvement --}}
-                            <td style="min-width:120px;">
-                                @if ($inv)
-                                    <div class="flex flex-wrap gap-1">
-                                        @if ($inv->wants_committee_member)
-                                            <span class="chip chip-blue" title="Wants to be a committee member" style="font-size:.6rem;">Committee</span>
-                                        @endif
-                                        @if ($inv->is_priest_concelebrate)
-                                            <span class="chip chip-purple" title="Priest – can concelebrate" style="font-size:.6rem;">Priest</span>
-                                        @endif
-                                        @if ($inv->is_medical_practitioner)
-                                            <span class="chip chip-teal" title="{{ $inv->medical_specialty ? 'Medical: '.$inv->medical_specialty : 'Medical Practitioner' }}" style="font-size:.6rem;">
-                                                Medical{{ $inv->medical_specialty ? ' · ' . $inv->medical_specialty : '' }}
-                                            </span>
-                                        @endif
-                                        @if (!$inv->wants_committee_member && !$inv->is_priest_concelebrate && !$inv->is_medical_practitioner)
-                                            <span class="text-xs" style="color:#cbd5e1;">—</span>
-                                        @endif
-                                    </div>
+                            {{-- Occupation --}}
+                            <td style="min-width:140px;">
+                                @if ($al->occupation)
+                                    <p class="text-xs truncate max-w-[160px]" style="color:#334155;">{{ $al->occupation }}</p>
                                 @else
                                     <span class="text-xs" style="color:#cbd5e1;">—</span>
                                 @endif
                             </td>
+
+                            {{-- Address --}}
+                            <td style="min-width:160px;">
+                                @php
+                                    $tableAddr = collect([$al->city, $al->state_province, $al->postal_code, $al->country])->filter()->implode(', ');
+                                @endphp
+                                @if ($tableAddr)
+                                    <p class="text-xs truncate max-w-[180px]" style="color:#334155;" title="{{ $tableAddr }}">{{ $tableAddr }}</p>
+                                @else
+                                    <span class="text-xs" style="color:#cbd5e1;">—</span>
+                                @endif
+                            </td>
+
+                            {{-- Actions --}}
+                            <td>
+                                <button wire:click="viewAlumni({{ $al->id }})"
+                                        title="View full profile"
+                                        style="display:inline-flex;align-items:center;gap:.35rem;height:1.9rem;
+                                               padding:0 .7rem;border-radius:.6rem;border:1px solid #c7d2fe;
+                                               background:#eef2ff;color:#1a3fa8;font-size:.7rem;font-weight:600;
+                                               cursor:pointer;transition:background .12s,border-color .12s;white-space:nowrap;">
+                                    <svg style="width:.85rem;height:.85rem;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z"/>
+                                    </svg>
+                                    View
+                                </button>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ $activeEvents->isNotEmpty() ? 6 : 5 }}"
+                            <td colspan="{{ $activeEvents->isNotEmpty() ? 8 : 7 }}"
                                 style="padding:3.5rem 1.5rem; text-align:center;">
                                 <div style="max-width:20rem;margin:0 auto;">
                                     <div style="width:3rem;height:3rem;border-radius:.875rem;background:#f0f4fb;
@@ -573,6 +535,337 @@
         <h2 class="text-base font-bold" style="color:#1e293b;">No Batch Assigned</h2>
         <p class="mt-1 text-sm" style="color:#64748b;">Your account is not yet linked to any batch representative role.</p>
     </section>
+    @endif
+
+
+    {{-- ── ALUMNI DETAIL MODAL ──────────────────────────────────── --}}
+    @if ($selectedAlumniId && $this->selectedAlumni)
+    @php
+        $sal         = $this->selectedAlumni;
+        $salFname    = ucwords(strtolower($sal->fname ?? ''));
+        $salMname    = ucwords(strtolower($sal->mname ?? ''));
+        $salLname    = ucwords(strtolower($sal->lname ?? ''));
+        $salFullName = trim(
+            ($sal->prefix ? $sal->prefix . ' ' : '') .
+            $salFname . ' ' .
+            ($salMname ? $salMname . ' ' : '') .
+            $salLname .
+            ($sal->suffix ? ', ' . $sal->suffix : '')
+        );
+        $salInitials = strtoupper(substr($sal->fname ?? 'U', 0, 1) . substr($sal->lname ?? '', 0, 1));
+
+        // Prefer Google formatted address, fall back to individual fields
+        $salAddress = $sal->formatted_address ?: collect([
+            $sal->address_line_1, $sal->address_line_2,
+            $sal->city,
+            $sal->state_province ? ($sal->city ? ', ' . $sal->state_province : $sal->state_province) : null,
+            $sal->postal_code,
+            $sal->country,
+        ])->filter()->implode(' ');
+
+        // Structured address parts for the detail rows
+        $salAddrParts = [
+            'Line 1'       => $sal->address_line_1,
+            'Line 2'       => $sal->address_line_2,
+            'City'         => $sal->city,
+            'State / Prov' => $sal->state_province,
+            'Postal Code'  => $sal->postal_code,
+            'Country'      => $sal->country,
+        ];
+    @endphp
+    <div wire:click.self="closeModal"
+         style="position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
+                background:rgba(10,31,92,.45);backdrop-filter:blur(3px);padding:1rem;">
+        <div style="background:#fff;border-radius:1.25rem;width:100%;max-width:34rem;
+                    box-shadow:0 20px 60px rgba(10,31,92,.25);overflow:hidden;display:flex;flex-direction:column;max-height:92vh;">
+
+            {{-- Modal Header --}}
+            <div style="background:linear-gradient(135deg,var(--r8) 0%,var(--r6) 100%);padding:1.4rem 1.5rem;
+                        display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+                <div class="flex items-center gap-3">
+                    <div style="width:3rem;height:3rem;border-radius:.75rem;flex-shrink:0;
+                                display:flex;align-items:center;justify-content:center;
+                                font-size:.9rem;font-weight:800;color:#fff;
+                                background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);">
+                        {{ $salInitials }}
+                    </div>
+                    <div>
+                        <p style="font-size:1rem;font-weight:700;color:#fff;line-height:1.2;">{{ $salFullName ?: '—' }}</p>
+                        @if ($sal->occupation)
+                            <p style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.2rem;">{{ $sal->occupation }}</p>
+                        @endif
+                        <div class="flex items-center gap-1.5" style="margin-top:.35rem;">
+                            @if ($sal->user)
+                                <span class="chip chip-green" style="font-size:.58rem;">
+                                    <span class="chip-dot" style="background:#10b981;"></span>
+                                    Registered
+                                </span>
+                            @else
+                                <span class="chip chip-slate" style="font-size:.58rem;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.7);">
+                                    No Account
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <button wire:click="closeModal"
+                        style="width:1.9rem;height:1.9rem;border-radius:.5rem;border:1px solid rgba(255,255,255,.25);
+                               background:rgba(255,255,255,.1);color:#fff;cursor:pointer;display:flex;
+                               align-items:center;justify-content:center;flex-shrink:0;align-self:flex-start;">
+                    <svg style="width:.9rem;height:.9rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            {{-- Modal Body --}}
+            <div style="padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:0;overflow-y:auto;">
+
+                {{-- ① Personal Information --}}
+                <div style="padding-bottom:.9rem;">
+                    <p style="font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#94a3b8;margin-bottom:.6rem;">Personal Information</p>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.35rem .75rem;">
+                        @if ($sal->prefix)
+                        <div>
+                            <p style="font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:.1rem;">Prefix</p>
+                            <p style="font-size:.8rem;color:#334155;">{{ $sal->prefix }}</p>
+                        </div>
+                        @endif
+                        <div>
+                            <p style="font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:.1rem;">First Name</p>
+                            <p style="font-size:.8rem;color:#334155;">{{ $salFname ?: '—' }}</p>
+                        </div>
+                        @if ($salMname)
+                        <div>
+                            <p style="font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:.1rem;">Middle Name</p>
+                            <p style="font-size:.8rem;color:#334155;">{{ $salMname }}</p>
+                        </div>
+                        @endif
+                        <div>
+                            <p style="font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:.1rem;">Last Name</p>
+                            <p style="font-size:.8rem;color:#334155;">{{ $salLname ?: '—' }}</p>
+                        </div>
+                        @if ($sal->suffix)
+                        <div>
+                            <p style="font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:.1rem;">Suffix</p>
+                            <p style="font-size:.8rem;color:#334155;">{{ $sal->suffix }}</p>
+                        </div>
+                        @endif
+                        @if ($sal->occupation)
+                        <div style="grid-column:1/-1;">
+                            <p style="font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:.1rem;">Occupation</p>
+                            <p style="font-size:.8rem;color:#334155;">{{ $sal->occupation }}</p>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- ② Contact --}}
+                <div style="border-top:1px solid #f1f5f9;padding:.9rem 0;">
+                    <p style="font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#94a3b8;margin-bottom:.6rem;">Contact</p>
+                    @if ($sal->user?->email || $sal->cellphone || $sal->user?->username)
+                    <div style="display:flex;flex-direction:column;gap:.4rem;">
+                        @if ($sal->user?->email)
+                        <div style="display:flex;align-items:center;gap:.5rem;">
+                            <svg style="width:.8rem;height:.8rem;color:#64748b;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/>
+                            </svg>
+                            <span style="font-size:.8rem;color:#334155;">{{ $sal->user->email }}</span>
+                        </div>
+                        @endif
+                        @if ($sal->cellphone)
+                        <div style="display:flex;align-items:center;gap:.5rem;">
+                            <svg style="width:.8rem;height:.8rem;color:#64748b;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 6.75Z"/>
+                            </svg>
+                            <span style="font-size:.8rem;color:#334155;">{{ $sal->cellphone }}</span>
+                        </div>
+                        @endif
+                        @if ($sal->user?->username)
+                        <div style="display:flex;align-items:center;gap:.5rem;">
+                            <svg style="width:.8rem;height:.8rem;color:#64748b;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
+                            </svg>
+                            <span style="font-size:.8rem;color:#64748b;font-family:monospace;">@{{ $sal->user->username }}</span>
+                        </div>
+                        @endif
+                    </div>
+                    @else
+                        <p style="font-size:.8rem;color:#cbd5e1;">No contact info on file.</p>
+                    @endif
+                </div>
+
+                {{-- ③ Address --}}
+                @php $hasAddress = collect($salAddrParts)->filter()->isNotEmpty(); @endphp
+                @if ($hasAddress)
+                <div style="border-top:1px solid #f1f5f9;padding:.9rem 0;">
+                    <p style="font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#94a3b8;margin-bottom:.6rem;">Address</p>
+                    @if ($sal->formatted_address)
+                        <div style="display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.5rem;">
+                            <svg style="width:.8rem;height:.8rem;color:#64748b;flex-shrink:0;margin-top:.15rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
+                            </svg>
+                            <span style="font-size:.8rem;color:#334155;line-height:1.5;">{{ $sal->formatted_address }}</span>
+                        </div>
+                    @endif
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.3rem .75rem;">
+                        @foreach ($salAddrParts as $label => $val)
+                            @if ($val)
+                            <div>
+                                <p style="font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:.1rem;">{{ $label }}</p>
+                                <p style="font-size:.78rem;color:#334155;">{{ $val }}</p>
+                            </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                {{-- ④ Education Records --}}
+                @if ($sal->educations->isNotEmpty())
+                <div style="border-top:1px solid #f1f5f9;padding:.9rem 0;">
+                    <p style="font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#94a3b8;margin-bottom:.6rem;">Education</p>
+                    <div style="display:flex;flex-direction:column;gap:.5rem;">
+                        @foreach ($sal->educations as $edu)
+                        @php
+                            $eduLevelMeta = match($edu->batch?->level) {
+                                'elementary' => ['chip-green',  '#065f46'],
+                                'highschool' => ['chip-amber',  '#92700a'],
+                                'college'    => ['chip-purple', '#5b21b6'],
+                                default      => ['chip-slate',  '#475569'],
+                            };
+                        @endphp
+                        <div style="background:#f8fafc;border:1px solid #f1f5f9;border-radius:.65rem;padding:.6rem .85rem;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.35rem;flex-wrap:wrap;gap:.3rem;">
+                                <div style="display:flex;align-items:center;gap:.5rem;">
+                                    <span class="chip {{ $eduLevelMeta[0] }}" style="font-size:.6rem;">
+                                        {{ ucfirst($edu->batch?->level ?? 'Unknown') }}
+                                    </span>
+                                    <span style="font-size:.8rem;font-weight:600;color:#1e293b;">
+                                        {{ $edu->batch?->yeargrad ?? '—' }}
+                                        @if ($edu->batch?->schoolyear)
+                                            <span style="font-size:.7rem;color:#64748b;font-weight:400;">({{ $edu->batch->schoolyear }})</span>
+                                        @endif
+                                    </span>
+                                </div>
+                                <div style="display:flex;gap:.3rem;flex-wrap:wrap;">
+                                    @if ($edu->did_graduate)
+                                        <span class="chip chip-green" style="font-size:.58rem;">
+                                            <span class="chip-dot" style="background:#10b981;"></span>
+                                            Graduated
+                                        </span>
+                                    @else
+                                        <span class="chip chip-red" style="font-size:.58rem;">
+                                            <span class="chip-dot" style="background:#ef4444;"></span>
+                                            Did Not Graduate
+                                        </span>
+                                    @endif
+                                    @if ($edu->is_batch_rep)
+                                        <span class="chip chip-amber" style="font-size:.58rem;">
+                                            <span class="chip-dot" style="background:#c4952a;"></span>
+                                            Batch Rep
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                            @if ($edu->school_year_attended)
+                            <p style="font-size:.72rem;color:#64748b;">
+                                School Year Attended: <span style="color:#334155;font-weight:500;">{{ $edu->school_year_attended }}</span>
+                            </p>
+                            @endif
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                {{-- ⑤ Involvement (Volunteer Signups) --}}
+                <div style="border-top:1px solid #f1f5f9;padding:.9rem 0;">
+                    <p style="font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#94a3b8;margin-bottom:.6rem;">Involvement</p>
+                    @if ($sal->volunteerSignups->count())
+                    <div style="display:flex;flex-direction:column;gap:.45rem;">
+                        @foreach ($sal->volunteerSignups as $signup)
+                        @php
+                            $signupStyle = match($signup->status) {
+                                'approved'  => ['chip-green',  '#10b981'],
+                                'contacted' => ['chip-blue',   '#1a3fa8'],
+                                'declined'  => ['chip-red',    '#ef4444'],
+                                default     => ['chip-amber',  '#c4952a'], // pending
+                            };
+                        @endphp
+                        <div style="background:#f8fafc;border:1px solid #f1f5f9;border-radius:.65rem;padding:.55rem .85rem;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;">
+                                <p style="font-size:.8rem;font-weight:600;color:#1e293b;">
+                                    {{ $signup->committee?->name ?? '—' }}
+                                </p>
+                                <span class="chip {{ $signupStyle[0] }}" style="font-size:.6rem;flex-shrink:0;">
+                                    <span class="chip-dot" style="background:{{ $signupStyle[1] }};"></span>
+                                    {{ ucfirst($signup->status) }}
+                                </span>
+                            </div>
+                            @if ($signup->committee?->description)
+                                <p style="font-size:.7rem;color:#64748b;margin-top:.2rem;">{{ $signup->committee->description }}</p>
+                            @endif
+                            @if ($signup->notes)
+                                <p style="font-size:.72rem;color:#64748b;margin-top:.3rem;font-style:italic;">"{{ $signup->notes }}"</p>
+                            @endif
+                        </div>
+                        @endforeach
+                    </div>
+                    @else
+                        <p style="font-size:.8rem;color:#cbd5e1;">No volunteer signups on file.</p>
+                    @endif
+                </div>
+
+                {{-- ⑥ Event RSVPs --}}
+                @if ($sal->eventRsvps->count())
+                <div style="border-top:1px solid #f1f5f9;padding:.9rem 0 0;">
+                    <p style="font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#94a3b8;margin-bottom:.6rem;">Event RSVPs</p>
+                    <div style="display:flex;flex-direction:column;gap:.45rem;">
+                        @foreach ($sal->eventRsvps as $rsvp)
+                            @if ($rsvp->event)
+                            @php
+                                $rsvpStyle = match($rsvp->status) {
+                                    'attending'     => ['chip-green',  '#10b981'],
+                                    'maybe'         => ['chip-amber',  '#c4952a'],
+                                    'not_attending' => ['chip-red',    '#ef4444'],
+                                    default         => ['chip-slate',  '#94a3b8'],
+                                };
+                            @endphp
+                            <div style="background:#f8fafc;border:1px solid #f1f5f9;border-radius:.65rem;padding:.55rem .85rem;">
+                                <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;">
+                                    <p style="font-size:.8rem;font-weight:500;color:#1e293b;">{{ $rsvp->event->title }}</p>
+                                    <span class="chip {{ $rsvpStyle[0] }}" style="font-size:.6rem;flex-shrink:0;">
+                                        <span class="chip-dot" style="background:{{ $rsvpStyle[1] }};"></span>
+                                        {{ ucfirst(str_replace('_', ' ', $rsvp->status)) }}
+                                    </span>
+                                </div>
+                                <div style="display:flex;gap:1rem;margin-top:.3rem;flex-wrap:wrap;">
+                                    @if ($rsvp->event->event_date)
+                                    <p style="font-size:.7rem;color:#94a3b8;">
+                                        {{ \Carbon\Carbon::parse($rsvp->event->event_date)->format('M d, Y') }}
+                                    </p>
+                                    @endif
+                                    @if ($rsvp->guest_count)
+                                    <p style="font-size:.7rem;color:#64748b;">
+                                        Guests: <span style="font-weight:600;">{{ $rsvp->guest_count }}</span>
+                                    </p>
+                                    @endif
+                                </div>
+                                @if ($rsvp->remarks)
+                                <p style="font-size:.72rem;color:#64748b;margin-top:.3rem;font-style:italic;">"{{ $rsvp->remarks }}"</p>
+                                @endif
+                            </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+            </div>{{-- end modal body --}}
+        </div>
+    </div>
     @endif
 
 </div>

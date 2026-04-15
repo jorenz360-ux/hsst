@@ -7,6 +7,7 @@ use App\Models\AlumniEducation;
 use App\Models\Event;
 use App\Models\EventRegistration;
 use App\Models\EventRsvp;
+use App\Models\VolunteerSignup;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 use Illuminate\Support\Collection;
@@ -351,6 +352,38 @@ class BatchRepReports extends Component
         ];
     }
 
+    protected function batchSummaryStats(int $batchId): array
+    {
+        $base = AlumniEducation::query()->where('batch_id', $batchId);
+
+        return [
+            'totalCount'      => (clone $base)->count(),
+            'registeredCount' => (clone $base)->whereHas('alumni.user')->count(),
+            'graduatedCount'  => (clone $base)->where('did_graduate', true)->count(),
+            'noAccountCount'  => (clone $base)->whereDoesntHave('alumni.user')->count(),
+        ];
+    }
+
+    protected function volunteerStats(int $batchId): \Illuminate\Support\Collection
+    {
+        return VolunteerSignup::query()
+            ->join('committees', 'committees.id', '=', 'volunteer_signups.committee_id')
+            ->join('alumni', 'alumni.id', '=', 'volunteer_signups.alumni_id')
+            ->join('alumni_educations', function ($join) use ($batchId) {
+                $join->on('alumni_educations.alumni_id', '=', 'alumni.id')
+                    ->where('alumni_educations.batch_id', '=', $batchId);
+            })
+            ->select([
+                'committees.name as committee_name',
+                \DB::raw('COUNT(*) as total'),
+                \DB::raw("SUM(CASE WHEN volunteer_signups.status = 'approved' THEN 1 ELSE 0 END) as approved"),
+                \DB::raw("SUM(CASE WHEN volunteer_signups.status = 'pending' THEN 1 ELSE 0 END) as pending"),
+                \DB::raw("SUM(CASE WHEN volunteer_signups.status = 'declined' THEN 1 ELSE 0 END) as declined"),
+            ])
+            ->groupBy('committees.id', 'committees.name')
+            ->get();
+    }
+
     public function render()
     {
         $representativeEducation = $this->representativeEducation();
@@ -359,43 +392,38 @@ class BatchRepReports extends Component
         abort_unless($batchId, 403, 'You are not assigned to any batch representative role.');
 
         $selectedEvent = $this->selectedEventModel();
-        $allEvents = $this->availableEvents();
+        $allEvents     = $this->availableEvents();
 
         $participants = $this->emptyPaginator();
 
-        $stats = [
-            'attendingParticipantsCount' => 0,
-            'maybeParticipantsCount' => 0,
+        $eventStats = [
+            'attendingParticipantsCount'    => 0,
+            'maybeParticipantsCount'        => 0,
             'notAttendingParticipantsCount' => 0,
-            'paidParticipantsCount' => 0,
-            'unpaidParticipantsCount' => 0,
-            'waivedParticipantsCount' => 0,
-            'noResponseCount' => 0,
+            'noResponseCount'               => 0,
+            'paidParticipantsCount'         => 0,
+            'unpaidParticipantsCount'       => 0,
+            'waivedParticipantsCount'       => 0,
         ];
 
         if ($selectedEvent) {
-            $participants = $this->participantsQuery($selectedEvent->id, $batchId)->paginate(10);
+            $participants = $this->participantsQuery($selectedEvent->id, $batchId)->paginate(15);
 
-            $stats = array_merge(
-                $stats,
+            $eventStats = array_merge(
+                $eventStats,
                 $this->rsvpCounts($selectedEvent->id, $batchId),
                 $this->paymentCounts($selectedEvent->id, $batchId),
             );
         }
 
         return view('livewire.batch-rep-reports', [
-            'allEvents' => $allEvents,
-            'selectedEventModel' => $selectedEvent,
-            'participants' => $participants,
-            'currentBatch' => $representativeEducation?->batch,
-
-            'attendingParticipantsCount' => $stats['attendingParticipantsCount'],
-            'maybeParticipantsCount' => $stats['maybeParticipantsCount'],
-            'notAttendingParticipantsCount' => $stats['notAttendingParticipantsCount'],
-            'paidParticipantsCount' => $stats['paidParticipantsCount'],
-            'unpaidParticipantsCount' => $stats['unpaidParticipantsCount'],
-            'waivedParticipantsCount' => $stats['waivedParticipantsCount'],
-            'noResponseCount' => $stats['noResponseCount'],
+            'allEvents'           => $allEvents,
+            'selectedEventModel'  => $selectedEvent,
+            'participants'        => $participants,
+            'currentBatch'        => $representativeEducation?->batch,
+            'batchSummary'        => $this->batchSummaryStats($batchId),
+            'volunteerStats'      => $this->volunteerStats($batchId),
+            ...$eventStats,
         ]);
     }
 }

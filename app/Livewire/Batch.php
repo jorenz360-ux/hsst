@@ -6,6 +6,7 @@ use App\Models\Alumni;
 use App\Models\AlumniEducation;
 use App\Models\Event;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -20,6 +21,33 @@ class Batch extends Component
     public string $filterGrad    = 'all';   // all | graduated | not_graduated
     public string $filterRsvp    = 'all';   // all | attending | maybe | not_attending | no_rsvp
     public $batch = null;
+
+    public ?int $selectedAlumniId = null;
+
+    public function viewAlumni(int $id): void
+    {
+        $this->selectedAlumniId = $id;
+    }
+
+    public function closeModal(): void
+    {
+        $this->selectedAlumniId = null;
+    }
+
+    #[Computed]
+    public function selectedAlumni(): ?Alumni
+    {
+        if (! $this->selectedAlumniId) {
+            return null;
+        }
+
+        return Alumni::with([
+            'user:id,alumni_id,username,email',
+            'volunteerSignups.committee:id,name,description',
+            'eventRsvps.event:id,title,event_date',
+            'educations.batch:id,level,yeargrad,schoolyear',
+        ])->find($this->selectedAlumniId);
+    }
 
     protected $paginationTheme = 'tailwind';
 
@@ -67,7 +95,7 @@ class Batch extends Component
         $baseQuery = AlumniEducation::query()
             ->with([
                 'batch:id,level,yeargrad,schoolyear',
-                'alumni:id,prefix,fname,mname,lname,suffix,occupation,cellphone',
+                'alumni:id,prefix,fname,mname,lname,suffix,occupation,cellphone,city,state_province,postal_code,country',
                 'alumni.user:id,alumni_id,username,email',
                 'alumni.eventRsvps' => fn ($q) => $q->whereIn('event_id', $activeEventIds)
                     ->with('event:id,title,event_date'),

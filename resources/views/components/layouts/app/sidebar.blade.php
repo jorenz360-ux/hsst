@@ -104,11 +104,11 @@
                         {{ __('Donation') }}
                     </flux:sidebar.item>
                 @endcan
-
+             @if ($user?->hasRole('reunion-coordinator'))
                 @can('generate.report')
                   
                        <flux:sidebar.nav>
-                        <flux:sidebar.group expandable heading="Management" class="grid">
+                        <flux:sidebar.group expandable heading="Report" class="grid">
                               @if ($reportRoute)
                             <flux:sidebar.item icon="chart-pie" :href="$reportRoute" wire:navigate>
                                 {{ __('Reports') }}
@@ -124,8 +124,14 @@
                         </flux:sidebar.group>
                     </flux:sidebar.nav>
                 @endcan
+                     @endif
+                @if ($user?->hasRole('batch-representative') && $reportRoute)
+                    <flux:sidebar.item icon="chart-pie" :href="$reportRoute" wire:navigate>
+                        {{ __('Reports') }}
+                    </flux:sidebar.item>
+                @endif
             </flux:sidebar.nav>
-
+ 
             <flux:spacer />
 
             <x-desktop-user-menu
