@@ -27,7 +27,8 @@ class User extends Authenticatable
         'email',
         'password',
         'alumni_id',
-        'must_change_password'
+        'must_change_password',
+        'is_active',
     ];
 
     /**
@@ -51,7 +52,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
+            'is_active'         => 'boolean',
         ];
     }
 

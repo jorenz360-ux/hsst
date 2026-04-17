@@ -164,16 +164,7 @@
         </div>
     </section>
 
-    {{-- ── FLASH ───────────────────────────────────────────────── --}}
-    @if (session('success'))
-        <div class="flex items-start gap-3 rounded-xl px-4 py-3.5"
-             style="background:#ecfdf5;border:1px solid #a7f3d0;">
-            <svg class="mt-0.5 w-4 h-4 shrink-0" style="color:#059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-            </svg>
-            <p class="text-sm font-medium" style="color:#065f46;">{{ session('success') }}</p>
-        </div>
-    @endif
+    @include('partials.toast')
 
     <form wire:submit.prevent="save" class="space-y-4">
 

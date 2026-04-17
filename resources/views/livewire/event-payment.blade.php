@@ -26,18 +26,7 @@
             </div>
         </section>
 
-        {{-- Alerts --}}
-        @if (session('success'))
-            <div class="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-4 text-sm text-emerald-300 sm:px-5">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-4 text-sm text-rose-300 sm:px-5">
-                {{ session('error') }}
-            </div>
-        @endif
+        @include('partials.toast')
 
         <div class="grid gap-4 xl:grid-cols-[1.2fr_0.8fr] xl:gap-6">
 

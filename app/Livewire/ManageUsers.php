@@ -40,6 +40,9 @@ class ManageUsers extends Component
     public ?int $confirmDeleteId = null;
     public bool $showDeleteModal = false;
 
+    public ?int $confirmToggleId = null;
+    public bool $showToggleModal = false;
+
     protected array $queryString = [
         'search' => ['except' => ''],
         'role' => ['except' => self::DEFAULT_ROLE],
@@ -115,10 +118,45 @@ class ManageUsers extends Component
         $this->viewUserId = null;
     }
 
+    public function toggleActive(int $userId): void
+    {
+        $user = User::findOrFail($userId);
+
+        // Prevent deactivating yourself
+        if ($user->id === auth()->id()) {
+            $this->cancelToggle();
+            session()->flash('error', 'You cannot deactivate your own account.');
+            return;
+        }
+
+        $user->update(['is_active' => ! $user->is_active]);
+
+        $this->cancelToggle();
+
+        session()->flash(
+            'success',
+            $user->is_active
+                ? "Account for {$user->username} has been activated."
+                : "Account for {$user->username} has been deactivated."
+        );
+    }
+
     public function confirmDelete(int $userId): void
     {
         $this->confirmDeleteId = $userId;
         $this->showDeleteModal = true;
+    }
+
+    public function confirmToggle(int $userId): void
+    {
+        $this->confirmToggleId = $userId;
+        $this->showToggleModal = true;
+    }
+
+    public function cancelToggle(): void
+    {
+        $this->confirmToggleId = null;
+        $this->showToggleModal = false;
     }
 
     public function cancelDelete(): void

@@ -25,10 +25,12 @@ class ManageAnnouncement extends Component
     public ?int $editingId = null;
     public string $editTitle = '';
     public string $editBody  = '';
+    public bool $showEditModal = false;
 
     // Delete form
     public ?int $deleteId = null;
     public string $deleteTitle = '';
+    public bool $showDeleteModal = false;
 
     public function updatingSearch(): void
     {
@@ -155,7 +157,7 @@ class ManageAnnouncement extends Component
 
         $this->resetValidation();
 
-        $this->dispatch('open-modal', name: 'edit-announcement');
+        $this->showEditModal = true;
     }
 
     public function updateAnnouncement(): void
@@ -181,7 +183,6 @@ class ManageAnnouncement extends Component
 
         session()->flash('status', 'Announcement updated successfully.');
         $this->dispatch('announcement-updated', id: $updatedId);
-        $this->dispatch('close-modal', name: 'edit-announcement');
     }
 
     public function confirmDelete(int $id): void
@@ -195,7 +196,7 @@ class ManageAnnouncement extends Component
 
         $this->resetValidation();
 
-        $this->dispatch('open-modal', name: 'delete-announcement');
+        $this->showDeleteModal = true;
     }
 
     public function destroyAnnouncement(): void
@@ -218,7 +219,6 @@ class ManageAnnouncement extends Component
 
         session()->flash('status', 'Announcement deleted successfully.');
         $this->dispatch('announcement-deleted', id: $deletedId);
-        $this->dispatch('close-modal', name: 'delete-announcement');
     }
 
     protected function fixPaginationAfterDelete(): void
@@ -240,12 +240,14 @@ class ManageAnnouncement extends Component
     public function resetEditForm(): void
     {
         $this->reset(['editingId', 'editTitle', 'editBody']);
+        $this->showEditModal = false;
         $this->resetValidation();
     }
 
     public function resetDeleteForm(): void
     {
         $this->reset(['deleteId', 'deleteTitle']);
+        $this->showDeleteModal = false;
         $this->resetValidation();
     }
 }

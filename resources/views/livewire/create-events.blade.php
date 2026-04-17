@@ -201,34 +201,7 @@
         </div>
     </section>
 
-    {{-- Flash messages --}}
-    @if (session()->has('success'))
-        <div class="flex items-center gap-3 rounded-xl px-4 py-3"
-             style="background:#ecfdf5;border:1px solid #a7f3d0;">
-            <svg class="w-4 h-4 shrink-0" style="color:#065f46;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-            </svg>
-            <p class="text-sm font-medium" style="color:#065f46;">{{ session('success') }}</p>
-        </div>
-    @endif
-    @if (session()->has('error'))
-        <div class="flex items-center gap-3 rounded-xl px-4 py-3"
-             style="background:#fef2f2;border:1px solid #fecaca;">
-            <svg class="w-4 h-4 shrink-0" style="color:#dc2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
-            </svg>
-            <p class="text-sm font-medium" style="color:#991b1b;">{{ session('error') }}</p>
-        </div>
-    @endif
-    @if (session('status'))
-        <div class="flex items-center gap-3 rounded-xl px-4 py-3"
-             style="background:#ecfdf5;border:1px solid #a7f3d0;">
-            <svg class="w-4 h-4 shrink-0" style="color:#065f46;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-            </svg>
-            <p class="text-sm font-medium" style="color:#065f46;">{{ session('status') }}</p>
-        </div>
-    @endif
+    @include('partials.toast')
 
     {{-- ════════════════════════════════════════════════════════════
          FORM

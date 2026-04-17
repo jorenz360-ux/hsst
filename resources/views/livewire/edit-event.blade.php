@@ -296,35 +296,7 @@
         </div>
     </section>
 
-    {{-- Toast --}}
-    @if (session('status'))
-        <div
-            x-data="{ show: true }"
-            x-init="setTimeout(() => show = false, 3000)"
-            x-show="show"
-            x-transition:enter="transform ease-out duration-300"
-            x-transition:enter-start="translate-y-2 opacity-0"
-            x-transition:enter-end="translate-y-0 opacity-100"
-            x-transition:leave="transform ease-in duration-200"
-            x-transition:leave-start="translate-y-0 opacity-100"
-            x-transition:leave-end="translate-y-2 opacity-0"
-            class="fixed right-4 top-4 z-[9999] w-full max-w-sm overflow-hidden rounded-2xl bg-white p-4 shadow-xl"
-            style="border:1px solid #a7f3d0;"
-        >
-            <div class="flex items-start gap-3">
-                <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
-                     style="background:#ecfdf5;border:1px solid #a7f3d0;">
-                    <svg class="h-4 w-4" style="color:#065f46;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                    </svg>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <p class="text-sm font-semibold text-gray-900">Saved</p>
-                    <p class="mt-0.5 text-sm text-gray-500">{{ session('status') }}</p>
-                </div>
-            </div>
-        </div>
-    @endif
+    @include('partials.toast')
 
     {{-- ════════════════════════════════════════════════════════════
          MAIN GRID

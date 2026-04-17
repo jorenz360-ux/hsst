@@ -251,33 +251,7 @@
         </div>
     </section>
 
-    {{-- ════════════════════════════════════════════════════════
-         FLASH MESSAGE
-    ════════════════════════════════════════════════════════ --}}
-    @if (session('status'))
-        <div
-            x-data="{ show: true }"
-            x-show="show"
-            x-transition.opacity.duration.300ms
-            class="rounded-2xl px-5 py-4 flex items-center justify-between gap-4"
-            style="background:#ecfdf5;border:1px solid #a7f3d0;"
-        >
-            <div class="flex items-center gap-3">
-                <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                     style="background:#059669;">
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                    </svg>
-                </div>
-                <p class="text-sm font-semibold" style="color:#065f46;">{{ session('status') }}</p>
-            </div>
-            <button type="button" x-on:click="show = false"
-                    class="text-xs font-bold transition hover:opacity-70"
-                    style="color:#059669;">
-                Dismiss
-            </button>
-        </div>
-    @endif
+    @include('partials.toast')
 
     {{-- ════════════════════════════════════════════════════════
          TABLE
@@ -565,141 +539,194 @@
 {{-- ════════════════════════════════════════════════════════════════
      EDIT MODAL
 ════════════════════════════════════════════════════════════════ --}}
-<flux:modal name="edit-announcement" class="md:w-[40rem]">
-    <form wire:submit.prevent="updateAnnouncement" class="text-slate-800">
+@if ($showEditModal)
+    <div style="position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
+                background:rgba(10,31,92,.55);backdrop-filter:blur(4px);padding:1.25rem;"
+         wire:click.self="resetEditForm">
 
-        {{-- Modal header --}}
-        <div class="px-6 py-5" style="background:linear-gradient(135deg,var(--r8),var(--r6));border-radius:inherit inherit 0 0;">
-            <p class="text-[.62rem] font-bold uppercase tracking-[.2em]" style="color:var(--g4);">Admin Control</p>
-            <h3 class="mt-1 text-lg font-bold text-white" style="font-family:Georgia,serif;">Edit Announcement</h3>
-            <p class="mt-0.5 text-xs" style="color:rgba(255,255,255,.6);">
-                Update the title or body. Changes take effect immediately.
-            </p>
+        <div style="width:100%;max-width:40rem;background:#fff;border-radius:1.25rem;overflow:hidden;
+                    box-shadow:0 32px 80px rgba(10,31,92,.3),0 0 0 1px rgba(26,63,168,.1);">
+
+            <form wire:submit.prevent="updateAnnouncement">
+
+                {{-- Header --}}
+                <div style="background:linear-gradient(135deg,var(--r8) 0%,var(--r6) 100%);padding:1.25rem 1.5rem;">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div style="width:2.25rem;height:2.25rem;border-radius:.6rem;
+                                        background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);
+                                        display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                <svg style="width:1rem;height:1rem;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.2em;color:var(--g4);">
+                                    Admin Control
+                                </p>
+                                <h3 style="margin-top:.2rem;font-size:1rem;font-weight:700;color:#fff;font-family:Georgia,serif;">
+                                    Edit Announcement
+                                </h3>
+                                <p style="margin-top:.2rem;font-size:.75rem;color:rgba(255,255,255,.6);">
+                                    Update the title or body. Changes take effect immediately.
+                                </p>
+                            </div>
+                        </div>
+                        <button type="button" wire:click="resetEditForm"
+                                style="flex-shrink:0;width:1.75rem;height:1.75rem;border-radius:.4rem;
+                                       background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+                                       color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                            <svg style="width:.75rem;height:.75rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                {{-- Body --}}
+                <div style="padding:1.5rem;background:#f8fafc;display:flex;flex-direction:column;gap:1rem;">
+
+                    <div>
+                        <label class="modal-label">Title</label>
+                        <input type="text" wire:model.defer="editTitle"
+                               class="modal-field" placeholder="Enter announcement title">
+                        @error('editTitle')
+                            <p style="margin-top:.35rem;font-size:.74rem;color:#dc2626;font-weight:500;display:flex;align-items:center;gap:.3rem;">
+                                <svg style="width:.75rem;height:.75rem;flex-shrink:0;" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label class="modal-label">Message</label>
+                        <textarea wire:model.defer="editBody" rows="7"
+                                  class="modal-field" placeholder="Update the announcement message…"
+                                  style="resize:vertical;"></textarea>
+                        @error('editBody')
+                            <p style="margin-top:.35rem;font-size:.74rem;color:#dc2626;font-weight:500;display:flex;align-items:center;gap:.3rem;">
+                                <svg style="width:.75rem;height:.75rem;flex-shrink:0;" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                </div>
+
+                {{-- Footer --}}
+                <div style="display:flex;align-items:center;justify-content:flex-end;gap:.625rem;
+                            padding:.875rem 1.5rem;border-top:1px solid #e2e8f0;background:#fff;">
+                    <button type="button" wire:click="resetEditForm" class="btn-ghost">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            wire:loading.attr="disabled"
+                            wire:target="updateAnnouncement"
+                            class="btn-primary">
+                        <span wire:loading.remove wire:target="updateAnnouncement" class="flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                            </svg>
+                            Save Changes
+                        </span>
+                        <span wire:loading wire:target="updateAnnouncement">Saving…</span>
+                    </button>
+                </div>
+
+            </form>
         </div>
-
-        {{-- Body --}}
-        <div class="space-y-4 p-6">
-
-            <div>
-                <label class="modal-label">Title</label>
-                <input
-                    type="text"
-                    wire:model.defer="editTitle"
-                    class="modal-field"
-                    placeholder="Enter announcement title"
-                >
-                @error('editTitle')
-                    <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
-                        <svg class="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-                        {{ $message }}
-                    </p>
-                @enderror
-            </div>
-
-            <div>
-                <label class="modal-label">Message</label>
-                <textarea
-                    wire:model.defer="editBody"
-                    rows="7"
-                    class="modal-field"
-                    placeholder="Update the announcement message…"
-                    style="resize:vertical;"
-                ></textarea>
-                @error('editBody')
-                    <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
-                        <svg class="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-                        {{ $message }}
-                    </p>
-                @enderror
-            </div>
-        </div>
-
-        {{-- Footer --}}
-        <div class="flex items-center justify-end gap-2 px-6 py-4"
-             style="border-top:1px solid #e2e8f0;background:#f8fafc;">
-            <flux:modal.close>
-                <button type="button" wire:click="resetEditForm" class="btn-ghost">
-                    Cancel
-                </button>
-            </flux:modal.close>
-            <button
-                type="submit"
-                wire:loading.attr="disabled"
-                wire:target="updateAnnouncement"
-                class="btn-primary"
-            >
-                <span wire:loading.remove wire:target="updateAnnouncement" class="flex items-center gap-1.5">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                    </svg>
-                    Save Changes
-                </span>
-                <span wire:loading wire:target="updateAnnouncement">Saving…</span>
-            </button>
-        </div>
-
-    </form>
-</flux:modal>
+    </div>
+@endif
 
 {{-- ════════════════════════════════════════════════════════════════
      DELETE MODAL
 ════════════════════════════════════════════════════════════════ --}}
-<flux:modal name="delete-announcement" class="md:w-[32rem]">
-    <div class="text-slate-800">
+{{-- ════════════════════════════════════════════════════════════════ --}}
+{{-- DELETE CONFIRMATION MODAL                                         --}}
+{{-- ════════════════════════════════════════════════════════════════ --}}
+@if ($showDeleteModal)
+    <div style="position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
+                background:rgba(10,31,92,.55);backdrop-filter:blur(4px);padding:1.25rem;"
+         wire:click.self="resetDeleteForm">
 
-        {{-- Danger header --}}
-        <div class="px-6 py-5 text-center"
-             style="background:linear-gradient(135deg,#991b1b,#dc2626);border-radius:inherit inherit 0 0;">
-            <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl"
-                 style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);">
-                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
-                </svg>
+        <div style="width:100%;max-width:26rem;background:#fff;border-radius:1.25rem;overflow:hidden;
+                    box-shadow:0 32px 80px rgba(10,31,92,.3),0 0 0 1px rgba(220,38,38,.12);">
+
+            {{-- Header --}}
+            <div style="background:linear-gradient(135deg,#991b1b 0%,#dc2626 100%);padding:1.25rem 1.5rem;">
+                <div class="flex items-center gap-3">
+                    <div style="width:2.25rem;height:2.25rem;border-radius:.6rem;
+                                background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);
+                                display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <svg style="width:1.1rem;height:1.1rem;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.2em;color:rgba(255,255,255,.65);">
+                            Destructive Action
+                        </p>
+                        <h3 style="margin-top:.2rem;font-size:1rem;font-weight:700;color:#fff;font-family:Georgia,serif;">
+                            Delete Announcement
+                        </h3>
+                    </div>
+                </div>
             </div>
-            <h3 class="text-lg font-bold text-white" style="font-family:Georgia,serif;">Delete Announcement?</h3>
-            <p class="mt-1 text-xs" style="color:rgba(255,255,255,.65);">This action is permanent and cannot be undone.</p>
-        </div>
 
-        {{-- Body --}}
-        <div class="p-6 space-y-4">
-            <div class="rounded-xl px-4 py-3.5" style="background:#f8fafc;border:1px solid #e2e8f0;">
-                <p class="text-xs font-bold uppercase tracking-[.1em] text-slate-400 mb-1">Announcement to delete</p>
-                <p class="text-sm font-bold text-slate-900">&ldquo;{{ $deleteTitle }}&rdquo;</p>
+            {{-- Body --}}
+            <div style="padding:1.4rem 1.5rem;space-y:1rem;">
+                <p style="font-size:.875rem;color:#374151;line-height:1.65;margin-bottom:1rem;">
+                    You are about to permanently delete:
+                </p>
+
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.875rem;padding:.875rem 1rem;margin-bottom:1rem;">
+                    <p style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;margin-bottom:.25rem;">
+                        Announcement
+                    </p>
+                    <p style="font-size:.875rem;font-weight:700;color:#111827;">&ldquo;{{ $deleteTitle }}&rdquo;</p>
+                </div>
+
+                <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:.875rem;padding:.75rem 1rem;">
+                    <p style="font-size:.75rem;font-weight:600;color:#991b1b;line-height:1.55;">
+                        This will permanently remove the announcement from the alumni board. Alumni will no longer be able to see it.
+                    </p>
+                </div>
             </div>
 
-            <div class="rounded-xl px-4 py-3 text-xs leading-5"
-                 style="background:#fef2f2;border:1px solid #fecaca;color:#991b1b;">
-                <strong>Warning:</strong> This will permanently remove the announcement from the alumni board.
-                Alumni will no longer be able to see it.
-            </div>
-        </div>
-
-        {{-- Footer --}}
-        <div class="flex items-center justify-end gap-2 px-6 py-4"
-             style="border-top:1px solid #e2e8f0;background:#f8fafc;">
-            <flux:modal.close>
+            {{-- Footer --}}
+            <div style="display:flex;align-items:center;justify-content:flex-end;gap:.625rem;
+                        padding:.875rem 1.5rem;border-top:1px solid #f1f5f9;background:#fafbff;">
                 <button type="button" wire:click="resetDeleteForm" class="btn-ghost">
                     Cancel
                 </button>
-            </flux:modal.close>
-            <button
-                type="button"
-                wire:click="destroyAnnouncement"
-                wire:loading.attr="disabled"
-                wire:target="destroyAnnouncement"
-                class="btn-danger"
-            >
-                <span wire:loading.remove wire:target="destroyAnnouncement" class="flex items-center gap-1.5">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
-                    </svg>
-                    Yes, Delete It
-                </span>
-                <span wire:loading wire:target="destroyAnnouncement">Deleting…</span>
-            </button>
-        </div>
+                <button
+                    type="button"
+                    wire:click="destroyAnnouncement"
+                    wire:loading.attr="disabled"
+                    wire:target="destroyAnnouncement"
+                    style="display:inline-flex;align-items:center;gap:.4rem;height:2.375rem;padding:0 1.1rem;
+                           border-radius:.75rem;background:linear-gradient(135deg,#dc2626 0%,#991b1b 100%);
+                           box-shadow:0 4px 14px rgba(220,38,38,.3);
+                           color:#fff;font-size:.8rem;font-weight:700;border:none;cursor:pointer;
+                           transition:filter .15s;"
+                    onmouseover="this.style.filter='brightness(1.1)'"
+                    onmouseout="this.style.filter='none'">
+                    <span wire:loading.remove wire:target="destroyAnnouncement" style="display:inline-flex;align-items:center;gap:.4rem;">
+                        <svg style="width:.9rem;height:.9rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
+                        </svg>
+                        Yes, Delete It
+                    </span>
+                    <span wire:loading wire:target="destroyAnnouncement">Deleting…</span>
+                </button>
+            </div>
 
+        </div>
     </div>
-</flux:modal>
+@endif
 
 </div>

@@ -173,6 +173,16 @@
     }
     .btn-action-delete:hover { background: #fef2f2; border-color: #fca5a5; }
 
+    .btn-action-deactivate {
+        background: #fff; border: 1px solid #fde68a; color: #92700a;
+    }
+    .btn-action-deactivate:hover { background: #fffbeb; border-color: #fbbf24; }
+
+    .btn-action-activate {
+        background: #fff; border: 1px solid #a7f3d0; color: #065f46;
+    }
+    .btn-action-activate:hover { background: #ecfdf5; border-color: #34d399; }
+
     /* Avatar */
     .mu-avatar {
         width: 2.25rem; height: 2.25rem; border-radius: .625rem;
@@ -242,15 +252,7 @@
 
 <div class="space-y-5 px-4 py-6 sm:px-6 lg:px-8 mx-auto max-w-screen-2xl">
 
-    @if (session('deleted'))
-        <div class="flex items-start gap-3 rounded-xl px-4 py-3.5"
-             style="background:#fef2f2;border:1px solid #fecaca;">
-            <svg class="mt-0.5 w-4 h-4 shrink-0" style="color:#dc2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
-            </svg>
-            <p class="text-sm font-medium" style="color:#991b1b;">{{ session('deleted') }}</p>
-        </div>
-    @endif
+    @include('partials.toast')
 
     {{-- ════════════════════════════════════════════════════════════
          CONTROL HEADER
@@ -607,13 +609,23 @@
                                         View
                                     </button>
 
-                                    <button wire:click="edit({{ $user->id }})"
-                                            class="btn-action btn-action-edit">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/>
-                                        </svg>
-                                        Edit
-                                    </button>
+                                    @if ($user->is_active)
+                                        <button wire:click="confirmToggle({{ $user->id }})"
+                                                class="btn-action btn-action-deactivate">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/>
+                                            </svg>
+                                            Deactivate
+                                        </button>
+                                    @else
+                                        <button wire:click="confirmToggle({{ $user->id }})"
+                                                class="btn-action btn-action-activate">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                            </svg>
+                                            Activate
+                                        </button>
+                                    @endif
 
                                     <button wire:click="confirmDelete({{ $user->id }})"
                                             class="btn-action btn-action-delete">
@@ -904,6 +916,114 @@
                 @endif
 
             </div>
+        </div>
+    </div>
+@endif
+
+{{-- ════════════════════════════════════════════════════════════════ --}}
+{{-- TOGGLE ACTIVE CONFIRMATION MODAL                                  --}}
+{{-- ════════════════════════════════════════════════════════════════ --}}
+@if ($showToggleModal && $confirmToggleId)
+    @php
+        $toggleTarget = $users->getCollection()->firstWhere('id', $confirmToggleId)
+            ?? \App\Models\User::find($confirmToggleId);
+        $isDeactivating = $toggleTarget?->is_active ?? true;
+    @endphp
+
+    <div class="mu-modal-overlay" wire:click.self="cancelToggle">
+        <div style="width:100%;max-width:26rem;background:#fff;border-radius:1.25rem;overflow:hidden;
+                    box-shadow:0 32px 80px rgba(10,31,92,.3),0 0 0 1px {{ $isDeactivating ? 'rgba(196,149,42,.18)' : 'rgba(16,185,129,.18)' }};">
+
+            {{-- Header --}}
+            <div style="background:{{ $isDeactivating
+                ? 'linear-gradient(135deg,#92700a 0%,#c4952a 100%)'
+                : 'linear-gradient(135deg,#065f46 0%,#059669 100%)' }};padding:1.25rem 1.5rem;">
+                <div class="flex items-center gap-3">
+                    <div style="width:2.25rem;height:2.25rem;border-radius:.6rem;background:rgba(255,255,255,.15);
+                                border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        @if ($isDeactivating)
+                            <svg class="w-4 h-4" style="color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/>
+                            </svg>
+                        @else
+                            <svg class="w-4 h-4" style="color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                            </svg>
+                        @endif
+                    </div>
+                    <div>
+                        <p class="text-[.62rem] font-bold uppercase tracking-[.2em]" style="color:rgba(255,255,255,.65);">
+                            Account Status
+                        </p>
+                        <h3 class="mt-0.5 text-base font-bold text-white">
+                            {{ $isDeactivating ? 'Deactivate Account' : 'Activate Account' }}
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Body --}}
+            <div style="padding:1.4rem 1.5rem;">
+                <p class="text-sm" style="color:#374151;line-height:1.65;">
+                    @if ($toggleTarget)
+                        You are about to
+                        <strong style="color:{{ $isDeactivating ? '#92700a' : '#065f46' }};">
+                            {{ $isDeactivating ? 'deactivate' : 'activate' }}
+                        </strong>
+                        the account for
+                        <strong style="color:#111827;">{{ $toggleTarget->username }}</strong>.
+                    @else
+                        You are about to {{ $isDeactivating ? 'deactivate' : 'activate' }} this account.
+                    @endif
+                </p>
+
+                <div class="mt-3 rounded-xl px-3.5 py-3"
+                     style="background:{{ $isDeactivating ? '#fffbeb' : '#ecfdf5' }};
+                            border:1px solid {{ $isDeactivating ? '#fde68a' : '#a7f3d0' }};">
+                    <p class="text-xs font-semibold"
+                       style="color:{{ $isDeactivating ? '#92700a' : '#065f46' }};">
+                        @if ($isDeactivating)
+                            This user will be immediately logged out and blocked from signing in.
+                        @else
+                            This user will be able to log in and access the platform again.
+                        @endif
+                    </p>
+                </div>
+
+                <div class="mt-4 flex justify-end gap-2.5">
+                    <button wire:click="cancelToggle" class="btn-ghost">
+                        Cancel
+                    </button>
+                    <button wire:click="toggleActive({{ $confirmToggleId }})"
+                            wire:loading.attr="disabled"
+                            style="display:inline-flex;align-items:center;gap:.4rem;height:2.375rem;padding:0 1.1rem;
+                                   border-radius:.75rem;
+                                   background:{{ $isDeactivating
+                                       ? 'linear-gradient(135deg,#c4952a 0%,#92700a 100%)'
+                                       : 'linear-gradient(135deg,#059669 0%,#065f46 100%)' }};
+                                   box-shadow:{{ $isDeactivating
+                                       ? '0 4px 14px rgba(196,149,42,.35)'
+                                       : '0 4px 14px rgba(5,150,105,.3)' }};
+                                   color:#fff;font-size:.8rem;font-weight:700;border:none;cursor:pointer;
+                                   transition:filter .15s;"
+                            onmouseover="this.style.filter='brightness(1.1)'"
+                            onmouseout="this.style.filter='none'">
+                        <svg wire:loading.remove class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            @if ($isDeactivating)
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/>
+                            @else
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                            @endif
+                        </svg>
+                        <svg wire:loading class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                        </svg>
+                        {{ $isDeactivating ? 'Yes, Deactivate' : 'Yes, Activate' }}
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 @endif

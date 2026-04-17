@@ -27,18 +27,7 @@
             </div>
         </section>
 
-        {{-- Alerts --}}
-        @if (session('success'))
-            <div class="border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-700 sm:px-5">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="border border-rose-200 bg-rose-50 px-4 py-4 text-sm text-rose-700 sm:px-5">
-                {{ session('error') }}
-            </div>
-        @endif
+        @include('partials.toast')
 
         @php
             $currentStatus = $this->rsvpStatus ?? null;

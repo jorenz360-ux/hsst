@@ -124,13 +124,7 @@ new class extends Component {
                         Use this option if you forgot your password. The admin can manually reset it and provide you with a temporary password.
                     </p>
 
-                    @if (session('status'))
-                        <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
-                            <p class="text-sm text-emerald-700">
-                                {{ session('status') }}
-                            </p>
-                        </div>
-                    @endif
+                    @include('partials.toast')
 
                     <button
                         type="button"

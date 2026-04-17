@@ -22,24 +22,7 @@
             </span>
         </div>
 
-        {{-- Flash Messages --}}
-        @if (session('success'))
-            <div class="mb-5 flex items-center gap-3 rounded-[14px] border border-emerald-200 bg-emerald-50 px-4 py-3.5">
-                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100">
-                    <svg class="h-3.5 w-3.5 text-emerald-700" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4,10 8,14 16,6"/></svg>
-                </span>
-                <p class="text-sm text-emerald-800">{{ session('success') }}</p>
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="mb-5 flex items-center gap-3 rounded-[14px] border border-rose-200 bg-rose-50 px-4 py-3.5">
-                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-100">
-                    <svg class="h-3.5 w-3.5 text-rose-700" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 6v5M10 14h.01"/></svg>
-                </span>
-                <p class="text-sm text-rose-800">{{ session('error') }}</p>
-            </div>
-        @endif
+        @include('partials.toast')
 
         <div class="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
 
