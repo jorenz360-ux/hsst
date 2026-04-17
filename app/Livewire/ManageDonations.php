@@ -7,12 +7,13 @@ use App\Models\Donation;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 #[Title('Batch Donations')]
 class ManageDonations extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
     public string $search = '';
     public string $status = 'all'; // all | pending | verified | rejected | paid | unpaid
@@ -21,6 +22,24 @@ class ManageDonations extends Component
 
     public ?int $scopeBatchId = null;
     public ?int $scopeEducationId = null;
+
+    public ?int $rejectingId = null;
+    public string $rejectReason = '';
+
+    // Batch donation upload (batch-rep only)
+    public bool         $showUploadModal  = false;
+    public int|string   $uploadAmount     = '';
+    public string       $uploadReference  = '';
+    public string       $uploadRemarks    = '';
+    public mixed        $uploadProof      = null;
+
+    protected array $rules = [
+        'rejectReason'    => 'required|string|max:500',
+        'uploadAmount'    => 'required|integer|min:1',
+        'uploadReference' => 'nullable|string|max:100',
+        'uploadRemarks'   => 'nullable|string|max:500',
+        'uploadProof'     => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    ];
 
     protected $paginationTheme = 'tailwind';
 
@@ -43,6 +62,108 @@ class ManageDonations extends Component
             $this->scopeEducationId = $education->id;
             $this->scopeBatchId = (int) $education->batch_id;
         }
+    }
+
+    public function approveDonation(int $id): void
+    {
+        abort_if(auth()->user()?->hasRole('batch-representative'), 403);
+
+        Donation::findOrFail($id)->update([
+            'status'           => 'verified',
+            'reviewed_by'      => auth()->id(),
+            'reviewed_at'      => now(),
+            'rejection_reason' => null,
+        ]);
+    }
+
+    public function openRejectModal(int $id): void
+    {
+        abort_if(auth()->user()?->hasRole('batch-representative'), 403);
+
+        $this->rejectingId  = $id;
+        $this->rejectReason = '';
+        $this->resetValidation();
+        $this->dispatch('open-reject-modal');
+    }
+
+    public function submitReject(): void
+    {
+        abort_if(auth()->user()?->hasRole('batch-representative'), 403);
+
+        $this->validate();
+
+        Donation::findOrFail($this->rejectingId)->update([
+            'status'           => 'rejected',
+            'reviewed_by'      => auth()->id(),
+            'reviewed_at'      => now(),
+            'rejection_reason' => trim($this->rejectReason),
+        ]);
+
+        $this->rejectingId  = null;
+        $this->rejectReason = '';
+        $this->dispatch('close-reject-modal');
+    }
+
+    public function openUploadModal(): void
+    {
+        abort_unless(auth()->user()?->hasRole('batch-representative'), 403);
+
+        $this->resetUploadForm();
+        $this->showUploadModal = true;
+    }
+
+    public function closeUploadModal(): void
+    {
+        $this->showUploadModal = false;
+        $this->resetUploadForm();
+    }
+
+    public function submitBatchDonation(): void
+    {
+        abort_unless(auth()->user()?->hasRole('batch-representative'), 403);
+
+        $this->validate([
+            'uploadAmount'    => 'required|integer|min:1',
+            'uploadReference' => 'nullable|string|max:100',
+            'uploadRemarks'   => 'nullable|string|max:500',
+            'uploadProof'     => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ]);
+
+        $alumniId = auth()->user()?->alumni_id;
+        abort_if(! $alumniId, 403, 'Alumni profile required.');
+
+        $education  = $this->representativeEducation();
+        $batchYear  = $education?->batch?->yeargrad;
+        $defaultRemark = $batchYear
+            ? "Batch {$batchYear} collective donation"
+            : 'Batch collective donation';
+
+        $proofPath = $this->uploadProof->storePublicly('donation-proofs', 's3');
+
+        Donation::create([
+            'alumni_id'        => $alumniId,
+            'amount'           => (int) $this->uploadAmount,
+            'date_donated'     => now(),
+            'remarks'          => trim($this->uploadRemarks) ?: $defaultRemark,
+            'reference_number' => trim($this->uploadReference) ?: null,
+            'or_file_path'     => $proofPath,
+            'status'           => 'pending',
+            'paid_at'          => null,
+        ]);
+
+        $this->closeUploadModal();
+        session()->flash('success', 'Batch donation submitted. Awaiting admin verification.');
+    }
+
+    private function resetUploadForm(): void
+    {
+        $this->uploadAmount    = '';
+        $this->uploadReference = '';
+        $this->uploadRemarks   = '';
+        $this->uploadProof     = null;
+        $this->resetValidation([
+            'uploadAmount', 'uploadReference', 'uploadRemarks', 'uploadProof',
+        ]);
     }
 
     public function updatingSearch(): void

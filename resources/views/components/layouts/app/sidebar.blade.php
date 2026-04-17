@@ -89,7 +89,7 @@
 
                 @can('donations.create')
                     <flux:sidebar.item icon="banknotes" :href="route('make-donations')" wire:navigate>
-                        {{ __('Payment') }}
+                        {{ __('Donate') }}
                     </flux:sidebar.item>
                 @endcan
 

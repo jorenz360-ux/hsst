@@ -165,6 +165,24 @@
                     </p>
                 </div>
 
+                {{-- Batch rep: submit donation button --}}
+                @if ($isBatchRep)
+                    <button wire:click="openUploadModal"
+                            style="display:inline-flex;align-items:center;gap:.4rem;
+                                   height:2.25rem;padding:0 1rem;border-radius:.7rem;cursor:pointer;
+                                   background:linear-gradient(135deg,var(--g5),#a37522);
+                                   border:none;color:#fff;font-size:.78rem;font-weight:700;
+                                   box-shadow:0 3px 10px rgba(196,149,42,.35);
+                                   transition:filter .15s;white-space:nowrap;"
+                            onmouseover="this.style.filter='brightness(1.08)'"
+                            onmouseout="this.style.filter='brightness(1)'">
+                        <svg style="width:.8rem;height:.8rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/>
+                        </svg>
+                        Submit Batch Donation
+                    </button>
+                @endif
+
                 {{-- summary pills --}}
                 <div class="sm:shrink-0 flex flex-wrap items-start gap-2.5">
                     <div style="background:rgba(16,185,129,.14);border:1px solid rgba(16,185,129,.25);
@@ -200,6 +218,17 @@
             </div>
         </div>
     </section>
+
+    {{-- ── FLASH ──────────────────────────────────────────────── --}}
+    @if (session('success'))
+        <div style="display:flex;align-items:center;gap:.75rem;padding:.875rem 1.1rem;
+                    border-radius:.875rem;background:#ecfdf5;border:1px solid #a7f3d0;">
+            <svg style="width:1rem;height:1rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+            </svg>
+            <span style="font-size:.8125rem;color:#065f46;font-weight:500;">{{ session('success') }}</span>
+        </div>
+    @endif
 
     {{-- ── STAT CARDS ───────────────────────────────────────────── --}}
     <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -351,6 +380,9 @@
                         <th>Payment</th>
                         <th>Reference</th>
                         <th>OR File</th>
+                        @if (!auth()->user()?->hasRole('batch-representative'))
+                            <th>Actions</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -483,28 +515,75 @@
                             {{-- OR File --}}
                             <td>
                                 @if ($d->or_file_path)
-                                    <a href="{{ Storage::disk('s3')->url($d->or_file_path) }}"
-                                       target="_blank"
-                                       style="display:inline-flex;align-items:center;gap:.3rem;
-                                              padding:.2rem .6rem;border-radius:.5rem;
-                                              background:#fffbeb;border:1px solid #fde68a;
-                                              font-size:.68rem;font-weight:700;color:#92700a;
-                                              transition:background .12s;"
-                                       onmouseover="this.style.background='#fef3c7'"
-                                       onmouseout="this.style.background='#fffbeb'">
+                                    @php
+                                        /** @var \Illuminate\Filesystem\FilesystemAdapter $s3 */
+                                        $s3    = Storage::disk('s3');
+                                        $orUrl = $s3->url($d->or_file_path);
+                                        $orExt = strtolower(pathinfo($d->or_file_path, PATHINFO_EXTENSION));
+                                    @endphp
+                                    <button type="button"
+                                            x-data
+                                            @click="$dispatch('open-or-modal', { url: '{{ $orUrl }}', ext: '{{ $orExt }}' })"
+                                            style="display:inline-flex;align-items:center;gap:.3rem;
+                                                   padding:.2rem .6rem;border-radius:.5rem;cursor:pointer;
+                                                   background:#fffbeb;border:1px solid #fde68a;
+                                                   font-size:.68rem;font-weight:700;color:#92700a;
+                                                   transition:background .12s;"
+                                            onmouseover="this.style.background='#fef3c7'"
+                                            onmouseout="this.style.background='#fffbeb'">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/>
                                         </svg>
                                         View OR
-                                    </a>
+                                    </button>
                                 @else
                                     <span class="text-xs" style="color:#cbd5e1;">No file</span>
                                 @endif
                             </td>
+
+                            {{-- Actions --}}
+                            @if (!auth()->user()?->hasRole('batch-representative'))
+                                <td style="white-space:nowrap;">
+                                    <div style="display:flex;gap:.35rem;align-items:center;">
+                                        @if ($d->status !== 'verified')
+                                            <button wire:click="approveDonation({{ $d->id }})"
+                                                    wire:confirm="Approve this donation?"
+                                                    style="display:inline-flex;align-items:center;gap:.25rem;
+                                                           padding:.2rem .55rem;border-radius:.45rem;cursor:pointer;
+                                                           background:#f0fdf4;border:1px solid #86efac;
+                                                           font-size:.68rem;font-weight:700;color:#15803d;
+                                                           transition:background .12s;"
+                                                    onmouseover="this.style.background='#dcfce7'"
+                                                    onmouseout="this.style.background='#f0fdf4'">
+                                                <svg style="width:.65rem;height:.65rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                                                </svg>
+                                                Approve
+                                            </button>
+                                        @endif
+
+                                        @if ($d->status !== 'rejected')
+                                            <button wire:click="openRejectModal({{ $d->id }})"
+                                                    style="display:inline-flex;align-items:center;gap:.25rem;
+                                                           padding:.2rem .55rem;border-radius:.45rem;cursor:pointer;
+                                                           background:#fff5f5;border:1px solid #fca5a5;
+                                                           font-size:.68rem;font-weight:700;color:#dc2626;
+                                                           transition:background .12s;"
+                                                    onmouseover="this.style.background='#fee2e2'"
+                                                    onmouseout="this.style.background='#fff5f5'">
+                                                <svg style="width:.65rem;height:.65rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                                                </svg>
+                                                Reject
+                                            </button>
+                                        @endif
+                                    </div>
+                                </td>
+                            @endif
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" style="padding:3.5rem 1.5rem;text-align:center;">
+                            <td colspan="9" style="padding:3.5rem 1.5rem;text-align:center;">
                                 <div style="max-width:20rem;margin:0 auto;">
                                     <div style="width:3rem;height:3rem;border-radius:.875rem;background:#f0f4fb;
                                                 border:1px solid #e2e8f0;display:flex;align-items:center;
@@ -626,6 +705,273 @@
                 <div class="[&>*]:!shadow-none">{{ $donations->links() }}</div>
             </div>
         @endif
+    </div>
+
+    {{-- ── Batch Donation Upload Modal (batch-rep only) ── --}}
+    @if ($isBatchRep && $showUploadModal)
+        <div style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;
+                    justify-content:center;background:rgba(0,0,0,.5);">
+            <div style="background:#fff;border-radius:1.1rem;padding:1.5rem;
+                        width:95vw;max-width:30rem;
+                        box-shadow:0 20px 50px rgba(0,0,0,.2);">
+
+                {{-- Header --}}
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+                    <div style="display:flex;align-items:center;gap:.6rem;">
+                        <div style="width:2.25rem;height:2.25rem;border-radius:.6rem;
+                                    background:linear-gradient(135deg,var(--g5),#a37522);
+                                    display:flex;align-items:center;justify-content:center;
+                                    box-shadow:0 3px 8px rgba(196,149,42,.3);">
+                            <svg style="width:1rem;height:1rem;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p style="font-size:.875rem;font-weight:800;color:#0f172a;margin:0;">Submit Batch Donation</p>
+                            @if ($currentBatch)
+                                <p style="font-size:.7rem;color:#64748b;margin:.1rem 0 0;">Batch {{ $currentBatch->yeargrad }}</p>
+                            @endif
+                        </div>
+                    </div>
+                    <button wire:click="closeUploadModal"
+                            style="width:1.75rem;height:1.75rem;border-radius:.4rem;border:none;
+                                   background:#f1f5f9;cursor:pointer;font-size:1.1rem;color:#64748b;">
+                        &times;
+                    </button>
+                </div>
+
+                {{-- Amount --}}
+                <div style="margin-bottom:.85rem;">
+                    <label class="md-label">
+                        Total Amount (₱) <span style="color:#dc2626;">*</span>
+                    </label>
+                    <input type="number"
+                           wire:model="uploadAmount"
+                           placeholder="e.g. 5000"
+                           min="1"
+                           class="md-field">
+                    @error('uploadAmount')
+                        <p style="font-size:.72rem;color:#dc2626;margin:.25rem 0 0;">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Reference Number --}}
+                <div style="margin-bottom:.85rem;">
+                    <label class="md-label">Reference / Transaction Number</label>
+                    <input type="text"
+                           wire:model="uploadReference"
+                           placeholder="GCash ref, bank transaction ID…"
+                           class="md-field">
+                    @error('uploadReference')
+                        <p style="font-size:.72rem;color:#dc2626;margin:.25rem 0 0;">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Remarks --}}
+                <div style="margin-bottom:.85rem;">
+                    <label class="md-label">Remarks <span style="color:#94a3b8;">(optional)</span></label>
+                    <textarea wire:model="uploadRemarks"
+                              rows="2"
+                              placeholder="Additional notes about this donation…"
+                              style="width:100%;border-radius:.75rem;border:1px solid #e2e8f0;
+                                     background:#fff;padding:.6rem .875rem;font-size:.8125rem;
+                                     color:#0f172a;outline:none;resize:vertical;box-sizing:border-box;"
+                              onfocus="this.style.borderColor='var(--r6)';this.style.boxShadow='0 0 0 3px rgba(26,63,168,.1)'"
+                              onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'"></textarea>
+                    @error('uploadRemarks')
+                        <p style="font-size:.72rem;color:#dc2626;margin:.25rem 0 0;">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Proof file --}}
+                <div style="margin-bottom:1.25rem;">
+                    <label class="md-label">
+                        Proof of Payment <span style="color:#dc2626;">*</span>
+                        <span style="color:#94a3b8;text-transform:none;letter-spacing:normal;">(JPG, PNG, or PDF · max 5 MB)</span>
+                    </label>
+                    <label style="display:block;border:2px dashed #e2e8f0;border-radius:.875rem;
+                                  padding:1.25rem;text-align:center;cursor:pointer;
+                                  transition:border-color .15s,background .15s;background:#fafbff;"
+                           onmouseover="this.style.borderColor='var(--r6)';this.style.background='#f0f4ff'"
+                           onmouseout="this.style.borderColor='#e2e8f0';this.style.background='#fafbff'">
+                        <input type="file"
+                               wire:model="uploadProof"
+                               accept=".jpg,.jpeg,.png,.pdf"
+                               style="display:none;">
+                        @if ($uploadProof)
+                            <div style="display:flex;align-items:center;justify-content:center;gap:.5rem;">
+                                <svg style="width:1rem;height:1rem;color:#16a34a;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+                                </svg>
+                                <span style="font-size:.8rem;font-weight:600;color:#065f46;">
+                                    {{ $uploadProof->getClientOriginalName() }}
+                                </span>
+                            </div>
+                            <p style="font-size:.7rem;color:#94a3b8;margin:.35rem 0 0;">Click to change file</p>
+                        @else
+                            <svg style="width:1.5rem;height:1.5rem;color:#94a3b8;margin:0 auto .5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/>
+                            </svg>
+                            <p style="font-size:.8rem;font-weight:600;color:#475569;margin:0;">Click to upload proof</p>
+                            <p style="font-size:.7rem;color:#94a3b8;margin:.25rem 0 0;">JPG, PNG, or PDF up to 5 MB</p>
+                        @endif
+                    </label>
+                    <div wire:loading wire:target="uploadProof"
+                         style="font-size:.72rem;color:#94a3b8;margin-top:.35rem;text-align:center;">
+                        Uploading…
+                    </div>
+                    @error('uploadProof')
+                        <p style="font-size:.72rem;color:#dc2626;margin:.3rem 0 0;">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Footer --}}
+                <div style="display:flex;gap:.5rem;justify-content:flex-end;">
+                    <button wire:click="closeUploadModal"
+                            style="padding:.45rem .9rem;border-radius:.6rem;border:1px solid #e2e8f0;
+                                   background:#fff;font-size:.8rem;font-weight:600;color:#475569;cursor:pointer;">
+                        Cancel
+                    </button>
+                    <button wire:click="submitBatchDonation"
+                            wire:loading.attr="disabled"
+                            wire:target="submitBatchDonation,uploadProof"
+                            style="display:inline-flex;align-items:center;gap:.4rem;
+                                   padding:.45rem 1rem;border-radius:.6rem;border:none;
+                                   background:linear-gradient(135deg,var(--g5),#a37522);
+                                   font-size:.8rem;font-weight:700;color:#fff;cursor:pointer;
+                                   transition:filter .12s;"
+                            onmouseover="this.style.filter='brightness(1.08)'"
+                            onmouseout="this.style.filter='brightness(1)'">
+                        <span wire:loading.remove wire:target="submitBatchDonation">Submit Donation</span>
+                        <span wire:loading wire:target="submitBatchDonation">Submitting…</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- Reject Donation Modal --}}
+    @if (!auth()->user()?->hasRole('batch-representative'))
+        <div x-data="{ open: false }"
+             @open-reject-modal.window="open = true"
+             @close-reject-modal.window="open = false"
+             x-show="open"
+             x-cloak
+             x-transition.opacity
+             style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;
+                    justify-content:center;background:rgba(0,0,0,.5);"
+             @click.self="open = false"
+             @keydown.escape.window="open = false">
+
+            <div style="background:#fff;border-radius:1rem;padding:1.5rem;
+                        width:95vw;max-width:26rem;
+                        box-shadow:0 20px 50px rgba(0,0,0,.2);">
+
+                {{-- Header --}}
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                    <div style="display:flex;align-items:center;gap:.5rem;">
+                        <div style="width:2rem;height:2rem;border-radius:.5rem;
+                                    background:#fee2e2;border:1px solid #fca5a5;
+                                    display:flex;align-items:center;justify-content:center;">
+                            <svg style="width:.9rem;height:.9rem;color:#dc2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </div>
+                        <span style="font-size:.875rem;font-weight:700;color:#0f172a;">Reject Donation</span>
+                    </div>
+                    <button @click="open = false"
+                            style="width:1.75rem;height:1.75rem;border-radius:.4rem;border:none;
+                                   background:#f1f5f9;cursor:pointer;font-size:1.1rem;color:#64748b;">
+                        &times;
+                    </button>
+                </div>
+
+                {{-- Reason textarea --}}
+                <div style="margin-bottom:1rem;">
+                    <label class="md-label">Reason for rejection <span style="color:#dc2626;">*</span></label>
+                    <textarea wire:model="rejectReason"
+                              rows="3"
+                              placeholder="Explain why this donation is being rejected…"
+                              style="width:100%;border-radius:.75rem;border:1px solid #e2e8f0;
+                                     background:#fff;padding:.6rem .875rem;font-size:.8125rem;
+                                     color:#0f172a;outline:none;resize:vertical;
+                                     transition:border-color .15s,box-shadow .15s;"
+                              onfocus="this.style.borderColor='#dc2626';this.style.boxShadow='0 0 0 3px rgba(220,38,38,.1)'"
+                              onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'"></textarea>
+                    @error('rejectReason')
+                        <p style="font-size:.72rem;color:#dc2626;margin-top:.3rem;">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Footer --}}
+                <div style="display:flex;gap:.5rem;justify-content:flex-end;">
+                    <button @click="open = false"
+                            style="padding:.45rem .9rem;border-radius:.6rem;border:1px solid #e2e8f0;
+                                   background:#fff;font-size:.8rem;font-weight:600;
+                                   color:#475569;cursor:pointer;">
+                        Cancel
+                    </button>
+                    <button wire:click="submitReject"
+                            style="padding:.45rem .9rem;border-radius:.6rem;border:none;
+                                   background:#dc2626;font-size:.8rem;font-weight:700;
+                                   color:#fff;cursor:pointer;
+                                   transition:background .12s;"
+                            onmouseover="this.style.background='#b91c1c'"
+                            onmouseout="this.style.background='#dc2626'">
+                        Confirm Reject
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- OR File Preview Modal --}}
+    <div x-data="{ open: false, url: '', ext: '' }"
+         @open-or-modal.window="open = true; url = $event.detail.url; ext = $event.detail.ext"
+         x-show="open"
+         x-cloak
+         x-transition.opacity
+         style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;
+                justify-content:center;background:rgba(0,0,0,.55);"
+         @click.self="open = false"
+         @keydown.escape.window="open = false">
+
+        <div style="background:#fff;border-radius:1rem;padding:1.25rem;
+                    max-width:52rem;width:95vw;max-height:92vh;
+                    display:flex;flex-direction:column;gap:1rem;
+                    box-shadow:0 25px 60px rgba(0,0,0,.25);">
+
+            {{-- Modal header --}}
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:.875rem;font-weight:700;color:#0f172a;">Official Receipt</span>
+                <div style="display:flex;gap:.5rem;align-items:center;">
+                    <a :href="url" target="_blank"
+                       style="font-size:.72rem;font-weight:600;color:#2150c8;text-decoration:none;
+                              padding:.25rem .6rem;border:1px solid #bfdbfe;border-radius:.4rem;
+                              background:#eff6ff;">
+                        Open in new tab
+                    </a>
+                    <button @click="open = false"
+                            style="width:1.75rem;height:1.75rem;border-radius:.4rem;border:none;
+                                   background:#f1f5f9;cursor:pointer;font-size:1.1rem;
+                                   color:#64748b;line-height:1;">
+                        &times;
+                    </button>
+                </div>
+            </div>
+
+            {{-- Preview area --}}
+            <div style="overflow:auto;flex:1;border-radius:.5rem;background:#f8fafc;
+                        border:1px solid #e2e8f0;display:flex;
+                        align-items:center;justify-content:center;min-height:16rem;">
+                <template x-if="ext === 'pdf'">
+                    <iframe :src="url" style="width:100%;height:70vh;border:none;border-radius:.5rem;"></iframe>
+                </template>
+                <template x-if="ext !== 'pdf'">
+                    <img :src="url" style="max-width:100%;max-height:70vh;object-fit:contain;border-radius:.375rem;" />
+                </template>
+            </div>
+        </div>
     </div>
 
 </div>
