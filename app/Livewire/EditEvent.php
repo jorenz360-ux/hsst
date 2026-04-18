@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Event;
 use Illuminate\Support\Carbon;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -17,6 +18,8 @@ class EditEvent extends Component
 public $new_banner_image = null;
 public bool $remove_banner_image = false;
     public array $itemRows = [];
+
+    #[Locked]
     public Event $event;
 
     public string $title = '';
@@ -86,9 +89,14 @@ public bool $remove_banner_image = false;
     {
         $keptIds = [];
 
+        $ownedItemIds = $this->event->registrationItems()->pluck('id')->all();
+
         foreach ($this->itemRows as $row) {
+            $rowId = $row['id'] ?? null;
+            abort_if($rowId && ! in_array($rowId, $ownedItemIds, true), 403);
+
             $item = $this->event->registrationItems()->updateOrCreate(
-                ['id' => $row['id'] ?? null],
+                ['id' => $rowId],
                 [
                     'name' => $row['name'],
                     'price' => $row['price'] * 100,
@@ -186,9 +194,14 @@ public function update(): void
  
         $keptIds = [];
 
+        $ownedScheduleIds = $this->event->schedules()->pluck('id')->all();
+
         foreach ($validated['scheduleRows'] as $index => $row) {
+            $rowId = $row['id'] ?? null;
+            abort_if($rowId && ! in_array($rowId, $ownedScheduleIds, true), 403);
+
             $schedule = $this->event->schedules()->updateOrCreate(
-                ['id' => $row['id'] ?? null],
+                ['id' => $rowId],
                 [
                     'schedule_time' => $row['schedule_time'] ?: null,
                     'title' => $row['title'],

@@ -21,6 +21,8 @@ class Donation extends Model
         'reviewed_at',
         'rejection_reason',
         'paid_at',
+        'paymongo_checkout_session_id',
+        'is_paid',
     ];
 
     protected $casts = [

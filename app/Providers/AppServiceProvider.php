@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 use Laravel\Fortify\Contracts\LoginResponse;
 use App\Actions\Fortify\LoginResponse as CustomLoginResponse;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -24,5 +26,9 @@ class AppServiceProvider extends ServiceProvider
         if (app()->environment('production')) {
             URL::forceScheme('https');
         }
+
+        Password::defaults(fn () =>
+            Password::min(8)->mixedCase()->numbers()
+        );
     }
 }

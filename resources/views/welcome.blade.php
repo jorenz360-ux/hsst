@@ -204,8 +204,8 @@
       <a href="#" class="flex items-center gap-3">
         <img src="{{ asset('images/hsstlogo.jpg') }}" alt="HSST Logo" class="h-9 w-auto object-contain"/>
         <div>
-          <p class="font-display font-bold text-sm leading-none text-white md:text-ink transition-colors duration-300" id="logo-text" style="letter-spacing:-.01em;">HSSTian</p>
-          <p class="kicker text-[.52rem] text-white/50 md:text-ink/40 transition-colors duration-300 mt-0.5" id="logo-sub" style="letter-spacing:.18em;">Alumni Association</p>
+          <p class="font-display font-bold text-sm leading-none text-white md:text-ink transition-colors duration-300" id="logo-text" style="letter-spacing:-.01em;text-shadow:0 1px 8px rgba(0,0,0,.7),0 0 20px rgba(0,0,0,.4);">HSSTian</p>
+          <p class="kicker text-[.52rem] text-white/50 md:text-ink/40 transition-colors duration-300 mt-0.5" id="logo-sub" style="letter-spacing:.18em;text-shadow:0 1px 6px rgba(0,0,0,.7);">Alumni Association</p>
         </div>
       </a>
 
@@ -290,24 +290,47 @@
 <!-- ══════════════════════════════════════
      HERO BANNER
 ══════════════════════════════════════ -->
-<section class="relative min-h-[88vh] md:min-h-screen flex items-end overflow-hidden pt-20 md:pt-0">
+<section class="relative overflow-hidden flex flex-col md:min-h-screen md:justify-end">
 
-  <div class="absolute inset-0">
+  <!-- Image: fixed height on mobile (stacked), full-bleed absolute on desktop -->
+  <div class="relative h-[45vh] shrink-0 md:absolute md:inset-0 md:h-auto">
     <img src="{{ asset('images/hsstherosect1.png') }}" alt="Holy Spirit School of Tagbilaran"
          class="absolute inset-0 h-full w-full object-cover object-center"/>
-    <div class="absolute inset-0 hero-grad"></div>
+    <!-- Desktop gradient -->
+    <div class="absolute inset-0 hero-grad hidden md:block"></div>
+    <!-- Mobile: top vignette only so hamburger stays readable -->
+    <div class="absolute inset-x-0 top-0 h-28 md:hidden" style="background:linear-gradient(to bottom,rgba(0,0,0,.52),transparent)"></div>
     <div class="absolute inset-0 opacity-[.03]"
          style="background-image:url(data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E);"></div>
   </div>
 
-  <!-- Decorative vertical rule -->
+  <!-- Decorative vertical rule (desktop only) -->
   <div class="pointer-events-none absolute right-14 top-0 bottom-0 hidden xl:flex flex-col items-center justify-center opacity-15">
     <div class="h-48 w-px" style="background:linear-gradient(to bottom,transparent,var(--gold),transparent);"></div>
     <div class="my-4 kicker text-white text-[.56rem]" style="writing-mode:vertical-rl;letter-spacing:.3em;">HOLY SPIRIT SCHOOL · EST. 1926</div>
     <div class="h-48 w-px" style="background:linear-gradient(to bottom,transparent,var(--gold),transparent);"></div>
   </div>
 
-  <div class="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 pb-20 sm:pb-24 md:pb-32">
+  <!-- Content: dark navy bg on mobile, transparent on desktop -->
+  <div class="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 pb-10 sm:pb-24 md:pb-32 pt-0 md:pt-0 bg-[rgb(9,24,82)] md:bg-transparent">
+
+    <!-- Mobile masthead: gold rule → logo + HSST identity → centennial year -->
+    <div class="md:hidden">
+      <div class="h-[2px] w-full" style="background:linear-gradient(to right,var(--gold) 0%,rgba(255,255,255,.08) 100%)"></div>
+      <div class="flex items-center gap-3 px-1 py-3">
+        <img src="{{ asset('images/hsstlogo.jpg') }}" alt="HSST" class="w-10 h-10 rounded-full object-cover shrink-0" style="border:1px solid rgba(255,255,255,.18)"/>
+        <div class="flex flex-col leading-none gap-1">
+          <span class="display text-white" style="font-size:1.45rem;letter-spacing:.06em;line-height:1;">HSST</span>
+          <span class="kicker text-white/40 text-[.5rem]" style="letter-spacing:.2em;">HOLY SPIRIT SCHOOL · TAGBILARAN</span>
+        </div>
+        <div class="ml-auto flex flex-col items-end leading-none gap-1">
+          <span class="kicker text-[.5rem] text-white/35" style="letter-spacing:.15em;">CENTENNIAL</span>
+          <span class="kicker font-bold" style="font-size:.72rem;color:var(--gold);letter-spacing:.1em;">1926–2026</span>
+        </div>
+      </div>
+      <div class="h-px mb-5" style="background:rgba(255,255,255,.06)"></div>
+    </div>
+
     <div class="max-w-3xl">
 
       <div class="mb-5 flex items-center gap-3 animate-fade-up" style="animation-delay:.1s;">
@@ -340,25 +363,26 @@
         </a>
       </div>
 
-      <div class="flex flex-wrap items-start gap-x-8 gap-y-5 animate-fade-up" style="animation-delay:.52s;">
-        <div class="border-l-2 pl-4" style="border-color:var(--gold);">
-          <p class="display text-white font-bold" style="font-size:2rem;">100<span style="color:var(--gold);">+</span></p>
-          <p class="kicker text-white/40 mt-1">Years of Excellence</p>
+      <div class="flex flex-wrap items-center gap-4 animate-fade-up" style="animation-delay:.52s;">
+        <div class="flex items-center gap-2 border border-white/15 px-4 py-2.5">
+          <svg class="w-3.5 h-3.5 shrink-0" style="color:var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <span class="kicker text-white/65">Grand Reunion · <span style="color:var(--gold);">2026</span></span>
         </div>
-        <div class="border-l-2 pl-4 border-white/15">
-          <p class="display text-white font-bold" style="font-size:2rem;">100K<span style="color:var(--gold);">+</span></p>
-          <p class="kicker text-white/40 mt-1">Living Alumni</p>
+        <div class="flex items-center gap-2 border border-white/15 px-4 py-2.5">
+          <svg class="w-3.5 h-3.5 shrink-0" style="color:var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+          <span class="kicker text-white/65">100K<span style="color:var(--gold);">+</span> Alumni</span>
         </div>
-        <div class="border-l-2 pl-4 border-white/15">
-          <p class="display text-white font-bold" style="font-size:2rem;">3</p>
-          <p class="kicker text-white/40 mt-1">CRUSADE Pillars</p>
+        <div class="flex items-center gap-2 border border-white/15 px-4 py-2.5">
+          <svg class="w-3.5 h-3.5 shrink-0" style="color:var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12z"/></svg>
+          <span class="kicker text-white/65">Centennial · <span style="color:var(--gold);">Est. 1926</span></span>
         </div>
       </div>
 
     </div>
   </div>
 
-  <div class="absolute inset-x-0 bottom-0 h-24" style="background:linear-gradient(to top,#ffffff,transparent);"></div>
+  <!-- Bottom white fade (desktop only) -->
+  <div class="hidden md:block absolute inset-x-0 bottom-0 h-24" style="background:linear-gradient(to top,#ffffff,transparent);"></div>
 </section>
 
 <!-- ══════════════════════════════════════
@@ -966,6 +990,11 @@
           Give Now · Fueled by Compassion
         </button>
         <p class="kicker text-ink/25 text-center mt-3 text-[.6rem]" style="text-transform:none;letter-spacing:.06em;">All donations are acknowledged &amp; deeply cherished</p>
+        <p class="text-center mt-2 text-[.72rem] text-ink/40" style="font-family:inherit;">
+          Have an account?
+          <a href="{{ route('login') }}" class="text-ink/70 underline underline-offset-2 hover:text-ink transition-colors">Sign in</a>
+          to donate with your alumni profile.
+        </p>
       </div>
     </div>
 

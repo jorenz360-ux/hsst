@@ -7,6 +7,7 @@ use App\Models\AlumniEducation;
 use App\Models\Event;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -22,6 +23,7 @@ class Batch extends Component
     public string $filterRsvp    = 'all';   // all | attending | maybe | not_attending | no_rsvp
     public $batch = null;
 
+    #[Locked]
     public ?int $selectedAlumniId = null;
 
     public function viewAlumni(int $id): void
@@ -41,12 +43,20 @@ class Batch extends Component
             return null;
         }
 
+        $batchId = Auth::user()?->alumni?->educations()
+            ->where('is_batch_rep', true)
+            ->value('batch_id');
+
+        abort_if(! $batchId, 403);
+
         return Alumni::with([
             'user:id,alumni_id,username,email',
             'volunteerSignups.committee:id,name,description',
             'eventRsvps.event:id,title,event_date',
             'educations.batch:id,level,yeargrad,schoolyear',
-        ])->find($this->selectedAlumniId);
+        ])
+        ->whereHas('educations', fn ($q) => $q->where('batch_id', $batchId))
+        ->find($this->selectedAlumniId);
     }
 
     protected $paginationTheme = 'tailwind';

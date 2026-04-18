@@ -6,6 +6,7 @@ use App\Models\Batch;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -34,12 +35,15 @@ class ManageUsers extends Component
     public string $hasAlumni = self::DEFAULT_HAS_ALUMNI;
     public int $perPage = self::DEFAULT_PER_PAGE;
 
+    #[Locked]
     public ?int $viewUserId = null;
     public bool $showViewModal = false;
 
+    #[Locked]
     public ?int $confirmDeleteId = null;
     public bool $showDeleteModal = false;
 
+    #[Locked]
     public ?int $confirmToggleId = null;
     public bool $showToggleModal = false;
 
@@ -103,11 +107,15 @@ class ManageUsers extends Component
 
     public function edit(int $userId)
     {
+        abort_if(User::findOrFail($userId)->hasRole('reunion-coordinator'), 403);
+
         return $this->redirect(route('users.edit', $userId), navigate: true);
     }
 
     public function view(int $userId): void
     {
+        abort_if(User::findOrFail($userId)->hasRole('reunion-coordinator'), 403);
+
         $this->viewUserId = $userId;
         $this->showViewModal = true;
     }
@@ -122,7 +130,12 @@ class ManageUsers extends Component
     {
         $user = User::findOrFail($userId);
 
-        // Prevent deactivating yourself
+        if ($user->hasRole('reunion-coordinator')) {
+            $this->cancelToggle();
+            session()->flash('error', 'Coordinator accounts cannot be modified.');
+            return;
+        }
+
         if ($user->id === auth()->id()) {
             $this->cancelToggle();
             session()->flash('error', 'You cannot deactivate your own account.');
@@ -143,12 +156,16 @@ class ManageUsers extends Component
 
     public function confirmDelete(int $userId): void
     {
+        abort_if(User::findOrFail($userId)->hasRole('reunion-coordinator'), 403);
+
         $this->confirmDeleteId = $userId;
         $this->showDeleteModal = true;
     }
 
     public function confirmToggle(int $userId): void
     {
+        abort_if(User::findOrFail($userId)->hasRole('reunion-coordinator'), 403);
+
         $this->confirmToggleId = $userId;
         $this->showToggleModal = true;
     }
@@ -170,6 +187,12 @@ class ManageUsers extends Component
         $user = User::find($this->confirmDeleteId);
 
         if ($user) {
+            if ($user->hasRole('reunion-coordinator')) {
+                $this->cancelDelete();
+                session()->flash('error', 'Coordinator accounts cannot be deleted.');
+                return;
+            }
+
             $alumni = $user->alumni;
             $user->delete();
 

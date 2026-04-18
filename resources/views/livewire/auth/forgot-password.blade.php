@@ -350,7 +350,11 @@
                 </div>
 
                 {{-- ---- Session status (success message) ---------------- --}}
-                @if (session('status'))
+                @php
+                    $isFormatError = $errors->has('email') && !str_contains($errors->first('email'), 'registered');
+                    $showSuccessToast = session('status') || (old('email') && !$isFormatError && $errors->has('email'));
+                @endphp
+                @if ($showSuccessToast)
                 <div class="status-card mb-6 flex items-start gap-3">
                     <div class="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center mt-0.5">
                         <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -359,7 +363,7 @@
                     </div>
                     <div>
                         <p class="text-sm font-semibold text-emerald-800 leading-tight">Email sent</p>
-                        <p class="text-xs text-emerald-700 mt-0.5 leading-5">{{ session('status') }}</p>
+                        <p class="text-xs text-emerald-700 mt-0.5 leading-5">If that email is registered, you'll receive a reset link shortly.</p>
                     </div>
                 </div>
                 @endif
@@ -388,18 +392,18 @@
                                 autocomplete="email"
                                 value="{{ old('email') }}"
                                 placeholder="your@email.com"
-                                class="field-input w-full pl-10 pr-4 py-3 rounded-xl border text-sm transition-all duration-150 {{ $errors->has('email') ? 'is-error' : '' }}"
-                                style="border-color: {{ $errors->has('email') ? '#ef4444' : '#d1d5db' }}; background: #f9fafb; color: #0f172a;"
+                                class="field-input w-full pl-10 pr-4 py-3 rounded-xl border text-sm transition-all duration-150 {{ $isFormatError ? 'is-error' : '' }}"
+                                style="border-color: {{ $isFormatError ? '#ef4444' : '#d1d5db' }}; background: #f9fafb; color: #0f172a;"
                             >
                         </div>
-                        @error('email')
+                        @if ($isFormatError)
                         <p class="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-red-600">
                             <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
                             </svg>
-                            {{ $message }}
+                            {{ $errors->first('email') }}
                         </p>
-                        @enderror
+                        @endif
                     </div>
 
                     {{-- Info hint --}}

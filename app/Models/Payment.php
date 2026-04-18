@@ -20,6 +20,8 @@ class Payment extends Model
         'verified_by',
         'verified_at',
         'remarks',
+        'paymongo_checkout_session_id',
+        'is_paid',
     ];
 
     protected $casts = [
