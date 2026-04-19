@@ -66,7 +66,7 @@
                             {{ __('Password Reset Requests') }}
                         </flux:sidebar.item>
 
-                        @can('users.view')
+                        @role('reunion-coordinator')
                         <flux:sidebar.item
                             :href="route('admin.pending-staff')"
                             :current="request()->routeIs('admin.pending-staff')"
@@ -74,7 +74,7 @@
                         >
                             {{ __('Pending Registrations') }}
                         </flux:sidebar.item>
-                        @endcan
+                        @endrole
                         </flux:sidebar.group>
                     </flux:sidebar.nav>
                 @endcan
