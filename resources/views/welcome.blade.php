@@ -1291,22 +1291,22 @@
           <img src="{{ asset('images/hsstlogo.jpg') }}" alt="HSST Logo" class="h-8 w-auto object-contain opacity-75"/>
           <div>
             <p class="display text-white font-bold text-base">HSSTian</p>
-            <p class="kicker text-white/25 text-[.53rem]" style="letter-spacing:.22em;">Alumni Association</p>
+            <p class="kicker text-[.53rem]" style="letter-spacing:.22em;color:rgba(255,255,255,.55);">Alumni Association</p>
           </div>
         </div>
-        <p class="garamond text-white/28 max-w-xs mb-5" style="font-size:.9rem;line-height:1.7;">
+        <p class="garamond max-w-xs mb-5" style="font-size:.9rem;line-height:1.7;color:rgba(255,255,255,.55);">
           United by faith. Driven by service. Forever Crusaders.
           Tagbilaran City, Bohol, Philippines.
         </p>
         <p class="kicker font-bold mb-1" style="color:var(--gold);">In Veritate et Caritate</p>
-        <p class="kicker text-white/18 italic" style="letter-spacing:.06em;text-transform:none;font-size:.67rem;">In Truth and in Love</p>
+        <p class="kicker italic" style="letter-spacing:.06em;text-transform:none;font-size:.67rem;color:rgba(255,255,255,.45);">In Truth and in Love</p>
         <div class="flex gap-2 mt-5">
-          <a href="#" class="w-9 h-9 flex items-center justify-center border border-white/10 text-white/25 hover:bg-white/5 hover:text-white/60 transition-all">
+          <a href="#" class="w-9 h-9 flex items-center justify-center transition-all" style="border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);">
             <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/>
             </svg>
           </a>
-          <a href="#" class="w-9 h-9 flex items-center justify-center border border-white/10 text-white/25 hover:bg-white/5 hover:text-white/60 transition-all">
+          <a href="#" class="w-9 h-9 flex items-center justify-center transition-all" style="border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);">
             <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
             </svg>
@@ -1315,38 +1315,38 @@
       </div>
 
       <div>
-        <p class="kicker font-bold text-white/35 mb-5" style="letter-spacing:.22em;">Quick Links</p>
+        <p class="kicker font-bold mb-5" style="letter-spacing:.22em;color:rgba(255,255,255,.6);">Quick Links</p>
         <ul class="space-y-3">
-          <li><a href="#about"   class="kicker text-white/22 hover:text-white/65 transition-colors" style="text-transform:none;font-size:.78rem;letter-spacing:.06em;">About Us</a></li>
-          <li><a href="{{ route('history') }}" class="kicker text-white/22 hover:text-white/65 transition-colors" style="text-transform:none;font-size:.78rem;letter-spacing:.06em;">History</a></li>
-          <li><a href="#crusade" class="kicker text-white/22 hover:text-white/65 transition-colors" style="text-transform:none;font-size:.78rem;letter-spacing:.06em;">CRUSADE Donation</a></li>
-          <li><a href="#events"  class="kicker text-white/22 hover:text-white/65 transition-colors" style="text-transform:none;font-size:.78rem;letter-spacing:.06em;">Events</a></li>
-          <li><a href="#stories" class="kicker text-white/22 hover:text-white/65 transition-colors" style="text-transform:none;font-size:.78rem;letter-spacing:.06em;">Alumni Stories</a></li>
-          <li><a href="#news"    class="kicker text-white/22 hover:text-white/65 transition-colors" style="text-transform:none;font-size:.78rem;letter-spacing:.06em;">News &amp; Updates</a></li>
-          <li><a href="#faq"     class="kicker text-white/22 hover:text-white/65 transition-colors" style="text-transform:none;font-size:.78rem;letter-spacing:.06em;">FAQ</a></li>
+          <li><a href="#about"   class="kicker transition-colors" style="text-transform:none;font-size:.78rem;letter-spacing:.06em;color:rgba(255,255,255,.55);">About Us</a></li>
+          <li><a href="{{ route('history') }}" class="kicker transition-colors" style="text-transform:none;font-size:.78rem;letter-spacing:.06em;color:rgba(255,255,255,.55);">History</a></li>
+          <li><a href="#crusade" class="kicker transition-colors" style="text-transform:none;font-size:.78rem;letter-spacing:.06em;color:rgba(255,255,255,.55);">CRUSADE Donation</a></li>
+          <li><a href="#events"  class="kicker transition-colors" style="text-transform:none;font-size:.78rem;letter-spacing:.06em;color:rgba(255,255,255,.55);">Events</a></li>
+          <li><a href="#stories" class="kicker transition-colors" style="text-transform:none;font-size:.78rem;letter-spacing:.06em;color:rgba(255,255,255,.55);">Alumni Stories</a></li>
+          <li><a href="#news"    class="kicker transition-colors" style="text-transform:none;font-size:.78rem;letter-spacing:.06em;color:rgba(255,255,255,.55);">News &amp; Updates</a></li>
+          <li><a href="#faq"     class="kicker transition-colors" style="text-transform:none;font-size:.78rem;letter-spacing:.06em;color:rgba(255,255,255,.55);">FAQ</a></li>
         </ul>
       </div>
 
       <div>
-        <p class="kicker font-bold text-white/35 mb-5" style="letter-spacing:.22em;">Contact</p>
+        <p class="kicker font-bold mb-5" style="letter-spacing:.22em;color:rgba(255,255,255,.6);">Contact</p>
         <ul class="space-y-4">
           <li class="flex gap-2.5 items-start">
-            <svg class="w-3.5 h-3.5 text-white/25 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-3.5 h-3.5 mt-0.5 shrink-0" style="color:rgba(255,255,255,.5);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
             </svg>
-            <span class="kicker text-white/22" style="text-transform:none;font-size:.74rem;letter-spacing:.04em;">alumni@hss-tagbilaran.edu.ph</span>
+            <span class="kicker" style="text-transform:none;font-size:.74rem;letter-spacing:.04em;color:rgba(255,255,255,.55);">alumni@hss-tagbilaran.edu.ph</span>
           </li>
           <li class="flex gap-2.5 items-start">
-            <svg class="w-3.5 h-3.5 text-white/25 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-3.5 h-3.5 mt-0.5 shrink-0" style="color:rgba(255,255,255,.5);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
             </svg>
-            <span class="kicker text-white/22" style="text-transform:none;font-size:.74rem;letter-spacing:.04em;">+63 38 501 0000</span>
+            <span class="kicker" style="text-transform:none;font-size:.74rem;letter-spacing:.04em;color:rgba(255,255,255,.55);">+63 38 501 0000</span>
           </li>
           <li class="flex gap-2.5 items-start">
-            <svg class="w-3.5 h-3.5 text-white/25 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-3.5 h-3.5 mt-0.5 shrink-0" style="color:rgba(255,255,255,.5);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
             </svg>
-            <span class="kicker text-white/22" style="text-transform:none;font-size:.74rem;letter-spacing:.04em;">Holy Spirit School, Tagbilaran City, Bohol 6300</span>
+            <span class="kicker" style="text-transform:none;font-size:.74rem;letter-spacing:.04em;color:rgba(255,255,255,.55);">Holy Spirit School, Tagbilaran City, Bohol 6300</span>
           </li>
         </ul>
       </div>
@@ -1354,9 +1354,14 @@
     </div>
 
     <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-3">
-      <p class="kicker text-white/15" style="text-transform:none;font-size:.68rem;letter-spacing:.08em;">
-        © {{ now('Asia/Manila')->format('Y') }} HSSTian Alumni Association · Holy Spirit School of Tagbilaran. All rights reserved.
-      </p>
+      <div class="flex flex-col md:flex-row items-center gap-3">
+        <p class="kicker" style="text-transform:none;font-size:.68rem;letter-spacing:.08em;color:rgba(255,255,255,.45);">
+          © {{ now('Asia/Manila')->format('Y') }} HSSTian Alumni Association · Holy Spirit School of Tagbilaran. All rights reserved.
+        </p>
+        <a href="{{ route('privacy') }}" class="kicker transition-colors" style="text-transform:none;font-size:.68rem;letter-spacing:.08em;color:rgba(255,255,255,.5);">
+          Privacy Policy
+        </a>
+      </div>
       <p class="kicker font-bold" style="color:var(--gold);opacity:.45;letter-spacing:.25em;font-size:.6rem;">
         CRUSADERS FOREVER ✦
       </p>

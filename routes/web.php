@@ -62,6 +62,7 @@ Route::get('/events', [PublicEventController::class, 'index'])->name('events.ind
 Route::get('/events/{event}', [PublicEventController::class, 'show'])->name('events.show');
 
 Route::get('/', [Welcome::class, 'index'])->name('home');
+Route::view('/privacy', 'privacy')->name('privacy');
 
 
 

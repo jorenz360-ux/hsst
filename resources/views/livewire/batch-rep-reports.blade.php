@@ -368,9 +368,9 @@
                     @forelse ($participants as $p)
                     @php
                         $fullName = trim(
-                            ucwords(strtolower($p->lname ?? '')) . ', ' .
-                            ucwords(strtolower($p->fname ?? '')) .
-                            ($p->mname ? ' ' . ucwords(strtolower($p->mname)) : '')
+                            ($p->lname ?? '') . ', ' .
+                            ($p->fname ?? '') .
+                            ($p->mname ? ' ' . $p->mname : '')
                         );
                         $initials = strtoupper(substr($p->fname ?? 'U', 0, 1) . substr($p->lname ?? '', 0, 1));
 

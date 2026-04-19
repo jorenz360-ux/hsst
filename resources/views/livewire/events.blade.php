@@ -389,8 +389,8 @@
                                 <tr>
                                     <td>
                                         <span class="text-sm font-semibold text-slate-800">
-                                            {{ ucwords(strtolower($payment->registration->alumni->fname ?? '')) }}
-                                            {{ ucwords(strtolower($payment->registration->alumni->lname ?? '')) }}
+                                            {{ $payment->registration->alumni->fname ?? '' }}
+                                            {{ $payment->registration->alumni->lname ?? '' }}
                                         </span>
                                     </td>
 

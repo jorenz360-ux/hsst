@@ -478,7 +478,7 @@
                                                 {{ strtoupper(substr($payment->alumni->fname ?? 'U', 0, 1)) }}
                                             </div>
                                             <span class="text-sm font-semibold text-slate-800">
-                                                {{ ucwords(strtolower(trim(($payment->alumni->fname ?? '') . ' ' . ($payment->alumni->lname ?? '')))) ?: 'Unknown Donor' }}
+                                                {{ trim(($payment->alumni->fname ?? '') . ' ' . ($payment->alumni->lname ?? '')) ?: 'Unknown Donor' }}
                                             </span>
                                         </div>
                                     </td>
@@ -547,7 +547,7 @@
                                                 {{ strtoupper(substr($donation->alumni->fname ?? 'U', 0, 1)) }}
                                             </div>
                                             <span class="text-sm font-medium text-slate-800">
-                                                {{ ucwords(strtolower(trim(($donation->alumni->fname ?? '') . ' ' . ($donation->alumni->lname ?? '')))) ?: 'Unknown Donor' }}
+                                                {{ trim(($donation->alumni->fname ?? '') . ' ' . ($donation->alumni->lname ?? '')) ?: 'Unknown Donor' }}
                                             </span>
                                         </div>
                                     </td>

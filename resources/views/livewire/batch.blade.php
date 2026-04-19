@@ -396,7 +396,7 @@
                     @forelse ($members as $member)
                         @php
                             $al       = $member->alumni;
-                            $name     = trim(ucwords(strtolower($al->lname ?? '')) . ', ' . ucwords(strtolower($al->fname ?? '')) . ($al->mname ? ' ' . ucwords(strtolower($al->mname)) : ''));
+                            $name     = trim(($al->lname ?? '') . ', ' . ($al->fname ?? '') . ($al->mname ? ' ' . $al->mname : ''));
                             $initials = strtoupper(substr($al->fname ?? 'U', 0, 1) . substr($al->lname ?? '', 0, 1));
 
                             // RSVPs keyed by event_id
@@ -542,9 +542,9 @@
     @if ($selectedAlumniId && $this->selectedAlumni)
     @php
         $sal         = $this->selectedAlumni;
-        $salFname    = ucwords(strtolower($sal->fname ?? ''));
-        $salMname    = ucwords(strtolower($sal->mname ?? ''));
-        $salLname    = ucwords(strtolower($sal->lname ?? ''));
+        $salFname    = $sal->fname ?? '';
+        $salMname    = $sal->mname ?? '';
+        $salLname    = $sal->lname ?? '';
         $salFullName = trim(
             ($sal->prefix ? $sal->prefix . ' ' : '') .
             $salFname . ' ' .

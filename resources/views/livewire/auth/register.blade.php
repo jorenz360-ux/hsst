@@ -888,6 +888,7 @@
                         {{-- Confirmation notice --}}
                         <div class="rounded-2xl px-5 py-4 text-sm leading-6" style="background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af;">
                             By creating an account, you confirm that all information provided is accurate and that you are an alumnus or alumna of Holy Spirit School of Tagbilaran.
+                            By registering, you also agree to our <a href="{{ route('privacy') }}" target="_blank" class="underline font-semibold hover:opacity-80">Privacy Policy</a>.
                         </div>
 
                     </div>

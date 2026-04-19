@@ -6,6 +6,9 @@ use App\Models\Batch;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -42,6 +45,12 @@ class ManageUsers extends Component
     #[Locked]
     public ?int $confirmDeleteId = null;
     public bool $showDeleteModal = false;
+
+    #[Locked]
+    public ?int $confirmResetId = null;
+    public bool $showResetModal = false;
+    public bool $showTempPasswordModal = false;
+    public string $generatedTempPassword = '';
 
     #[Locked]
     public ?int $confirmToggleId = null;
@@ -204,6 +213,63 @@ class ManageUsers extends Component
         $this->cancelDelete();
         $this->closeViewModal();
         session()->flash('deleted', 'User account deleted successfully.');
+    }
+
+    public function confirmReset(int $userId): void
+    {
+        abort_if(User::findOrFail($userId)->hasRole('reunion-coordinator'), 403);
+
+        $this->confirmResetId = $userId;
+        $this->showResetModal = true;
+    }
+
+    public function cancelReset(): void
+    {
+        $this->confirmResetId = null;
+        $this->showResetModal = false;
+    }
+
+    public function closeTempPasswordModal(): void
+    {
+        $this->showTempPasswordModal = false;
+        $this->generatedTempPassword = '';
+    }
+
+    public function sendResetEmail(): void
+    {
+        $user = User::find($this->confirmResetId);
+
+        if (! $user || ! $user->email) {
+            $this->cancelReset();
+            session()->flash('error', 'This user has no email address on file.');
+            return;
+        }
+
+        Password::sendResetLink(['email' => $user->email]);
+
+        $this->cancelReset();
+        session()->flash('success', "Password reset link sent to {$user->email}.");
+    }
+
+    public function resetPasswordManual(): void
+    {
+        $user = User::find($this->confirmResetId);
+
+        if (! $user) {
+            $this->cancelReset();
+            return;
+        }
+
+        $temp = 'Hsst@' . Str::upper(Str::random(3)) . rand(10, 99);
+
+        $user->update([
+            'password'             => Hash::make($temp),
+            'must_change_password' => true,
+        ]);
+
+        $this->generatedTempPassword = $temp;
+        $this->cancelReset();
+        $this->showTempPasswordModal = true;
     }
 
     protected function normalizePerPage(): void
