@@ -5,17 +5,17 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+
 class User extends Authenticatable
 {
-   
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasRoles;
+    use HasFactory, HasRoles, Notifiable, TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -53,8 +53,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
-            'is_active'         => 'boolean',
+            'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
     }
 
@@ -69,35 +69,39 @@ class User extends Authenticatable
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
+
     public function alumni()
-{
-    return $this->belongsTo(Alumni::class, 'alumni_id');
-}
-
-    public function staff(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Staff::class, 'staff_id');
+        return $this->belongsTo(\App\Models\Alumni::class, 'alumni_id');
     }
 
- public function announcements(): HasMany
+    public function staff(): BelongsTo
     {
-        return $this->hasMany(Announcement::class, 'created_by');
+        return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
     }
-    public function eventsCreated(): \Illuminate\Database\Eloquent\Relations\HasMany
-{
-    return $this->hasMany(\App\Models\Event::class, 'created_by');
-}
-public function volunteerSignups()
-{
-    return $this->hasMany(\App\Models\VolunteerSignup::class);
-}
 
-public function latestVolunteerSignup()
-{
-    return $this->hasOne(\App\Models\VolunteerSignup::class)->latestOfMany();
-}
-public function passwordResetRequests(): HasMany
-{
-    return $this->hasMany(\App\Models\PasswordResetRequest::class);
-}
+    public function announcements(): HasMany
+    {
+        return $this->hasMany(\App\Models\Announcement::class, 'created_by');
+    }
+
+    public function eventsCreated(): HasMany
+    {
+        return $this->hasMany(\App\Models\Event::class, 'created_by');
+    }
+
+    public function volunteerSignups()
+    {
+        return $this->hasMany(\App\Models\VolunteerSignup::class);
+    }
+
+    public function latestVolunteerSignup()
+    {
+        return $this->hasOne(\App\Models\VolunteerSignup::class)->latestOfMany();
+    }
+
+    public function passwordResetRequests(): HasMany
+    {
+        return $this->hasMany(\App\Models\PasswordResetRequest::class);
+    }
 }
