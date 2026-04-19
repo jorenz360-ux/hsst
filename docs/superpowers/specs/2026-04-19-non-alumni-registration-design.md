@@ -75,10 +75,10 @@ The self-registration form presents a dropdown for the user to select their type
 1. Validate all fields
 2. Create `Staff` record
 3. Generate username from name (e.g. `staff-smithj`)
-4. Create `User` with `staff_id`, email, hashed password
+4. Create `User` with `staff_id`, email, hashed password, `is_active = false`
 5. Assign selected role via Spatie
-6. Auto-login the new user
-7. Redirect to `/dashboard`
+6. Show "pending approval" page — do NOT auto-login
+7. Notify `reunion-coordinator` (email or in-app pending list)
 
 ### Username Generation
 Pattern: `staff-{lname}{first initial of fname}`, with numeric suffix if taken.
@@ -92,9 +92,20 @@ Non-alumni users (staff/employee/ssps-member) see a simplified dashboard:
 
 The existing `dashboard.blade.php` role-conditional includes will be extended to handle these three new roles.
 
+## Admin Approval Flow
+
+### Pending List
+A new page in the admin panel (`/admin/pending-staff`) visible only to `reunion-coordinator` shows all non-alumni users with `is_active = false`. Displays: name, position, account type, years working, registration date.
+
+### Approve / Reject Actions
+- **Approve** — sets `is_active = true`, sends email notifying the user their account is active
+- **Reject** — deletes the `User` and `Staff` records, sends email notifying the user their registration was declined
+
+### Notification to Coordinator
+After a non-alumni self-registers, an email is sent to the `reunion-coordinator` notifying them of a pending approval. The existing mail infrastructure (Mailtrap in dev, production SMTP) handles delivery.
+
 ## Out of Scope
 
-- Admin approval before account activation (immediate access granted)
 - Position dropdown values (to be added later)
 - Email verification
 - Donations or event payments for non-alumni users
