@@ -48,7 +48,7 @@ class StaffRegister extends Component
             'position'            => 'required|string|max:100',
             'account_type'        => 'required|in:staff,employee,ssps-member',
             'email'               => 'required|email|max:255|unique:users,email',
-            'password'            => 'required|string|min:8|confirmed',
+            'password'            => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::default()],
         ]);
 
         $staff = null;
@@ -80,6 +80,7 @@ class StaffRegister extends Component
         });
 
         User::role('reunion-coordinator')
+            ->where('is_active', true)
             ->whereNotNull('email')
             ->get()
             ->each(fn ($coordinator) =>
@@ -95,7 +96,7 @@ class StaffRegister extends Component
         $username = $base;
         $i = 1;
 
-        while (User::where('username', $username)->exists()) {
+        while (User::lockForUpdate()->where('username', $username)->exists()) {
             $username = $base . $i++;
         }
 

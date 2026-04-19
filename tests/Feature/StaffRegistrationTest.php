@@ -65,6 +65,9 @@ it('registers a staff user with valid data', function () {
     \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'staff', 'guard_name' => 'web']);
     \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'reunion-coordinator', 'guard_name' => 'web']);
 
+    $coordinator = User::factory()->create(['email' => 'coord@example.com', 'is_active' => true]);
+    $coordinator->assignRole('reunion-coordinator');
+
     Livewire::test(StaffRegister::class)
         ->set('fname', 'Maria')
         ->set('lname', 'Santos')
@@ -82,6 +85,8 @@ it('registers a staff user with valid data', function () {
         ->call('save')
         ->assertHasNoErrors()
         ->assertRedirect('/staff/pending');
+
+    Mail::assertSent(\App\Mail\StaffRegistrationPending::class);
 
     $user = User::where('email', 'maria@example.com')->first();
     expect($user)->not->toBeNull()
