@@ -59,6 +59,21 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the user's full name from related staff or alumni, falling back to username.
+     */
+    public function getNameAttribute(): string
+    {
+        if ($this->staff) {
+            return trim("{$this->staff->fname} {$this->staff->lname}");
+        }
+        if ($this->alumni) {
+            return trim("{$this->alumni->fname} {$this->alumni->lname}");
+        }
+
+        return $this->username;
+    }
+
+    /**
      * Get the user's initials
      */
     public function initials(): string

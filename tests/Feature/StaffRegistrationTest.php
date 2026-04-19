@@ -8,16 +8,16 @@ uses(RefreshDatabase::class);
 
 it('can create a staff record', function () {
     $staff = Staff::create([
-        'fname'           => 'Maria',
-        'lname'           => 'Santos',
-        'mname'           => null,
-        'address_line_1'  => '123 Main St',
-        'city'            => 'Tagbilaran',
-        'state_province'  => 'Bohol',
-        'postal_code'     => '6300',
-        'country'         => 'Philippines',
-        'years_working'   => 10,
-        'position'        => 'Faculty',
+        'fname' => 'Maria',
+        'lname' => 'Santos',
+        'mname' => null,
+        'address_line_1' => '123 Main St',
+        'city' => 'Tagbilaran',
+        'state_province' => 'Bohol',
+        'postal_code' => '6300',
+        'country' => 'Philippines',
+        'years_working' => 10,
+        'position' => 'Faculty',
     ]);
 
     expect($staff->fname)->toBe('Maria')
@@ -27,20 +27,20 @@ it('can create a staff record', function () {
 
 it('user can belong to a staff record', function () {
     $staff = Staff::create([
-        'fname'          => 'Jose',
-        'lname'          => 'Reyes',
+        'fname' => 'Jose',
+        'lname' => 'Reyes',
         'address_line_1' => '1 School Rd',
-        'city'           => 'Tagbilaran',
+        'city' => 'Tagbilaran',
         'state_province' => 'Bohol',
-        'postal_code'    => '6300',
-        'country'        => 'Philippines',
-        'years_working'  => 5,
-        'position'       => 'Principal',
+        'postal_code' => '6300',
+        'country' => 'Philippines',
+        'years_working' => 5,
+        'position' => 'Principal',
     ]);
 
     $user = \App\Models\User::create([
         'username' => 'staff-reyesj',
-        'email'    => 'jose@example.com',
+        'email' => 'jose@example.com',
         'password' => bcrypt('password'),
         'staff_id' => $staff->id,
         'is_active' => false,
@@ -86,7 +86,7 @@ it('registers a staff user with valid data', function () {
         ->assertHasNoErrors()
         ->assertRedirect('/staff/pending');
 
-    Mail::assertSent(\App\Mail\StaffRegistrationPending::class);
+    Mail::assertQueued(\App\Mail\StaffRegistrationPending::class);
 
     $user = User::where('email', 'maria@example.com')->first();
     expect($user)->not->toBeNull()
