@@ -27,6 +27,7 @@ class User extends Authenticatable
         'email',
         'password',
         'alumni_id',
+        'staff_id',
         'must_change_password',
         'is_active',
     ];
@@ -72,6 +73,11 @@ class User extends Authenticatable
 {
     return $this->belongsTo(Alumni::class, 'alumni_id');
 }
+
+    public function staff(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Staff::class, 'staff_id');
+    }
 
  public function announcements(): HasMany
     {
