@@ -13,7 +13,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Title('Register — Non-Alumni')]
-#[Layout('components.layouts.auth')]
+#[Layout('components.layouts.full-page')]
 class StaffRegister extends Component
 {
     public string $fname = '';
