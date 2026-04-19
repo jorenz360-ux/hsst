@@ -4,6 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
+// Non-alumni roles are seeded here (not in PermissionSeeder) so `php artisan migrate`
+// creates them automatically in production. Note: `ssps-member` is for non-alumni SSPS
+// personnel and is distinct from the `ssps` admin role.
 return new class extends Migration
 {
     public function up(): void
