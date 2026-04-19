@@ -16,13 +16,13 @@ return new class extends Migration
         $guard = 'web';
 
         $permission = Permission::firstOrCreate([
-            'name'       => 'view.staff.dashboard',
+            'name' => 'view.staff.dashboard',
             'guard_name' => $guard,
         ]);
 
         foreach (['staff', 'employee', 'ssps-member'] as $roleName) {
             $role = Role::firstOrCreate([
-                'name'       => $roleName,
+                'name' => $roleName,
                 'guard_name' => $guard,
             ]);
             $role->givePermissionTo($permission);
