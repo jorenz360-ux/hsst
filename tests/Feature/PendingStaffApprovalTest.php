@@ -62,7 +62,7 @@ it('coordinator can approve a pending staff account', function () {
         ->assertHasNoErrors();
 
     expect($pending->fresh()->is_active)->toBeTrue();
-    Mail::assertSent(StaffAccountApproved::class);
+    Mail::assertQueued(StaffAccountApproved::class);
 });
 
 it('coordinator can reject a pending staff account', function () {
@@ -81,7 +81,7 @@ it('coordinator can reject a pending staff account', function () {
 
     expect(User::find($userId))->toBeNull();
     expect(\App\Models\Staff::find($staffId))->toBeNull();
-    Mail::assertSent(StaffAccountRejected::class);
+    Mail::assertQueued(StaffAccountRejected::class);
 });
 
 it('non-coordinator cannot access pending staff page', function () {
@@ -92,4 +92,17 @@ it('non-coordinator cannot access pending staff page', function () {
     $this->actingAs($alumni)
         ->get('/admin/pending-staff')
         ->assertForbidden();
+});
+
+it('non-coordinator cannot call approve via livewire', function () {
+    Role::firstOrCreate(['name' => 'alumni', 'guard_name' => 'web']);
+    $alumni = User::factory()->create(['is_active' => true]);
+    $alumni->assignRole('alumni');
+    $pending = makePendingStaffUser();
+
+    Livewire::actingAs($alumni)
+        ->test(PendingStaff::class)
+        ->call('approve', $pending->id);
+
+    expect($pending->fresh()->is_active)->toBeFalse();
 });
