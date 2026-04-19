@@ -1044,6 +1044,11 @@
              style="border-top: 1px solid #e2e8f0;">
             <p class="text-xs text-slate-400">
                 &copy; {{ date('Y') }} Holy Spirit School of Tagbilaran &mdash; Alumni Portal. All rights reserved.
+                &ensp;&bull;&ensp;
+                Not an alumni?
+                <a href="{{ route('register.staff') }}" class="font-semibold hover:underline" style="color: var(--royal-600);">
+                    Employee / Staff registration
+                </a>
             </p>
         </div>
 
