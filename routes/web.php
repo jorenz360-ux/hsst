@@ -121,4 +121,7 @@ Route::post('/webhook/paymongo', [PayMongoWebhookController::class, 'handle']);
 
 
 
+Route::get('/register/staff', \App\Livewire\StaffRegister::class)->name('register.staff');
+Route::view('/staff/pending', 'staff-pending')->name('staff.pending');
+
 require __DIR__.'/settings.php';

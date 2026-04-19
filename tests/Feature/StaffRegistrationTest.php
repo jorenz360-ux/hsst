@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Staff;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -47,4 +48,71 @@ it('user can belong to a staff record', function () {
 
     expect($user->staff->lname)->toBe('Reyes');
     expect($staff->user->username)->toBe('staff-reyesj');
+});
+
+use App\Livewire\StaffRegister;
+use Illuminate\Support\Facades\Mail;
+use Livewire\Livewire;
+
+it('renders the staff registration form', function () {
+    $response = $this->get('/register/staff');
+    $response->assertStatus(200);
+});
+
+it('registers a staff user with valid data', function () {
+    Mail::fake();
+
+    \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'staff', 'guard_name' => 'web']);
+    \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'reunion-coordinator', 'guard_name' => 'web']);
+
+    Livewire::test(StaffRegister::class)
+        ->set('fname', 'Maria')
+        ->set('lname', 'Santos')
+        ->set('address_line_1', '123 Main St')
+        ->set('city', 'Tagbilaran')
+        ->set('state_province', 'Bohol')
+        ->set('postal_code', '6300')
+        ->set('country', 'Philippines')
+        ->set('years_working', 10)
+        ->set('position', 'Faculty')
+        ->set('account_type', 'staff')
+        ->set('email', 'maria@example.com')
+        ->set('password', 'SecurePass123!')
+        ->set('password_confirmation', 'SecurePass123!')
+        ->call('save')
+        ->assertHasNoErrors()
+        ->assertRedirect('/staff/pending');
+
+    $user = User::where('email', 'maria@example.com')->first();
+    expect($user)->not->toBeNull()
+        ->and($user->is_active)->toBeFalse()
+        ->and($user->hasRole('staff'))->toBeTrue()
+        ->and($user->staff->fname)->toBe('Maria');
+});
+
+it('fails validation when required fields are missing', function () {
+    Livewire::test(StaffRegister::class)
+        ->call('save')
+        ->assertHasErrors(['fname', 'lname', 'email', 'password', 'account_type']);
+});
+
+it('fails validation when email is already taken', function () {
+    User::factory()->create(['email' => 'taken@example.com']);
+
+    Livewire::test(StaffRegister::class)
+        ->set('fname', 'Jose')
+        ->set('lname', 'Reyes')
+        ->set('address_line_1', '1 St')
+        ->set('city', 'Tagbilaran')
+        ->set('state_province', 'Bohol')
+        ->set('postal_code', '6300')
+        ->set('country', 'Philippines')
+        ->set('years_working', 3)
+        ->set('position', 'Principal')
+        ->set('account_type', 'employee')
+        ->set('email', 'taken@example.com')
+        ->set('password', 'SecurePass123!')
+        ->set('password_confirmation', 'SecurePass123!')
+        ->call('save')
+        ->assertHasErrors(['email']);
 });
