@@ -9,17 +9,23 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('alumni', function (Blueprint $table) {
-            // drop foreign key first (IMPORTANT)
-            $table->dropForeign(['batch_id']);
+            // Drop only columns that exist
+            $columns = ['batch_id', 'educational_level', 'did_graduate', 'school_year_attended', 'is_batch_rep'];
+            $existingColumns = Schema::getColumnListing('alumni');
+            $columnsToDelete = array_intersect($columns, $existingColumns);
 
-            // then drop columns
-            $table->dropColumn([
-                'batch_id',
-                'educational_level',
-                'did_graduate',
-                'school_year_attended',
-                'is_batch_rep',
-            ]);
+            if (!empty($columnsToDelete)) {
+                // Try to drop batch_id foreign key if batch_id column exists
+                if (in_array('batch_id', $columnsToDelete)) {
+                    try {
+                        $table->dropForeign(['batch_id']);
+                    } catch (\Exception $e) {
+                        // Foreign key might not exist, continue
+                    }
+                }
+
+                $table->dropColumn($columnsToDelete);
+            }
         });
     }
 
