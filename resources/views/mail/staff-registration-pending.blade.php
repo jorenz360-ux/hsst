@@ -29,7 +29,7 @@
                     <dt>Position</dt>
                     <dd>{{ $staff->position }}</dd>
                     <dt>Account Type</dt>
-                    <dd>{{ ucfirst($accountType) }}</dd>
+                    <dd>{{ ['staff' => 'Staff', 'employee' => 'Employee', 'ssps-member' => 'SSPS Member'][$accountType] ?? ucfirst($accountType) }}</dd>
                     <dt>Years at HSST</dt>
                     <dd>{{ $staff->years_working }}</dd>
                 </dl>
