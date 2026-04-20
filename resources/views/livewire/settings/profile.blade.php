@@ -75,6 +75,11 @@ new class extends Component {
 
     public function mount(): void
     {
+        if (Auth::user()?->staff_id) {
+            $this->redirect(route('staff-profile.edit'), navigate: true);
+            return;
+        }
+
         $user = Auth::user()?->loadMissing([
             'alumni.educations.batch',
         ]);
