@@ -6,6 +6,8 @@ use App\Models\Alumni;
 use App\Models\Event;
 use App\Models\EventRegistration;
 use App\Models\EventRsvp;
+use App\Models\Staff;
+use App\Models\StaffEventRsvp;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -257,12 +259,27 @@ class AttendanceReport extends Component
         return $query;
     }
 
+    protected function staffReportQuery(int $eventId)
+    {
+        return Staff::query()
+            ->select(['staff.id', 'staff.fname', 'staff.lname', 'staff.position'])
+            ->leftJoin('staff_event_rsvps', function ($join) use ($eventId) {
+                $join->on('staff_event_rsvps.staff_id', '=', 'staff.id')
+                    ->where('staff_event_rsvps.event_id', '=', $eventId);
+            })
+            ->addSelect(['staff_event_rsvps.status as rsvp_status'])
+            ->whereHas('user', fn ($q) => $q->where('is_active', true))
+            ->orderBy('staff.lname')
+            ->orderBy('staff.fname');
+    }
+
     public function render()
     {
         $selectedEvent = $this->selectedEventModel();
         $allEvents = $this->availableEvents();
 
         $participants = collect();
+        $staffParticipants = collect();
 
         $attendingParticipantsCount = 0;
         $maybeParticipantsCount = 0;
@@ -273,8 +290,14 @@ class AttendanceReport extends Component
         $pendingParticipantsCount = 0;
         $rejectedParticipantsCount = 0;
 
+        $staffAttendingCount = 0;
+        $staffMaybeCount = 0;
+        $staffNotAttendingCount = 0;
+        $staffNoResponseCount = 0;
+
         if ($selectedEvent) {
             $participants = $this->reportQuery($selectedEvent->id)->paginate(10);
+            $staffParticipants = $this->staffReportQuery($selectedEvent->id)->get();
 
             $attendingParticipantsCount = EventRsvp::query()
                 ->where('event_id', $selectedEvent->id)
@@ -318,12 +341,24 @@ class AttendanceReport extends Component
                 ->where('event_id', $selectedEvent->id)
                 ->where('payment_status', 'rejected')
                 ->count();
+
+            $staffAttendingCount    = StaffEventRsvp::where('event_id', $selectedEvent->id)->where('status', StaffEventRsvp::STATUS_ATTENDING)->count();
+            $staffMaybeCount        = StaffEventRsvp::where('event_id', $selectedEvent->id)->where('status', StaffEventRsvp::STATUS_MAYBE)->count();
+            $staffNotAttendingCount = StaffEventRsvp::where('event_id', $selectedEvent->id)->where('status', StaffEventRsvp::STATUS_NOT_ATTENDING)->count();
+            $staffNoResponseCount   = Staff::whereHas('user', fn ($q) => $q->where('is_active', true))
+                ->leftJoin('staff_event_rsvps', function ($join) use ($selectedEvent) {
+                    $join->on('staff_event_rsvps.staff_id', '=', 'staff.id')
+                        ->where('staff_event_rsvps.event_id', '=', $selectedEvent->id);
+                })
+                ->whereNull('staff_event_rsvps.id')
+                ->count();
         }
 
         return view('livewire.attendance-report', [
             'allEvents' => $allEvents,
             'selectedEventModel' => $selectedEvent,
             'participants' => $participants,
+            'staffParticipants' => $staffParticipants,
             'attendingParticipantsCount' => $attendingParticipantsCount,
             'maybeParticipantsCount' => $maybeParticipantsCount,
             'notAttendingParticipantsCount' => $notAttendingParticipantsCount,
@@ -332,6 +367,10 @@ class AttendanceReport extends Component
             'unpaidParticipantsCount' => $unpaidParticipantsCount,
             'pendingParticipantsCount' => $pendingParticipantsCount,
             'rejectedParticipantsCount' => $rejectedParticipantsCount,
+            'staffAttendingCount' => $staffAttendingCount,
+            'staffMaybeCount' => $staffMaybeCount,
+            'staffNotAttendingCount' => $staffNotAttendingCount,
+            'staffNoResponseCount' => $staffNoResponseCount,
         ]);
     }
 }

@@ -530,5 +530,92 @@
         @endif
     </section>
 
+    {{-- ════════════════════════════════════════════════════════════
+         STAFF ATTENDANCE TABLE
+    ════════════════════════════════════════════════════════════ --}}
+    @if ($selectedEvent !== 'all')
+    <section class="overflow-hidden rounded-2xl bg-white"
+             style="border:1px solid #e2e8f0; box-shadow:0 1px 6px rgba(15,23,42,.05);">
+
+        <div class="flex flex-col gap-2 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+             style="border-bottom:1px solid #f1f5f9;">
+            <div>
+                <h2 class="text-base font-bold text-slate-900">Staff Attendance</h2>
+                <p class="mt-0.5 text-xs text-slate-500">
+                    RSVP responses from school staff and employees.
+                </p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <span class="status-chip chip-green">
+                    <span class="status-dot" style="background:#065f46;"></span>
+                    {{ $staffAttendingCount }} Attending
+                </span>
+                <span class="status-chip chip-amber">
+                    <span class="status-dot" style="background:#c4952a;"></span>
+                    {{ $staffMaybeCount }} Maybe
+                </span>
+                <span class="status-chip chip-red">
+                    <span class="status-dot" style="background:#991b1b;"></span>
+                    {{ $staffNotAttendingCount }} Not Attending
+                </span>
+                <span class="status-chip chip-slate">
+                    <span class="status-dot" style="background:#94a3b8;"></span>
+                    {{ $staffNoResponseCount }} No Response
+                </span>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="ar-table min-w-full">
+                <thead style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                    <tr>
+                        <th>Staff Name</th>
+                        <th>Position</th>
+                        <th>RSVP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($staffParticipants as $staff)
+                        @php
+                            $fullName = trim(collect([$staff->fname, $staff->lname])
+                                ->filter()
+                                ->map(fn($n) => ucwords(strtolower($n)))
+                                ->implode(' '));
+
+                            $rsvpStatus = $staff->rsvp_status ?? 'no_response';
+                            [$rsvpChip, $rsvpDot, $rsvpLabel] = match($rsvpStatus) {
+                                'attending'     => ['chip-green', '#065f46', 'Attending'],
+                                'maybe'         => ['chip-amber', '#c4952a', 'Maybe'],
+                                'not_attending' => ['chip-red',   '#991b1b', 'Not Attending'],
+                                default         => ['chip-slate', '#94a3b8', 'No Response'],
+                            };
+                        @endphp
+                        <tr>
+                            <td>
+                                <span class="text-sm font-semibold text-slate-800">{{ $fullName ?: '—' }}</span>
+                            </td>
+                            <td>
+                                <span class="text-xs text-slate-500">{{ $staff->position ?: '—' }}</span>
+                            </td>
+                            <td>
+                                <span class="status-chip {{ $rsvpChip }}">
+                                    <span class="status-dot" style="background:{{ $rsvpDot }};"></span>
+                                    {{ $rsvpLabel }}
+                                </span>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="3" class="px-5 py-10 text-center">
+                                <p class="text-sm font-semibold text-slate-500">No active staff found</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </section>
+    @endif
+
 </div>
 </div>

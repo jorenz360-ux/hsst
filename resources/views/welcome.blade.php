@@ -231,6 +231,10 @@
            class="kicker text-[.62rem] px-4 py-2.5 bg-white md:bg-ink text-ink md:text-white hover:opacity-85 transition-opacity">
           Register
         </a>
+        <a href="{{ route('register.staff') }}"
+           class="kicker text-[.62rem] border border-white/25 md:border-ink/20 text-white/75 md:text-ink/55 px-4 py-2.5 hover:border-royal/50 hover:text-royal transition-all">
+          Staff / Employee
+        </a>
         <a href="#crusade"
            class="kicker text-[.62rem] px-5 py-2.5 font-bold text-ink hover:opacity-90 transition-opacity"
            style="background:var(--gold);letter-spacing:.18em;">
@@ -281,8 +285,9 @@
     </nav>
     <div class="border-t border-white/10 px-6 py-5 flex flex-col gap-3">
       <a href="{{ route('login') }}"    class="flex items-center justify-center py-3 border border-white/15 kicker text-white/70 hover:bg-white/5 transition-colors">Login</a>
-      <a href="{{ route('register') }}" class="flex items-center justify-center py-3 bg-white kicker text-ink hover:opacity-90 transition-opacity">Register</a>
-      <a href="#crusade"                class="flex items-center justify-center py-3 kicker font-bold text-ink hover:opacity-90 transition-opacity" style="background:var(--gold);">✦ Donate Now</a>
+      <a href="{{ route('register') }}"       class="flex items-center justify-center py-3 bg-white kicker text-ink hover:opacity-90 transition-opacity">Register (Alumni)</a>
+      <a href="{{ route('register.staff') }}" class="flex items-center justify-center py-3 border border-white/15 kicker text-white/70 hover:bg-white/5 transition-colors">Staff / Employee</a>
+      <a href="#crusade"                      class="flex items-center justify-center py-3 kicker font-bold text-ink hover:opacity-90 transition-opacity" style="background:var(--gold);">✦ Donate Now</a>
     </div>
   </div>
 </div>
@@ -351,15 +356,16 @@
       </p>
 
       <div class="flex flex-col sm:flex-row gap-3 mb-14 animate-fade-up" style="animation-delay:.42s;">
-        {{-- <a href="#crusade"
+        <a href="{{ route('register') }}"
            class="inline-flex items-center justify-center gap-2 text-ink kicker font-bold px-8 py-4 hover:opacity-90 transition-opacity"
            style="background:var(--gold);">
-          Join the CRUSADE
+          Alumni Registration
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        </a> --}}
-        <a href="#about"
-           class="inline-flex items-center justify-center border border-white/35 text-white/85 kicker px-8 py-4 hover:border-white/70 hover:text-white transition-all">
-          Learn More
+        </a>
+        <a href="{{ route('register.staff') }}"
+           class="inline-flex items-center justify-center gap-2 border border-white/35 text-white/85 kicker px-8 py-4 hover:border-white/70 hover:text-white transition-all">
+          Staff / Employee
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>
       </div>
 

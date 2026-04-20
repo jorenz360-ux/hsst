@@ -14,6 +14,6 @@
         <livewire:batch-rep-dashboard/>
         @endcan
         @can('view.staff.dashboard')
-        @include('livewire.staff-dashboard')
+        <livewire:staff-dashboard />
         @endcan
 </x-layouts.app>
