@@ -22,6 +22,7 @@ class Staff extends Model
         'country',
         'years_working',
         'position',
+        'contact_no',
     ];
 
     protected function fname(): Attribute

@@ -428,16 +428,25 @@
                                 @error('years_working')<p class="field-error-msg">{{ $message }}</p>@enderror
                             </div>
                             <div>
-                                <label for="account_type" class="field-label">Account Type</label>
-                                <select id="account_type" name="account_type"
-                                        class="field-select {{ $errors->has('account_type') ? 'is-error' : '' }}">
-                                    <option value="">Select account type...</option>
-                                    <option value="staff"       {{ old('account_type') === 'staff'       ? 'selected' : '' }}>Staff</option>
-                                    <option value="employee"    {{ old('account_type') === 'employee'    ? 'selected' : '' }}>Employee</option>
-                                    <option value="ssps-member" {{ old('account_type') === 'ssps-member' ? 'selected' : '' }}>SSPS Member</option>
-                                </select>
-                                @error('account_type')<p class="field-error-msg">{{ $message }}</p>@enderror
+                                <label for="contact_no" class="field-label">Contact Number <span class="opt">(optional)</span></label>
+                                <input type="text" id="contact_no" name="contact_no"
+                                       value="{{ old('contact_no') }}"
+                                       placeholder="e.g. 09171234567"
+                                       class="field-input {{ $errors->has('contact_no') ? 'is-error' : '' }}">
+                                @error('contact_no')<p class="field-error-msg">{{ $message }}</p>@enderror
                             </div>
+                        </div>
+
+                        <div>
+                            <label for="account_type" class="field-label">Account Type</label>
+                            <select id="account_type" name="account_type"
+                                    class="field-select {{ $errors->has('account_type') ? 'is-error' : '' }}">
+                                <option value="">Select account type...</option>
+                                <option value="staff"       {{ old('account_type') === 'staff'       ? 'selected' : '' }}>Staff</option>
+                                <option value="employee"    {{ old('account_type') === 'employee'    ? 'selected' : '' }}>Employee</option>
+                                <option value="ssps-member" {{ old('account_type') === 'ssps-member' ? 'selected' : '' }}>SSPS Member</option>
+                            </select>
+                            @error('account_type')<p class="field-error-msg">{{ $message }}</p>@enderror
                         </div>
 
                     </div>
