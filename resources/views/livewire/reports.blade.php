@@ -28,7 +28,7 @@
                     <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3">
                         <p class="text-[11px] uppercase tracking-[0.18em] text-emerald-500 sm:text-xs">Access</p>
                         @php
-                            $accessLabel = auth()->user()?->hasRole('reunion-coordinator')
+                            $accessLabel = (auth()->user()?->hasRole('reunion-coordinator') || auth()->user()?->hasRole('super-admin'))
                                 ? 'Admin Ready'
                                 : 'Batch Rep Ready';
                         @endphp

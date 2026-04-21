@@ -30,7 +30,7 @@
                 $user = auth()->user();
                 $reportRoute = null;
 
-                if ($user?->hasRole('reunion-coordinator')) {
+                if ($user?->hasRole('reunion-coordinator') || $user?->hasRole('super-admin')) {
                     $reportRoute = route('reports');
                 } elseif ($user?->hasRole('batch-representative')) {
                     $reportRoute = route('reports.batch-rep');
@@ -114,7 +114,7 @@
                         {{ __('Donation') }}
                     </flux:sidebar.item>
                 @endcan
-             @if ($user?->hasRole('reunion-coordinator'))
+             @if ($user?->hasRole('reunion-coordinator') || $user?->hasRole('super-admin'))
                 @can('generate.report')
                   
                        <flux:sidebar.nav>
