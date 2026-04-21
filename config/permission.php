@@ -169,6 +169,13 @@ return [
     'enable_wildcard_permission' => false,
 
     /*
+     * When set to true, a role named as defined in 'super_admin_role_gate_name' will
+     * automatically pass all Gate::allows() checks.
+     */
+    'super_admin_role_gate_enabled' => true,
+    'super_admin_role_gate_name' => 'super-admin',
+
+    /*
      * The class to use for interpreting wildcard permissions.
      * If you need to modify delimiters, override the class and specify its name here.
      */
