@@ -8,7 +8,6 @@ use App\Models\EventRegistration;
 use App\Models\EventRsvp;
 use App\Models\Staff;
 use App\Models\StaffEventRsvp;
-use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -22,12 +21,14 @@ class AttendanceReport extends Component
     public string $selectedEvent = 'all';
     public string $rsvpStatusFilter = 'all';
     public string $paymentStatusFilter = 'all';
+    public string $levelFilter = 'all';
     public string $search = '';
 
     protected $queryString = [
         'selectedEvent' => ['except' => 'all'],
         'rsvpStatusFilter' => ['except' => 'all'],
         'paymentStatusFilter' => ['except' => 'all'],
+        'levelFilter' => ['except' => 'all'],
         'search' => ['except' => ''],
     ];
 
@@ -46,6 +47,11 @@ class AttendanceReport extends Component
         $this->resetPage();
     }
 
+    public function updatingLevelFilter(): void
+    {
+        $this->resetPage();
+    }
+
     public function updatingSearch(): void
     {
         $this->resetPage();
@@ -56,6 +62,7 @@ class AttendanceReport extends Component
         $this->selectedEvent = 'all';
         $this->rsvpStatusFilter = 'all';
         $this->paymentStatusFilter = 'all';
+        $this->levelFilter = 'all';
         $this->search = '';
         $this->resetPage();
     }
@@ -191,20 +198,13 @@ class AttendanceReport extends Component
 
     protected function reportQuery(int $eventId)
     {
-        // Alumni no longer has batch_id directly; batches are linked via alumni_educations.
-        // Pick the education record with the highest batch_id per alumni as their primary batch.
-        $primaryBatch = DB::table('alumni_educations')
-            ->select(['alumni_id', DB::raw('MAX(batch_id) as batch_id')])
-            ->groupBy('alumni_id');
-
         $query = Alumni::query()
             ->select(['alumni.id', 'alumni.fname', 'alumni.lname', 'alumni.mname'])
-            ->leftJoinSub($primaryBatch, 'prim_edu', 'prim_edu.alumni_id', '=', 'alumni.id')
-            ->leftJoin('batches', 'batches.id', '=', 'prim_edu.batch_id')
             ->leftJoin('event_rsvps', function ($join) use ($eventId) {
                 $join->on('event_rsvps.alumni_id', '=', 'alumni.id')
                     ->where('event_rsvps.event_id', '=', $eventId);
             })
+            ->leftJoin('batches', 'batches.id', '=', 'event_rsvps.batch_id')
             ->leftJoin('event_registrations', function ($join) use ($eventId) {
                 $join->on('event_registrations.alumni_id', '=', 'alumni.id')
                     ->where('event_registrations.event_id', '=', $eventId);
@@ -231,6 +231,10 @@ class AttendanceReport extends Component
             ->orderBy('batches.yeargrad')
             ->orderBy('alumni.lname')
             ->orderBy('alumni.fname');
+
+        if ($this->levelFilter !== 'all') {
+            $query->where('batches.level', $this->levelFilter);
+        }
 
         if ($this->rsvpStatusFilter !== 'all') {
             if ($this->rsvpStatusFilter === 'no_response') {
