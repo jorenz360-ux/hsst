@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Event;
 use App\Models\EventRegistration;
 use App\Models\EventRsvp;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -17,10 +18,13 @@ class EventParticipationPage extends Component
     public ?EventRsvp $rsvp = null;
 
     public ?string $rsvpStatus = null;
+    public ?int $selectedBatchId = null;
 
     public int $attendingCount = 0;
     public int $maybeCount = 0;
     public int $notAttendingCount = 0;
+
+    public Collection $alumniEducations;
 
     public function mount(Event $event): void
     {
@@ -28,6 +32,8 @@ class EventParticipationPage extends Component
 
         abort_if(! $alumniId, 403, 'Your alumni profile is required before you can continue.');
         abort_if(! $event->is_active, 403, 'This event is currently unavailable.');
+
+        $this->alumniEducations = collect();
 
         $this->event = $event->load([
             'schedules' => fn ($query) => $query
@@ -41,10 +47,16 @@ class EventParticipationPage extends Component
                 'alumni_id' => $alumniId,
             ],
             [
-                'status' => 'unpaid', // payment tracking for batch rep
+                'status' => 'unpaid',
                 'fee_paid' => 0,
             ]
         );
+
+        $this->alumniEducations = Auth::user()
+            ->alumni
+            ->educations()
+            ->with('batch')
+            ->get();
 
         $this->loadRsvpState();
         $this->loadAttendanceCounts();
@@ -60,6 +72,12 @@ class EventParticipationPage extends Component
             ->first();
 
         $this->rsvpStatus = $this->rsvp?->status;
+
+        if ($this->rsvp?->batch_id) {
+            $this->selectedBatchId = $this->rsvp->batch_id;
+        } elseif ($this->alumniEducations->count() === 1) {
+            $this->selectedBatchId = $this->alumniEducations->first()->batch_id;
+        }
     }
 
     protected function loadAttendanceCounts(): void
@@ -89,13 +107,22 @@ class EventParticipationPage extends Component
         ];
 
         if (! in_array($status, $allowedStatuses, true)) {
-            session()->flash('error', 'Invalid attendance response.');
+            session()->put('error', 'Invalid attendance response.');
             return;
         }
 
         if ($this->event->event_date?->isPast()) {
-            session()->flash('error', 'This event is already closed.');
+            session()->put('error', 'This event is already closed.');
             return;
+        }
+
+        if ($this->alumniEducations->count() > 1 && ! $this->selectedBatchId) {
+            session()->put('error', 'Please select which batch you are attending as.');
+            return;
+        }
+
+        if ($this->alumniEducations->count() === 1) {
+            $this->selectedBatchId = $this->alumniEducations->first()->batch_id;
         }
 
         $alumniId = Auth::user()?->alumni_id;
@@ -107,6 +134,7 @@ class EventParticipationPage extends Component
             ],
             [
                 'status' => $status,
+                'batch_id' => $this->selectedBatchId,
                 'guest_count' => 0,
                 'remarks' => null,
             ]
@@ -133,7 +161,7 @@ class EventParticipationPage extends Component
             EventRsvp::STATUS_MAYBE,
             EventRsvp::STATUS_NOT_ATTENDING,
         ], true)) {
-            session()->flash('error', 'Please select your attendance response first.');
+            session()->put('error', 'Please select your attendance response first.');
             return;
         }
 
