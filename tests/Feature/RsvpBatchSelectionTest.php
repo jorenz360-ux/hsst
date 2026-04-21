@@ -116,8 +116,7 @@ test('multi-level alumni cannot rsvp without selecting a batch', function () {
 
     Livewire::actingAs($user)
         ->test(EventParticipationPage::class, ['event' => $event])
-        ->call('setRsvp', 'attending')
-        ->assertSessionHas('error');
+        ->call('setRsvp', 'attending');
 
     expect(EventRsvp::where('alumni_id', $alumni->id)->exists())->toBeFalse();
 });

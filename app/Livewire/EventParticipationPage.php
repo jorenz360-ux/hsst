@@ -107,17 +107,17 @@ class EventParticipationPage extends Component
         ];
 
         if (! in_array($status, $allowedStatuses, true)) {
-            session()->put('error', 'Invalid attendance response.');
+            session()->flash('error', 'Invalid attendance response.');
             return;
         }
 
         if ($this->event->event_date?->isPast()) {
-            session()->put('error', 'This event is already closed.');
+            session()->flash('error', 'This event is already closed.');
             return;
         }
 
         if ($this->alumniEducations->count() > 1 && ! $this->selectedBatchId) {
-            session()->put('error', 'Please select which batch you are attending as.');
+            session()->flash('error', 'Please select which batch you are attending as.');
             return;
         }
 
@@ -156,16 +156,7 @@ class EventParticipationPage extends Component
 
     public function saveRsvp(): void
     {
-        if (! in_array($this->rsvpStatus, [
-            EventRsvp::STATUS_ATTENDING,
-            EventRsvp::STATUS_MAYBE,
-            EventRsvp::STATUS_NOT_ATTENDING,
-        ], true)) {
-            session()->put('error', 'Please select your attendance response first.');
-            return;
-        }
-
-        $this->setRsvp($this->rsvpStatus);
+        $this->setRsvp($this->rsvpStatus ?? '');
     }
 
     public function render()
