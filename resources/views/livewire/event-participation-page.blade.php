@@ -78,6 +78,29 @@
                             </div>
                         @else
                             <div class="space-y-3">
+                                @if ($alumniEducations->count() > 1)
+                                    <div class="border border-[#e8e2d6] bg-[#faf9f7] p-4">
+                                        <label class="block text-[11px] font-semibold uppercase tracking-[0.2em] text-[#b88a3d] mb-2">
+                                            Which batch are you attending as?
+                                        </label>
+                                        <select
+                                            wire:model.live="selectedBatchId"
+                                            class="w-full border border-[#d0c8bc] bg-white px-3 py-2 text-sm text-[#1a1410] focus:border-[#b88a3d] focus:outline-none"
+                                        >
+                                            <option value="">Select your batch…</option>
+                                            @foreach ($alumniEducations as $edu)
+                                                <option value="{{ $edu->batch_id }}">
+                                                    {{ match($edu->batch->level ?? '') {
+                                                        'elementary' => 'Elementary',
+                                                        'highschool' => 'High School',
+                                                        'college'    => 'College',
+                                                        default      => 'Unknown Level',
+                                                    } }} — {{ $edu->batch->schoolyear ?? $edu->batch->yeargrad ?? '—' }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
                                 <p class="text-sm font-medium text-[#1a1410]">Will you attend this event?</p>
 
                                 <div class="grid gap-3 sm:grid-cols-3">
