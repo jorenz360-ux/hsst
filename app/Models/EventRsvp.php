@@ -12,6 +12,7 @@ class EventRsvp extends Model
     protected $fillable = [
         'event_id',
         'alumni_id',
+        'batch_id',
         'status',
         'guest_count',
         'remarks',
@@ -42,5 +43,10 @@ class EventRsvp extends Model
     public function alumni()
     {
         return $this->belongsTo(Alumni::class);
+    }
+
+    public function batch()
+    {
+        return $this->belongsTo(\App\Models\Batch::class);
     }
 }
