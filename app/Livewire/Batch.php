@@ -18,13 +18,15 @@ class Batch extends Component
     use WithPagination;
 
     public string $search = '';
-    public string $filterAccount = 'all';   // all | registered | no_account
-    public string $filterGrad    = 'all';   // all | graduated | not_graduated
-    public string $filterRsvp    = 'all';   // all | attending | maybe | not_attending | no_rsvp
+    public string $filterAccount = 'all';
+    public string $filterGrad    = 'all';
+    public string $filterRsvp    = 'all';
     public $batch = null;
 
     #[Locked]
     public ?int $selectedAlumniId = null;
+
+    protected $paginationTheme = 'tailwind';
 
     public function viewAlumni(int $id): void
     {
@@ -34,6 +36,17 @@ class Batch extends Component
     public function closeModal(): void
     {
         $this->selectedAlumniId = null;
+    }
+
+    public function updatingSearch(): void        { $this->resetPage(); }
+    public function updatingFilterAccount(): void { $this->resetPage(); }
+    public function updatingFilterGrad(): void    { $this->resetPage(); }
+    public function updatingFilterRsvp(): void    { $this->resetPage(); }
+
+    public function resetFilters(): void
+    {
+        $this->reset(['search', 'filterAccount', 'filterGrad', 'filterRsvp']);
+        $this->resetPage();
     }
 
     #[Computed]
@@ -59,38 +72,25 @@ class Batch extends Component
         ->find($this->selectedAlumniId);
     }
 
-    protected $paginationTheme = 'tailwind';
-
-    public function updatingSearch(): void    { $this->resetPage(); }
-    public function updatingFilterAccount(): void { $this->resetPage(); }
-    public function updatingFilterGrad(): void    { $this->resetPage(); }
-    public function updatingFilterRsvp(): void    { $this->resetPage(); }
-
-    public function resetFilters(): void
-    {
-        $this->reset(['search', 'filterAccount', 'filterGrad', 'filterRsvp']);
-        $this->resetPage();
-    }
-
     public function render()
     {
-        $user = Auth::user()?->loadMissing(['alumni.educations.batch']);
+        $user = Auth::user();
 
         if (! $user || ! $user->alumni) {
             abort(403);
         }
 
-        $representativeEducation = $user->alumni->educations()
+        $repEducation = $user->alumni->educations()
             ->with('batch')
             ->where('is_batch_rep', true)
             ->first();
 
-        if (! $representativeEducation) {
+        if (! $repEducation) {
             abort(403);
         }
 
-        $batchId = (int) $representativeEducation->batch_id;
-        $this->batch = $representativeEducation->batch;
+        $batchId    = (int) $repEducation->batch_id;
+        $this->batch = $repEducation->batch;
 
         // Active events (for RSVP column)
         $activeEvents = Event::query()
@@ -101,7 +101,7 @@ class Batch extends Component
 
         $activeEventIds = $activeEvents->pluck('id');
 
-        // Base query
+        // Base query scoped to this rep's batch only
         $baseQuery = AlumniEducation::query()
             ->with([
                 'batch:id,level,yeargrad,schoolyear',
@@ -113,7 +113,7 @@ class Batch extends Component
             ])
             ->where('batch_id', $batchId);
 
-        // ── Stats (unfiltered, unsearched) ──────────────────────────
+        // Stats (unfiltered)
         $totalCount      = (clone $baseQuery)->count();
         $registeredCount = (clone $baseQuery)->whereHas('alumni.user')->count();
         $graduatedCount  = (clone $baseQuery)->where('did_graduate', true)->count();
@@ -121,7 +121,7 @@ class Batch extends Component
             $q->whereIn('event_id', $activeEventIds)->where('status', 'attending');
         })->count();
 
-        // ── Filtered + searched members ─────────────────────────────
+        // Filtered + searched members
         $members = (clone $baseQuery)
             ->when($this->search !== '', function ($query) {
                 $like = '%' . $this->search . '%';
@@ -157,14 +157,13 @@ class Batch extends Component
             ->paginate(15);
 
         return view('livewire.batch', [
-            'batch'                   => $this->batch,
-            'representativeEducation' => $representativeEducation,
-            'activeEvents'            => $activeEvents,
-            'members'                 => $members,
-            'totalCount'              => $totalCount,
-            'registeredCount'         => $registeredCount,
-            'graduatedCount'          => $graduatedCount,
-            'respondedCount'          => $respondedCount,
+            'batch'          => $this->batch,
+            'activeEvents'   => $activeEvents,
+            'members'        => $members,
+            'totalCount'     => $totalCount,
+            'registeredCount' => $registeredCount,
+            'graduatedCount'  => $graduatedCount,
+            'respondedCount'  => $respondedCount,
         ]);
     }
 }

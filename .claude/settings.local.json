@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(./vendor/bin/pint app/Models/Staff.php)"
+      "Bash(./vendor/bin/pint app/Models/Staff.php)",
+      "Bash(php artisan *)"
     ]
   }
 }

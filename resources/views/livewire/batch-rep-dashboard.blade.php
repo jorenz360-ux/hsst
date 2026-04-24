@@ -371,8 +371,8 @@
                 </div>
 
                 @forelse ($upcomingEvents as $event)
-                    <div class="event-row">
-                        <div class="min-w-0">
+                    <a href="{{ route('alumni.events.show', $event) }}" wire:navigate class="event-row" style="text-decoration:none;display:flex;">
+                        <div class="min-w-0 flex-1">
                             <p class="text-sm font-semibold leading-snug truncate" style="color:#1e293b;">
                                 {{ $event->title }}
                             </p>
@@ -394,7 +394,7 @@
                                 {{ \Carbon\Carbon::parse($event->event_date)->format('Y') }}
                             </p>
                         </div>
-                    </div>
+                    </a>
                 @empty
                     <div style="padding:2.5rem 1.4rem; text-align:center;">
                         <p class="text-sm" style="color:#94a3b8;">No upcoming events.</p>

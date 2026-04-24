@@ -15,9 +15,7 @@ class BatchRepDashboard extends Component
 {
     public function render()
     {
-        $user = Auth::user()?->loadMissing([
-            'alumni.educations.batch',
-        ]);
+        $user = Auth::user();
 
         $representativeEducation = $user?->alumni?->educations()
             ->with('batch')

@@ -358,6 +358,7 @@
                 <thead>
                     <tr>
                         <th>Member</th>
+                        <th>Level</th>
                         <th>RSVP</th>
                         <th>Payment</th>
                         <th>Last Updated</th>
@@ -385,6 +386,12 @@
                             'waived' => ['chip-purple', '#7c3aed', 'Waived'],
                             default  => ['chip-red',    '#ef4444', 'Unpaid'],
                         };
+                        [$lvlAbbr, $lvlChip] = match($p->display_level ?? '') {
+                            'elementary' => ['ELM', 'chip-green'],
+                            'highschool' => ['HS',  'chip-amber'],
+                            'college'    => ['COL', 'chip-purple'],
+                            default      => ['—',   'chip-slate'],
+                        };
                     @endphp
                     <tr>
                         <td style="min-width:180px;">
@@ -392,6 +399,12 @@
                                 <div class="rp-avatar">{{ $initials }}</div>
                                 <p class="text-sm font-semibold" style="color:#1e293b;">{{ $fullName ?: '—' }}</p>
                             </div>
+                        </td>
+                        <td>
+                            <span class="chip {{ $lvlChip }}" style="font-size:.65rem;font-weight:800;">{{ $lvlAbbr }}</span>
+                            @if ($p->yeargrad)
+                                <p class="text-xs mt-0.5" style="color:#94a3b8;">{{ $p->yeargrad }}</p>
+                            @endif
                         </td>
                         <td>
                             <span class="chip {{ $rsvpMeta[0] }}">
@@ -427,7 +440,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" style="padding:3rem 1.5rem;text-align:center;">
+                        <td colspan="6" style="padding:3rem 1.5rem;text-align:center;">
                             <p class="text-sm font-semibold" style="color:#1e293b;">No records found</p>
                             <p class="text-xs mt-1" style="color:#64748b;">Try adjusting your filters.</p>
                         </td>

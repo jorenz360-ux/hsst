@@ -268,7 +268,7 @@
         </div>
 
         <div class="px-5 py-4">
-            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
 
                 {{-- Event --}}
                 <div>
@@ -280,6 +280,17 @@
                                 {{ $eventOption->title }}@if($eventOption->event_date) — {{ $eventOption->event_date->format('M d, Y') }}@endif
                             </option>
                         @endforeach
+                    </select>
+                </div>
+
+                {{-- Level --}}
+                <div>
+                    <label class="ar-label">Level</label>
+                    <select wire:model.live="levelFilter" class="ar-select">
+                        <option value="all">All Levels</option>
+                        <option value="elementary">Elementary</option>
+                        <option value="highschool">High School</option>
+                        <option value="college">College</option>
                     </select>
                 </div>
 

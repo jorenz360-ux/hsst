@@ -386,6 +386,7 @@
                     <tr>
                         <th>Member</th>
                         <th>Contact</th>
+                        <th>Level</th>
                         <th>Graduation</th>
                         <th>Occupation</th>
                         <th>Address</th>
@@ -433,6 +434,20 @@
                                 @endif
                             </td>
 
+                            {{-- Level --}}
+                            <td>
+                                @php
+                                    [$lvlAbbr, $lvlChip] = match($batch->level) {
+                                        'elementary' => ['ELM', 'chip-green'],
+                                        'highschool' => ['HS',  'chip-amber'],
+                                        'college'    => ['COL', 'chip-purple'],
+                                        default      => [$batch->level ?? '—', 'chip-slate'],
+                                    };
+                                @endphp
+                                <span class="chip {{ $lvlChip }}" style="font-size:.65rem;font-weight:800;letter-spacing:.04em;">
+                                    {{ $lvlAbbr }}
+                                </span>
+                            </td>
 
                             {{-- Graduation --}}
                             <td>
@@ -489,7 +504,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ $activeEvents->isNotEmpty() ? 8 : 7 }}"
+                            <td colspan="{{ $activeEvents->isNotEmpty() ? 9 : 8 }}"
                                 style="padding:3.5rem 1.5rem; text-align:center;">
                                 <div style="max-width:20rem;margin:0 auto;">
                                     <div style="width:3rem;height:3rem;border-radius:.875rem;background:#f0f4fb;

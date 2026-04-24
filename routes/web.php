@@ -68,7 +68,7 @@ Route::get('/about-us', function () {
 })->name('about-us');
 
 Route::get('/event-registrations/{registration}/pay', EventPayment::class)
-    ->middleware(['auth', 'role:alumni'])
+    ->middleware(['auth', 'role:alumni|batch-representative'])
     ->name('event-registrations.pay');
 
 Route::get('/make-donations', MakeDonations::class)
