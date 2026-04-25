@@ -23,6 +23,7 @@ class BatchRepReports extends Component
 {
     use WithPagination;
 
+    public ?int $selectedBatchId = null;
     public string $selectedEvent = 'all';
     public string $rsvpStatusFilter = 'all';
     public string $paymentStatusFilter = 'all';
@@ -37,6 +38,7 @@ class BatchRepReports extends Component
         'search'              => ['except' => ''],
     ];
 
+    public function updatingSelectedBatchId(): void       { $this->resetPage(); $this->selectedEvent = 'all'; }
     public function updatingSelectedEvent(): void        { $this->resetPage(); }
     public function updatingRsvpStatusFilter(): void     { $this->resetPage(); }
     public function updatingPaymentStatusFilter(): void  { $this->resetPage(); }
@@ -149,12 +151,24 @@ class BatchRepReports extends Component
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
-    protected function repEducation(): ?AlumniEducation
+    protected function repEducations(): \Illuminate\Support\Collection
     {
         return Auth::user()?->alumni?->educations()
             ->with('batch')
             ->where('is_batch_rep', true)
-            ->first();
+            ->get() ?? collect();
+    }
+
+    protected function repEducation(): ?AlumniEducation
+    {
+        $educations = $this->repEducations();
+        if ($educations->isEmpty()) {
+            return null;
+        }
+        if ($this->selectedBatchId && $educations->contains('batch_id', $this->selectedBatchId)) {
+            return $educations->firstWhere('batch_id', $this->selectedBatchId);
+        }
+        return $educations->first();
     }
 
     protected function repBatchId(): ?int
@@ -333,9 +347,14 @@ class BatchRepReports extends Component
 
     public function render()
     {
-        $repEducation = $this->repEducation();
+        $repEducations = $this->repEducations();
+        $repEducation  = $this->repEducation();
 
         abort_unless($repEducation?->batch_id, 403, 'You are not assigned to any batch representative role.');
+
+        if (! $this->selectedBatchId || ! $repEducations->contains('batch_id', $this->selectedBatchId)) {
+            $this->selectedBatchId = (int) $repEducation->batch_id;
+        }
 
         $batchId      = (int) $repEducation->batch_id;
         $currentBatch = $repEducation->batch;
@@ -365,6 +384,7 @@ class BatchRepReports extends Component
         }
 
         return view('livewire.batch-rep-reports', [
+            'repEducations'      => $repEducations,
             'currentBatch'       => $currentBatch,
             'allEvents'          => $allEvents,
             'selectedEventModel' => $selectedEvent,

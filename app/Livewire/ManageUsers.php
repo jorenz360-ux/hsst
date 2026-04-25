@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\AlumniEducation;
 use App\Models\Batch;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -133,6 +134,29 @@ class ManageUsers extends Component
     {
         $this->showViewModal = false;
         $this->viewUserId = null;
+    }
+
+    public function toggleBatchRep(int $educationId): void
+    {
+        $user = User::with('alumni.educations')->findOrFail($this->viewUserId);
+
+        abort_if($user->hasRole('reunion-coordinator'), 403);
+        abort_unless($user->hasAnyRole(['alumni', 'batch-representative']), 403);
+
+        $education = AlumniEducation::query()
+            ->where('id', $educationId)
+            ->where('alumni_id', $user->alumni?->id)
+            ->firstOrFail();
+
+        $education->update(['is_batch_rep' => ! $education->is_batch_rep]);
+
+        $hasAnyRep = $user->alumni->educations()->where('is_batch_rep', true)->exists();
+        $user->syncRoles([$hasAnyRep ? 'batch-representative' : 'alumni']);
+
+        session()->flash('success', $education->fresh()->is_batch_rep
+            ? 'Batch representative status assigned.'
+            : 'Batch representative status removed.'
+        );
     }
 
     public function toggleActive(int $userId): void

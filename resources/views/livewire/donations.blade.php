@@ -413,12 +413,24 @@
                                 <div style="display:flex;align-items:center;gap:.625rem;">
                                     <div>
                                         @php
-                                            $donorBatch = $donation->alumni?->educations?->first()?->batch;
+                                            $donorEducations = $donation->alumni?->educations ?? collect();
                                         @endphp
-                                        @if ($donorBatch)
-                                            <span class="status-chip chip-blue" style="font-size:.62rem;margin-top:.2rem;">
-                                                Batch {{ $donorBatch->yeargrad }}
-                                            </span>
+                                        @if ($donorEducations->isNotEmpty())
+                                            <div style="display:flex;flex-wrap:wrap;gap:.2rem;margin-top:.15rem;">
+                                            @foreach ($donorEducations as $donorEdu)
+                                                @php
+                                                    $lvlAbbr = match($donorEdu->batch?->level) {
+                                                        'elementary' => 'Elem',
+                                                        'highschool' => 'HS',
+                                                        'college'    => 'Col',
+                                                        default      => null,
+                                                    };
+                                                @endphp
+                                                <span class="status-chip chip-blue" style="font-size:.6rem;">
+                                                    {{ $lvlAbbr ? $lvlAbbr . ' ' : '' }}{{ $donorEdu->batch?->yeargrad ?? '—' }}
+                                                </span>
+                                            @endforeach
+                                            </div>
                                         @else
                                             <span style="font-size:.68rem;color:#cbd5e1;margin:.1rem 0 0;display:block;">No batch</span>
                                         @endif

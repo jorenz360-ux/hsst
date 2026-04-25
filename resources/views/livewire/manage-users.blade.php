@@ -874,9 +874,31 @@
                                                 </span>
                                             @endif
                                             <span class="status-chip {{ $edu->did_graduate ? 'chip-green' : 'chip-amber' }}"
-                                                  style="font-size:.65rem;margin-left:auto;">
+                                                  style="font-size:.65rem;">
                                                 {{ $edu->did_graduate ? 'Graduated' : 'Attended (No Grad)' }}
                                             </span>
+                                            @if ($su->hasAnyRole(['alumni', 'batch-representative']))
+                                                <button wire:click="toggleBatchRep({{ $edu->id }})"
+                                                        wire:confirm="{{ $edu->is_batch_rep ? 'Remove batch representative status for this level?' : 'Assign batch representative status for this level?' }}"
+                                                        style="margin-left:auto;display:inline-flex;align-items:center;gap:.3rem;
+                                                               height:1.7rem;padding:0 .65rem;border-radius:.5rem;font-size:.65rem;font-weight:700;
+                                                               cursor:pointer;border:1px solid;white-space:nowrap;transition:background .12s;
+                                                               {{ $edu->is_batch_rep
+                                                                   ? 'background:#fff7ed;color:#9a3412;border-color:#fdba74;'
+                                                                   : 'background:#eef2ff;color:#1a3fa8;border-color:#c7d2fe;' }}">
+                                                    @if ($edu->is_batch_rep)
+                                                        <svg style="width:.7rem;height:.7rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+                                                        </svg>
+                                                        Remove Rep
+                                                    @else
+                                                        <svg style="width:.7rem;height:.7rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                                                        </svg>
+                                                        Set as Rep
+                                                    @endif
+                                                </button>
+                                            @endif
                                         </div>
                                         <div class="grid gap-3 sm:grid-cols-4">
                                             @foreach ([

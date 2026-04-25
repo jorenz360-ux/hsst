@@ -139,6 +139,31 @@
 
 <div class="space-y-5 px-4 py-6 sm:px-6 lg:px-8 mx-auto max-w-screen-xl">
 
+    {{-- ── BATCH SWITCHER (multi-rep only) ────────────────────── --}}
+    @if ($repEducations->count() > 1)
+    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.875rem;padding:.6rem 1.1rem;
+                display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
+        <svg style="width:.9rem;height:.9rem;color:#64748b;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/>
+        </svg>
+        <span style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#64748b;white-space:nowrap;">Viewing Batch</span>
+        <select wire:model.live="selectedBatchId"
+                style="height:2rem;border-radius:.6rem;border:1px solid #e2e8f0;background:#f8fafc;
+                       padding:0 1.75rem 0 .65rem;font-size:.8rem;color:#0f172a;outline:none;
+                       appearance:none;cursor:pointer;flex:1;min-width:180px;max-width:320px;
+                       background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E\");
+                       background-repeat:no-repeat;background-position:right .5rem center;background-size:.8rem;">
+            @foreach ($repEducations as $edu)
+            <option value="{{ $edu->batch_id }}">
+                {{ ucfirst($edu->batch?->level ?? 'Batch') }} — {{ $edu->batch?->schoolyear }}
+                @if ($edu->batch?->yeargrad) ({{ $edu->batch->yeargrad }}) @endif
+            </option>
+            @endforeach
+        </select>
+        <span class="chip chip-blue" style="font-size:.6rem;flex-shrink:0;">{{ $repEducations->count() }} batches</span>
+    </div>
+    @endif
+
     {{-- ── HEADER ──────────────────────────────────────────────── --}}
     <section class="overflow-hidden rounded-2xl"
              style="background:linear-gradient(155deg,var(--r8) 0%,var(--r7) 45%,var(--r6) 100%);

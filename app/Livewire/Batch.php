@@ -17,6 +17,7 @@ class Batch extends Component
 {
     use WithPagination;
 
+    public ?int $selectedBatchId = null;
     public string $search = '';
     public string $filterAccount = 'all';
     public string $filterGrad    = 'all';
@@ -38,6 +39,7 @@ class Batch extends Component
         $this->selectedAlumniId = null;
     }
 
+    public function updatingSelectedBatchId(): void { $this->resetPage(); }
     public function updatingSearch(): void        { $this->resetPage(); }
     public function updatingFilterAccount(): void { $this->resetPage(); }
     public function updatingFilterGrad(): void    { $this->resetPage(); }
@@ -56,11 +58,16 @@ class Batch extends Component
             return null;
         }
 
-        $batchId = Auth::user()?->alumni?->educations()
+        $repBatchIds = Auth::user()?->alumni?->educations()
             ->where('is_batch_rep', true)
-            ->value('batch_id');
+            ->pluck('batch_id')
+            ->map(fn ($id) => (int) $id);
 
-        abort_if(! $batchId, 403);
+        abort_if(! $repBatchIds || $repBatchIds->isEmpty(), 403);
+
+        $batchId = ($this->selectedBatchId && $repBatchIds->contains($this->selectedBatchId))
+            ? $this->selectedBatchId
+            : $repBatchIds->first();
 
         return Alumni::with([
             'user:id,alumni_id,username,email',
@@ -80,15 +87,20 @@ class Batch extends Component
             abort(403);
         }
 
-        $repEducation = $user->alumni->educations()
+        $repEducations = $user->alumni->educations()
             ->with('batch')
             ->where('is_batch_rep', true)
-            ->first();
+            ->get();
 
-        if (! $repEducation) {
+        if ($repEducations->isEmpty()) {
             abort(403);
         }
 
+        if (! $this->selectedBatchId || ! $repEducations->contains('batch_id', $this->selectedBatchId)) {
+            $this->selectedBatchId = (int) $repEducations->first()->batch_id;
+        }
+
+        $repEducation = $repEducations->firstWhere('batch_id', $this->selectedBatchId);
         $batchId    = (int) $repEducation->batch_id;
         $this->batch = $repEducation->batch;
 
@@ -157,6 +169,7 @@ class Batch extends Component
             ->paginate(15);
 
         return view('livewire.batch', [
+            'repEducations'   => $repEducations,
             'batch'          => $this->batch,
             'activeEvents'   => $activeEvents,
             'members'        => $members,

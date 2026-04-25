@@ -13,17 +13,24 @@ use Livewire\Component;
 #[Title('Batch Representative Dashboard')]
 class BatchRepDashboard extends Component
 {
+    public ?int $selectedBatchId = null;
+
     public function render()
     {
         $user = Auth::user();
 
-        $representativeEducation = $user?->alumni?->educations()
-            ->with('batch')
+        $repEducations = $user?->alumni?->educations()
+            ->with('batch:id,level,yeargrad,schoolyear')
             ->where('is_batch_rep', true)
-            ->first();
+            ->get();
 
-        abort_unless($representativeEducation?->batch_id, 403);
+        abort_unless($repEducations?->isNotEmpty(), 403);
 
+        if (! $this->selectedBatchId || ! $repEducations->contains('batch_id', $this->selectedBatchId)) {
+            $this->selectedBatchId = (int) $repEducations->first()->batch_id;
+        }
+
+        $representativeEducation = $repEducations->firstWhere('batch_id', $this->selectedBatchId);
         $batchId = (int) $representativeEducation->batch_id;
         $currentBatch = $representativeEducation->batch;
 
@@ -128,6 +135,7 @@ class BatchRepDashboard extends Component
             ->get();
 
         return view('livewire.batch-rep-dashboard', [
+            'repEducations' => $repEducations,
             'currentBatch' => $currentBatch,
             'representativeEducation' => $representativeEducation,
 

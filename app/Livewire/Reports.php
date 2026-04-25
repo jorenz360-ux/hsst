@@ -38,7 +38,7 @@ class Reports extends Component
     public function mount(): void
     {
         if ($this->isBatchRepresentative()) {
-            $batchId = $this->getUserRepresentativeBatchId();
+            $batchId = $this->getUserRepresentativeBatchIds()->first();
 
             if ($batchId !== null) {
                 $this->selectedBatch = (string) $batchId;
@@ -135,11 +135,24 @@ class Reports extends Component
         return $this->user()?->hasRole('batch-representative') ?? false;
     }
 
-    protected function getUserRepresentativeBatchId(): ?int
+    protected function getUserRepresentativeBatchIds(): \Illuminate\Support\Collection
     {
         return $this->user()?->alumni?->educations()
             ->where('is_batch_rep', true)
-            ->value('batch_id');
+            ->pluck('batch_id')
+            ->map(fn ($id) => (int) $id) ?? collect();
+    }
+
+    protected function getUserRepresentativeBatchId(): ?int
+    {
+        $ids = $this->getUserRepresentativeBatchIds();
+        if ($ids->isEmpty()) {
+            return null;
+        }
+        if ($this->selectedBatch !== 'all' && $ids->contains((int) $this->selectedBatch)) {
+            return (int) $this->selectedBatch;
+        }
+        return $ids->first();
     }
 
     protected function resolvedBatchId(): ?int
@@ -560,6 +573,9 @@ class Reports extends Component
 
             'isBatchRepresentative' => $this->isBatchRepresentative(),
             'isReunionCoordinator' => $this->isReunionCoordinator(),
+            'repBatches' => $this->isBatchRepresentative()
+                ? Batch::whereIn('id', $this->getUserRepresentativeBatchIds())->get(['id', 'level', 'yeargrad', 'schoolyear'])
+                : collect(),
         ]);
     }
 }
