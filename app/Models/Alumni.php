@@ -12,21 +12,21 @@ class Alumni extends Model
     protected function fname(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $value ? ucwords(strtolower($value), " \t\r\n\f\v-.'") : $value,
+            get: fn ($value) => $value ? ucwords(strtolower($value), " \t\r\n\f\v.'") : $value,
         );
     }
 
     protected function lname(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $value ? ucwords(strtolower($value), " \t\r\n\f\v-.'") : $value,
+            get: fn ($value) => $value ? ucwords(strtolower($value), " \t\r\n\f\v.'") : $value,
         );
     }
 
     protected function mname(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $value ? ucwords(strtolower($value), " \t\r\n\f\v-.'") : $value,
+            get: fn ($value) => $value ? ucwords(strtolower($value), " \t\r\n\f\v.'") : $value,
         );
     }
 protected $table = 'alumni';
