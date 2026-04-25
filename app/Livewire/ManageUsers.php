@@ -42,6 +42,7 @@ class ManageUsers extends Component
     #[Locked]
     public ?int $viewUserId = null;
     public bool $showViewModal = false;
+    public ?int $assignRepBatchId = null;
 
     #[Locked]
     public ?int $confirmDeleteId = null;
@@ -148,15 +149,81 @@ class ManageUsers extends Component
             ->where('alumni_id', $user->alumni?->id)
             ->firstOrFail();
 
-        $education->update(['is_batch_rep' => ! $education->is_batch_rep]);
+        $assigning = ! $education->is_batch_rep;
 
-        $hasAnyRep = $user->alumni->educations()->where('is_batch_rep', true)->exists();
+        if ($assigning) {
+            // Displace any existing rep for the same batch from other alumni.
+            AlumniEducation::where('batch_id', $education->batch_id)
+                ->where('is_batch_rep', true)
+                ->where('id', '!=', $educationId)
+                ->with('alumni.user')
+                ->get()
+                ->each(function (AlumniEducation $other) {
+                    $other->update(['is_batch_rep' => false]);
+                    $otherUser = $other->alumni?->user;
+                    if ($otherUser?->hasRole('batch-representative')) {
+                        $stillRep = $other->alumni->educations()->where('is_batch_rep', true)->exists();
+                        if (! $stillRep) {
+                            $otherUser->syncRoles(['alumni']);
+                        }
+                    }
+                });
+        }
+
+        $education->update(['is_batch_rep' => $assigning]);
+
+        $hasAnyRep = $user->fresh()->alumni->educations()->where('is_batch_rep', true)->exists();
         $user->syncRoles([$hasAnyRep ? 'batch-representative' : 'alumni']);
 
-        session()->flash('success', $education->fresh()->is_batch_rep
+        session()->flash('success', $assigning
             ? 'Batch representative status assigned.'
             : 'Batch representative status removed.'
         );
+    }
+
+    public function assignAdditionalRep(): void
+    {
+        $user = User::with('alumni.educations')->findOrFail($this->viewUserId);
+
+        abort_if($user->hasRole('reunion-coordinator'), 403);
+        abort_unless($user->alumni !== null, 403);
+
+        $this->validate(['assignRepBatchId' => 'required|exists:batches,id']);
+
+        // Displace any existing rep for this batch from other alumni.
+        AlumniEducation::where('batch_id', $this->assignRepBatchId)
+            ->where('is_batch_rep', true)
+            ->with('alumni.user')
+            ->get()
+            ->each(function (AlumniEducation $other) use ($user) {
+                if ($other->alumni_id === $user->alumni_id) {
+                    return;
+                }
+                $other->update(['is_batch_rep' => false]);
+                $otherUser = $other->alumni?->user;
+                if ($otherUser?->hasRole('batch-representative')) {
+                    $stillRep = $other->alumni->educations()->where('is_batch_rep', true)->exists();
+                    if (! $stillRep) {
+                        $otherUser->syncRoles(['alumni']);
+                    }
+                }
+            });
+
+        // Create or update the education record for this batch.
+        $education = AlumniEducation::firstOrCreate(
+            ['alumni_id' => $user->alumni_id, 'batch_id' => $this->assignRepBatchId],
+            ['is_batch_rep' => true, 'did_graduate' => false]
+        );
+
+        if (! $education->wasRecentlyCreated) {
+            $education->update(['is_batch_rep' => true]);
+        }
+
+        $user->syncRoles(['batch-representative']);
+
+        $this->assignRepBatchId = null;
+
+        session()->flash('success', 'Batch representative assignment added.');
     }
 
     public function toggleActive(int $userId): void

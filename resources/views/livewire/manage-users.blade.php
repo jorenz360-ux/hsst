@@ -919,6 +919,57 @@
                         </div>
                     @endif
 
+                    {{-- Assign as Rep for Additional Batch --}}
+                    @if ($su->hasAnyRole(['alumni', 'batch-representative']))
+                        <div class="mt-4"
+                             style="background:#fff;border:1px solid #e2e8f0;border-radius:1rem;padding:1.25rem;">
+                            <p class="text-[.62rem] font-bold uppercase tracking-[.14em] mb-3"
+                               style="color:var(--r6);">Assign as Representative for Additional Batch</p>
+
+                            <div class="flex flex-wrap items-end gap-2">
+                                <div style="flex:1;min-width:200px;">
+                                    <label class="mu-label">Select Batch</label>
+                                    <select wire:model="assignRepBatchId" class="mu-select">
+                                        <option value="">— Choose a batch —</option>
+                                        @foreach ($batches->groupBy('level') as $lvl => $batchGroup)
+                                            <optgroup label="{{ str($lvl)->headline() }}">
+                                                @foreach ($batchGroup as $b)
+                                                    @php
+                                                        $alreadyRep = $suEduList->contains(fn($e) => $e->batch_id === $b->id && $e->is_batch_rep);
+                                                    @endphp
+                                                    <option value="{{ $b->id }}" {{ $alreadyRep ? 'disabled' : '' }}>
+                                                        {{ str($lvl)->headline() }} {{ $b->yeargrad }}
+                                                        {{ $alreadyRep ? '(already rep)' : '' }}
+                                                    </option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <button wire:click="assignAdditionalRep"
+                                        wire:confirm="Assign this user as representative for the selected batch?"
+                                        wire:loading.attr="disabled"
+                                        class="btn-primary"
+                                        style="height:2.5rem;">
+                                    <svg wire:loading.remove class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                                    </svg>
+                                    <svg wire:loading class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                                    </svg>
+                                    Assign
+                                </button>
+                            </div>
+
+                            <p class="mt-2 text-xs" style="color:#94a3b8;">
+                                This creates or updates an education record and designates the user as
+                                representative for the chosen batch, even across different year levels.
+                            </p>
+                        </div>
+                    @endif
+
                 @else
                     {{-- No alumni profile state --}}
                     <div class="mt-4" style="border:1px dashed #e2e8f0;border-radius:1rem;
