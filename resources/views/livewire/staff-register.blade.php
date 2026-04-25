@@ -428,10 +428,11 @@
                                 @error('years_working')<p class="field-error-msg">{{ $message }}</p>@enderror
                             </div>
                             <div>
-                                <label for="contact_no" class="field-label">Contact Number <span class="opt">(optional)</span></label>
+                                <label for="contact_no" class="field-label">Contact Number</label>
                                 <input type="text" id="contact_no" name="contact_no"
                                        value="{{ old('contact_no') }}"
                                        placeholder="e.g. 09171234567"
+                                       maxlength="15"
                                        class="field-input {{ $errors->has('contact_no') ? 'is-error' : '' }}">
                                 @error('contact_no')<p class="field-error-msg">{{ $message }}</p>@enderror
                             </div>

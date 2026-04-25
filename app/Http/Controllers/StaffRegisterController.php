@@ -28,7 +28,7 @@ class StaffRegisterController extends Controller
             'country'          => 'required|string|max:100',
             'years_working'    => 'required|integer|min:1|max:99',
             'position'         => 'required|string|max:100',
-            'contact_no'       => 'nullable|string|max:30',
+            'contact_no'       => 'required|string|min:11|max:15',
             'account_type'     => 'required|in:staff,employee,ssps-member',
             'email'            => 'required|email|max:255|unique:users,email',
             'password'         => ['required', 'confirmed', Password::default()],

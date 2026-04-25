@@ -11,6 +11,7 @@ use App\Models\StaffEventRsvp;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 #[Title('Admin | Attendance Reports')]
@@ -204,7 +205,10 @@ class AttendanceReport extends Component
                 $join->on('event_rsvps.alumni_id', '=', 'alumni.id')
                     ->where('event_rsvps.event_id', '=', $eventId);
             })
-            ->leftJoin('batches', 'batches.id', '=', 'event_rsvps.batch_id')
+            ->leftJoin(DB::raw('(SELECT alumni_id, MIN(batch_id) as batch_id FROM alumni_educations GROUP BY alumni_id) as ae_default'), 'ae_default.alumni_id', '=', 'alumni.id')
+            ->leftJoin('batches', function ($join) {
+                $join->on('batches.id', '=', DB::raw('COALESCE(event_rsvps.batch_id, ae_default.batch_id)'));
+            })
             ->leftJoin('event_registrations', function ($join) use ($eventId) {
                 $join->on('event_registrations.alumni_id', '=', 'alumni.id')
                     ->where('event_registrations.event_id', '=', $eventId);

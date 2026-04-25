@@ -102,7 +102,7 @@ class CreateNewUser implements CreatesNewUsers
             'lname' => ['required', 'string', 'max:255'],
             'suffix' => ['nullable', 'string', 'max:20'],
 
-            'cellphone' => ['required', 'string', 'max:30'],
+            'cellphone' => ['required', 'string', 'min:11', 'max:15'],
             'occupation' => ['nullable', 'string', 'max:255'],
 
             'address_line_1' => ['required', 'string', 'max:255'],

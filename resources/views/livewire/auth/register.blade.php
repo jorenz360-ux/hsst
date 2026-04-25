@@ -501,6 +501,7 @@
                                     value="{{ old('cellphone') }}"
                                     placeholder="e.g. 09171234567"
                                     autocomplete="tel"
+                                    maxlength="15"
                                     class="field-input {{ $errors->has('cellphone') ? 'is-error' : '' }}"
                                 >
                                 <p id="err-cellphone" class="field-error mt-2 hidden text-xs leading-5 text-red-600">
@@ -1169,7 +1170,8 @@ function validateStep(step) {
 
         if (!fname)     { showError("fname",     "err-fname",     "First name is required.");        valid = false; }
         if (!lname)     { showError("lname",     "err-lname",     "Last name is required.");         valid = false; }
-        if (!cellphone) { showError("cellphone", "err-cellphone", "Cellphone number is required."); valid = false; }
+        if (!cellphone)              { showError("cellphone", "err-cellphone", "Cellphone number is required.");                valid = false; }
+        else if (cellphone.length < 11) { showError("cellphone", "err-cellphone", "Cellphone number must be at least 11 digits."); valid = false; }
     }
 
     if (step === 2) {
