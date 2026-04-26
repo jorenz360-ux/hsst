@@ -103,7 +103,9 @@ test('admin can create a cashier staff account without alumni record', function 
     expect($created)->not->toBeNull()
         ->and($created->hasRole('cashier'))->toBeTrue()
         ->and($created->alumni_id)->toBeNull()
-        ->and(str_starts_with($created->username, 'staff-'))->toBeTrue();
+        ->and(str_starts_with($created->username, 'staff-'))->toBeTrue()
+        ->and($created->staff_id)->not->toBeNull()
+        ->and($created->name)->toBe('Maria Santos');
 });
 
 test('creating staff account does not require batch fields', function () {

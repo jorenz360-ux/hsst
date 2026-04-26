@@ -6,6 +6,7 @@ use App\Mail\WelcomeCredentials;
 use App\Models\Alumni;
 use App\Models\AlumniEducation;
 use App\Models\Batch;
+use App\Models\Staff;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -102,14 +103,23 @@ class CreateUser extends Component
         $username          = $this->generateStaffUsername();
         $temporaryPassword = $this->generateTempPassword();
 
-        $user = User::create([
-            'username'             => $username,
-            'password'             => Hash::make($temporaryPassword),
-            'must_change_password' => true,
-            'email'                => $this->email,
-        ]);
+        DB::transaction(function () use ($username, $temporaryPassword) {
+            $staff = Staff::create([
+                'fname' => $this->fname,
+                'lname' => $this->lname,
+                'mname' => $this->mname ?: null,
+            ]);
 
-        $user->syncRoles([$this->staffRole]);
+            $user = User::create([
+                'username'             => $username,
+                'password'             => Hash::make($temporaryPassword),
+                'must_change_password' => true,
+                'email'                => $this->email,
+                'staff_id'             => $staff->id,
+            ]);
+
+            $user->syncRoles([$this->staffRole]);
+        });
 
         $fullName = trim("{$this->fname} {$this->lname}");
         Mail::to($this->email)->send(new WelcomeCredentials($fullName, $username, $temporaryPassword));
