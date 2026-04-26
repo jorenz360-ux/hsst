@@ -10,19 +10,26 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 
 #[Title('Add User')]
 class CreateUser extends Component
 {
-    // Alumni fields
+    const STAFF_ROLES = ['cashier'];
+
+    // User type toggle
+    public string $userType = 'alumni'; // 'alumni' | 'staff'
+    public string $staffRole = '';
+
+    // Alumni / shared fields
     public string $lname = '';
     public string $fname = '';
     public string $mname = '';
     public string $email = '';
 
-    // Education fields
+    // Alumni-only education fields
     public ?int $batch_id = null;
     public bool $is_batch_rep = false;
     public bool $did_graduate = true;
@@ -30,10 +37,12 @@ class CreateUser extends Component
 
     public function getBatchesProperty()
     {
+        $levelOrder = ['elementary' => 0, 'highschool' => 1, 'college' => 2];
+
         return Batch::query()
-            ->orderByRaw("FIELD(level, 'elementary', 'highschool', 'college')")
             ->orderByDesc('yeargrad')
             ->get()
+            ->sortBy(fn ($b) => $levelOrder[$b->level] ?? 99)
             ->groupBy('level');
     }
 
@@ -53,15 +62,64 @@ class CreateUser extends Component
         }
     }
 
+    public function updatedUserType(): void
+    {
+        $this->reset([
+            'batch_id', 'is_batch_rep', 'did_graduate', 'school_year_attended',
+            'staffRole',
+        ]);
+        $this->resetValidation();
+    }
+
     public function resetForm(): void
     {
         $this->reset([
+            'userType', 'staffRole',
             'lname', 'fname', 'mname', 'email',
             'batch_id', 'is_batch_rep', 'did_graduate', 'school_year_attended',
         ]);
     }
 
     public function save(): void
+    {
+        if ($this->userType === 'staff') {
+            $this->saveStaff();
+        } else {
+            $this->saveAlumni();
+        }
+    }
+
+    private function saveStaff(): void
+    {
+        $this->validate([
+            'lname'     => 'required|string|max:80',
+            'fname'     => 'required|string|max:80',
+            'mname'     => 'nullable|string|max:80',
+            'email'     => 'required|email|max:255|unique:users,email',
+            'staffRole' => ['required', Rule::in(self::STAFF_ROLES)],
+        ]);
+
+        $username          = $this->generateStaffUsername();
+        $temporaryPassword = $this->generateTempPassword();
+
+        $user = User::create([
+            'username'             => $username,
+            'password'             => Hash::make($temporaryPassword),
+            'must_change_password' => true,
+            'email'                => $this->email,
+        ]);
+
+        $user->syncRoles([$this->staffRole]);
+
+        $fullName = trim("{$this->fname} {$this->lname}");
+        Mail::to($this->email)->send(new WelcomeCredentials($fullName, $username, $temporaryPassword));
+
+        session()->flash('success', ucfirst($this->staffRole) . " account created. Credentials sent to {$this->email}.");
+
+        $this->resetForm();
+    }
+
+    private function saveAlumni(): void
     {
         $this->validate([
             'lname'                => 'required|string|max:80',
@@ -74,7 +132,7 @@ class CreateUser extends Component
             'school_year_attended' => 'nullable|string|max:50',
         ]);
 
-        $username = $this->generateUsername();
+        $username          = $this->generateAlumniUsername();
         $temporaryPassword = $this->generateTempPassword();
 
         DB::transaction(function () use ($username, $temporaryPassword) {
@@ -121,21 +179,33 @@ class CreateUser extends Component
         $this->resetForm();
     }
 
-    protected function generateUsername(): string
+    protected function generateAlumniUsername(): string
     {
         $base = strtolower(
             preg_replace('/[^a-z]/i', '', $this->lname)
             . substr($this->fname, 0, 1)
         );
 
-        $year = Batch::whereKey($this->batch_id)->value('yeargrad') ?? '0000';
-
+        $year     = Batch::whereKey($this->batch_id)->value('yeargrad') ?? '0000';
         $username = "batch{$year}-{$base}";
         $original = $username;
-        $i = 1;
+        $i        = 1;
 
         while (User::where('username', $username)->exists()) {
             $username = $original . $i++;
+        }
+
+        return $username;
+    }
+
+    protected function generateStaffUsername(): string
+    {
+        $base     = 'staff-' . strtolower(preg_replace('/[^a-z]/i', '', $this->lname) . substr($this->fname, 0, 1));
+        $username = $base;
+        $i        = 1;
+
+        while (User::where('username', $username)->exists()) {
+            $username = $base . $i++;
         }
 
         return $username;
@@ -152,7 +222,8 @@ class CreateUser extends Component
     public function render()
     {
         return view('livewire.create-user', [
-            'batches' => $this->batches,
+            'batches'    => $this->batches,
+            'staffRoles' => self::STAFF_ROLES,
         ]);
     }
 }

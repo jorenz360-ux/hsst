@@ -80,3 +80,45 @@ test('cashier can approve a donation', function () {
 
     expect($donation->fresh()->status)->toBe('verified');
 });
+
+test('admin can create a cashier staff account without alumni record', function () {
+    \Illuminate\Support\Facades\Mail::fake();
+
+    $admin = \App\Models\User::factory()->create(['is_active' => true]);
+    $admin->syncRoles(['reunion-coordinator']);
+
+    \Livewire\Livewire::actingAs($admin)
+        ->test(\App\Livewire\CreateUser::class)
+        ->set('userType', 'staff')
+        ->set('fname', 'Maria')
+        ->set('lname', 'Santos')
+        ->set('email', 'cashier@hsst.test')
+        ->set('staffRole', 'cashier')
+        ->call('save')
+        ->assertHasNoErrors()
+        ->assertSet('fname', '');
+
+    $created = \App\Models\User::where('email', 'cashier@hsst.test')->first();
+
+    expect($created)->not->toBeNull()
+        ->and($created->hasRole('cashier'))->toBeTrue()
+        ->and($created->alumni_id)->toBeNull()
+        ->and(str_starts_with($created->username, 'staff-'))->toBeTrue();
+});
+
+test('creating staff account does not require batch fields', function () {
+    \Illuminate\Support\Facades\Mail::fake();
+
+    $admin = \App\Models\User::factory()->create(['is_active' => true]);
+    $admin->syncRoles(['reunion-coordinator']);
+
+    \Livewire\Livewire::actingAs($admin)
+        ->test(\App\Livewire\CreateUser::class)
+        ->set('userType', 'staff')
+        ->set('fname', 'Jose')
+        ->set('lname', 'Reyes')
+        ->set('email', 'jose@hsst.test')
+        ->set('staffRole', 'cashier')
+        ->call('save')
+        ->assertHasNoErrors();
+});
