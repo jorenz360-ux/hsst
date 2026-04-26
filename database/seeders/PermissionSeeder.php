@@ -102,6 +102,11 @@ class PermissionSeeder extends Seeder
             'guard_name' => $guard,
         ]);
 
+        $cashier = Role::firstOrCreate([
+            'name' => 'cashier',
+            'guard_name' => $guard,
+        ]);
+
         $coordinator->syncPermissions([
             'users.view',
             'users.create',
