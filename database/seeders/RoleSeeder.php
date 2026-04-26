@@ -15,6 +15,7 @@ class RoleSeeder extends Seeder
             'ssps',
             'batch-representative',
             'alumni',
+            'cashier',
         ];
 
         foreach ($roles as $role) {
