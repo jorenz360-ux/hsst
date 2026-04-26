@@ -104,6 +104,10 @@ class CreateUser extends Component
         $temporaryPassword = $this->generateTempPassword();
 
         DB::transaction(function () use ($username, $temporaryPassword) {
+            // Staff record is required so User::getNameAttribute() resolves the display
+            // name via $this->staff rather than falling back to the raw username.
+            // Address/position columns are nullable for system-created accounts (see migration
+            // 2026_04_26_044807_make_staff_contact_fields_nullable).
             $staff = Staff::create([
                 'fname' => $this->fname,
                 'lname' => $this->lname,
