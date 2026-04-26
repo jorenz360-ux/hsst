@@ -239,7 +239,7 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm font-700 text-slate-800" style="font-weight:700;">Alumni Profile</p>
+                    <p class="text-sm font-bold text-slate-800" style="font-weight:700;">User Profile</p>
                     <p class="text-xs" style="color:#64748b;">Personal information</p>
                 </div>
             </div>
@@ -270,7 +270,7 @@
                             </svg>
                         </span>
                         <input type="email" wire:model.defer="email"
-                               placeholder="representative@email.com"
+                               placeholder="user@email.com"
                                class="cu-field" style="padding-left:2.4rem;">
                     </div>
                     @error('email')
@@ -403,7 +403,7 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm font-700 text-slate-800" style="font-weight:700;">Staff Role</p>
+                    <p class="text-sm font-bold text-slate-800" style="font-weight:700;">Staff Role</p>
                     <p class="text-xs" style="color:#64748b;">Select the system role to assign</p>
                 </div>
             </div>
