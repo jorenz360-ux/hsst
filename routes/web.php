@@ -98,7 +98,7 @@ Route::get('/reports', Reports::class)
     ->middleware(['auth', 'role:reunion-coordinator|ssps|batch-representative|super-admin'])
     ->name('reports');
 Route::get('/donations', ManageDonations::class)
-    ->middleware(['auth', 'role:batch-representative|super-admin'])
+    ->middleware(['auth', 'role:batch-representative|cashier|super-admin'])
     ->name('donations');
 
 Route::get(uri: '/create/events', action: CreateEvents::class)

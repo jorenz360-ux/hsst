@@ -37,3 +37,21 @@ test('non-cashier login response redirects to dashboard', function () {
 
     expect($response->getTargetUrl())->toContain(route('dashboard', absolute: false));
 });
+
+test('cashier can access donations page', function () {
+    $user = User::factory()->create(['is_active' => true]);
+    $user->syncRoles(['cashier']);
+
+    $this->actingAs($user)
+        ->get(route('donations'))
+        ->assertStatus(200);
+});
+
+test('cashier cannot access dashboard', function () {
+    $user = User::factory()->create(['is_active' => true]);
+    $user->syncRoles(['cashier']);
+
+    $this->actingAs($user)
+        ->get(route('dashboard'))
+        ->assertStatus(403);
+});
