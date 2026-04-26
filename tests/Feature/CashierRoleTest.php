@@ -55,3 +55,28 @@ test('cashier cannot access dashboard', function () {
         ->get(route('dashboard'))
         ->assertStatus(403);
 });
+
+test('cashier can approve a donation', function () {
+    $alumni = \App\Models\Alumni::create([
+        'fname' => 'Test',
+        'lname' => 'Donor',
+        'mname' => null,
+    ]);
+
+    $donation = \App\Models\Donation::create([
+        'alumni_id'    => $alumni->id,
+        'amount'       => 500,
+        'status'       => 'pending',
+        'date_donated' => now(),
+    ]);
+
+    $cashier = \App\Models\User::factory()->create(['is_active' => true]);
+    $cashier->syncRoles(['cashier']);
+
+    \Livewire\Livewire::actingAs($cashier)
+        ->test(\App\Livewire\ManageDonations::class)
+        ->call('approveDonation', $donation->id)
+        ->assertHasNoErrors();
+
+    expect($donation->fresh()->status)->toBe('verified');
+});
