@@ -147,7 +147,7 @@
                         Create User
                     </h1>
                     <p class="mt-1.5 text-sm leading-6" style="color:rgba(255,255,255,.6);max-width:44ch;">
-                        Register a batch representative account. Credentials will be
+                        Register an alumni or staff account. Credentials will be
                         emailed automatically on creation.
                     </p>
                 </div>
@@ -167,6 +167,56 @@
     @include('partials.toast')
 
     <form wire:submit.prevent="save" class="space-y-4">
+
+        {{-- ── USER TYPE ──────────────────────────────────────────────────── --}}
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon" style="background:#f0fdf4;">
+                    <svg class="w-4 h-4" style="color:#059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm font-700 text-slate-800" style="font-weight:700;">User Type</p>
+                    <p class="text-xs" style="color:#64748b;">Select the account type to create</p>
+                </div>
+            </div>
+            <div class="section-body">
+                <div class="flex gap-4">
+                    <label class="flex cursor-pointer items-center gap-2.5 rounded-xl px-4 py-3 flex-1"
+                           style="border:1px solid {{ $userType === 'alumni' ? 'var(--r6)' : '#e2e8f0' }};
+                                  background:{{ $userType === 'alumni' ? '#eef2ff' : '#fafafa' }};">
+                        <input type="radio" wire:model.live="userType" value="alumni" class="sr-only">
+                        <div class="w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0"
+                             style="border-color:{{ $userType === 'alumni' ? 'var(--r6)' : '#cbd5e1' }};">
+                            @if($userType === 'alumni')
+                                <div class="w-2 h-2 rounded-full" style="background:var(--r6);"></div>
+                            @endif
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold" style="color:#1e293b;">Alumni</p>
+                            <p class="text-xs" style="color:#64748b;">Requires batch assignment</p>
+                        </div>
+                    </label>
+
+                    <label class="flex cursor-pointer items-center gap-2.5 rounded-xl px-4 py-3 flex-1"
+                           style="border:1px solid {{ $userType === 'staff' ? 'var(--r6)' : '#e2e8f0' }};
+                                  background:{{ $userType === 'staff' ? '#eef2ff' : '#fafafa' }};">
+                        <input type="radio" wire:model.live="userType" value="staff" class="sr-only">
+                        <div class="w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0"
+                             style="border-color:{{ $userType === 'staff' ? 'var(--r6)' : '#cbd5e1' }};">
+                            @if($userType === 'staff')
+                                <div class="w-2 h-2 rounded-full" style="background:var(--r6);"></div>
+                            @endif
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold" style="color:#1e293b;">Staff</p>
+                            <p class="text-xs" style="color:#64748b;">Non-alumni system account</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
 
         {{-- ── INFO BANNER ─────────────────────────────────────── --}}
         <div class="flex items-start gap-3 rounded-xl px-4 py-3.5"
@@ -231,6 +281,7 @@
             </div>
         </div>
 
+        @if ($userType === 'alumni')
         {{-- ── BATCH ASSIGNMENT ────────────────────────────────── --}}
         <div class="section-card">
             <div class="section-header">
@@ -340,6 +391,38 @@
                 @endif
             </div>
         </div>
+        @endif
+
+        @if ($userType === 'staff')
+        {{-- ── STAFF ROLE ──────────────────────────────────────── --}}
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon" style="background:#f5f3ff;">
+                    <svg class="w-4 h-4" style="color:#7c3aed;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm font-700 text-slate-800" style="font-weight:700;">Staff Role</p>
+                    <p class="text-xs" style="color:#64748b;">Select the system role to assign</p>
+                </div>
+            </div>
+            <div class="section-body">
+                <div>
+                    <label class="cu-label">Role</label>
+                    <select wire:model.defer="staffRole" class="cu-select">
+                        <option value="">-- Select role --</option>
+                        @foreach ($staffRoles as $role)
+                            <option value="{{ $role }}">{{ ucfirst($role) }}</option>
+                        @endforeach
+                    </select>
+                    @error('staffRole')
+                        <p class="cu-error">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+        </div>
+        @endif
 
         {{-- ── ACTIONS ─────────────────────────────────────────── --}}
         <div class="flex items-center justify-end gap-3 pb-2">
