@@ -8,8 +8,16 @@ class LoginResponse implements LoginResponseContract
 {
     public function toResponse($request)
     {
-       return $request->user()
-        ? redirect()->route('dashboard')
-        : redirect()->route('home');
+        $user = $request->user();
+
+        if (! $user) {
+            return redirect()->route('home');
+        }
+
+        if ($user->hasRole('cashier')) {
+            return redirect()->route('donations');
+        }
+
+        return redirect()->route('dashboard');
     }
 }
