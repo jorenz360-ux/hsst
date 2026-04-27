@@ -113,6 +113,103 @@
         background:#fff; border:1px solid #e8edf5; border-radius:1rem;
         box-shadow:0 1px 4px rgba(15,23,42,.05); padding:1rem 1.1rem;
     }
+
+    /* ── Donation Table ─────────────────────────────────── */
+    .dt-table { width:100%; border-collapse:collapse; }
+    .dt-table thead tr { background:var(--r9); }
+    .dt-table thead th {
+        font-size:.565rem; font-weight:700; letter-spacing:.14em;
+        text-transform:uppercase; color:rgba(255,255,255,.5);
+        padding:.6rem .9rem; text-align:left; white-space:nowrap; border:none;
+    }
+    .dt-table thead th.r { text-align:right; }
+    .dt-table tbody tr {
+        border-bottom:1px solid #f1f5f9;
+        border-left:2.5px solid transparent;
+        transition:background .1s, border-left-color .1s;
+    }
+    .dt-table tbody tr:last-child { border-bottom:none; }
+    .dt-table tbody tr:hover {
+        background:rgba(26,63,168,.028);
+        border-left-color:var(--r5);
+    }
+    .dt-table td { padding:.5rem .9rem; vertical-align:middle; }
+    .dt-table td.r { text-align:right; }
+
+    .dt-av {
+        width:1.65rem; height:1.65rem; border-radius:.4rem; flex-shrink:0;
+        display:flex; align-items:center; justify-content:center;
+        font-size:.58rem; font-weight:800; color:#fff;
+        background:linear-gradient(135deg,var(--r5) 0%,var(--r8) 100%);
+    }
+    .dt-btn {
+        display:inline-flex; align-items:center; gap:.22rem;
+        padding:.2rem .5rem; border-radius:.375rem; cursor:pointer;
+        font-size:.63rem; font-weight:700; border:1px solid; white-space:nowrap;
+        transition:filter .1s, transform .08s;
+    }
+    .dt-btn:hover { filter:brightness(.93); transform:translateY(-1px); }
+    .dt-btn-ok { background:#f0fdf4; border-color:#86efac; color:#15803d; }
+    .dt-btn-no { background:#fff5f5; border-color:#fca5a5; color:#dc2626; }
+    .dt-btn-or { background:#fffbeb; border-color:#fde68a; color:#92700a; }
+    .dt-ref {
+        font-family:ui-monospace,SFMono-Regular,monospace; font-size:.67rem;
+        letter-spacing:.02em; background:#f8fafc; border:1px solid #e2e8f0;
+        border-radius:.3rem; padding:.12rem .45rem; color:#334155;
+    }
+
+    /* ── Mobile Donation Cards ──────────────────────────── */
+    .dc-card {
+        background:#fff; border:1px solid #e8edf5; border-radius:1rem;
+        box-shadow:0 1px 4px rgba(15,23,42,.05); overflow:hidden;
+    }
+    .dc-card-inner { padding:.875rem 1rem; }
+    .dc-meta-label {
+        font-size:.575rem; font-weight:700; text-transform:uppercase;
+        letter-spacing:.1em; color:#94a3b8; margin-bottom:.2rem;
+    }
+
+    /* ── Decision Modals ────────────────────────────────────── */
+    @keyframes dmModalIn {
+        from { opacity:0; transform:scale(.96) translateY(10px); }
+        to   { opacity:1; transform:scale(1)   translateY(0);    }
+    }
+    .dm-modal {
+        background:#fff;
+        border-radius:1.1rem;
+        width:95vw;
+        max-width:27rem;
+        box-shadow:0 24px 64px rgba(10,31,92,.22), 0 4px 16px rgba(0,0,0,.06);
+        animation:dmModalIn .22s cubic-bezier(.34,1.1,.64,1) both;
+        overflow:hidden;
+        position:relative;
+    }
+    .dm-modal-body   { padding:1.5rem 1.5rem 1.25rem; }
+    .dm-modal-footer {
+        display:flex; gap:.5rem; justify-content:flex-end;
+        padding:1rem 1.5rem;
+        background:#f8fafc;
+        border-top:1px solid #f1f5f9;
+    }
+    .dm-modal-icon {
+        width:2.5rem; height:2.5rem; border-radius:.65rem; flex-shrink:0;
+        display:flex; align-items:center; justify-content:center;
+    }
+    .dm-close-btn {
+        width:1.75rem; height:1.75rem; border-radius:.4rem; border:none;
+        background:#f1f5f9; cursor:pointer; color:#94a3b8; flex-shrink:0;
+        display:flex; align-items:center; justify-content:center;
+        transition:background .12s, color .12s;
+    }
+    .dm-close-btn:hover { background:#e2e8f0; color:#475569; }
+    .dm-action-btn {
+        display:inline-flex; align-items:center; gap:.4rem;
+        padding:.45rem 1.1rem; border-radius:.7rem; border:none;
+        font-size:.8rem; font-weight:700; color:#fff; cursor:pointer;
+        transition:filter .12s;
+    }
+    .dm-action-btn:hover { filter:brightness(1.08); }
+    .dm-action-btn:disabled { opacity:.65; cursor:not-allowed; filter:none; }
 </style>
 
 @php
@@ -312,8 +409,6 @@
                         <option value="pending">Pending Review</option>
                         <option value="verified">Verified</option>
                         <option value="rejected">Rejected</option>
-                        <option value="paid">Paid</option>
-                        <option value="unpaid">Unpaid</option>
                     </select>
                 </div>
 
@@ -343,34 +438,40 @@
     </div>
 
     {{-- ── TABLE (desktop) ─────────────────────────────────────── --}}
-    <div class="md-card hidden lg:block">
-        <div class="md-card-head">
-            <div class="md-card-icon" style="background:#fffbeb;">
-                <svg class="w-3.5 h-3.5" style="color:var(--g5);" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+    <div class="hidden lg:block" style="background:#fff;border:1px solid #e8edf5;
+             border-radius:1.1rem;box-shadow:0 1px 6px rgba(15,23,42,.05);overflow:hidden;">
+
+        {{-- Card header --}}
+        <div style="display:flex;align-items:center;gap:.65rem;padding:.8rem 1.1rem .8rem 1.25rem;
+                    border-bottom:1px solid #f1f5f9;">
+            <div style="width:1.9rem;height:1.9rem;border-radius:.5rem;background:#eef2ff;flex-shrink:0;
+                        display:flex;align-items:center;justify-content:center;">
+                <svg style="width:.85rem;height:.85rem;color:var(--r6);" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"/>
                 </svg>
             </div>
-            <div class="flex-1">
-                <p class="text-sm font-bold" style="color:#1e293b;">Donation Records</p>
-                <p class="text-xs" style="color:#64748b;">Review submission details, payment state, and uploaded proof.</p>
+            <div style="flex:1;">
+                <p style="font-size:.8125rem;font-weight:700;color:#1e293b;margin:0;">Donation Records</p>
+                <p style="font-size:.68rem;color:#94a3b8;margin:0;">Review submissions, payment state, and uploaded proof.</p>
             </div>
-            <span class="chip chip-blue" style="font-size:.6rem;">
-                {{ $donations->firstItem() ?? 0 }}–{{ $donations->lastItem() ?? 0 }} of {{ number_format($donations->total()) }}
+            <span style="font-size:.6rem;font-weight:700;background:#eef2ff;color:var(--r6);
+                         border:1px solid #c7d2fe;border-radius:999px;padding:.2rem .65rem;">
+                {{ $donations->firstItem() ?? 0 }}–{{ $donations->lastItem() ?? 0 }}
+                <span style="opacity:.6;">of</span> {{ number_format($donations->total()) }}
             </span>
         </div>
 
         <div class="overflow-x-auto">
-            <table class="md-table min-w-full">
+            <table class="dt-table">
                 <thead>
                     <tr>
                         <th>Donor</th>
                         <th>Batch</th>
-                        <th class="right">Amount</th>
-                        <th>Date Submitted</th>
-                        <th>Review Status</th>
-                        <th>Payment</th>
+                        <th class="r">Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
                         <th>Reference</th>
-                        <th>OR File</th>
+                        <th>Receipt</th>
                         @if (!auth()->user()?->hasRole('batch-representative'))
                             <th>Actions</th>
                         @endif
@@ -402,15 +503,17 @@
                         @endphp
                         <tr>
                             {{-- Donor --}}
-                            <td style="min-width:190px;">
-                                <div class="flex items-start gap-2.5">
-                                    <div class="md-avatar mt-0.5">{{ $initials }}</div>
+                            <td style="min-width:185px;">
+                                <div style="display:flex;align-items:center;gap:.5rem;">
+                                    <div class="dt-av">{{ $initials }}</div>
                                     <div>
-                                        <p class="text-sm font-semibold leading-tight" style="color:#1e293b;">
-                                            {{ $d->alumni?->lname }}, {{ $d->alumni?->fname }}{{ $d->alumni?->mname ? ' '.$d->alumni->mname : '' }}
+                                        <p style="font-size:.775rem;font-weight:700;color:#1e293b;
+                                                   line-height:1.25;white-space:nowrap;">
+                                            {{ $d->alumni?->lname }}, {{ $d->alumni?->fname }}
                                         </p>
                                         @if ($d->remarks)
-                                            <p class="text-xs mt-0.5 max-w-[160px] leading-snug" style="color:#64748b;">
+                                            <p style="font-size:.63rem;color:#94a3b8;margin-top:.1rem;
+                                                       max-width:155px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
                                                 {{ $d->remarks }}
                                             </p>
                                         @endif
@@ -419,91 +522,74 @@
                             </td>
 
                             {{-- Batch --}}
-                            <td style="min-width:130px;">
+                            <td style="min-width:115px;">
                                 @if ($batch)
-                                    <p class="text-sm font-semibold" style="color:#1e293b;">{{ $batch->yeargrad }}</p>
-                                    <p class="text-xs" style="color:#64748b;">{{ $batch->schoolyear }}</p>
-                                    <span class="chip {{ $lvlClass }}" style="font-size:.58rem;margin-top:.25rem;">{{ $lvlLabel }}</span>
+                                    <div style="display:flex;align-items:center;gap:.3rem;">
+                                        <span style="font-size:.775rem;font-weight:700;color:#1e293b;">{{ $batch->yeargrad }}</span>
+                                        <span class="chip {{ $lvlClass }}" style="font-size:.52rem;padding:.08rem .35rem;">{{ $lvlLabel }}</span>
+                                    </div>
+                                    <p style="font-size:.62rem;color:#94a3b8;margin-top:.15rem;">{{ $batch->schoolyear }}</p>
                                 @else
-                                    <span class="text-xs" style="color:#cbd5e1;">—</span>
+                                    <span style="font-size:.7rem;color:#cbd5e1;">—</span>
                                 @endif
                             </td>
 
                             {{-- Amount --}}
-                            <td class="right" style="min-width:100px;">
-                                <p class="text-sm font-bold" style="color:#1e293b;">₱{{ number_format($d->amount, 2) }}</p>
+                            <td class="r" style="min-width:95px;">
+                                <span style="font-size:.82rem;font-weight:800;color:#1e293b;
+                                             font-variant-numeric:tabular-nums;letter-spacing:-.015em;">
+                                    ₱{{ number_format($d->amount, 2) }}
+                                </span>
                             </td>
 
                             {{-- Date --}}
-                            <td style="min-width:145px;">
-                                <p class="text-sm" style="color:#334155;">
+                            <td style="min-width:105px;">
+                                <p style="font-size:.75rem;font-weight:600;color:#334155;white-space:nowrap;">
                                     {{ ($d->date_donated ?? $d->created_at)?->format('M d, Y') ?? '—' }}
                                 </p>
-                                <p class="text-xs mt-0.5" style="color:#94a3b8;">
+                                <p style="font-size:.62rem;color:#94a3b8;margin-top:.1rem;">
                                     {{ ($d->date_donated ?? $d->created_at)?->format('h:i A') ?? '' }}
                                 </p>
-                                @if ($d->date_donated && $d->created_at)
-                                    <p class="text-xs mt-0.5" style="color:#cbd5e1;">
-                                        rec. {{ $d->created_at->format('M d') }}
-                                    </p>
-                                @endif
                             </td>
 
                             {{-- Review Status --}}
-                            <td style="min-width:140px;">
+                            <td style="min-width:125px;">
                                 @if ($d->status === 'verified')
                                     <span class="chip chip-green">
-                                        <span class="chip-dot" style="background:#10b981;"></span>
-                                        Verified
+                                        <span class="chip-dot" style="background:#10b981;"></span>Verified
                                     </span>
                                     @if ($d->reviewed_at)
-                                        <p class="text-xs mt-0.5" style="color:#94a3b8;">
+                                        <p style="font-size:.6rem;color:#94a3b8;margin-top:.2rem;">
                                             {{ $d->reviewed_at->format('M d, Y') }}
                                         </p>
                                     @endif
                                 @elseif ($d->status === 'rejected')
                                     <span class="chip chip-red">
-                                        <span class="chip-dot" style="background:#ef4444;"></span>
-                                        Rejected
+                                        <span class="chip-dot" style="background:#ef4444;"></span>Rejected
                                     </span>
                                     @if ($d->rejection_reason)
-                                        <p class="text-xs mt-1 max-w-[180px] leading-snug" style="color:#dc2626;">
-                                            {{ $d->rejection_reason }}
+                                        <p style="font-size:.62rem;color:#dc2626;margin-top:.2rem;
+                                                   max-width:155px;line-height:1.35;">
+                                            {{ Str::limit($d->rejection_reason, 48) }}
                                         </p>
                                     @endif
                                 @else
                                     <span class="chip chip-amber">
-                                        <span class="chip-dot" style="background:#d97706;"></span>
-                                        Pending
+                                        <span class="chip-dot" style="background:#d97706;"></span>Pending
                                     </span>
-                                @endif
-                            </td>
-
-                            {{-- Payment --}}
-                            <td style="min-width:110px;">
-                                @if ($d->is_paid)
-                                    <span class="chip chip-teal">
-                                        <span class="chip-dot" style="background:#0d9488;"></span>
-                                        Paid
-                                    </span>
-                                    @if ($d->paid_at)
-                                        <p class="text-xs mt-0.5" style="color:#94a3b8;">{{ $d->paid_at->format('M d, Y') }}</p>
-                                    @endif
-                                @else
-                                    <span class="chip chip-slate">Unpaid</span>
                                 @endif
                             </td>
 
                             {{-- Reference --}}
-                            <td style="min-width:120px;">
+                            <td style="min-width:115px;">
                                 @if ($d->reference_number)
-                                    <span class="text-xs font-mono" style="color:#334155;">{{ $d->reference_number }}</span>
+                                    <span class="dt-ref">{{ $d->reference_number }}</span>
                                 @else
-                                    <span class="text-xs" style="color:#cbd5e1;">—</span>
+                                    <span style="font-size:.7rem;color:#cbd5e1;">—</span>
                                 @endif
                             </td>
 
-                            {{-- OR File --}}
+                            {{-- Receipt --}}
                             <td>
                                 @if ($d->or_file_path)
                                     @php
@@ -512,57 +598,36 @@
                                         $orUrl = $s3->url($d->or_file_path);
                                         $orExt = strtolower(pathinfo($d->or_file_path, PATHINFO_EXTENSION));
                                     @endphp
-                                    <button type="button"
-                                            x-data
+                                    <button type="button" x-data
                                             @click="$dispatch('open-or-modal', { url: '{{ $orUrl }}', ext: '{{ $orExt }}' })"
-                                            style="display:inline-flex;align-items:center;gap:.3rem;
-                                                   padding:.2rem .6rem;border-radius:.5rem;cursor:pointer;
-                                                   background:#fffbeb;border:1px solid #fde68a;
-                                                   font-size:.68rem;font-weight:700;color:#92700a;
-                                                   transition:background .12s;"
-                                            onmouseover="this.style.background='#fef3c7'"
-                                            onmouseout="this.style.background='#fffbeb'">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                            class="dt-btn dt-btn-or">
+                                        <svg style="width:.6rem;height:.6rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/>
                                         </svg>
                                         View OR
                                     </button>
                                 @else
-                                    <span class="text-xs" style="color:#cbd5e1;">No file</span>
+                                    <span style="font-size:.68rem;color:#cbd5e1;">No file</span>
                                 @endif
                             </td>
 
                             {{-- Actions --}}
                             @if (!auth()->user()?->hasRole('batch-representative'))
                                 <td style="white-space:nowrap;">
-                                    <div style="display:flex;gap:.35rem;align-items:center;">
-                                        @if ($d->status !== 'verified')
-                                            <button wire:click="approveDonation({{ $d->id }})"
-                                                    wire:confirm="Approve this donation?"
-                                                    style="display:inline-flex;align-items:center;gap:.25rem;
-                                                           padding:.2rem .55rem;border-radius:.45rem;cursor:pointer;
-                                                           background:#f0fdf4;border:1px solid #86efac;
-                                                           font-size:.68rem;font-weight:700;color:#15803d;
-                                                           transition:background .12s;"
-                                                    onmouseover="this.style.background='#dcfce7'"
-                                                    onmouseout="this.style.background='#f0fdf4'">
-                                                <svg style="width:.65rem;height:.65rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                    <div style="display:flex;gap:.28rem;align-items:center;">
+                                        @if ($d->status !== 'verified' && $d->status !== 'rejected')
+                                            <button wire:click="openApproveModal({{ $d->id }})"
+                                                    class="dt-btn dt-btn-ok">
+                                                <svg style="width:.6rem;height:.6rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                                                 </svg>
                                                 Approve
                                             </button>
                                         @endif
-
-                                        @if ($d->status !== 'rejected')
+                                        @if ($d->status !== 'rejected' && $d->status !== 'verified')
                                             <button wire:click="openRejectModal({{ $d->id }})"
-                                                    style="display:inline-flex;align-items:center;gap:.25rem;
-                                                           padding:.2rem .55rem;border-radius:.45rem;cursor:pointer;
-                                                           background:#fff5f5;border:1px solid #fca5a5;
-                                                           font-size:.68rem;font-weight:700;color:#dc2626;
-                                                           transition:background .12s;"
-                                                    onmouseover="this.style.background='#fee2e2'"
-                                                    onmouseout="this.style.background='#fff5f5'">
-                                                <svg style="width:.65rem;height:.65rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                                    class="dt-btn dt-btn-no">
+                                                <svg style="width:.6rem;height:.6rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                                                 </svg>
                                                 Reject
@@ -575,16 +640,17 @@
                     @empty
                         <tr>
                             <td colspan="9" style="padding:3.5rem 1.5rem;text-align:center;">
-                                <div style="max-width:20rem;margin:0 auto;">
-                                    <div style="width:3rem;height:3rem;border-radius:.875rem;background:#f0f4fb;
-                                                border:1px solid #e2e8f0;display:flex;align-items:center;
-                                                justify-content:center;margin:0 auto .75rem;">
-                                        <svg style="width:1.4rem;height:1.4rem;color:#94a3b8;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                <div style="max-width:18rem;margin:0 auto;">
+                                    <div style="width:2.75rem;height:2.75rem;border-radius:.75rem;
+                                                background:#f0f4fb;border:1px solid #e2e8f0;
+                                                display:flex;align-items:center;justify-content:center;
+                                                margin:0 auto .75rem;">
+                                        <svg style="width:1.2rem;height:1.2rem;color:#94a3b8;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z"/>
                                         </svg>
                                     </div>
-                                    <p class="text-sm font-semibold" style="color:#1e293b;">No donations found</p>
-                                    <p class="text-xs mt-1" style="color:#64748b;">Try adjusting your search or filters.</p>
+                                    <p style="font-size:.8125rem;font-weight:600;color:#1e293b;">No donations found</p>
+                                    <p style="font-size:.72rem;color:#64748b;margin-top:.3rem;">Try adjusting your search or filters.</p>
                                 </div>
                             </td>
                         </tr>
@@ -594,9 +660,9 @@
         </div>
 
         {{-- Pagination --}}
-        <div style="padding:.85rem 1.4rem;border-top:1px solid #f1f5f9;background:#fafbff;
+        <div style="padding:.8rem 1.25rem;border-top:1px solid #f1f5f9;background:#fafbff;
                     display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;">
-            <p class="text-xs" style="color:#64748b;">
+            <p style="font-size:.7rem;color:#94a3b8;">
                 Showing {{ $donations->firstItem() ?? 0 }}–{{ $donations->lastItem() ?? 0 }}
                 of {{ number_format($donations->total()) }} records
             </p>
@@ -619,78 +685,131 @@
                 ])->filter()->implode(' '));
             @endphp
 
-            <div class="mob-card">
-                <div class="flex items-start justify-between gap-3">
-                    <div>
-                        <p class="text-sm font-bold" style="color:#1e293b;">{{ $fullName ?: 'Unknown Donor' }}</p>
-                        @if ($batch)
-                            <p class="text-xs mt-0.5" style="color:#64748b;">
-                                Batch {{ $batch->yeargrad }} &bull; {{ $batch->schoolyear }}
+            @php
+                $statusColor = match($d->status) {
+                    'verified' => '#10b981',
+                    'rejected' => '#ef4444',
+                    default    => '#f59e0b',
+                };
+            @endphp
+            <div class="dc-card">
+                {{-- status-color top strip --}}
+                <div style="height:3px;background:{{ $statusColor }};"></div>
+
+                <div class="dc-card-inner">
+                    {{-- Row 1: name + amount --}}
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;">
+                        <div style="min-width:0;">
+                            <p style="font-size:.8125rem;font-weight:700;color:#1e293b;line-height:1.25;
+                                       overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                                {{ $fullName ?: 'Unknown Donor' }}
                             </p>
+                            <div style="display:flex;align-items:center;gap:.35rem;margin-top:.25rem;flex-wrap:wrap;">
+                                @if ($batch)
+                                    <span style="font-size:.68rem;color:#64748b;">Batch {{ $batch->yeargrad }}</span>
+                                    <span style="font-size:.55rem;color:#cbd5e1;">·</span>
+                                    @php
+                                        $mobLvlClass = match($batch?->level) {
+                                            'elementary' => 'lvl-elem',
+                                            'highschool' => 'lvl-hs',
+                                            'college'    => 'lvl-col',
+                                            default      => 'chip-slate',
+                                        };
+                                        $mobLvlLabel = match($batch?->level) {
+                                            'elementary' => 'Elem',
+                                            'highschool' => 'H.S.',
+                                            'college'    => 'Col',
+                                            default      => '—',
+                                        };
+                                    @endphp
+                                    <span class="chip {{ $mobLvlClass }}" style="font-size:.55rem;padding:.08rem .35rem;">{{ $mobLvlLabel }}</span>
+                                @endif
+                            </div>
+                        </div>
+                        <div style="text-align:right;flex-shrink:0;">
+                            <p style="font-size:.9rem;font-weight:800;color:#1e293b;
+                                       font-variant-numeric:tabular-nums;letter-spacing:-.02em;">
+                                ₱{{ number_format($d->amount, 2) }}
+                            </p>
+                            <div style="margin-top:.2rem;">
+                                @if ($d->status === 'verified')
+                                    <span class="chip chip-green" style="font-size:.58rem;">
+                                        <span class="chip-dot" style="background:#10b981;"></span>Verified
+                                    </span>
+                                @elseif ($d->status === 'rejected')
+                                    <span class="chip chip-red" style="font-size:.58rem;">
+                                        <span class="chip-dot" style="background:#ef4444;"></span>Rejected
+                                    </span>
+                                @else
+                                    <span class="chip chip-amber" style="font-size:.58rem;">
+                                        <span class="chip-dot" style="background:#f59e0b;"></span>Pending
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    @if ($d->remarks)
+                        <p style="font-size:.7rem;color:#94a3b8;margin-top:.5rem;line-height:1.45;
+                                   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                            {{ $d->remarks }}
+                        </p>
+                    @endif
+
+                    {{-- Row 2: meta grid --}}
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem .75rem;margin-top:.75rem;
+                                padding-top:.75rem;border-top:1px solid #f1f5f9;">
+                        <div>
+                            <p class="dc-meta-label">Date</p>
+                            <p style="font-size:.73rem;font-weight:600;color:#334155;">
+                                {{ ($d->date_donated ?? $d->created_at)?->format('M d, Y') ?? '—' }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="dc-meta-label">Reference</p>
+                            @if ($d->reference_number)
+                                <span class="dt-ref" style="font-size:.65rem;">{{ $d->reference_number }}</span>
+                            @else
+                                <p style="font-size:.73rem;color:#cbd5e1;">—</p>
+                            @endif
+                        </div>
+                    </div>
+
+                    @if ($d->status === 'rejected' && $d->rejection_reason)
+                        <div style="margin-top:.65rem;background:#fef2f2;border:1px solid #fecaca;
+                                    border-radius:.6rem;padding:.55rem .75rem;">
+                            <p style="font-size:.7rem;color:#dc2626;line-height:1.45;">{{ $d->rejection_reason }}</p>
+                        </div>
+                    @endif
+
+                    {{-- Row 3: footer actions --}}
+                    <div style="display:flex;align-items:center;gap:.5rem;margin-top:.75rem;
+                                padding-top:.65rem;border-top:1px solid #f1f5f9;flex-wrap:wrap;">
+                        @if ($d->or_file_path)
+                            <a href="{{ Storage::disk('s3')->url($d->or_file_path) }}" target="_blank"
+                               class="dt-btn dt-btn-or" style="text-decoration:none;">
+                                <svg style="width:.6rem;height:.6rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/>
+                                </svg>
+                                View OR
+                            </a>
                         @endif
                     </div>
-                    <p class="text-base font-bold shrink-0" style="color:#1e293b;">₱{{ number_format($d->amount, 2) }}</p>
                 </div>
-
-                @if ($d->remarks)
-                    <p class="text-xs mt-2 leading-relaxed" style="color:#64748b;">{{ $d->remarks }}</p>
-                @endif
-
-                <div class="mt-3 grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                        <p style="color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;">Submitted</p>
-                        <p class="mt-0.5" style="color:#334155;">
-                            {{ ($d->date_donated ?? $d->created_at)?->format('M d, Y') ?? '—' }}
-                        </p>
-                    </div>
-                    <div>
-                        <p style="color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;">Reference</p>
-                        <p class="mt-0.5 font-mono" style="color:#334155;">{{ $d->reference_number ?? '—' }}</p>
-                    </div>
-                </div>
-
-                <div class="mt-3 flex flex-wrap items-center gap-1.5">
-                    {{-- review status --}}
-                    @if ($d->status === 'verified')
-                        <span class="chip chip-green"><span class="chip-dot" style="background:#10b981;"></span>Verified</span>
-                    @elseif ($d->status === 'rejected')
-                        <span class="chip chip-red"><span class="chip-dot" style="background:#ef4444;"></span>Rejected</span>
-                    @else
-                        <span class="chip chip-amber"><span class="chip-dot" style="background:#d97706;"></span>Pending</span>
-                    @endif
-
-                    {{-- payment --}}
-                    @if ($d->is_paid)
-                        <span class="chip chip-teal"><span class="chip-dot" style="background:#0d9488;"></span>Paid</span>
-                    @else
-                        <span class="chip chip-slate">Unpaid</span>
-                    @endif
-
-                    {{-- OR file --}}
-                    @if ($d->or_file_path)
-                        <a href="{{ Storage::disk('s3')->url($d->or_file_path) }}" target="_blank"
-                           class="chip chip-amber ml-auto">View OR</a>
-                    @endif
-                </div>
-
-                @if ($d->status === 'rejected' && $d->rejection_reason)
-                    <div class="mt-2 rounded-lg px-3 py-2" style="background:#fef2f2;border:1px solid #fecaca;">
-                        <p class="text-xs" style="color:#dc2626;">{{ $d->rejection_reason }}</p>
-                    </div>
-                @endif
             </div>
         @empty
-            <div style="border:2px dashed #e2e8f0;border-radius:1rem;padding:3rem 1.5rem;text-align:center;background:#fff;">
-                <p class="text-sm" style="color:#94a3b8;">No donations found.</p>
+            <div style="border:2px dashed #e2e8f0;border-radius:1rem;padding:3rem 1.5rem;
+                        text-align:center;background:#fff;">
+                <p style="font-size:.8125rem;color:#94a3b8;">No donations found.</p>
             </div>
         @endforelse
 
         {{-- mobile pagination --}}
         @if ($donations->hasPages())
             <div style="background:#fff;border:1px solid #e8edf5;border-radius:1rem;
-                        padding:.85rem 1.1rem;display:flex;align-items:center;
+                        padding:.8rem 1.1rem;display:flex;align-items:center;
                         justify-content:space-between;flex-wrap:wrap;gap:.75rem;">
-                <p class="text-xs" style="color:#64748b;">
+                <p style="font-size:.7rem;color:#94a3b8;">
                     {{ $donations->firstItem() ?? 0 }}–{{ $donations->lastItem() ?? 0 }} of {{ $donations->total() }}
                 </p>
                 <div class="[&>*]:!shadow-none">{{ $donations->links() }}</div>
@@ -841,7 +960,81 @@
         </div>
     @endif
 
-    {{-- Reject Donation Modal --}}
+    {{-- ── Approve Donation Modal ──────────────────────────────── --}}
+    @if (!auth()->user()?->hasRole('batch-representative'))
+        <div x-data="{ open: false }"
+             @open-approve-modal.window="open = true"
+             @close-approve-modal.window="open = false"
+             x-show="open"
+             x-cloak
+             x-transition.opacity
+             style="position:fixed;inset:0;z-index:9999;background:rgba(10,31,92,.45);"
+             @keydown.escape.window="open = false">
+
+            <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;"
+                 @click.self="open = false">
+            <div class="dm-modal" @click.stop>
+                <div style="height:3px;background:linear-gradient(90deg,#16a34a,#059669);"></div>
+
+                <div class="dm-modal-body">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;">
+                        <div style="display:flex;align-items:center;gap:.75rem;">
+                            <div class="dm-modal-icon"
+                                 style="background:linear-gradient(135deg,#16a34a,#059669);
+                                        box-shadow:0 3px 10px rgba(22,163,74,.28);">
+                                <svg style="width:1rem;height:1rem;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p style="font-family:Georgia,serif;font-size:.9375rem;font-weight:700;
+                                           color:#0f172a;margin:0;line-height:1.25;">Approve Donation</p>
+                                <p style="font-size:.72rem;color:#64748b;margin:.15rem 0 0;">Mark this submission as verified</p>
+                            </div>
+                        </div>
+                        <button @click="open = false" class="dm-close-btn">
+                            <svg style="width:.8rem;height:.8rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.75rem;
+                                padding:.875rem 1rem;display:flex;align-items:flex-start;gap:.6rem;">
+                        <svg style="width:.9rem;height:.9rem;color:#16a34a;flex-shrink:0;margin-top:.1rem;"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/>
+                        </svg>
+                        <p style="font-size:.78rem;color:#166534;margin:0;line-height:1.6;">
+                            This will mark the donation as <strong>verified</strong> and record your review timestamp. The alumni will see their submission as approved.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="dm-modal-footer">
+                    <button @click="open = false" class="btn-ghost">Cancel</button>
+                    <button wire:click="confirmApprove"
+                            wire:loading.attr="disabled"
+                            wire:target="confirmApprove"
+                            class="dm-action-btn"
+                            style="background:linear-gradient(135deg,#16a34a,#059669);
+                                   box-shadow:0 2px 8px rgba(22,163,74,.28);">
+                        <span wire:loading.remove wire:target="confirmApprove"
+                              style="display:inline-flex;align-items:center;gap:.35rem;">
+                            <svg style="width:.75rem;height:.75rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                            </svg>
+                            Approve
+                        </span>
+                        <span wire:loading wire:target="confirmApprove">Approving…</span>
+                    </button>
+                </div>
+            </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- ── Reject Donation Modal ───────────────────────────────── --}}
     @if (!auth()->user()?->hasRole('batch-representative'))
         <div x-data="{ open: false }"
              @open-reject-modal.window="open = true"
@@ -849,69 +1042,73 @@
              x-show="open"
              x-cloak
              x-transition.opacity
-             style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;
-                    justify-content:center;background:rgba(0,0,0,.5);"
-             @click.self="open = false"
+             style="position:fixed;inset:0;z-index:9999;background:rgba(10,31,92,.45);"
              @keydown.escape.window="open = false">
 
-            <div style="background:#fff;border-radius:1rem;padding:1.5rem;
-                        width:95vw;max-width:26rem;
-                        box-shadow:0 20px 50px rgba(0,0,0,.2);">
+            <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;"
+                 @click.self="open = false">
+            <div class="dm-modal" @click.stop>
+                <div style="height:3px;background:linear-gradient(90deg,#dc2626,#b91c1c);"></div>
 
-                {{-- Header --}}
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-                    <div style="display:flex;align-items:center;gap:.5rem;">
-                        <div style="width:2rem;height:2rem;border-radius:.5rem;
-                                    background:#fee2e2;border:1px solid #fca5a5;
-                                    display:flex;align-items:center;justify-content:center;">
-                            <svg style="width:.9rem;height:.9rem;color:#dc2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                <div class="dm-modal-body">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;">
+                        <div style="display:flex;align-items:center;gap:.75rem;">
+                            <div class="dm-modal-icon"
+                                 style="background:linear-gradient(135deg,#dc2626,#b91c1c);
+                                        box-shadow:0 3px 10px rgba(220,38,38,.28);">
+                                <svg style="width:1rem;height:1rem;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p style="font-family:Georgia,serif;font-size:.9375rem;font-weight:700;
+                                           color:#0f172a;margin:0;line-height:1.25;">Reject Donation</p>
+                                <p style="font-size:.72rem;color:#64748b;margin:.15rem 0 0;">Provide a reason for the rejection</p>
+                            </div>
+                        </div>
+                        <button @click="open = false" class="dm-close-btn">
+                            <svg style="width:.8rem;height:.8rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
-                        </div>
-                        <span style="font-size:.875rem;font-weight:700;color:#0f172a;">Reject Donation</span>
+                        </button>
                     </div>
-                    <button @click="open = false"
-                            style="width:1.75rem;height:1.75rem;border-radius:.4rem;border:none;
-                                   background:#f1f5f9;cursor:pointer;font-size:1.1rem;color:#64748b;">
-                        &times;
-                    </button>
+
+                    <div>
+                        <label class="md-label">Reason for rejection <span style="color:#dc2626;">*</span></label>
+                        <textarea wire:model="rejectReason"
+                                  rows="3"
+                                  placeholder="Explain why this donation is being rejected…"
+                                  style="width:100%;border-radius:.75rem;border:1px solid #e2e8f0;
+                                         background:#fff;padding:.6rem .875rem;font-size:.8125rem;
+                                         color:#0f172a;outline:none;resize:vertical;box-sizing:border-box;
+                                         transition:border-color .15s,box-shadow .15s;"
+                                  onfocus="this.style.borderColor='#dc2626';this.style.boxShadow='0 0 0 3px rgba(220,38,38,.1)'"
+                                  onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'"></textarea>
+                        @error('rejectReason')
+                            <p style="font-size:.72rem;color:#dc2626;margin-top:.3rem;">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
-                {{-- Reason textarea --}}
-                <div style="margin-bottom:1rem;">
-                    <label class="md-label">Reason for rejection <span style="color:#dc2626;">*</span></label>
-                    <textarea wire:model="rejectReason"
-                              rows="3"
-                              placeholder="Explain why this donation is being rejected…"
-                              style="width:100%;border-radius:.75rem;border:1px solid #e2e8f0;
-                                     background:#fff;padding:.6rem .875rem;font-size:.8125rem;
-                                     color:#0f172a;outline:none;resize:vertical;
-                                     transition:border-color .15s,box-shadow .15s;"
-                              onfocus="this.style.borderColor='#dc2626';this.style.boxShadow='0 0 0 3px rgba(220,38,38,.1)'"
-                              onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'"></textarea>
-                    @error('rejectReason')
-                        <p style="font-size:.72rem;color:#dc2626;margin-top:.3rem;">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                {{-- Footer --}}
-                <div style="display:flex;gap:.5rem;justify-content:flex-end;">
-                    <button @click="open = false"
-                            style="padding:.45rem .9rem;border-radius:.6rem;border:1px solid #e2e8f0;
-                                   background:#fff;font-size:.8rem;font-weight:600;
-                                   color:#475569;cursor:pointer;">
-                        Cancel
-                    </button>
+                <div class="dm-modal-footer">
+                    <button @click="open = false" class="btn-ghost">Cancel</button>
                     <button wire:click="submitReject"
-                            style="padding:.45rem .9rem;border-radius:.6rem;border:none;
-                                   background:#dc2626;font-size:.8rem;font-weight:700;
-                                   color:#fff;cursor:pointer;
-                                   transition:background .12s;"
-                            onmouseover="this.style.background='#b91c1c'"
-                            onmouseout="this.style.background='#dc2626'">
-                        Confirm Reject
+                            wire:loading.attr="disabled"
+                            wire:target="submitReject"
+                            class="dm-action-btn"
+                            style="background:linear-gradient(135deg,#dc2626,#b91c1c);
+                                   box-shadow:0 2px 8px rgba(220,38,38,.22);">
+                        <span wire:loading.remove wire:target="submitReject"
+                              style="display:inline-flex;align-items:center;gap:.35rem;">
+                            <svg style="width:.75rem;height:.75rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Confirm Reject
+                        </span>
+                        <span wire:loading wire:target="submitReject">Rejecting…</span>
                     </button>
                 </div>
+            </div>
             </div>
         </div>
     @endif
@@ -921,48 +1118,106 @@
          @open-or-modal.window="open = true; url = $event.detail.url; ext = $event.detail.ext"
          x-show="open"
          x-cloak
-         x-transition.opacity
-         style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;
-                justify-content:center;background:rgba(0,0,0,.55);"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         style="position:fixed;inset:0;z-index:9999;
+                backdrop-filter:blur(24px) saturate(1.2) brightness(.45);
+                -webkit-backdrop-filter:blur(24px) saturate(1.2) brightness(.45);
+                background:rgba(4,10,30,.72);
+                display:flex;flex-direction:column;"
          @click.self="open = false"
          @keydown.escape.window="open = false">
 
-        <div style="background:#fff;border-radius:1rem;padding:1.25rem;
-                    max-width:52rem;width:95vw;max-height:92vh;
-                    display:flex;flex-direction:column;gap:1rem;
-                    box-shadow:0 25px 60px rgba(0,0,0,.25);">
+        {{-- Floating toolbar --}}
+        <div style="display:flex;align-items:center;justify-content:space-between;
+                    padding:.85rem 1.25rem;flex-shrink:0;">
 
-            {{-- Modal header --}}
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-size:.875rem;font-weight:700;color:#0f172a;">Official Receipt</span>
-                <div style="display:flex;gap:.5rem;align-items:center;">
-                    <a :href="url" target="_blank"
-                       style="font-size:.72rem;font-weight:600;color:#2150c8;text-decoration:none;
-                              padding:.25rem .6rem;border:1px solid #bfdbfe;border-radius:.4rem;
-                              background:#eff6ff;">
-                        Open in new tab
-                    </a>
-                    <button @click="open = false"
-                            style="width:1.75rem;height:1.75rem;border-radius:.4rem;border:none;
-                                   background:#f1f5f9;cursor:pointer;font-size:1.1rem;
-                                   color:#64748b;line-height:1;">
-                        &times;
-                    </button>
+            {{-- Left: title + badge --}}
+            <div style="display:flex;align-items:center;gap:.75rem;">
+                <div style="width:2.2rem;height:2.2rem;border-radius:.55rem;flex-shrink:0;
+                            display:flex;align-items:center;justify-content:center;
+                            background:rgba(196,149,42,.22);
+                            border:1px solid rgba(196,149,42,.35);
+                            backdrop-filter:blur(8px);">
+                    <svg style="width:.9rem;height:.9rem;color:#fbbf24;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p style="font-family:Georgia,serif;font-size:.9rem;font-weight:700;
+                               color:#fff;margin:0;line-height:1.2;letter-spacing:-.01em;">Official Receipt</p>
+                    <template x-if="ext === 'pdf'">
+                        <p style="font-size:.65rem;color:rgba(255,255,255,.5);margin:.1rem 0 0;letter-spacing:.04em;text-transform:uppercase;font-weight:600;">PDF Document</p>
+                    </template>
+                    <template x-if="ext !== 'pdf'">
+                        <p style="font-size:.65rem;color:rgba(255,255,255,.5);margin:.1rem 0 0;letter-spacing:.04em;text-transform:uppercase;font-weight:600;">Image File &middot; click to open full size</p>
+                    </template>
                 </div>
             </div>
 
-            {{-- Preview area --}}
-            <div style="overflow:auto;flex:1;border-radius:.5rem;background:#f8fafc;
-                        border:1px solid #e2e8f0;display:flex;
-                        align-items:center;justify-content:center;min-height:16rem;">
-                <template x-if="ext === 'pdf'">
-                    <iframe :src="url" style="width:100%;height:70vh;border:none;border-radius:.5rem;"></iframe>
-                </template>
-                <template x-if="ext !== 'pdf'">
-                    <img :src="url" style="max-width:100%;max-height:70vh;object-fit:contain;border-radius:.375rem;" />
-                </template>
+            {{-- Right: actions --}}
+            <div style="display:flex;align-items:center;gap:.5rem;">
+                <a :href="url" target="_blank"
+                   style="display:inline-flex;align-items:center;gap:.38rem;
+                          padding:.38rem .85rem;border-radius:.55rem;
+                          font-size:.75rem;font-weight:700;color:#fff;
+                          text-decoration:none;cursor:pointer;
+                          background:rgba(255,255,255,.12);
+                          border:1px solid rgba(255,255,255,.2);
+                          backdrop-filter:blur(8px);
+                          transition:background .15s,border-color .15s;"
+                   onmouseover="this.style.background='rgba(255,255,255,.2)';this.style.borderColor='rgba(255,255,255,.35)'"
+                   onmouseout="this.style.background='rgba(255,255,255,.12)';this.style.borderColor='rgba(255,255,255,.2)'">
+                    <svg style="width:.7rem;height:.7rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/>
+                    </svg>
+                    Open in new tab
+                </a>
+                <button @click="open = false"
+                        style="width:2rem;height:2rem;border-radius:.5rem;border:1px solid rgba(255,255,255,.2);
+                               background:rgba(255,255,255,.1);backdrop-filter:blur(8px);
+                               cursor:pointer;color:rgba(255,255,255,.7);display:flex;
+                               align-items:center;justify-content:center;
+                               transition:background .15s,color .15s;"
+                        onmouseover="this.style.background='rgba(255,255,255,.22)';this.style.color='#fff'"
+                        onmouseout="this.style.background='rgba(255,255,255,.1)';this.style.color='rgba(255,255,255,.7)'">
+                    <svg style="width:.8rem;height:.8rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
             </div>
         </div>
+
+        {{-- Full-screen preview --}}
+        <div style="flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;
+                    padding:.5rem 3rem 1rem;">
+            <template x-if="ext === 'pdf'">
+                <iframe :src="url"
+                        style="width:100%;height:100%;min-height:500px;border:none;
+                               border-radius:.75rem;
+                               box-shadow:0 8px 48px rgba(0,0,0,.6);"></iframe>
+            </template>
+            <template x-if="ext !== 'pdf'">
+                <img :src="url"
+                     style="max-width:100%;max-height:calc(100vh - 120px);object-fit:contain;
+                            border-radius:.75rem;
+                            box-shadow:0 8px 48px rgba(0,0,0,.65);
+                            cursor:zoom-in;"
+                     @click="window.open(url,'_blank')" />
+            </template>
+        </div>
+
+        {{-- ESC hint --}}
+        <p style="text-align:center;font-size:.65rem;color:rgba(255,255,255,.3);
+                  padding-bottom:.75rem;flex-shrink:0;letter-spacing:.06em;">
+            Press <kbd style="font-family:ui-monospace,monospace;background:rgba(255,255,255,.1);
+                               border:1px solid rgba(255,255,255,.18);border-radius:.25rem;
+                               padding:.05rem .35rem;font-size:.62rem;">ESC</kbd> or click outside to close
+        </p>
     </div>
 
 </div>

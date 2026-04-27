@@ -20,6 +20,9 @@ class AlumniDashboard extends Component
     public ?string $lastPaidAt = null;
     public ?int $lastPaidAmount = null;
 
+    public int $batchVerifiedTotal = 0;
+    public ?string $batchYeargrad = null;
+
     public bool $hasVolunteerInfo = false;
     public array $volunteerRoles = [];
     public ?string $volunteerSpecialty = null;
@@ -36,6 +39,7 @@ class AlumniDashboard extends Component
 
         if ($alumniId) {
             $this->loadDonationSummary($alumniId);
+            $this->loadBatchDonationTotal();
             $this->loadVolunteerInfo();
         }
     }
@@ -43,6 +47,24 @@ class AlumniDashboard extends Component
     protected function alumniId(): ?int
     {
         return Auth::user()?->alumni_id;
+    }
+
+    protected function loadBatchDonationTotal(): void
+    {
+        $education = Auth::user()?->alumni?->educations()->with('batch')->first();
+
+        if (! $education?->batch_id) {
+            return;
+        }
+
+        $this->batchYeargrad = $education->batch?->yeargrad;
+
+        $this->batchVerifiedTotal = (int) Donation::query()
+            ->where('status', 'verified')
+            ->whereHas('alumni.educations', function ($q) use ($education) {
+                $q->where('batch_id', $education->batch_id);
+            })
+            ->sum('amount');
     }
 
     protected function loadVolunteerInfo(): void
@@ -205,9 +227,11 @@ class AlumniDashboard extends Component
         }
 
         return view('livewire.alumni-dashboard', [
-            'user' => $user,
-            'alumni' => $user?->alumni,
-            'upcomingEvents' => $upcomingEvents,
+            'user'               => $user,
+            'alumni'             => $user?->alumni,
+            'upcomingEvents'     => $upcomingEvents,
+            'batchVerifiedTotal' => $this->batchVerifiedTotal,
+            'batchYeargrad'      => $this->batchYeargrad,
         ]);
     }
 }

@@ -23,6 +23,7 @@ class ManageDonations extends Component
     public ?int $scopeBatchId = null;
     public ?int $scopeEducationId = null;
 
+    public ?int $approvingId = null;
     public ?int $rejectingId = null;
     public string $rejectReason = '';
 
@@ -64,16 +65,27 @@ class ManageDonations extends Component
         }
     }
 
-    public function approveDonation(int $id): void
+    public function openApproveModal(int $id): void
     {
         abort_if(auth()->user()?->hasRole('batch-representative'), 403);
 
-        Donation::findOrFail($id)->update([
+        $this->approvingId = $id;
+        $this->dispatch('open-approve-modal');
+    }
+
+    public function confirmApprove(): void
+    {
+        abort_if(auth()->user()?->hasRole('batch-representative'), 403);
+
+        Donation::findOrFail($this->approvingId)->update([
             'status'           => 'verified',
             'reviewed_by'      => auth()->id(),
             'reviewed_at'      => now(),
             'rejection_reason' => null,
         ]);
+
+        $this->approvingId = null;
+        $this->dispatch('close-approve-modal');
     }
 
     public function openRejectModal(int $id): void
@@ -90,7 +102,7 @@ class ManageDonations extends Component
     {
         abort_if(auth()->user()?->hasRole('batch-representative'), 403);
 
-        $this->validate();
+        $this->validate(['rejectReason' => 'required|string|max:500']);
 
         Donation::findOrFail($this->rejectingId)->update([
             'status'           => 'rejected',

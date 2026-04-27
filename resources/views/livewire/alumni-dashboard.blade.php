@@ -28,6 +28,33 @@
             </div>
         </section>
 
+        {{-- ===== BATCH DONATION STAT ===== --}}
+        @if ($batchYeargrad)
+        <div class="mb-6 border border-[#e8e2d6] bg-white px-6 py-5 sm:px-8">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-[10px] font-semibold uppercase tracking-[.2em] text-[#b88a3d]">
+                        Batch {{ $batchYeargrad }} · Donation Progress
+                    </p>
+                    <p class="mt-1 text-[13px] text-[#7a7060]">
+                        Total verified donations submitted by your batch.
+                    </p>
+                </div>
+                <div class="flex items-baseline gap-2">
+                    <span class="font-serif text-[44px] font-normal leading-none tracking-tight text-[#091852] sm:text-[56px]">
+                        ₱{{ number_format($batchVerifiedTotal, 2) }}
+                    </span>
+                    <span class="text-[11px] font-semibold uppercase tracking-widest text-[#b88a3d]">verified</span>
+                </div>
+            </div>
+            @if ($batchVerifiedTotal === 0)
+                <p class="mt-3 border-t border-[#f0ece4] pt-3 text-[12px] text-[#a89880]">
+                    No verified donations for Batch {{ $batchYeargrad }} yet. Your batch representative can submit on behalf of the batch.
+                </p>
+            @endif
+        </div>
+        @endif
+
         {{-- ===== SECTION LABEL ===== --}}
         <div class="mb-4">
             <h2 class="text-[18px] font-semibold text-[#1a1410]">Active Events</h2>

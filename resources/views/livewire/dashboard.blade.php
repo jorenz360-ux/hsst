@@ -196,7 +196,7 @@
     ════════════════════════════════════════════════════════════ --}}
     <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
 
-        <div class="kpi-card" style="border-left:3px solid var(--r6);">
+        <div class="kpi-card">
             <div>
                 <p class="kpi-label">Total Donations</p>
                 <p class="kpi-value">₱{{ number_format($allDonationsTotal) }}</p>
@@ -209,7 +209,7 @@
             </div>
         </div>
 
-        <div class="kpi-card" style="border-left:3px solid var(--g5);">
+        <div class="kpi-card">
             <div>
                 <p class="kpi-label">This Month</p>
                 <p class="kpi-value">₱{{ number_format($donationsThisMonth) }}</p>
@@ -222,7 +222,7 @@
             </div>
         </div>
 
-        <div class="kpi-card" style="border-left:3px solid #059669;">
+        <div class="kpi-card">
             <div>
                 <p class="kpi-label">Alumni</p>
                 <p class="kpi-value">{{ number_format($totalAlumni) }}</p>
@@ -235,7 +235,7 @@
             </div>
         </div>
 
-        <div class="kpi-card" style="border-left:3px solid #7c3aed;">
+        <div class="kpi-card">
             <div>
                 <p class="kpi-label">Events</p>
                 <p class="kpi-value">{{ $upcomingEventsCount }}</p>
@@ -248,7 +248,7 @@
             </div>
         </div>
 
-        <div class="kpi-card" style="border-left:3px solid #0ea5e9;">
+        <div class="kpi-card">
             <div>
                 <p class="kpi-label">Announcements</p>
                 <p class="kpi-value">{{ $publishedAnnouncementsCount }}</p>
@@ -261,7 +261,7 @@
             </div>
         </div>
 
-        <div class="kpi-card" style="border-left:3px solid #64748b;">
+        <div class="kpi-card">
             <div>
                 <p class="kpi-label">Users</p>
                 <p class="kpi-value">{{ number_format($totalUsers) }}</p>

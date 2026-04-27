@@ -751,36 +751,91 @@
 {{-- ════════ PROOF MODAL ════════ --}}
 <div x-data="{ open:false, url:'', ext:'' }"
      @open-proof-modal.window="open=true; url=$event.detail.url; ext=$event.detail.ext"
-     x-show="open" x-cloak x-transition.opacity
-     style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;
-            justify-content:center;background:rgba(0,0,0,.55);"
+     x-show="open" x-cloak
+     x-transition:enter="transition ease-out duration-200"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition ease-in duration-150"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     style="position:fixed;inset:0;z-index:9999;
+            backdrop-filter:blur(24px) saturate(1.2) brightness(.45);
+            -webkit-backdrop-filter:blur(24px) saturate(1.2) brightness(.45);
+            background:rgba(4,10,30,.72);
+            display:flex;flex-direction:column;"
      @click.self="open=false" @keydown.escape.window="open=false">
-    <div style="background:#fff;border-radius:1rem;padding:1.25rem;max-width:52rem;width:95vw;
-                max-height:92vh;display:flex;flex-direction:column;gap:1rem;
-                box-shadow:0 25px 60px rgba(0,0,0,.25);">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:.875rem;font-weight:700;color:#0f172a;">Donation Proof</span>
-            <div style="display:flex;gap:.5rem;align-items:center;">
-                <a :href="url" target="_blank"
-                   style="font-size:.72rem;font-weight:600;color:var(--r5);text-decoration:none;
-                          padding:.25rem .6rem;border:1px solid #bfdbfe;border-radius:.4rem;background:#eff6ff;">
-                    Open in new tab
-                </a>
-                <button @click="open=false"
-                        style="width:1.75rem;height:1.75rem;border-radius:.4rem;border:none;
-                               background:#f1f5f9;cursor:pointer;font-size:1.1rem;color:#64748b;">&times;</button>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;
+                padding:.85rem 1.25rem;flex-shrink:0;">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+            <div style="width:2.2rem;height:2.2rem;border-radius:.55rem;flex-shrink:0;
+                        display:flex;align-items:center;justify-content:center;
+                        background:rgba(196,149,42,.22);border:1px solid rgba(196,149,42,.35);
+                        backdrop-filter:blur(8px);">
+                <svg style="width:.9rem;height:.9rem;color:#fbbf24;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/>
+                </svg>
+            </div>
+            <div>
+                <p style="font-family:Georgia,serif;font-size:.9rem;font-weight:700;
+                           color:#fff;margin:0;line-height:1.2;">Official Receipt</p>
+                <template x-if="ext === 'pdf'">
+                    <p style="font-size:.65rem;color:rgba(255,255,255,.5);margin:.1rem 0 0;letter-spacing:.04em;text-transform:uppercase;font-weight:600;">PDF Document</p>
+                </template>
+                <template x-if="ext !== 'pdf'">
+                    <p style="font-size:.65rem;color:rgba(255,255,255,.5);margin:.1rem 0 0;letter-spacing:.04em;text-transform:uppercase;font-weight:600;">Image File &middot; click to open full size</p>
+                </template>
             </div>
         </div>
-        <div style="overflow:auto;flex:1;border-radius:.5rem;background:#f8fafc;border:1px solid #e2e8f0;
-                    display:flex;align-items:center;justify-content:center;min-height:16rem;">
-            <template x-if="ext === 'pdf'">
-                <iframe :src="url" style="width:100%;height:70vh;border:none;border-radius:.5rem;"></iframe>
-            </template>
-            <template x-if="ext !== 'pdf'">
-                <img :src="url" style="max-width:100%;max-height:70vh;object-fit:contain;border-radius:.375rem;" />
-            </template>
+        <div style="display:flex;align-items:center;gap:.5rem;">
+            <a :href="url" target="_blank"
+               style="display:inline-flex;align-items:center;gap:.38rem;
+                      padding:.38rem .85rem;border-radius:.55rem;font-size:.75rem;font-weight:700;
+                      color:#fff;text-decoration:none;cursor:pointer;
+                      background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+                      backdrop-filter:blur(8px);transition:background .15s,border-color .15s;"
+               onmouseover="this.style.background='rgba(255,255,255,.2)';this.style.borderColor='rgba(255,255,255,.35)'"
+               onmouseout="this.style.background='rgba(255,255,255,.12)';this.style.borderColor='rgba(255,255,255,.2)'">
+                <svg style="width:.7rem;height:.7rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/>
+                </svg>
+                Open in new tab
+            </a>
+            <button @click="open=false"
+                    style="width:2rem;height:2rem;border-radius:.5rem;border:1px solid rgba(255,255,255,.2);
+                           background:rgba(255,255,255,.1);backdrop-filter:blur(8px);cursor:pointer;
+                           color:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;
+                           transition:background .15s,color .15s;"
+                    onmouseover="this.style.background='rgba(255,255,255,.22)';this.style.color='#fff'"
+                    onmouseout="this.style.background='rgba(255,255,255,.1)';this.style.color='rgba(255,255,255,.7)'">
+                <svg style="width:.8rem;height:.8rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
         </div>
     </div>
+
+    <div style="flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;
+                padding:.5rem 3rem 1rem;">
+        <template x-if="ext === 'pdf'">
+            <iframe :src="url"
+                    style="width:100%;height:100%;min-height:500px;border:none;
+                           border-radius:.75rem;box-shadow:0 8px 48px rgba(0,0,0,.6);"></iframe>
+        </template>
+        <template x-if="ext !== 'pdf'">
+            <img :src="url"
+                 style="max-width:100%;max-height:calc(100vh - 120px);object-fit:contain;
+                        border-radius:.75rem;box-shadow:0 8px 48px rgba(0,0,0,.65);cursor:zoom-in;"
+                 @click="window.open(url,'_blank')" />
+        </template>
+    </div>
+
+    <p style="text-align:center;font-size:.65rem;color:rgba(255,255,255,.3);
+              padding-bottom:.75rem;flex-shrink:0;letter-spacing:.06em;">
+        Press <kbd style="font-family:ui-monospace,monospace;background:rgba(255,255,255,.1);
+                           border:1px solid rgba(255,255,255,.18);border-radius:.25rem;
+                           padding:.05rem .35rem;font-size:.62rem;">ESC</kbd> or click outside to close
+    </p>
 </div>
 
 </div>
