@@ -123,6 +123,8 @@ class AttendanceReport extends Component
                 'Updated At',
             ]);
 
+            $paidCount = 0;
+
             foreach ($participants as $participant) {
                 $fullName = trim(collect([
                     $participant->fname,
@@ -143,6 +145,10 @@ class AttendanceReport extends Component
                     'rejected' => 'Rejected',
                     default => 'Unpaid',
                 };
+
+                if (($participant->payment_status ?? 'unpaid') === 'paid') {
+                    $paidCount++;
+                }
 
                 $batchLevel = match($participant->batch_level ?? '') {
                     'elementary' => 'Elementary',
@@ -170,6 +176,15 @@ class AttendanceReport extends Component
                     $updatedAt,
                 ]);
             }
+
+            $feePerPerson = ($selectedEvent->registration_fee ?? 0) / 100;
+            $totalCollected = $paidCount * $feePerPerson;
+
+            fputcsv($handle, []);
+            fputcsv($handle, ['--- SUMMARY ---']);
+            fputcsv($handle, ['Total Paid Registrations', $paidCount]);
+            fputcsv($handle, ['Fee per Person', number_format($feePerPerson, 2)]);
+            fputcsv($handle, ['Total Collected (Paid)', number_format($totalCollected, 2)]);
 
             fclose($handle);
         }, $filename, [
