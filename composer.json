@@ -17,6 +17,7 @@
         "league/flysystem-aws-s3-v3": "3.0",
         "livewire/flux": "^2.10",
         "livewire/volt": "^1.7.0",
+        "propaganistas/laravel-phone": "^6.0",
         "spatie/browsershot": "*",
         "spatie/laravel-pdf": "*",
         "spatie/laravel-permission": "^6.24"

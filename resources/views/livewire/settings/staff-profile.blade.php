@@ -15,6 +15,7 @@ new class extends Component {
     public string $years_working = '';
     public string $contact_no   = '';
     public string $email        = '';
+    public string $username     = '';
 
     public string $address_line_1 = '';
     public string $address_line_2 = '';
@@ -33,7 +34,8 @@ new class extends Component {
             return;
         }
 
-        $this->email = (string) ($user->email ?? '');
+        $this->email    = (string) ($user->email ?? '');
+        $this->username = (string) ($user->username ?? '');
 
         $this->fname         = (string) ($staff->fname ?? '');
         $this->mname         = (string) ($staff->mname ?? '');
@@ -60,8 +62,9 @@ new class extends Component {
             'lname'        => ['required', 'string', 'max:80'],
             'position'     => ['required', 'string', 'max:100'],
             'years_working'=> ['required', 'integer', 'min:1', 'max:99'],
-            'contact_no'   => ['nullable', 'string', 'max:30'],
+            'contact_no'   => ['required', (new \Propaganistas\LaravelPhone\Rules\Phone)->country('PH')->international()],
             'email'        => ['required', 'email', 'max:255', Rule::unique(User::class, 'email')->ignore($user->id)],
+            'username'     => ['required', 'string', 'max:50', 'alpha_dash', Rule::unique(User::class, 'username')->ignore($user->id)],
             'address_line_1' => ['required', 'string', 'max:255'],
             'address_line_2' => ['nullable', 'string', 'max:255'],
             'city'           => ['required', 'string', 'max:100'],
@@ -85,11 +88,19 @@ new class extends Component {
             'country'        => trim($validated['country']),
         ]);
 
+        $userChanges = [];
+
         if ($validated['email'] !== $user->email) {
-            $user->forceFill([
-                'email'             => trim($validated['email']),
-                'email_verified_at' => null,
-            ])->save();
+            $userChanges['email']             = trim($validated['email']);
+            $userChanges['email_verified_at'] = null;
+        }
+
+        if ($validated['username'] !== $user->username) {
+            $userChanges['username'] = trim($validated['username']);
+        }
+
+        if ($userChanges) {
+            $user->forceFill($userChanges)->save();
         }
 
         $this->dispatch('profile-updated');
@@ -182,14 +193,47 @@ new class extends Component {
                     </div>
                 </div>
 
-                {{-- Contact & Email --}}
-                <div class="grid gap-4 sm:grid-cols-2">
+                {{-- Contact, Email & Username --}}
+                <div class="grid gap-4 sm:grid-cols-3">
                     <div>
-                        <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">
-                            Contact No. <span class="normal-case tracking-normal text-[#b0ab9e]">(optional)</span>
-                        </label>
-                        <input wire:model="contact_no" type="text" placeholder="e.g. 09171234567"
-                            class="w-full rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] px-3.5 py-2.5 text-sm text-[#1a1410] outline-none transition placeholder:text-[#c0bbb0] focus:border-[#d4b06a] focus:bg-white focus:ring-0" />
+                        <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Contact No.</label>
+                        <div x-data="phonePicker('{{ $contact_no }}')" class="relative" @click.outside="open = false">
+                            <div class="flex overflow-hidden rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] transition focus-within:border-[#d4b06a] focus-within:bg-white">
+                                <button type="button" @click="open = !open"
+                                    class="flex shrink-0 items-center gap-1 border-r border-[#e0dbd0] px-2.5 py-2.5 transition hover:bg-[#f5f3ef]">
+                                    <span x-text="selected.flag" class="text-base leading-none"></span>
+                                    <span x-text="selected.dial" class="text-xs text-[#7a7060]"></span>
+                                    <svg class="h-3 w-3 text-[#9a9080] transition-transform" :class="open && 'rotate-180'" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.25a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+                                    </svg>
+                                </button>
+                                <input x-model="localNumber" type="tel" required placeholder="Enter phone number"
+                                    class="w-full bg-transparent px-3 py-2.5 text-sm text-[#1a1410] outline-none placeholder:text-[#c0bbb0]" />
+                            </div>
+                            <div x-show="open" x-transition
+                                class="absolute z-50 mt-1 w-72 overflow-hidden rounded-[12px] border border-[#e0dbd0] bg-white shadow-lg shadow-black/5">
+                                <div class="border-b border-[#f0ebe1] p-2">
+                                    <input x-model="search" type="text" placeholder="Search country..."
+                                        class="w-full rounded-[8px] border border-[#e0dbd0] bg-[#faf9f7] px-3 py-2 text-sm outline-none focus:border-[#d4b06a]" />
+                                </div>
+                                <ul class="max-h-52 overflow-y-auto py-1">
+                                    <template x-for="c in filtered" :key="c.code">
+                                        <li>
+                                            <button type="button" @click="select(c)"
+                                                class="flex w-full items-center gap-3 px-3 py-2 text-left text-sm transition hover:bg-[#faf4e6]"
+                                                :class="selected.code === c.code && 'bg-[#faf4e6] font-medium'">
+                                                <span x-text="c.flag" class="text-base leading-none"></span>
+                                                <span x-text="c.name" class="flex-1 text-[#1a1410]"></span>
+                                                <span x-text="c.dial" class="text-xs text-[#9a9080]"></span>
+                                            </button>
+                                        </li>
+                                    </template>
+                                    <template x-if="filtered.length === 0">
+                                        <li class="px-3 py-4 text-center text-sm text-[#9a9080]">No country found</li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
                         @error('contact_no') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
                     </div>
                     <div>
@@ -197,6 +241,12 @@ new class extends Component {
                         <input wire:model="email" type="email" required autocomplete="email"
                             class="w-full rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] px-3.5 py-2.5 text-sm text-[#1a1410] outline-none transition focus:border-[#d4b06a] focus:bg-white focus:ring-0" />
                         @error('email') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[.06em] text-[#9a9080]">Username</label>
+                        <input wire:model="username" type="text" required autocomplete="username"
+                            class="w-full rounded-[10px] border border-[#e0dbd0] bg-[#faf9f7] px-3.5 py-2.5 text-sm text-[#1a1410] outline-none transition focus:border-[#d4b06a] focus:bg-white focus:ring-0" />
+                        @error('username') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
@@ -342,3 +392,82 @@ new class extends Component {
 
     </form>
 </section>
+
+@script
+<script>
+    Alpine.data('phonePicker', (initial) => ({
+        open: false,
+        search: '',
+        localNumber: '',
+        selected: null,
+        countries: [
+            { code: 'PH', name: 'Philippines',   dial: '+63',  flag: '🇵🇭' },
+            { code: 'US', name: 'United States',  dial: '+1',   flag: '🇺🇸' },
+            { code: 'CA', name: 'Canada',         dial: '+1',   flag: '🇨🇦' },
+            { code: 'AU', name: 'Australia',      dial: '+61',  flag: '🇦🇺' },
+            { code: 'GB', name: 'United Kingdom', dial: '+44',  flag: '🇬🇧' },
+            { code: 'NZ', name: 'New Zealand',    dial: '+64',  flag: '🇳🇿' },
+            { code: 'IE', name: 'Ireland',        dial: '+353', flag: '🇮🇪' },
+            { code: 'SG', name: 'Singapore',      dial: '+65',  flag: '🇸🇬' },
+            { code: 'HK', name: 'Hong Kong',      dial: '+852', flag: '🇭🇰' },
+            { code: 'MY', name: 'Malaysia',       dial: '+60',  flag: '🇲🇾' },
+            { code: 'JP', name: 'Japan',          dial: '+81',  flag: '🇯🇵' },
+            { code: 'KR', name: 'South Korea',    dial: '+82',  flag: '🇰🇷' },
+            { code: 'TW', name: 'Taiwan',         dial: '+886', flag: '🇹🇼' },
+            { code: 'AE', name: 'UAE',            dial: '+971', flag: '🇦🇪' },
+            { code: 'SA', name: 'Saudi Arabia',   dial: '+966', flag: '🇸🇦' },
+            { code: 'QA', name: 'Qatar',          dial: '+974', flag: '🇶🇦' },
+            { code: 'KW', name: 'Kuwait',         dial: '+965', flag: '🇰🇼' },
+            { code: 'BH', name: 'Bahrain',        dial: '+973', flag: '🇧🇭' },
+            { code: 'OM', name: 'Oman',           dial: '+968', flag: '🇴🇲' },
+            { code: 'DE', name: 'Germany',        dial: '+49',  flag: '🇩🇪' },
+            { code: 'FR', name: 'France',         dial: '+33',  flag: '🇫🇷' },
+            { code: 'IT', name: 'Italy',          dial: '+39',  flag: '🇮🇹' },
+            { code: 'ES', name: 'Spain',          dial: '+34',  flag: '🇪🇸' },
+            { code: 'NL', name: 'Netherlands',    dial: '+31',  flag: '🇳🇱' },
+            { code: 'CH', name: 'Switzerland',    dial: '+41',  flag: '🇨🇭' },
+            { code: 'SE', name: 'Sweden',         dial: '+46',  flag: '🇸🇪' },
+            { code: 'NO', name: 'Norway',         dial: '+47',  flag: '🇳🇴' },
+            { code: 'DK', name: 'Denmark',        dial: '+45',  flag: '🇩🇰' },
+        ],
+        init() {
+            this.selected = this.countries[0];
+
+            if (initial && initial.startsWith('+')) {
+                // Sort longest dial code first to avoid +1 matching +1868, etc.
+                let sorted = [...this.countries].sort((a, b) => b.dial.length - a.dial.length);
+                for (let c of sorted) {
+                    if (initial.startsWith(c.dial)) {
+                        this.selected = c;
+                        this.localNumber = initial.slice(c.dial.length);
+                        break;
+                    }
+                }
+            } else if (initial) {
+                this.localNumber = initial;
+            }
+
+            this.$watch('localNumber', () => this.sync());
+        },
+        get filtered() {
+            if (!this.search) return this.countries;
+            let q = this.search.toLowerCase();
+            return this.countries.filter(c =>
+                c.name.toLowerCase().includes(q) || c.dial.includes(this.search)
+            );
+        },
+        select(c) {
+            this.selected = c;
+            this.open = false;
+            this.search = '';
+            this.sync();
+        },
+        sync() {
+            let num = this.localNumber.trim();
+            if (!num) { $wire.set('contact_no', ''); return; }
+            if (num.startsWith('0')) num = num.slice(1);
+            $wire.set('contact_no', this.selected.dial + num);
+        },
+    }));
+</script>
+@endscript

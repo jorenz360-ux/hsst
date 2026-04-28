@@ -8,17 +8,16 @@
 
     /* KPI cards */
     .kpi-card {
-        background:#fff;border-radius:1rem;border:1px solid #e2e8f0;
-        padding:1rem 1.125rem;box-shadow:0 1px 4px rgba(15,23,42,.04);
-        display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;
+        background:#fff;border-radius:1.1rem;border:1px solid #e8edf5;
+        padding:1.1rem 1.25rem;box-shadow:0 1px 6px rgba(15,23,42,.05);
     }
     .kpi-icon {
-        width:2.25rem;height:2.25rem;border-radius:.625rem;
-        display:flex;align-items:center;justify-content:center;flex-shrink:0;
+        width:2.1rem;height:2.1rem;border-radius:.55rem;flex-shrink:0;
+        display:flex;align-items:center;justify-content:center;margin-bottom:.7rem;
     }
-    .kpi-label { font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#94a3b8; }
-    .kpi-value { font-size:1.45rem;font-weight:800;color:#0f172a;line-height:1.1;margin-top:.2rem; }
-    .kpi-sub   { font-size:.68rem;font-weight:600;margin-top:.3rem; }
+    .kpi-label { font-size:.62rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#64748b;margin-bottom:.2rem; }
+    .kpi-value { font-size:1.75rem;font-weight:800;letter-spacing:-.03em;line-height:1.1;color:#0f172a; }
+    .kpi-sub   { font-size:.7rem;color:#94a3b8;margin-top:.35rem;line-height:1.4; }
 
     /* Section cards */
     .db-card {
@@ -133,6 +132,89 @@
     .btn-view-proof:hover { background:#fef3c7; }
 
     [x-cloak] { display:none !important; }
+
+    /* ── Donations Table ──────────────────────────────────── */
+    .dn-table { width:100%; border-collapse:collapse; }
+    .dn-table thead tr { background:var(--r9); }
+    .dn-table thead th {
+        font-size:.565rem; font-weight:700; letter-spacing:.14em;
+        text-transform:uppercase; color:rgba(255,255,255,.5);
+        padding:.6rem .9rem; text-align:left; white-space:nowrap; border:none;
+    }
+    .dn-table thead th.r { text-align:right; }
+    .dn-table tbody tr {
+        border-bottom:1px solid #f1f5f9;
+        border-left:2.5px solid transparent;
+        transition:background .1s,border-left-color .1s;
+    }
+    .dn-table tbody tr:last-child { border-bottom:none; }
+    .dn-table tbody tr:hover { background:rgba(26,63,168,.028); border-left-color:var(--r5); }
+    .dn-table td { padding:.52rem .9rem; vertical-align:middle; }
+    .dn-table td.r { text-align:right; }
+    .dn-av {
+        width:1.7rem; height:1.7rem; border-radius:.4rem; flex-shrink:0;
+        display:flex; align-items:center; justify-content:center;
+        font-size:.58rem; font-weight:800; color:#fff;
+        background:linear-gradient(135deg,var(--r5) 0%,var(--r8) 100%);
+    }
+    .dn-ref {
+        font-family:ui-monospace,SFMono-Regular,monospace; font-size:.67rem;
+        letter-spacing:.02em; background:#f8fafc; border:1px solid #e2e8f0;
+        border-radius:.3rem; padding:.12rem .45rem; color:#334155;
+    }
+    .dn-btn {
+        display:inline-flex; align-items:center; gap:.22rem;
+        padding:.2rem .5rem; border-radius:.375rem; cursor:pointer;
+        font-size:.63rem; font-weight:700; border:1px solid; white-space:nowrap;
+        transition:filter .1s,transform .08s;
+    }
+    .dn-btn:hover { filter:brightness(.93); transform:translateY(-1px); }
+    .dn-btn-ok { background:#f0fdf4; border-color:#86efac; color:#15803d; }
+    .dn-btn-no { background:#fff5f5; border-color:#fca5a5; color:#dc2626; }
+    .dn-btn-or { background:#fffbeb; border-color:#fde68a; color:#92700a; }
+
+    @keyframes dmModalIn {
+        from { opacity:0; transform:scale(.96) translateY(10px); }
+        to   { opacity:1; transform:scale(1)   translateY(0); }
+    }
+    .dm-modal {
+        background:#fff; border-radius:1.1rem; width:95vw; max-width:27rem;
+        box-shadow:0 24px 64px rgba(10,31,92,.22),0 4px 16px rgba(0,0,0,.06);
+        animation:dmModalIn .22s cubic-bezier(.34,1.1,.64,1) both;
+        overflow:hidden; position:relative;
+    }
+    .dm-modal-body   { padding:1.5rem 1.5rem 1.25rem; }
+    .dm-modal-footer {
+        display:flex; gap:.5rem; justify-content:flex-end;
+        padding:1rem 1.5rem; background:#f8fafc; border-top:1px solid #f1f5f9;
+    }
+    .dm-modal-icon {
+        width:2.5rem; height:2.5rem; border-radius:.65rem; flex-shrink:0;
+        display:flex; align-items:center; justify-content:center;
+    }
+    .dm-close-btn {
+        width:1.75rem; height:1.75rem; border-radius:.4rem; border:none;
+        background:#f1f5f9; cursor:pointer; color:#94a3b8; flex-shrink:0;
+        display:flex; align-items:center; justify-content:center;
+        transition:background .12s,color .12s;
+    }
+    .dm-close-btn:hover { background:#e2e8f0; color:#475569; }
+    .dm-action-btn {
+        display:inline-flex; align-items:center; gap:.4rem;
+        padding:.45rem 1.1rem; border-radius:.7rem; border:none;
+        font-size:.8rem; font-weight:700; color:#fff; cursor:pointer;
+        transition:filter .12s;
+    }
+    .dm-action-btn:hover { filter:brightness(1.08); }
+    .dm-action-btn:disabled { opacity:.65; cursor:not-allowed; filter:none; }
+    .btn-ghost-dm {
+        display:inline-flex; align-items:center; gap:.4rem;
+        height:2.375rem; padding:0 .875rem; border-radius:.75rem;
+        background:#fff; border:1px solid #e2e8f0;
+        color:#475569; font-size:.8rem; font-weight:600;
+        transition:background .12s,border-color .12s; cursor:pointer;
+    }
+    .btn-ghost-dm:hover { background:#f8fafc; border-color:#cbd5e1; color:#1e293b; }
 </style>
 
 <div class="space-y-5 px-4 py-6 sm:px-6 lg:px-8 mx-auto max-w-screen-2xl">
@@ -204,61 +286,52 @@
     {{-- ════════ KPI ROW ════════ --}}
     <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
 
-        <div class="kpi-card" style="border-left:3px solid var(--r6);">
-            <div>
-                <p class="kpi-label">Filtered Total</p>
-                <p class="kpi-value">₱{{ number_format($totalAmount) }}</p>
-                <p class="kpi-sub" style="color:var(--r6);">Current filter</p>
-            </div>
+        <div class="kpi-card">
             <div class="kpi-icon" style="background:#eef2ff;">
-                <svg class="w-4 h-4" style="color:var(--r6);" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9"/>
+                <svg class="w-4 h-4" style="color:var(--r6);" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"/>
                 </svg>
             </div>
+            <p class="kpi-label">Filtered Total</p>
+            <p class="kpi-value" style="color:var(--r6);">₱{{ number_format($totalAmount) }}</p>
+            <p class="kpi-sub">Across current filter</p>
         </div>
 
-        <div class="kpi-card" style="border-left:3px solid #d97706;">
-            <div>
-                <p class="kpi-label">Pending Review</p>
-                <p class="kpi-value">{{ $pendingCount }}</p>
-                <p class="kpi-sub" style="color:#d97706;">Awaiting action</p>
-            </div>
+        <div class="kpi-card">
             <div class="kpi-icon" style="background:#fffbeb;">
-                <svg class="w-4 h-4" style="color:#d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <svg class="w-4 h-4" style="color:#d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                 </svg>
             </div>
+            <p class="kpi-label">Pending Review</p>
+            <p class="kpi-value" style="color:#d97706;">{{ $pendingCount }}</p>
+            <p class="kpi-sub">Awaiting admin action</p>
         </div>
 
-        <div class="kpi-card" style="border-left:3px solid #16a34a;">
-            <div>
-                <p class="kpi-label">Records Shown</p>
-                <p class="kpi-value">{{ $donations->total() }}</p>
-                <p class="kpi-sub" style="color:#16a34a;">Matching filter</p>
-            </div>
+        <div class="kpi-card">
             <div class="kpi-icon" style="background:#ecfdf5;">
-                <svg class="w-4 h-4" style="color:#16a34a;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                <svg class="w-4 h-4" style="color:#16a34a;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z"/>
                 </svg>
             </div>
+            <p class="kpi-label">Records Shown</p>
+            <p class="kpi-value" style="color:#16a34a;">{{ $donations->total() }}</p>
+            <p class="kpi-sub">Matching filter</p>
         </div>
 
-        <div class="kpi-card" style="border-left:3px solid var(--g5);">
-            <div>
-                <p class="kpi-label">Status Filter</p>
-                <p class="kpi-value" style="font-size:1rem;margin-top:.35rem;">
-                    {{ ucfirst($statusFilter === 'all' ? 'All' : $statusFilter) }}
-                </p>
-                <p class="kpi-sub" style="color:var(--g5);">
-                    {{ $paymentFilter === 'all' ? 'Any payment' : ucfirst($paymentFilter) }}
-                </p>
-            </div>
+        <div class="kpi-card">
             <div class="kpi-icon" style="background:#fffbeb;">
-                <svg class="w-4 h-4" style="color:var(--g5);" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <svg class="w-4 h-4" style="color:var(--g5);" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z"/>
                 </svg>
             </div>
+            <p class="kpi-label">Active Filter</p>
+            <p class="kpi-value" style="font-size:1.1rem;color:var(--g5);">
+                {{ ucfirst($statusFilter === 'all' ? 'All' : $statusFilter) }}
+            </p>
+            <p class="kpi-sub">{{ $paymentFilter === 'all' ? 'Any payment type' : ucfirst($paymentFilter) }}</p>
         </div>
+
     </div>
 
     @include('partials.toast')
@@ -377,70 +450,92 @@
     </div>
 
     {{-- ════════ DESKTOP TABLE ════════ --}}
-    <div class="db-card hidden lg:block">
-        <div class="db-card-header">
-            <div>
-                <p class="db-card-eyebrow">Records</p>
-                <p class="db-card-title">Donation Submissions</p>
+       <div class="hidden lg:block" style="background:#fff;border:1px solid #e8edf5;
+             border-radius:1.1rem;box-shadow:0 1px 6px rgba(15,23,42,.05);overflow:hidden;">
+
+        {{-- Card header --}}
+        <div style="display:flex;align-items:center;gap:.65rem;padding:.8rem 1.1rem .8rem 1.25rem;
+                    border-bottom:1px solid #f1f5f9;">
+            <div style="width:1.9rem;height:1.9rem;border-radius:.5rem;background:#eef2ff;flex-shrink:0;
+                        display:flex;align-items:center;justify-content:center;">
+                <svg style="width:.85rem;height:.85rem;color:var(--r6);" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"/>
+                </svg>
             </div>
-            <div style="display:flex;align-items:center;gap:.75rem;">
-                <span wire:loading style="font-size:.72rem;color:#94a3b8;">Loading…</span>
-                <span style="font-size:.72rem;color:#94a3b8;">
-                    {{ $donations->total() }} {{ Str::plural('record', $donations->total()) }}
+            <div style="flex:1;">
+                <p style="font-size:.8125rem;font-weight:700;color:#1e293b;margin:0;">Donation Records</p>
+                <p style="font-size:.68rem;color:#94a3b8;margin:0;">Review submissions, proof and payment state.</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:.5rem;">
+                <span wire:loading style="font-size:.68rem;color:#94a3b8;font-style:italic;">Updating…</span>
+                <span style="font-size:.6rem;font-weight:700;background:#eef2ff;color:var(--r6);
+                             border:1px solid #c7d2fe;border-radius:999px;padding:.2rem .65rem;">
+                    {{ $donations->firstItem() ?? 0 }}–{{ $donations->lastItem() ?? 0 }}
+                    <span style="opacity:.6;">of</span> {{ number_format($donations->total()) }}
                 </span>
             </div>
         </div>
 
         <div style="overflow-x:auto;">
-            <table class="db-table">
+            <table class="dn-table">
                 <thead>
                     <tr>
                         <th>Donor</th>
-                        <th class="right">Amount</th>
+                        <th class="r">Amount</th>
                         <th>Reference</th>
                         <th>Submitted</th>
                         <th>Status</th>
                         <th>Payment</th>
-                        <th>Proof</th>
+                        <th>Receipt</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($donations as $donation)
+                        @php
+                            $donorEducations = $donation->alumni?->educations ?? collect();
+                            $initials = strtoupper(
+                                substr($donation->alumni?->fname ?? 'U', 0, 1) .
+                                substr($donation->alumni?->lname ?? '', 0, 1)
+                            );
+                        @endphp
                         <tr>
                             {{-- Donor --}}
-                            <td style="min-width:190px;">
-                                <div style="display:flex;align-items:center;gap:.625rem;">
+                            <td style="min-width:200px;">
+                                <div style="display:flex;align-items:center;gap:.5rem;">
+                                    <div class="dn-av">{{ $initials }}</div>
                                     <div>
-                                        @php
-                                            $donorEducations = $donation->alumni?->educations ?? collect();
-                                        @endphp
+                                        <p style="font-size:.775rem;font-weight:700;color:#1e293b;
+                                                   line-height:1.25;white-space:nowrap;">
+                                            {{ $donation->alumni?->lname }}, {{ $donation->alumni?->fname }}
+                                        </p>
                                         @if ($donorEducations->isNotEmpty())
-                                            <div style="display:flex;flex-wrap:wrap;gap:.2rem;margin-top:.15rem;">
-                                            @foreach ($donorEducations as $donorEdu)
-                                                @php
-                                                    $lvlAbbr = match($donorEdu->batch?->level) {
-                                                        'elementary' => 'Elem',
-                                                        'highschool' => 'HS',
-                                                        'college'    => 'Col',
-                                                        default      => null,
-                                                    };
-                                                @endphp
-                                                <span class="status-chip chip-blue" style="font-size:.6rem;">
-                                                    {{ $lvlAbbr ? $lvlAbbr . ' ' : '' }}{{ $donorEdu->batch?->yeargrad ?? '—' }}
-                                                </span>
-                                            @endforeach
+                                            <div style="display:flex;flex-wrap:wrap;gap:.2rem;margin-top:.2rem;">
+                                                @foreach ($donorEducations as $donorEdu)
+                                                    @php
+                                                        $lvlAbbr = match($donorEdu->batch?->level) {
+                                                            'elementary' => 'Elem',
+                                                            'highschool' => 'HS',
+                                                            'college'    => 'Col',
+                                                            default      => null,
+                                                        };
+                                                    @endphp
+                                                    <span class="status-chip chip-blue" style="font-size:.58rem;padding:.08rem .4rem;">
+                                                        {{ $lvlAbbr ? $lvlAbbr . ' ' : '' }}{{ $donorEdu->batch?->yeargrad ?? '—' }}
+                                                    </span>
+                                                @endforeach
                                             </div>
                                         @else
-                                            <span style="font-size:.68rem;color:#cbd5e1;margin:.1rem 0 0;display:block;">No batch</span>
+                                            <span style="font-size:.62rem;color:#cbd5e1;">No batch</span>
                                         @endif
                                     </div>
                                 </div>
                             </td>
 
                             {{-- Amount --}}
-                            <td class="right" style="min-width:100px;">
-                                <span style="font-size:.9rem;font-weight:800;color:#0f172a;">
+                            <td class="r" style="min-width:100px;">
+                                <span style="font-size:.82rem;font-weight:800;color:#1e293b;
+                                             font-variant-numeric:tabular-nums;letter-spacing:-.015em;">
                                     ₱{{ number_format($donation->amount ?? 0, 2) }}
                                 </span>
                             </td>
@@ -448,20 +543,18 @@
                             {{-- Reference --}}
                             <td style="min-width:130px;">
                                 @if ($donation->reference_number)
-                                    <span style="font-family:monospace;font-size:.75rem;color:#334155;">
-                                        {{ $donation->reference_number }}
-                                    </span>
+                                    <span class="dn-ref">{{ $donation->reference_number }}</span>
                                 @else
-                                    <span style="color:#cbd5e1;font-size:.75rem;">—</span>
+                                    <span style="color:#cbd5e1;font-size:.7rem;">—</span>
                                 @endif
                             </td>
 
                             {{-- Submitted --}}
-                            <td style="min-width:110px;">
-                                <p style="font-size:.78rem;color:#334155;margin:0;">
+                            <td style="min-width:105px;">
+                                <p style="font-size:.75rem;font-weight:600;color:#334155;margin:0;white-space:nowrap;">
                                     {{ $donation->created_at?->format('M d, Y') ?? '—' }}
                                 </p>
-                                <p style="font-size:.68rem;color:#94a3b8;margin:.1rem 0 0;">
+                                <p style="font-size:.62rem;color:#94a3b8;margin:.1rem 0 0;">
                                     {{ $donation->created_at?->format('h:i A') ?? '' }}
                                 </p>
                             </td>
@@ -470,41 +563,43 @@
                             <td style="min-width:120px;">
                                 @if ($donation->status === 'verified')
                                     <span class="status-chip chip-green">
-                                        <span class="status-dot" style="background:#16a34a;"></span> Verified
+                                        <span class="status-dot" style="background:#10b981;"></span>Verified
                                     </span>
                                     @if ($donation->reviewed_at)
-                                        <p style="font-size:.67rem;color:#94a3b8;margin:.25rem 0 0;">
+                                        <p style="font-size:.6rem;color:#94a3b8;margin:.2rem 0 0;">
                                             {{ $donation->reviewed_at->format('M d, Y') }}
                                         </p>
                                     @endif
                                 @elseif ($donation->status === 'rejected')
                                     <span class="status-chip chip-red">
-                                        <span class="status-dot" style="background:#ef4444;"></span> Rejected
+                                        <span class="status-dot" style="background:#ef4444;"></span>Rejected
                                     </span>
                                     @if ($donation->rejection_reason)
-                                        <p style="font-size:.67rem;color:#dc2626;margin:.25rem 0 0;max-width:150px;line-height:1.3;">
-                                            {{ $donation->rejection_reason }}
+                                        <p style="font-size:.62rem;color:#dc2626;margin:.2rem 0 0;
+                                                   max-width:140px;line-height:1.35;overflow:hidden;
+                                                   text-overflow:ellipsis;white-space:nowrap;">
+                                            {{ Str::limit($donation->rejection_reason, 42) }}
                                         </p>
                                     @endif
                                 @else
                                     <span class="status-chip chip-amber">
-                                        <span class="status-dot" style="background:#d97706;"></span> Pending
+                                        <span class="status-dot" style="background:#d97706;"></span>Pending
                                     </span>
                                 @endif
                             </td>
 
                             {{-- Payment --}}
-                            <td style="min-width:90px;">
+                            <td style="min-width:85px;">
                                 @if ($donation->is_paid)
                                     <span class="status-chip chip-blue">
-                                        <span class="status-dot" style="background:var(--r6);"></span> Paid
+                                        <span class="status-dot" style="background:var(--r6);"></span>Paid
                                     </span>
                                 @else
                                     <span class="status-chip chip-slate">Unpaid</span>
                                 @endif
                             </td>
 
-                            {{-- Proof --}}
+                            {{-- Receipt --}}
                             <td>
                                 @if ($donation->or_file_path)
                                     @php
@@ -515,38 +610,38 @@
                                     @endphp
                                     <button type="button" x-data
                                             @click="$dispatch('open-proof-modal',{url:'{{ $proofUrl }}',ext:'{{ $proofExt }}'})"
-                                            class="btn-view-proof">
-                                        <svg style="width:.65rem;height:.65rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                            class="dn-btn dn-btn-or">
+                                        <svg style="width:.6rem;height:.6rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/>
                                         </svg>
-                                        View
+                                        View OR
                                     </button>
                                 @else
-                                    <span style="font-size:.72rem;color:#cbd5e1;">No file</span>
+                                    <span style="font-size:.68rem;color:#cbd5e1;">No file</span>
                                 @endif
                             </td>
 
                             {{-- Actions --}}
                             <td style="white-space:nowrap;">
-                                <div style="display:flex;gap:.3rem;">
+                                <div style="display:flex;gap:.28rem;align-items:center;">
                                     @if ($donation->status === 'pending')
-                                        <button wire:click="verifyDonation({{ $donation->id }})"
-                                                wire:confirm="Verify this donation?"
-                                                class="btn-verify">
-                                            <svg style="width:.65rem;height:.65rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                        <button type="button"
+                                                @click="$dispatch('open-verify-modal',{id:{{ $donation->id }}})"
+                                                class="dn-btn dn-btn-ok">
+                                            <svg style="width:.6rem;height:.6rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                                             </svg>
                                             Verify
                                         </button>
                                         <button wire:click="openRejectModal({{ $donation->id }})"
-                                                class="btn-reject-sm">
-                                            <svg style="width:.65rem;height:.65rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                                class="dn-btn dn-btn-no">
+                                            <svg style="width:.6rem;height:.6rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                                             </svg>
                                             Reject
                                         </button>
                                     @else
-                                        <span style="font-size:.7rem;color:#94a3b8;">
+                                        <span style="font-size:.65rem;color:#94a3b8;font-style:italic;">
                                             @if ($donation->reviewed_at)
                                                 Reviewed {{ $donation->reviewed_at->format('M d') }}
                                             @else
@@ -560,16 +655,17 @@
                     @empty
                         <tr>
                             <td colspan="8" style="padding:3.5rem 1.5rem;text-align:center;">
-                                <div style="max-width:20rem;margin:0 auto;">
-                                    <div style="width:3rem;height:3rem;border-radius:.875rem;background:#f0f4fb;
-                                                border:1px solid #e2e8f0;display:flex;align-items:center;
-                                                justify-content:center;margin:0 auto .75rem;">
-                                        <svg style="width:1.4rem;height:1.4rem;color:#94a3b8;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                <div style="max-width:18rem;margin:0 auto;">
+                                    <div style="width:2.75rem;height:2.75rem;border-radius:.75rem;
+                                                background:#f0f4fb;border:1px solid #e2e8f0;
+                                                display:flex;align-items:center;justify-content:center;
+                                                margin:0 auto .75rem;">
+                                        <svg style="width:1.2rem;height:1.2rem;color:#94a3b8;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z"/>
                                         </svg>
                                     </div>
-                                    <p style="font-size:.875rem;font-weight:600;color:#1e293b;margin:0;">No donations found</p>
-                                    <p style="font-size:.78rem;color:#64748b;margin:.35rem 0 0;">Try adjusting your filters.</p>
+                                    <p style="font-size:.8125rem;font-weight:600;color:#1e293b;margin:0;">No donations found</p>
+                                    <p style="font-size:.72rem;color:#64748b;margin-top:.3rem;">Try adjusting your filters.</p>
                                 </div>
                             </td>
                         </tr>
@@ -578,8 +674,12 @@
             </table>
         </div>
 
-        <div style="padding:.85rem 1.25rem;border-top:1px solid #f1f5f9;background:#fafbff;
-                    display:flex;align-items:center;justify-content:flex-end;">
+        <div style="padding:.8rem 1.25rem;border-top:1px solid #f1f5f9;background:#fafbff;
+                    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;">
+            <p style="font-size:.7rem;color:#94a3b8;">
+                Showing {{ $donations->firstItem() ?? 0 }}–{{ $donations->lastItem() ?? 0 }}
+                of {{ number_format($donations->total()) }} records
+            </p>
             <div class="[&>*]:!shadow-none">{{ $donations->links() }}</div>
         </div>
     </div>
@@ -667,7 +767,7 @@
                         </button>
                     @endif
                     @if ($donation->status === 'pending')
-                        <button wire:click="verifyDonation({{ $donation->id }})" wire:confirm="Verify this donation?" class="btn-verify">
+                        <button type="button" @click="$dispatch('open-verify-modal',{id:{{ $donation->id }}})" class="btn-verify">
                             <svg style="width:.65rem;height:.65rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                             </svg>
@@ -697,56 +797,159 @@
 
 {{-- ════════ REJECT MODAL ════════ --}}
 @if ($rejectingDonationId)
-    <div style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;
-                justify-content:center;background:rgba(0,0,0,.5);">
-        <div style="background:#fff;border-radius:1rem;padding:1.5rem;
-                    width:95vw;max-width:26rem;box-shadow:0 20px 50px rgba(0,0,0,.2);">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-                <div style="display:flex;align-items:center;gap:.5rem;">
-                    <div style="width:2rem;height:2rem;border-radius:.5rem;background:#fee2e2;
-                                border:1px solid #fca5a5;display:flex;align-items:center;justify-content:center;">
-                        <svg style="width:.9rem;height:.9rem;color:#dc2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
+    <div style="position:fixed;inset:0;z-index:9999;background:rgba(10,31,92,.45);"
+         x-data @keydown.escape.window="$wire.closeRejectModal()">
+        <div style="display:flex;align-items:center;justify-content:center;
+                    min-height:100vh;padding:1rem;">
+            <div class="dm-modal">
+                <div style="height:3px;background:linear-gradient(90deg,#dc2626,#b91c1c);"></div>
+
+                <div class="dm-modal-body">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;">
+                        <div style="display:flex;align-items:center;gap:.75rem;">
+                            <div class="dm-modal-icon"
+                                 style="background:linear-gradient(135deg,#dc2626,#b91c1c);
+                                        box-shadow:0 3px 10px rgba(220,38,38,.28);">
+                                <svg style="width:1rem;height:1rem;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p style="font-family:Georgia,serif;font-size:.9375rem;font-weight:700;
+                                           color:#0f172a;margin:0;line-height:1.25;">Reject Donation</p>
+                                <p style="font-size:.72rem;color:#64748b;margin:.15rem 0 0;">Provide a reason for the rejection</p>
+                            </div>
+                        </div>
+                        <button wire:click="closeRejectModal" class="dm-close-btn">
+                            <svg style="width:.8rem;height:.8rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
                     </div>
-                    <span style="font-size:.875rem;font-weight:700;color:#0f172a;">Reject Donation</span>
+
+                    <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:.75rem;
+                                padding:.75rem 1rem;display:flex;align-items:flex-start;gap:.6rem;margin-bottom:1rem;">
+                        <svg style="width:.9rem;height:.9rem;color:#dc2626;flex-shrink:0;margin-top:.1rem;"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
+                        </svg>
+                        <p style="font-size:.78rem;color:#991b1b;margin:0;line-height:1.6;">
+                            The alumni will be notified that their donation was <strong>rejected</strong>. This action can be undone by re-verifying later.
+                        </p>
+                    </div>
+
+                    <div>
+                        <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;
+                                       text-transform:uppercase;color:#94a3b8;margin-bottom:.35rem;">
+                            Reason for rejection <span style="color:#dc2626;">*</span>
+                        </label>
+                        <textarea wire:model="rejectionReason" rows="3"
+                                  placeholder="Explain why this donation is being rejected…"
+                                  style="width:100%;border-radius:.75rem;border:1px solid #e2e8f0;
+                                         background:#fff;padding:.6rem .875rem;font-size:.8125rem;
+                                         color:#0f172a;outline:none;resize:vertical;box-sizing:border-box;
+                                         transition:border-color .15s,box-shadow .15s;"
+                                  onfocus="this.style.borderColor='#dc2626';this.style.boxShadow='0 0 0 3px rgba(220,38,38,.1)'"
+                                  onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'"></textarea>
+                        @error('rejectionReason')
+                            <p style="font-size:.72rem;color:#dc2626;margin:.3rem 0 0;">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
-                <button wire:click="closeRejectModal"
-                        style="width:1.75rem;height:1.75rem;border-radius:.4rem;border:none;
-                               background:#f1f5f9;cursor:pointer;font-size:1.1rem;color:#64748b;">&times;</button>
-            </div>
-            <div style="margin-bottom:1rem;">
-                <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8;margin-bottom:.25rem;">
-                    Reason <span style="color:#dc2626;">*</span>
-                </label>
-                <textarea wire:model="rejectionReason" rows="3"
-                          placeholder="Explain why this donation is being rejected…"
-                          style="width:100%;border-radius:.75rem;border:1px solid #e2e8f0;
-                                 background:#fff;padding:.6rem .875rem;font-size:.8125rem;
-                                 color:#0f172a;outline:none;resize:vertical;box-sizing:border-box;"
-                          onfocus="this.style.borderColor='#dc2626';this.style.boxShadow='0 0 0 3px rgba(220,38,38,.1)'"
-                          onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'"></textarea>
-                @error('rejectionReason')
-                    <p style="font-size:.72rem;color:#dc2626;margin:.3rem 0 0;">{{ $message }}</p>
-                @enderror
-            </div>
-            <div style="display:flex;gap:.5rem;justify-content:flex-end;">
-                <button wire:click="closeRejectModal"
-                        style="padding:.45rem .9rem;border-radius:.6rem;border:1px solid #e2e8f0;
-                               background:#fff;font-size:.8rem;font-weight:600;color:#475569;cursor:pointer;">
-                    Cancel
-                </button>
-                <button wire:click="rejectDonation"
-                        style="padding:.45rem .9rem;border-radius:.6rem;border:none;background:#dc2626;
-                               font-size:.8rem;font-weight:700;color:#fff;cursor:pointer;"
-                        onmouseover="this.style.background='#b91c1c'"
-                        onmouseout="this.style.background='#dc2626'">
-                    Confirm Reject
-                </button>
+
+                <div class="dm-modal-footer">
+                    <button wire:click="closeRejectModal" class="btn-ghost-dm">Cancel</button>
+                    <button wire:click="rejectDonation"
+                            wire:loading.attr="disabled"
+                            wire:target="rejectDonation"
+                            class="dm-action-btn"
+                            style="background:linear-gradient(135deg,#dc2626,#b91c1c);
+                                   box-shadow:0 2px 8px rgba(220,38,38,.22);">
+                        <span wire:loading.remove wire:target="rejectDonation"
+                              style="display:inline-flex;align-items:center;gap:.35rem;">
+                            <svg style="width:.75rem;height:.75rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Confirm Reject
+                        </span>
+                        <span wire:loading wire:target="rejectDonation">Rejecting…</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 @endif
+
+{{-- ════════ VERIFY MODAL ════════ --}}
+<div x-data="{ open: false, id: null }"
+     @open-verify-modal.window="open = true; id = $event.detail.id"
+     x-show="open"
+     x-cloak
+     x-transition:enter="transition ease-out duration-200"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition ease-in duration-150"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     style="position:fixed;inset:0;z-index:9999;background:rgba(10,31,92,.45);"
+     @keydown.escape.window="open = false">
+
+    <div style="display:flex;align-items:center;justify-content:center;
+                min-height:100vh;padding:1rem;"
+         @click.self="open = false">
+        <div class="dm-modal" @click.stop>
+            <div style="height:3px;background:linear-gradient(90deg,#16a34a,#059669);"></div>
+
+            <div class="dm-modal-body">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;">
+                    <div style="display:flex;align-items:center;gap:.75rem;">
+                        <div class="dm-modal-icon"
+                             style="background:linear-gradient(135deg,#16a34a,#059669);
+                                    box-shadow:0 3px 10px rgba(22,163,74,.28);">
+                            <svg style="width:1rem;height:1rem;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p style="font-family:Georgia,serif;font-size:.9375rem;font-weight:700;
+                                       color:#0f172a;margin:0;line-height:1.25;">Verify Donation</p>
+                            <p style="font-size:.72rem;color:#64748b;margin:.15rem 0 0;">Mark this submission as verified</p>
+                        </div>
+                    </div>
+                    <button @click="open = false" class="dm-close-btn">
+                        <svg style="width:.8rem;height:.8rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.75rem;
+                            padding:.875rem 1rem;display:flex;align-items:flex-start;gap:.6rem;">
+                    <svg style="width:.9rem;height:.9rem;color:#16a34a;flex-shrink:0;margin-top:.1rem;"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/>
+                    </svg>
+                    <p style="font-size:.78rem;color:#166534;margin:0;line-height:1.6;">
+                        This will mark the donation as <strong>verified</strong> and record your review timestamp. The alumni will see their submission as approved.
+                    </p>
+                </div>
+            </div>
+
+            <div class="dm-modal-footer">
+                <button @click="open = false" class="btn-ghost-dm">Cancel</button>
+                <button @click="$wire.verifyDonation(id); open = false"
+                        class="dm-action-btn"
+                        style="background:linear-gradient(135deg,#16a34a,#059669);
+                               box-shadow:0 2px 8px rgba(22,163,74,.28);">
+                    <svg style="width:.75rem;height:.75rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                    </svg>
+                    Verify
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 {{-- ════════ PROOF MODAL ════════ --}}
 <div x-data="{ open:false, url:'', ext:'' }"

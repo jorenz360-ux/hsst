@@ -619,6 +619,15 @@
                                         Reset
                                     </button>
 
+                                    <button wire:click="confirmDelete({{ $user->id }})"
+                                            class="btn-action btn-action-delete"
+                                            title="Delete User">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+                                        </svg>
+                                        Delete
+                                    </button>
+
                                     @if ($user->is_active)
                                         <button wire:click="confirmToggle({{ $user->id }})"
                                                 class="btn-action btn-action-deactivate">
