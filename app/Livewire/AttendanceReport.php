@@ -297,6 +297,7 @@ class AttendanceReport extends Component
         $unpaidParticipantsCount = 0;
         $pendingParticipantsCount = 0;
         $rejectedParticipantsCount = 0;
+        $totalPaidAmount = 0;
 
         $staffAttendingCount = 0;
         $staffMaybeCount = 0;
@@ -350,6 +351,8 @@ class AttendanceReport extends Component
                 ->where('payment_status', 'rejected')
                 ->count();
 
+            $totalPaidAmount = $paidParticipantsCount * (($selectedEvent->registration_fee ?? 0) / 100);
+
             $staffAttendingCount    = StaffEventRsvp::where('event_id', $selectedEvent->id)->where('status', StaffEventRsvp::STATUS_ATTENDING)->count();
             $staffMaybeCount        = StaffEventRsvp::where('event_id', $selectedEvent->id)->where('status', StaffEventRsvp::STATUS_MAYBE)->count();
             $staffNotAttendingCount = StaffEventRsvp::where('event_id', $selectedEvent->id)->where('status', StaffEventRsvp::STATUS_NOT_ATTENDING)->count();
@@ -375,6 +378,7 @@ class AttendanceReport extends Component
             'unpaidParticipantsCount' => $unpaidParticipantsCount,
             'pendingParticipantsCount' => $pendingParticipantsCount,
             'rejectedParticipantsCount' => $rejectedParticipantsCount,
+            'totalPaidAmount' => $totalPaidAmount,
             'staffAttendingCount' => $staffAttendingCount,
             'staffMaybeCount' => $staffMaybeCount,
             'staffNotAttendingCount' => $staffNotAttendingCount,
